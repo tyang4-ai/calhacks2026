@@ -16,11 +16,17 @@ Figma track, Cal Hacks 13.0. Four stages, 200 words at most per stage. Times are
 
 ## 2 · Prototyping
 
-Not started. It begins after the pick: style tiles, wireframes, components, mockups and a clickable prototype of the main path.
+Not started. Next after drop 1: flows, wireframes, components, mockups, illustrations and a clickable prototype of the main path.
 
 ## 3 · Handoff
 
-Not started. Drop 1 (tokens.json, tokens.md, layout.md) follows the style tiles. Drop 2 brings components, screens, assets and flows.
+14:28 to 14:52, 24 minutes so far · rating 4 of 5 · drop 1 done, drop 2 to come
+
+**Tools.** Files came first, so the build never waits on Figma. A Python generator writes tokens.json and tokens.md from one list of 113 tokens, and fails the run if any of 80 contrast pairs drops below 4.5:1 for text or 3:1 for marks. It caught two chart colors at 2.7:1 and 2.9:1 on the page ground before they shipped. The chart palette came from the dataviz skill's validator, searching orderings until every check passed. Then Figma Design through `use_figma`: 79 variables with `var(--c-…)` code syntax and scopes, 17 text styles, an overlay shadow and a style-tile page bound to them.
+
+**Friction.** Edu verification lifted the 20-call cap for the new file. Three tiles came out clipped, because `resize()` fixes an auto-layout frame's height, and the icons lost their strokes, because Figma's SVG import ignores attributes on the root element. Two fix calls. Measuring the labels showed ten equal process blocks fit with 8 px padding.
+
+**Into the build.** I3-redesign pastes the `css` block into `src/ui/tokens.css` and makes the eleven kit changes listed in tokens.md.
 
 ## 4 · Code generation
 
@@ -39,7 +45,9 @@ This section backs up the entries above and is not part of their word count.
 | Cindia · 01 Research (FigJam) | https://www.figma.com/board/T3lxV76Wc6petCKoRE0TNu | What Cindia is, why it matters (World Bank, FDIC, ICT News), the buyer, the maker (陆芸 Lu Yun), the studio owner (沈若兰 Shen Ruolan), the judge at a table, the community as a stakeholder, the Visa, Hyphenate and Figma criteria, the judge's one-minute story, 15 references (described and linked, never copied), 8 principles, the screen rules, 4 open questions with defaults |
 | Cindia · 02 Moodboards (FigJam) | https://www.figma.com/board/KAOXGbhwnS0A0tJ8j5ABj7 | How the directions were checked, A · Museum label, B · Warp and weft, C · Daylight market (idea, palette, type, texture and imagery, the product vignette), a side-by-side table and the recommendation, with a sticky for Gordon's pick |
 
-Both files sit in Gordon's drafts on the Starter team. Neither is shared yet: "Anyone with the link" has to be set in Figma by Gordon, because the MCP server has no sharing tool.
+| Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 17 text styles, the overlay shadow, and the Style tiles page (`design/style-tiles.png`) |
+
+All three files sit in Gordon's drafts on his Figma team, which moved from the Starter tier to the student tier after his Edu verification. None is shared yet: "Anyone with the link" has to be set in Figma by Gordon, because the MCP server has no sharing tool.
 
 ### Timeline
 
@@ -59,20 +67,28 @@ Both files sit in Gordon's drafts on the Starter team. Neither is shared yet: "A
 | 14:22 | Direction B built and checked | use_figma, get_screenshot |
 | 14:24 | Direction C built and checked | use_figma, get_screenshot |
 | 14:25 | Comparison table and recommendation built. The next two calls hit the monthly MCP limit | use_figma |
+| 14:28 | Gordon picked B, through the coordinator | |
+| 14:30 | Chart palette: dye-inspired hues stepped into the validator's band, then every ordering searched | dataviz validate_palette.js |
+| 14:40 | tokens.json and tokens.md generated. The contrast asserts stopped the first run on two chart colors | Python |
+| 14:44 | layout.md and HANDOFF.md written. Drop 1 complete as files | Write |
+| 14:45 | whoami showed the team on the student tier. Created *Cindia · Design*. The first write went through | whoami, create_new_file, use_figma |
+| 14:47 | Style tiles: color, space and lines, elevation, then type, chart, motion, then the beam and kit, icons, illustration | use_figma |
+| 14:50 | Review: equal process blocks fixed, clipped tiles and icon strokes fixed | get_screenshot, use_figma |
+| 14:52 | Final screenshot saved as `design/style-tiles.png` | get_screenshot |
 
 ### Figma MCP calls
 
-| Tool | Calls | Counts toward the limit |
-|---|---|---|
-| use_figma | 12 | yes |
-| get_screenshot | 8 | yes |
-| create_new_file | 2 | no, exempt |
-| create_session | 1 | no |
-| whoami | 2 | no, exempt |
-| upload_assets | 1 | its upload URL was unreachable from the sandbox |
-| get_figma_skill | 13 | no, skill docs |
+| Tool | Stage 1 calls | Stage 3 calls | Counts toward the limit |
+|---|---|---|---|
+| use_figma | 12 | 7 | yes |
+| get_screenshot | 8 | 3 | yes |
+| create_new_file | 2 | 1 | no, exempt |
+| create_session | 1 | 0 | no |
+| whoami | 2 | 1 | no, exempt |
+| upload_assets | 1 | 0 | its upload URL was unreachable from the sandbox |
+| get_figma_skill | 13 | 2 | no, skill docs |
 
-The limit for a View or Collab seat is up to 20 calls a month. An Education plan (Edu verified) gets the Professional limits for Full and Dev seats: up to 200 calls a day and 10 a minute. Source: https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/
+The limit for a View or Collab seat is up to 20 calls a month. An Education plan (Edu verified) gets the Professional limits for Full and Dev seats: up to 200 calls a day and 10 a minute. Source: https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/. After Gordon's verification the team shows the student tier and the calls went through again, though whoami still lists his seat as View.
 
 ### Rework and dead ends
 
@@ -88,7 +104,7 @@ The limit for a View or Collab seat is up to 20 calls a month. An Education plan
 - **Fonts:** every candidate covers the catalog's names (Diné, Māori, Sámi, Sápmi, pōtae, whāriki). Only Inter and Source Sans 3 also cover the wider set for names makers may write later (Sámi ŧ đ ŋ, Diné ą ǫ ł, Maa ɔ ɛ ɨ ʉ, pinyin tones). No Latin font covers Inuktitut syllabics, so every stack ends with Noto Sans Canadian Aboriginal. All fonts are under the SIL Open Font License.
 - **Images:** only our own swatches, type samples and textures generated from code. No photos, no artworks, no screenshots of other products.
 
-### What stage 2 needs
+### What's next
 
-- Gordon's pick: A, B or C.
-- More MCP calls. Stages 2 and 3 need roughly 150 to 200 calls (style tiles, components, about 40 screens, the prototype, Slides, PNG exports). Edu verification, which the track requires anyway, moves the team to the Education plan's 200 a day.
+- Gordon picked B at 14:28, and drop 1 is done.
+- Stage 2 and drop 2 need roughly 150 to 200 more calls (flows, components, about 40 screens, the prototype, Slides, PNG exports), within the Education plan's 200 a day and 10 a minute.

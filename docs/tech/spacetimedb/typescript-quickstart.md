@@ -1,0 +1,293 @@
+# SpacetimeDB: TypeScript module quickstart and Node.js client quickstart
+
+> Sources:
+> - https://github.com/clockworklabs/SpacetimeDB/blob/v2.13.0/docs/docs/00100-intro/00200-quickstarts/00400-typescript.md
+> - https://github.com/clockworklabs/SpacetimeDB/blob/v2.13.0/docs/docs/00100-intro/00200-quickstarts/00300-nodejs.md
+> Fetched: 2026-10-24.
+>
+> From the clockworklabs/SpacetimeDB repo at tag v2.13.0 (Oct 19, 2026), the release that install.spacetimedb.com installs today.
+> Only the TypeScript tabs are kept. The Rust, C#, C++ and Unreal versions are on spacetimedb.com.
+> TypeScript modules are supported in 2.x: `spacetime dev --template basic-ts` scaffolds one. The npm package is `spacetimedb` (2.13.0). `@clockworklabs/spacetimedb-sdk` is deprecated.
+
+Get a SpacetimeDB TypeScript app running in under 5 minutes.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) 18+ installed
+- [SpacetimeDB CLI](https://spacetimedb.com/install) installed
+
+---
+
+#### Create your project
+
+      Run the `spacetime dev` command to create a new project with a TypeScript SpacetimeDB module.
+
+      This will start the local SpacetimeDB server, publish your module, and generate TypeScript client bindings.
+```bash
+spacetime dev --template basic-ts
+```
+
+#### Explore the project structure
+
+      Your project contains both server and client code.
+
+      Edit `spacetimedb/src/index.ts` to add tables and reducers. Use the generated bindings in `src/module_bindings/` to build your client.
+```
+my-spacetime-app/
+├── spacetimedb/             # Your SpacetimeDB module
+│   └── src/
+│       └── index.ts         # Server-side logic
+├── src/
+│   ├── main.ts              # Client application
+│   └── module_bindings/     # Auto-generated types
+└── package.json
+```
+
+#### Understand tables and reducers
+
+      Open `spacetimedb/src/index.ts` to see the module code. The template includes a `person` table and two reducers: `add` to insert a person, and `sayHello` to greet everyone.
+
+      Tables store your data. Reducers are functions that modify data — they're the only way to write to the database.
+```typescript
+import { schema, table, t } from 'spacetimedb/server';
+
+const spacetimedb = schema({
+  person: table(
+    { public: true },
+    {
+      name: t.string(),
+    }
+  ),
+});
+export default spacetimedb;
+
+export const add = spacetimedb.reducer(
+  { name: t.string() },
+  (ctx, { name }) => {
+    ctx.db.person.insert({ name });
+  }
+);
+
+export const sayHello = spacetimedb.reducer(ctx => {
+  for (const person of ctx.db.person.iter()) {
+    console.info(`Hello, ${person.name}!`);
+  }
+  console.info('Hello, World!');
+});
+```
+
+#### Test with the CLI
+
+      Open a new terminal and navigate to your project directory. Then use the SpacetimeDB CLI to call reducers and query your data directly.
+```bash
+cd my-spacetime-app
+
+# Call the add reducer to insert a person
+spacetime call add Alice
+
+# Query the person table
+spacetime sql "SELECT * FROM person"
+ name
+---------
+ "Alice"
+
+# Call sayHello to greet everyone
+spacetime call say_hello
+
+# View the module logs
+spacetime logs
+2025-01-13T12:00:00.000000Z  INFO: Hello, Alice!
+2025-01-13T12:00:00.000000Z  INFO: Hello, World!
+```
+
+### Reconnect after connection loss
+
+For browser or Node.js clients, enable `.withAutomaticReconnect()` on your generated `DbConnection` builder. Subscriptions and row callbacks survive reconnects; register them once after `build()` or inside `onConnect`, which fires once per connection object. Successful automatic reconnects fire `onAutomaticReconnect(conn, identity, token)` instead. Use this callback for recovery-specific work; wait for subscription `onApplied` callbacks when you need refreshed data. If your auth tokens expire, also provide an initial token with `.withToken(initialToken)` and a refresh callback with `.withTokenProvider(() => auth.getAccessToken())`.
+
+See automatic reconnection for lifecycle callbacks and framework behavior.
+
+### Next steps
+
+- Unit test your module without starting a server
+- See the Chat App Tutorial for a complete example
+- Read the TypeScript SDK Reference for detailed API docs
+
+Get a SpacetimeDB Node.js app running in under 5 minutes.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) 18+ installed
+- [SpacetimeDB CLI](https://spacetimedb.com/install) installed
+
+---
+
+#### Create your project
+
+      Run the `spacetime dev` command to create a new project with a SpacetimeDB module and Node.js client.
+
+      This starts the local SpacetimeDB server, publishes your module, generates TypeScript bindings, and runs the Node.js client.
+
+```bash
+spacetime dev --template nodejs-ts
+```
+
+#### Explore the project structure
+
+      Your project contains both server and client code.
+
+      Edit `spacetimedb/src/index.ts` to add tables and reducers. Edit `src/main.ts` to build your Node.js client.
+
+```
+my-spacetime-app/
+├── spacetimedb/          # Your SpacetimeDB module
+│   └── src/
+│       └── index.ts      # Server-side logic
+├── src/
+│   ├── main.ts           # Node.js client script
+│   └── module_bindings/  # Auto-generated types
+└── package.json
+```
+
+#### Understand tables and reducers
+
+      Open `spacetimedb/src/index.ts` to see the module code. The template includes a `person` table and two reducers: `add` to insert a person, and `sayHello` to greet everyone.
+
+      Tables store your data. Reducers are functions that modify data — they're the only way to write to the database.
+
+```typescript
+import { schema, table, t } from 'spacetimedb/server';
+
+const spacetimedb = schema({
+  person: table(
+    { public: true },
+    {
+      name: t.string(),
+    }
+  ),
+});
+export default spacetimedb;
+
+export const add = spacetimedb.reducer(
+  { name: t.string() },
+  (ctx, { name }) => {
+    ctx.db.person.insert({ name });
+  }
+);
+
+export const sayHello = spacetimedb.reducer(ctx => {
+  for (const person of ctx.db.person.iter()) {
+    console.info(`Hello, ${person.name}!`);
+  }
+  console.info('Hello, World!');
+});
+```
+
+#### Run the client
+
+      `spacetime dev` starts both the server and the Node.js client. The client connects to SpacetimeDB, subscribes to tables, and displays people as they are added or removed. Press Ctrl+C to exit.
+```bash
+spacetime dev --template nodejs-ts
+```
+
+#### Call reducers from the SpacetimeDB CLI
+
+      Use the SpacetimeDB CLI to add people and invoke reducers. Changes appear in your Node.js client in real time.
+```bash
+# Add a person
+spacetime call add Alice
+spacetime call add Bob
+
+# Greet everyone (check server logs)
+
+spacetime call say_hello
+
+# Query the database
+
+spacetime sql "SELECT * FROM person"
+
+````
+
+#### Understand the client code
+
+      Open `src/main.ts` to see the Node.js client. It uses `DbConnection.builder()` to connect to SpacetimeDB, subscribes to tables, and registers callbacks for insert/delete events. Unlike browser apps, Node.js stores the authentication token in a file instead of localStorage. Enable `withAutomaticReconnect()` to recover after connection loss. `onConnect` fires once per connection object, so subscriptions and row callbacks can be initialized there or once after `build()`. Successful automatic reconnects fire `onAutomaticReconnect` instead, before subscriptions are replayed.
+```typescript
+import { DbConnection } from './module_bindings/index.js';
+
+const conn = DbConnection.builder()
+  .withUri(HOST)
+  .withDatabaseName(DB_NAME)
+  .withToken(loadToken())
+  .withAutomaticReconnect()
+  .onConnect((_conn, identity, token) => {
+    console.log('Connected! Identity:', identity.toHexString());
+    saveToken(token);
+  })
+  .onAutomaticReconnect((_conn, identity, token) => {
+    console.log('Reconnected! Identity:', identity.toHexString());
+    saveToken(token);
+  })
+  .build();
+
+conn.subscriptionBuilder()
+  .onApplied(ctx => {
+    console.log('Current people:', [...ctx.db.person.iter()].length);
+  })
+  .subscribeToAllTables();
+
+conn.db.person.onInsert((_ctx, person) => {
+  console.log(`[Added] ${person.name}`);
+});
+````
+
+#### More CLI examples
+
+      The SpacetimeDB CLI can call reducers and query your data. Changes appear in your Node.js client in real time.
+```bash
+# Call the add reducer to insert a person
+spacetime call add Charlie
+
+# Query the person table
+
+spacetime sql "SELECT * FROM person"
+name
+
+---
+
+"Alice"
+"Bob"
+"Charlie"
+
+# Call sayHello to greet everyone
+
+spacetime call say_hello
+
+# View the module logs
+
+spacetime logs
+2025-01-13T12:00:00.000000Z INFO: Hello, Alice!
+2025-01-13T12:00:00.000000Z INFO: Hello, Bob!
+2025-01-13T12:00:00.000000Z INFO: Hello, Charlie!
+2025-01-13T12:00:00.000000Z INFO: Hello, World!
+
+````
+
+#### Node.js considerations
+
+      **WebSocket support:** Node.js 22+ has native WebSocket support. For Node.js 18-21, the SDK automatically uses the `undici` package (included in devDependencies).
+
+      **Environment variables:** Configure the connection using `SPACETIMEDB_HOST` and `SPACETIMEDB_DB_NAME` environment variables.
+
+      **Exiting:** Press Ctrl+C to stop the client.
+```bash
+# Configure via environment variables
+SPACETIMEDB_HOST=ws://localhost:3000 \
+SPACETIMEDB_DB_NAME=my-app \
+npm run start
+
+# Or use a .env file with dotenv
+````
+
+### Next steps
+
+- See the Chat App Tutorial for a complete example
+- Read the TypeScript SDK Reference for detailed API docs
