@@ -34,3 +34,5 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - F-buyer: Leads have reported verifier and builder results before those reports arrived; only state a result you have read.
 - F-approvals: Smoke and feature runs against the dev server can fail from another lead's unfinished edit (HTTP 500 plus the Vite overlay); read `error-context.md` before calling a failure flaky.
 - all: Feature specs that import `src/` modules type-check under `tsconfig.node.json`, which now includes `vite/client` types.
+- all: Gate reports are named `<gate>-<HHMM>.md`, so two gates in the same minute overwrite each other; the evidence lines in `status.md` and `artifacts/gates/logs/` keep each result.
+- F-maker-statement: `statement.issued` has no `monthId`, so the month label comes from `getById<MakerStatement>(id).monthId` with `state.month.monthId` as fallback; Money's tone class sets the color, so pass `style.color` to keep a held amount seal red.
