@@ -3,7 +3,7 @@ NEXT: R0
 SHARED_LOCK: off
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-23 23:00 PT
+UPDATED: 2026-10-24 01:55 PT
 
 # Status board
 
@@ -11,8 +11,8 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 
 ## Now
 
-- Harness installed. Planning in progress: contracts and plan files are being written (Oct 24, about 1 AM).
-- The build starts when `docs/plans/README.md` says `PLANNING: done`. The heartbeat runs the kickoff steps then (runbook step R0).
+- Planning done (Oct 24, 1:55 AM): nine contracts in `docs/common/` and 25 plan files in `docs/plans/`, checked by a separate agent.
+- Next: the heartbeat (or Gordon's `/kickoff`) runs the kickoff steps, then the build starts at R1.
 
 ## Gates
 

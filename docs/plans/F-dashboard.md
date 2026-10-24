@@ -26,14 +26,15 @@ As the month closes, a dashboard assembles tile by tile: revenue by channel, mak
 ## Tasks
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T1 | Figures: pure selectors for revenue by channel (September's gross by channel, less the refund), maker pay and its share of sales from `month.closed`, cash from the latest `account.synced`, and the count of open flags. Unit tests check the channel totals add up to September's sales less the refund | `src/features/dashboard/figures.ts`, `src/features/dashboard/figures.test.ts` | none | opus |
+| T0 | UI strings (lead): every short string these screens need that the glossary lacks, English and Chinese side by side | `src/features/dashboard/strings.ts` | none | lead |
+| T1 | Figures: pure selectors for revenue by channel (September's gross by channel, less the refund), maker pay and its share of sales from `month.closed`, cash from the latest `account.synced`, and the count of open flags. Unit tests check the channel totals add up to September's sales less the refund | `src/features/dashboard/figures.ts`, `src/features/dashboard/figures.test.ts` | T0 | opus |
 | T2 | Tiles: the revenue tile with one bar per channel (Recharts with `chartTheme`), and one stat tile component used for maker share (with a `ShareBar`), cash and open flags. Each tile appears once its event has arrived | `src/features/dashboard/RevenueTile.tsx`, `src/features/dashboard/StatTile.tsx`, `tests/features/dashboard-tiles.spec.ts` | T1 | opus |
 | T3 | Assemble the grid in event order with one motion per tile, and wire the slot (lead) | `src/features/dashboard/Dashboard.tsx`, `src/features/dashboard/index.ts` | T2 | lead |
 
-Builders run their own spec with `npm run test:feature -- dashboard`, moving the player with `window.__cindia.player.seek()`.
+The lead writes T0 before spawning any builder, because `design-system.md` puts a feature's short UI strings in its own `strings.ts`. A builder that needs a string T0 lacks lists it under `needs:`, and the lead adds it. Builders run their own spec with `npm run test:feature -- dashboard`, moving the player with `window.__cindia.player.seek()`.
 
 ## Acceptance
-- Given the player is before `month.started`, then `dashboard-tiles` shows no tiles and a short line that the dashboard builds as the month closes.
+- Given the player before the first `account.synced` (18.5 seconds), then `dashboard-tiles` shows no tiles and a short line that the dashboard builds as the month closes.
 - When the player passes the month's first `ledger.posted`, then `dashboard-tile-revenue` appears and `dashboard-revenue-chart` has one bar per channel.
 - When the month has closed, then the revenue bars add up to September's sales less the refund, from the dataset.
 - When `account.synced` arrives, then `dashboard-tile-cash` shows its `balanceCents` through `Money`.

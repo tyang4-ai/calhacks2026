@@ -64,7 +64,7 @@ Cindia's screens look like the studio's own materials: a silk ground, ink letter
 
 ## UI kit (`src/ui/`)
 
-The scaffolder builds these in S1. Each takes only the props listed in `ui-contract.md`, and each has a test ID slot.
+The scaffolder builds these in S1, with the props the S1 plan sets, and each takes a `testId` prop.
 
 | Component | What it is |
 |---|---|

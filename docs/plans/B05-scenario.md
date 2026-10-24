@@ -25,11 +25,10 @@ A judge drops a statement or a CSV into the console and Cindy reconciles it on t
   - A JSON file is a Statement object.
   - Files over 1 MB, or with a bad row, return `bad_request` with a sentence that names the first bad row.
 - **Uses:** `reconcile_month()` from `server/routers/b01_match.py`, over the month's records plus the parsed statement.
-- **Returns:** `scenario.loaded`, then every `match.made` and `flag.raised` involving the new statement, whose ID is `stm_scn_` plus a number.
+- **Returns:** `scenario.loaded`, then every `match.made` and `flag.raised` involving the new statement, whose ID is `stm_scn_` plus a number. `api-contract.md` gives every returned event the upgrade's key, while `events.md` keys `match.made` and `flag.raised` to `b01-match`. Use `b05-scenario` as `api-contract.md` says, and note the mismatch under `needs:`.
 - **Adapter** (`src/sources/live/b05-scenario.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b01` and `b05`.
-  - `produce(event)`: for the keyed scripted `scenario.loaded`, upload the held-back statement from `src/mock/scenario.ts` as a CSV and return the result.
-  - A judge's dropped file arrives as a `scenario.loaded` request with `source: "user"` (Requests from people in `events.md`). Its payload has no field for the file's contents yet, so the adapter can't upload a judge's own file until `events.md` adds one. List that under `needs:`, and the held-back path is the deliverable.
+  - `produce(event)`: no timeline holds a scripted `scenario.loaded`, so this answers people. The registry passes a person's `scenario.loaded` request on in live mode (Requests from people in `events.md`). Upload its `content` as the file when it has one, or else the held-back statement's CSV text from `src/mock/scenario.ts` under `sampleFileName`, and return the result.
 
 ## Tasks
 
@@ -42,6 +41,7 @@ A judge drops a statement or a CSV into the console and Cindy reconciles it on t
 ## Acceptance
 
 - The held-back statement returns `scenario.loaded`, then its matches and any flag, all valid against `events.md`.
+- A person's own CSV, sent as `content`, returns the results for its `stm_scn_` statement.
 - A bad row returns 400 naming the row. A 2 MB file returns 400.
 - In live mode the scenario panel shows the server's result, and its `Simulated` badge goes away for `b05-scenario`.
 - `npm run test:server` passes, and G4 passes in scripted and live mode.

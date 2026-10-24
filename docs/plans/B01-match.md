@@ -39,8 +39,8 @@ Cindy's matching becomes real. A Python matcher reads September's orders, payout
 - Given the fixture month, `POST /api/b01/reconcile` returns:
   - one `bundled` match covering `ord_015`, `ord_016` and `ord_017`
   - one `refund_netted` match that includes `rfd_001` and `ord_020`
-  - one `carried_over` match for the payout of `ord_025` and `ord_026`, into `2026-10`
-  - one `short_payment` flag with `expectedCents` 204000, `actualCents` 170000, `deltaCents` 34000 and `trustRecordId` `ctr_gallery_01`
+  - one `carried_over` match for the late payout of `ord_025` and `ord_026` (`match.made` has no month field, so the kind is what says it counts in `2026-10`)
+  - one `short_payment` flag whose `recordIds` are `ctr_gallery_01`, `stm_gallery_2026_09` and the gallery's bank deposit, with `expectedCents` 204000, `actualCents` 170000 and `deltaCents` 34000. Which record to trust isn't part of `flag.raised`. B02's `flag.explained` carries it
   - a `one_to_one` match for every Cindia order
 - Every returned event validates against `events.md`, with `source: "live"` and `key: "b01-match"`.
 - A body without `records` returns 400 with the error shape and code `bad_request`.

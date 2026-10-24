@@ -83,7 +83,7 @@ G2 checks every one of these. Nothing else in the dataset may contradict them.
 5. **The bundled payout:** one site payout covers exactly three orders, `ord_015`, `ord_016` and `ord_017`.
 6. **The refund:** `ord_020` (`pc_12`, gross 9500) is refunded in full on `2026-09-21` as `rfd_001`, netted out of the next site payout.
 7. **The late payout:** the site payout for `ord_025` and `ord_026` lands on `2026-10-02`, after the close, and carries into October.
-8. **Maker payouts** `mpo_01` to `mpo_03` are proposed at the close and paid on `2026-10-02` once the owner approves. `mpo_01` includes the 13448 from `ord_001`. The gallery's missing 34000 is held: each maker's held share is their part of it, by the contract math.
+8. **Maker payouts** `mpo_01` to `mpo_03` are proposed once September's records are matched, approved by the owner, paid on `2026-10-02`, and then the month closes with that maker pay in its books. `mpo_01` includes the 13448 from `ord_001`. The gallery's missing 34000 is held: each maker's held share is their part of it, by the contract math.
 9. **Approvals:** `apr_01` is the follow-up to the gallery about the 34000. `apr_02` is the batch of three maker payouts. Any single payout over 50000 is marked `overLimit`. Cindy proposes both and approves neither.
 10. **The proof panel** scores 4 caught out of 4.
 
@@ -91,10 +91,10 @@ G2 checks every one of these. Nothing else in the dataset may contradict them.
 
 | ID | Kind | Records | A correct matcher reports |
 |---|---|---|---|
-| `err_01` | `short_payment` | `ctr_gallery_01`, `stm_gallery_2026_09`, the gallery's bank deposit | A flag: expected 204000, actual 170000, delta 34000, trust the contract |
+| `err_01` | `short_payment` | `ctr_gallery_01`, `stm_gallery_2026_09`, the gallery's bank deposit | A `flag.raised` of kind `short_payment` with expected 204000, actual 170000, delta 34000. Which record to trust comes later, in `flag.explained`, and isn't scored |
 | `err_02` | `bundled` | the bundled site payout, `ord_015`, `ord_016`, `ord_017` | One match of kind `bundled` covering all three orders |
 | `err_03` | `refund_netted` | `rfd_001`, `ord_020`, the payout it's netted from | One match of kind `refund_netted` |
-| `err_04` | `carried_over` | the late site payout, `ord_025`, `ord_026` | One match of kind `carried_over` into `2026-10` |
+| `err_04` | `carried_over` | the late site payout, `ord_025`, `ord_026` | One match of kind `carried_over` with `intoMonthId: "2026-10"` |
 
 The answer key lives in `src/mock/answerKey.ts` and lists exactly these four. The matcher (scripted in Phase 1, real in B01) is scored against it.
 
@@ -102,7 +102,7 @@ The answer key lives in `src/mock/answerKey.ts` and lists exactly these four. Th
 
 | File | Holds |
 |---|---|
-| `people.ts` | The owner, makers and buyers, with fictional names |
+| `people.ts` | The studio `std_gu`, the owner, makers and buyers, with fictional names |
 | `catalog.ts` | The twelve pieces above, and `curatedSet` (`pc_01`, `pc_07`, `pc_11`), the scripted concierge answer |
 | `channels.ts` | The three channels and the gallery contract |
 | `month.ts` | Orders, payouts, refunds, purchases, the statement, bank transactions, ledger entries, maker payouts, approvals, the follow-up and maker statements for September |

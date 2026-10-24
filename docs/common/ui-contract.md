@@ -153,6 +153,9 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 | `demo-speed` | The speed button, its text is the current speed |
 | `demo-mode-toggle` | Scripted or live switch |
 | `demo-lang-toggle` | Language switch |
+| `demo-offline` | Offline indicator in the demo controls |
+| `demo-end-card` | The end card in video mode |
+| `slot-error-<slot>` | The note a slot shows when its feature fails to load, with the slot ID's dots as dashes |
 | `demo-start-at-catch` | Start at the catch |
 | `frame-buyer`, `frame-studio`, `frame-owner`, `frame-maker` | The four surface frames |
 | `slot-<slot id, dots as dashes>` | An empty slot's placeholder |

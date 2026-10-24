@@ -23,10 +23,10 @@ Claude reads the gallery's contract, its September statement and the bank deposi
 - **Structured answer:** the `CatchExplanation` Pydantic model in `api-contract.md`, through `client.messages.parse()` with `output_format`.
 - **Server checks before using the answer:** `trusted_record_id` is one of the flag's `recordIds`, and `delta_cents` equals the flag's `deltaCents`. Either check failing is `invalid_model_output`.
 - **The prompt:** Cindy speaks in first person, short and plain. She may use only the numbers in the records. She names the contract's 40% commission and the statement's 50%. She says what she's unsure about instead of guessing. The follow-up is polite and specific, asks for the difference, and promises nothing on the owner's behalf.
-- **Replaces:** the scripted `flag.explained` for `flg_01`, and the scripted follow-up draft once `events.md` has a `followup.drafted` event. Until then, B02 returns only `flag.explained` and lists the missing event under `needs:`.
+- **Replaces:** the scripted `flag.explained` for `flg_01` and the scripted `followup.drafted` for `fup_01`. `followup.sent` carries `b02-explain` too, but sending stays simulated (`api-contract.md`), so it is never replaced.
 - **Adapter** (`src/sources/live/b02-explain.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b02` and `keys.anthropic` is true.
-  - `produce(event)`: for the keyed `flag.explained`, post the flag and its three records from `src/mock` and return the result.
+  - `produce(event)`: on the keyed `flag.explained`, post the body `api-contract.md` gives (the flag, its three records from `src/mock`, `followUpId` and `approvalId`) once, cache the promise, and return its `flag.explained`. On the keyed `followup.drafted` at 35.7, return its live twin from the same response. On `followup.sent`, return `[]` so the scripted event plays.
 
 ## Tasks
 
@@ -41,7 +41,7 @@ Claude reads the gallery's contract, its September statement and the bank deposi
 - With the key, the live test's explanation names `ctr_gallery_01` as the record to trust and mentions $340 in both languages.
 - Without the key, the endpoint returns 503 `key_missing`, `health()` is false, and the scripted explanation plays.
 - A wrong record ID or amount from Claude never reaches the screen: the server returns `invalid_model_output` and the scripted text plays.
-- The catch shows Claude's explanation in live mode, and its `Simulated` badge goes away for `b02-explain`.
+- The catch shows Claude's explanation in live mode, and its `Simulated` badge goes away for `b02-explain`. The owner's `apr_01` card shows Claude's follow-up from the live `followup.drafted`.
 - `npm run test:server` passes, and G4 passes in scripted and live mode.
 
 ## Out of scope

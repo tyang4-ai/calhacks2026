@@ -104,7 +104,7 @@ UPDATED: 2026-10-24 00:00 PT
 | Hooks | `useThing.ts` | `useEventStream.ts` |
 | Other modules | camelCase | `formatCents.ts` |
 | Event types | lowercase `noun.verb_past` with a dot, listed in `events.md` | `approval.requested` |
-| Test IDs | `data-testid="<slug>-<element>"`, kebab-case, listed in `ui-contract.md` | `money-map-flow-line` |
+| Test IDs | `data-testid="<slug>-<element>"`, kebab-case, listed in `ui-contract.md` | `money-map-balance` |
 | CSS custom properties | `--c-<group>-<name>`, defined only in `src/ui/` | `--c-color-ink` |
 | Backend routers | `server/routers/bNN_<slug>.py` | `server/routers/b04_bank.py` |
 | Live adapters | `src/sources/live/bNN-<slug>.ts`, one per source key in `events.md` | `src/sources/live/b04-bank.ts` |

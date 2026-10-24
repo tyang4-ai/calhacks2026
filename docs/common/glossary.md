@@ -93,3 +93,9 @@ Filled in during planning, one row per word: the word, its code name, the Englis
 | card processor | `Party.kind: "processor"` | Card processor | 收单机构 | Who pays out the studio site's card sales |
 | supplier | `Party.kind: "supplier"` | Supplier | 供应商 | Where the studio buys silk and thread |
 | gallery | `ch_gallery` | Gallery | 画廊 | The San Francisco gallery that sells on consignment |
+| order | `Order` | Order | 订单 | One sale of one piece on one channel |
+| refund | `Refund` | Refund | 退款 | Money given back to a buyer |
+| Cindia | `ch_cindia`, `Party.kind: "cindia"` | Cindia | Cindia | The marketplace, as a sales channel and as a party in the money map |
+| sales | `salesCents` | Sales | 销售额 | Gross of the month's orders, less refunds |
+| fees | `feesCents` | Fees | 费用 | Card fees, Cindia fees and gallery commission, as charged |
+| maker pay | `makerPayCents` | Maker pay | 匠人报酬 | The approved maker payouts for the month |

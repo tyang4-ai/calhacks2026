@@ -24,10 +24,10 @@ Every number the buyer and the makers see is computed from the records with the 
   - `split.shown`: the card fee, platform fee, materials and maker share for the piece on its channel.
   - `receipt.updated`: `paid_to_maker` with `paidDate` once that maker's payout is `sent`, `received` before.
   - `statement.issued` and `impact.updated`: recomputed, with the same IDs.
-- **What reaches the screen:** `split.shown` and `receipt.updated` carry their numbers, so they show live results at once. `statement.issued` and `impact.updated` carry only IDs today, so their recomputed numbers reach the screen only once `events.md` gives them payload fields. List that under `needs:`, and meanwhile check in the tests that the recomputed numbers equal the dataset's.
+- **What reaches the screen:** all four events carry their figures in the payload (`events.md`), and the screens render them from the event, so every recomputed number shows at once. The tests also check that each one equals the dataset's.
 - **Adapter** (`src/sources/live/b10-derived.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b10`.
-  - `produce(event)`: post the trigger and the records from `src/mock` and return the result.
+  - `produce(event, state)`: post the trigger and the records from `src/mock`, with each maker payout marked `sent` once the store holds its `payout.sent` (the dataset has them as `proposed`), so the receipt at `d11-receipt` reads paid. Return the result.
 
 ## Tasks
 

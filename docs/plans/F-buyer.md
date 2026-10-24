@@ -55,7 +55,7 @@ Every spec opens `/buyer`, moves the demo timeline to a moment just before a bea
 6. **Given** any beat in scripted mode, **then** the panel shows `simulated-badge`.
 7. **When** the buyer taps `buyer-result-pc_07` after `d01-ask`, **then** the store holds a `piece.opened` for `pc_07` with `source: "user"`, and `buyer-story-card` shows the Peony sachet.
 8. **Given** each of `d01-ask` to `d04-pay`, **then** the phone shows one step with nothing important scrolled out of view, so the buyer part reads in 15 seconds.
-9. **When** the buyer types a request in `buyer-concierge-input` and presses Enter, **then** the store holds a `concierge.asked` with `source: "user"`, and 1.2 seconds later on the player clock `buyer-concierge-results` shows `pc_01`, `pc_07` and `pc_11`.
+9. **When** the buyer types a request in `buyer-concierge-input` and presses Enter, **then** the store holds a `concierge.asked` with `source: "user"`, and 1.2 seconds later in real time `buyer-concierge-results` shows `pc_01`, `pc_07` and `pc_11`.
 
 ## Out of scope
 - Real recommendations for a typed request (B09). In scripted mode every request gets the curated set.

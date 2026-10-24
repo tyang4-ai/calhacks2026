@@ -90,7 +90,7 @@ class CatchExplanation(BaseModel):
     follow_up_body_zh: str
 ```
 
-Returns a `flag.explained` with the same `flagId`, plus a `followup.drafted` for `followUpId` once that event is in `events.md`. The server rejects an answer whose `trusted_record_id` or `delta_cents` doesn't match the request (`invalid_model_output`).
+Returns a `flag.explained` with the same `flagId`, plus a `followup.drafted` for `followUpId`. The server rejects an answer whose `trusted_record_id` or `delta_cents` doesn't match the request (`invalid_model_output`).
 
 **Fallback:** the scripted `flag.explained` and the follow-up text in `src/mock`. Sending the follow-up stays simulated: `followup.sent` is never real.
 
@@ -143,7 +143,7 @@ Creates one withdrawal per maker payout, described "Maker payout mpo_01", then r
 
 Form fields: `trigger` (the event as a JSON string), `file` (a CSV or a JSON statement, at most 1 MB), `monthId`, and `records` (the month's records as a JSON string, same shape as B01). `python-multipart` comes with `fastapi[standard]`.
 
-The CSV columns are `date,orderId,pieceId,saleCents,commissionBps,netCents`, one statement line per row. A JSON file is a Statement object from `data-model.md`. The server parses the file into a statement with the ID `stm_scn_` plus a number, runs B01's matcher over the month's records plus that statement, and returns a `scenario.loaded`, then every `match.made` and `flag.raised` that involves the new statement.
+The CSV columns are `date,orderId,pieceId,saleCents,commissionBps,netCents`, one statement line per row. A JSON file is a Statement object from `data-model.md`. The server parses the file into a statement with the ID `scn_` plus a number, runs B01's matcher over the month's records plus that statement, and returns a `scenario.loaded`, then every `match.made` and `flag.raised` that involves the new statement.
 
 A file that doesn't parse returns `bad_request` with a sentence naming the first bad row.
 
@@ -167,7 +167,7 @@ Returns a `workbook.ready` with `monthId`, `fileName` and `sheets`.
 
 **`POST /api/b07/ask`** · `ANTHROPIC_API_KEY` · `claude-sonnet-5-5`, at most 4 tool rounds, 6.5 seconds in total
 
-Request: `{ "trigger": { "...": "an ask.asked event, scripted or from the owner" }, "questionId": "q_01", "text": "这个月哪件作品最赚钱?", "lang": "zh", "records": { "orders": [], "catalog": [], "makerStatements": [], "flags": [] } }`
+Request: `{ "trigger": { "...": "an ask.asked event, scripted or from the owner" }, "questionId": "ask_01", "text": "这个月哪件作品最赚钱?", "lang": "zh", "records": { "orders": [], "catalog": [], "makerStatements": [], "flags": [] } }`
 
 Claude answers by calling strict tools that the server runs over `records`:
 - `revenue_by_piece`, `revenue_by_channel`, `maker_earnings` and `find_records` return rows computed in Python, never invented.
@@ -185,7 +185,7 @@ No key needed. The server holds approvals in memory, so a restart clears them.
 |---|---|---|---|
 | `POST /api/b08/approvals` | the console's adapter, on `approval.requested` | Registers the approval as pending. Body: `{ "trigger": {...}, "approvalId": "apr_02" }` | `approval.requested` |
 | `GET /api/b08/approvals?status=pending` | the owner's phone, every 2 seconds | Lists pending approvals | `approval.requested`, one per pending approval |
-| `POST /api/b08/approvals/{approvalId}/decision` | the owner's phone, when the owner taps | Body: `{ "trigger": null, "decision": "granted" \| "declined", "reason": { "en": "", "zh": "" } }` | `approval.granted` or `approval.declined`, `source: "live"`, `by: "own_01"` |
+| `POST /api/b08/approvals/{approvalId}/decision` | the owner's phone, when the owner taps | Body: `{ "trigger": { "...": "the approval.granted or approval.declined event from the owner" }, "decision": "granted" \| "declined", "reason": { "en": "", "zh": "" } }` | `approval.granted` or `approval.declined`, `source: "live"`, `by: "own_01"` |
 | `GET /api/b08/approvals/{approvalId}?wait=6` | the console's adapter, on the scripted `approval.granted` | Waits up to `wait` seconds (at most 6) for the owner's decision | the decision event, or `[]` when there is none yet |
 | `GET /api/b08/status` | the console's adapter, before it waits | Says whether an owner screen polled in the last 10 seconds | `{ "ownerConnected": boolean }` (not an events response) |
 
@@ -215,7 +215,7 @@ Request: `{ "trigger": { "...": "a scripted split.shown, receipt.updated, statem
 Computes the trigger's event from the records with the money rules in `data-model.md`, and returns that one event:
 - `split.shown`: the fees, materials and maker share for the piece, using the channel's rules.
 - `receipt.updated`: `paid_to_maker`, with `paidDate`, once the maker's payout for that order is `sent`.
-- `statement.issued` and `impact.updated`: the same IDs, recomputed. Their numbers can only reach the screen once `events.md` gives these events payload fields for them.
+- `statement.issued` and `impact.updated`: the same IDs, with every payload figure recomputed from the ledger.
 
 **Fallback:** the scripted events and the hardcoded numbers in `src/mock`.
 

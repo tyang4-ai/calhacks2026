@@ -17,8 +17,7 @@ It's P0 because Anthropic's track asks how the project's impact on its community
 
 ## Interfaces
 - Reads:
-  - Events: `impact.updated` (`impactId`).
-  - Data: the Impact entity through `getById(impactId)`: `makerShareBps`, `daysCloseToPayout`, `daysCloseToPayoutBefore`, `bookkeepingHoursSaved`, `estimate`.
+  - Events: `impact.updated` (`impactId`, `makerShareBps`, `daysCloseToPayout`, `daysCloseToPayoutBefore`, `bookkeepingHoursSaved`, `estimate`). The numbers render from this payload, never from `imp_2026_09`, because a live B10 recomputes them.
   - Store keys: `impact`, `clock`. The language comes from `SlotProps.lang`.
   - UI kit: `Panel` (declaring `b10-derived`), the motion helpers.
 - Emits: nothing.
@@ -29,21 +28,22 @@ It's P0 because Anthropic's track asks how the project's impact on its community
 ## Tasks
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T1 | The three numbers: a count-up driven by the player clock (final at once after a `seek()` or with reduced motion), basis points shown as a percent with one decimal, days shown with the before value beside them, hours as a whole number. Before `impact.updated` each shows a dash, not zero | `src/features/impact/ImpactNumbers.tsx`, `src/features/impact/CountUp.tsx`, `src/features/impact/formatBps.ts`, `tests/features/impact-numbers.spec.ts` | none | opus |
-| T2 | The estimate note: the glossary's estimate label on each number while `estimate` is true, and a one-line note that these are estimates until a real studio's month replaces them | `src/features/impact/EstimateNote.tsx`, `tests/features/impact-estimate.spec.ts` | none | opus |
+| T0 | UI strings (lead): every short string these screens need that the glossary lacks, English and Chinese side by side | `src/features/impact/strings.ts` | none | lead |
+| T1 | The three numbers: a count-up driven by the player clock (final at once after a `seek()` or with reduced motion), basis points shown as a percent with one decimal, days shown with the before value beside them, hours as a whole number. Before `impact.updated` each shows a dash, not zero | `src/features/impact/ImpactNumbers.tsx`, `src/features/impact/CountUp.tsx`, `src/features/impact/formatBps.ts`, `tests/features/impact-numbers.spec.ts` | T0 | opus |
+| T2 | The estimate note: the glossary's estimate label on each number while the payload's `estimate` is true, and a one-line note that these are estimates until a real studio's month replaces them | `src/features/impact/EstimateNote.tsx`, `tests/features/impact-estimate.spec.ts` | T0 | opus |
 | T3 | Assemble the panel and wire the slot (lead) | `src/features/impact/ImpactPanel.tsx`, `src/features/impact/index.ts` | T1, T2 | lead |
 
-T1 and T2 run side by side. Builders run their own spec with `npm run test:feature -- impact`, moving the player with `window.__cindia.player.seek()`.
+The lead writes T0 before spawning any builder, because `design-system.md` puts a feature's short UI strings in its own `strings.ts`. A builder that needs a string T0 lacks lists it under `needs:`, and the lead adds it. T1 and T2 then run side by side. Builders run their own spec with `npm run test:feature -- impact`, moving the player with `window.__cindia.player.seek()`.
 
 ## Acceptance
-- Given the player has passed `impact.updated`, then `impact-maker-share` shows the Impact entity's `makerShareBps` as a percent with one decimal.
+- Given the player has passed `impact.updated`, then `impact-maker-share` shows the payload's `makerShareBps` as a percent with one decimal.
 - Then `impact-days-to-payout` shows `daysCloseToPayout`, with `daysCloseToPayoutBefore` beside it as the before value.
 - Then `impact-hours-saved` shows `bookkeepingHoursSaved`.
 - Given the player is before `impact.updated`, then all three show a dash.
 - Given reduced motion, or after a `seek()` past the event, the three show their final values with no count-up.
 - While `estimate` is true, `impact-estimate-note` is shown.
 - In scripted mode the panel shows `simulated-badge`.
-- Every value on screen equals the dataset's field. No number is typed into a component.
+- Every value on screen equals the `impact.updated` payload's field, which S2 copies from `imp_2026_09`. No number is typed into a component.
 
 ## Out of scope
 - Computing the numbers from the ledger. That's B10.

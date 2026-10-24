@@ -24,7 +24,7 @@ The gift finder's three picks come from Claude reading the catalog, with a reaso
 - **Server checks:** every `piece_id` is in the catalog, the three are different, and a price limit in the query holds. A failed check is `invalid_model_output`.
 - **Replaces:** the keyed `concierge.answered` in the demo timeline.
 - **Keeping the demo whole:** the next scripted beat opens `pc_01`. If Claude's picks don't include `pc_01`, the adapter returns `[]` and the scripted answer plays.
-- **Answers people too:** a buyer's own request arrives as a `concierge.asked` with `source: "user"`, and the registry passes it to this adapter in live mode (Requests from people in `events.md`). Those answers skip the `pc_01` check.
+- **Answers people too:** a buyer's own request, typed into F-buyer's `buyer-concierge-input`, arrives as a `concierge.asked` with `source: "user"`, and the registry passes it to this adapter in live mode (Requests from people in `events.md`). Those answers skip the `pc_01` check.
 - **Adapter** (`src/sources/live/b09-concierge.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b09` and `keys.anthropic` is true.
   - `produce(event)`: for a keyed `concierge.answered`, post its query. For a user `concierge.asked`, post that query. Send the catalog from `src/mock` and return the result.

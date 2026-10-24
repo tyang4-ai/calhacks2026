@@ -24,7 +24,9 @@ The owner approves on a real second screen, a phone or a second tab, and the con
   - `health()`: `GET /api/health` lists `b08`.
   - On the keyed `approval.requested`: post it to `/api/b08/approvals` and return the live twin.
   - On the scripted `approval.granted`: check `GET /api/b08/status`. With no owner screen connected, return `[]` at once, so the scripted grant plays on time. With one connected, long-poll `GET /api/b08/approvals/{id}?wait=6` and return the owner's decision, or `[]` if none came.
-- **The owner's phone:** the owner surface polls pending approvals every 2 seconds and posts the owner's decision. Two things in `events.md` are missing for that: a way for an adapter to push events into the store on its own schedule, and `approval.granted` and `approval.declined` in the Requests from people table, so the registry hands the owner's tap to this adapter. List both under `needs:`. Until they exist, the console side and the tested routes are the deliverable.
+- **The owner's phone,** a second screen on `/owner` in live mode, through the same adapter file:
+  - `start(emit)`: only on the `/owner` route, poll `GET /api/b08/approvals?status=pending` every 2 seconds and emit the `approval.requested` events it returns. It returns a stop function that ends the polling. On any other route it does nothing, so the console never counts as an owner screen and its scripted grants stay on time.
+  - The owner's tap: the registry hands the person's `approval.granted` or `approval.declined` to `produce()` (Requests from people in `events.md`), which posts `/api/b08/approvals/{approvalId}/decision` with the decision and the reason and returns the server's event. The server accepts `trigger` as that event or `null`, since `api-contract.md`'s rules and its B08 table differ.
 
 ## Tasks
 
@@ -38,6 +40,7 @@ The owner approves on a real second screen, a phone or a second tab, and the con
 
 - A registered approval appears in the pending list. A grant from the owner reaches the console's long-poll as `approval.granted` with `by: "own_01"`.
 - With no owner screen open, the 60-second demo in live mode runs on time with the scripted grant.
+- With a second tab on `/owner` in live mode, the pending approvals show there, and a tap reaches the console's long-poll as the decision.
 - Nothing lets Cindy, the console or any route grant an approval except the owner's decision route.
 - `npm run test:server` passes, and G4 passes in scripted and live mode.
 

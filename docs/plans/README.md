@@ -1,6 +1,6 @@
 # Plans
 
-PLANNING: in progress
+PLANNING: done
 
 The line above turns to `PLANNING: done` once every plan file and contract exists and the contract audit has passed. The heartbeat starts the build when it sees it.
 
@@ -60,7 +60,8 @@ The common docs and the sections this feature needs.
 ## Tasks
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T1 | ... | src/features/<slug>/Thing.tsx, tests/features/<slug>-thing.spec.ts | none | opus |
+| T0 | UI strings (lead) | src/features/<slug>/strings.ts | none | lead |
+| T1 | ... | src/features/<slug>/Thing.tsx, tests/features/<slug>-thing.spec.ts | T0 | opus |
 | T9 | Assemble and wire the slots (lead) | src/features/<slug>/index.ts | T1 to T3 | lead |
 
 ## Acceptance
@@ -76,5 +77,6 @@ What not to build.
 - A task depends only on the contracts or on earlier tasks in the same plan.
 - One agent finishes it in under an hour, and it ends in something checkable: a test ID that renders, a test that passes.
 - Most features split into 2 to 5 tasks. The lead does the assembly task itself.
+- The lead also writes T0, the feature's `strings.ts` (`design-system.md`, Words on screen), before any builder starts, so no two builders need the same strings file.
 - Every name a task uses already exists in a contract. If it doesn't, add it to the contract first.
 - A task's "Files it owns" column becomes the builder's `SCOPE` line, so list every file, tests included.

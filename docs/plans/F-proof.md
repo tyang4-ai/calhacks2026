@@ -27,12 +27,13 @@ During questions, the proof panel shows the four planted errors, which ones Cind
 ## Tasks
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T1 | Scoreboard: "Caught N of M" from `proof.scored`, filling once on the player clock and final at once after a `seek()`. Before the event it says the test hasn't been scored yet | `src/features/proof/Scoreboard.tsx`, `tests/features/proof-score.spec.ts` | none | opus |
-| T2 | Error list: one row per planted error in answer-key order, with its kind label, the records it involves (short labels through `getById()`), what a correct matcher reports, and caught or missed from `proof.scored` | `src/features/proof/ErrorList.tsx`, `tests/features/proof-errors.spec.ts` | none | opus |
-| T3 | Real or simulated list: the ten source keys with a label for each part and its current state from `sources`, updating when live mode delivers a key | `src/features/proof/SourceList.tsx`, `tests/features/proof-sources.spec.ts` | none | opus |
+| T0 | UI strings (lead): every short string these screens need that the glossary lacks, English and Chinese side by side | `src/features/proof/strings.ts` | none | lead |
+| T1 | Scoreboard: "Caught N of M" from `proof.scored`, filling once on the player clock and final at once after a `seek()`. Before the event it says the test hasn't been scored yet | `src/features/proof/Scoreboard.tsx`, `tests/features/proof-score.spec.ts` | T0 | opus |
+| T2 | Error list: one row per planted error in answer-key order, with its kind label, the records it involves (short labels through `getById()`), what a correct matcher reports, and caught or missed from `proof.scored` | `src/features/proof/ErrorList.tsx`, `tests/features/proof-errors.spec.ts` | T0 | opus |
+| T3 | Real or simulated list: the ten source keys with a label for each part and its current state from `sources`, updating when live mode delivers a key | `src/features/proof/SourceList.tsx`, `tests/features/proof-sources.spec.ts` | T0 | opus |
 | T4 | Assemble the panel (scoreboard, error list and source list in one `Panel`) and wire the slot (lead) | `src/features/proof/ProofPanel.tsx`, `src/features/proof/index.ts` | T1, T2, T3 | lead |
 
-T1, T2 and T3 can run side by side. Builders run their own spec with `npm run test:feature -- proof`.
+The lead writes T0 before spawning any builder, because `design-system.md` puts a feature's short UI strings in its own `strings.ts`. A builder that needs a string T0 lacks lists it under `needs:`, and the lead adds it. T1, T2 and T3 can then run side by side. Builders run their own spec with `npm run test:feature -- proof`.
 
 ## Acceptance
 - Given the player has passed `proof.scored` (59.0 in the demo timeline), then `proof-score` reads "Caught 4 of 4" from the payload's `caught` and `total`.
@@ -40,7 +41,7 @@ T1, T2 and T3 can run side by side. Builders run their own spec with `npm run te
 - Given a `proof.scored` with `err_03` not caught, sent with `window.__cindia.emit()`, then `proof-item-err_03` shows missed and `proof-score` reads "Caught 3 of 4".
 - Given the player is before `proof.scored`, then `proof-score` says it isn't scored yet, and each item shows its expected result without a verdict.
 - In scripted mode, every `proof-source-<key>` reads simulated, and the panel shows `simulated-badge`.
-- Given `sources["b01-match"]` turns `"live"`, then `proof-source-b01-match` reads real and the other nine don't change.
+- Given a live `match.made` sent with `window.__cindia.emit()`, so `sources["b01-match"]` turns `"live"`, then `proof-source-b01-match` reads real and the other nine don't change.
 - Opened at `/studio/proof` any time after `proof.scored`, the panel shows the same result as when the demo plays through.
 
 ## Out of scope

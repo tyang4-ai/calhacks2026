@@ -26,11 +26,10 @@ The owner asks in Chinese or English, for example 这个月哪件作品最赚钱
   - `answer(answer_en, answer_zh, chart, ref_ids)`: ends the loop. `chart` is a ChartSpec from `events.md` or null.
 - **Server checks on `answer`:** every `ref_ids` entry exists in the records, and every chart value equals a value some tool returned in this request. A failed check is `invalid_model_output`.
 - **The prompt:** Cindy answers in the question's language first, but always fills both. Numbers only from tool results. She says plainly when the records can't answer.
-- **Replaces:** the keyed `ask.answered` for each scripted `ask.asked` in the demo's question time.
-- **Answers people too:** a question the owner types arrives as an `ask.asked` request with `source: "user"`, and the registry passes it to this adapter in live mode (Requests from people in `events.md`). The adapter handles both triggers the same way.
+- **Answers people:** the demo timeline holds no `ask.asked` or `ask.answered`, because Gordon asks during questions. Every question the owner sends, a suggestion or a typed one, arrives as an `ask.asked` request with `source: "user"`, and the registry passes it to this adapter in live mode (Requests from people in `events.md`).
 - **Adapter** (`src/sources/live/b07-ask.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b07` and `keys.anthropic` is true.
-  - `produce(event)`: for a keyed `ask.answered`, post its question. For a user `ask.asked`, post that question. Send the records from `src/mock` and return the result.
+  - `produce(event)`: for a person's `ask.asked`, post its `questionId`, `text` and `lang` with the records from `src/mock`, and return the result.
 
 ## Tasks
 

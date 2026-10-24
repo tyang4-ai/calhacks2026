@@ -14,7 +14,7 @@ The studio's money lives in a real Nessie account. September's history is seeded
 - `docs/common/events.md`: Money, Approvals (`payout.sent`), Sources and live replacement
 - `docs/common/data-model.md`: BankTxn, Money rules, Demo-critical figures 1 and 8
 - `docs/plans/F-money-map.md` and `docs/plans/F-buyer.md`
-- In the vault docs folder: `ch13-tech-stack.md` (Nessie), and `resources/sponsors/ch13-sponsor-capital-one.md` for every endpoint and schema
+- In the vault docs folder: `ch13-tech-stack.md`, section 4 (Nessie). For every endpoint and schema, `docs/spec/nessie/ch13-sponsor-capital-one.md` and `docs/spec/nessie/ch13-nessie-openapi-spec.yaml` (copied into the repo, also in the vault's `resources/sponsors/` folder beside it. The launch adds only `resources/tech`, so read them if they open and rely on the stack doc if they don't
 - `docs/harness/lessons.md`, and the Upgrade checklist in `docs/common/definition-of-done.md`
 
 ## Interfaces
@@ -25,13 +25,15 @@ The studio's money lives in a real Nessie account. September's history is seeded
   - Passes the key as `?key=` on every call. Every call has a 5-second timeout.
   - After each create, reads the list back to find the new record, since create calls answer with a plain string.
   - Deposits and withdrawals only. Each one has `medium: "balance"`, `transaction_date`, `status: "completed"`, `amount` in cents and a `description`.
-- **Seeding:** idempotent. It finds or creates the customer "Gu Embroidery Studio" (a fictional US mailing address) and a Checking account nicknamed "Gu studio operating", then posts September's history once. It does nothing when that account already has deposits.
+- **Seeding:** idempotent. It finds or creates the customer "Gu Embroidery Studio" (a fictional US mailing address) and a Checking account nicknamed "Gu studio operating", then posts September's history once: the month's bank transactions from `src/mock`, except the buyer's sale (`pay_001`) and the maker payouts, which the demo posts live. It does nothing when that account already has deposits.
 - **Replaces:** the keyed `order.placed`, the sale's `money.moved`, `account.synced`, `payout.sent` and the `maker_pay` `money.moved`.
 - **Adapter** (`src/sources/live/b04-bank.ts`, default export a `LiveAdapter`):
-  - `health()`: `GET /api/health` lists `b04` and `keys.nessie` is true. Then `GET /api/b04/status`. If the account isn't seeded, post `/api/b04/seed` with September's bank history from `src/mock`. This can take up to 30 seconds and happens when live mode is switched on, never inside the demo's 8-second window.
+  - `health()`: `GET /api/health` lists `b04` and `keys.nessie` is true. Then `GET /api/b04/status`. If the account isn't seeded, post `/api/b04/seed` with September's bank history from `src/mock`, without `pay_001` and the maker payouts. This can take up to 30 seconds and happens when live mode is switched on, never inside the demo's 8-second window.
   - `produce(event)`:
     - On the sale (`order.placed` for `ord_001`, or its settlement `money.moved`): post `/api/b04/sale` once and cache it. Each of the two events gets its live twin from that one response.
     - On the first `payout.sent`: post all three maker payouts to `/api/b04/payouts` once. Each `payout.sent` gets its live twin from the cache.
+    - On each `maker_pay` `money.moved` (`mv_0004` to `mv_0006`): its live twin from the same payouts response. The last one also returns that response's `account.synced`, because the demo timeline has no later `account.synced` to carry the new balance.
+    - On the sale's other moves (`mv_0001` and the card fee `mv_0002`): `[]`, since Nessie records only the settlement.
     - On `account.synced`: return the latest synced balance from a sale or payout response, or `[]` before any live call.
 
 ## Tasks

@@ -21,10 +21,10 @@ Priority: P2 · Wave: P2 · Depends on: G4, B01 green · Folder: server/routers/
 - **Endpoint:** `POST /api/b03/score`. No key.
 - **Uses:** `reconcile_month()` imported from `server/routers/b01_match.py`. B03 never changes the matcher. A matcher bug goes under `needs:` for B01.
 - **When an error counts as caught:**
-  - `err_01`: a `short_payment` flag with the answer key's expected, actual and delta amounts and trusted record
+  - `err_01`: a `short_payment` flag on the answer key's records with its expected, actual and delta amounts. The trusted record isn't part of `flag.raised`, so the score can't check it
   - `err_02`: a `bundled` match whose records are exactly the three orders and their payout
   - `err_03`: a `refund_netted` match that includes `rfd_001`
-  - `err_04`: a `carried_over` match into `2026-10`
+  - `err_04`: a `carried_over` match on the late payout with `ord_025` and `ord_026`. `match.made` has no month field, so the kind stands for "into `2026-10`"
 - **Returns:** one `proof.scored` with `caught`, `total` and one result per planted error.
 - **Adapter** (`src/sources/live/b03-proof.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b01` and `b03`.

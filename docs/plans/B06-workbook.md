@@ -27,10 +27,10 @@ The month close produces a real Excel workbook, built on the server with openpyx
   - `Makers`: each maker's pieces, share, held amount and payout, with a native `BarChart` of earnings.
 - **Files** go to `artifacts/files/`. `GET /api/b06/files/{fileName}` serves only plain file names from that folder. Any `/`, `\` or `..` in the name gives `not_found`.
 - **Replaces:** the keyed `workbook.ready`. In scripted mode the browser builds the workbook with SheetJS, without the chart.
-- **The download:** the screen can only offer the server's file once `workbook.ready` carries a URL. Until `events.md` adds that field, list it under `needs:`. Until then, the live result proves the server workbook exists, and the browser keeps offering its own copy.
+- **The download:** `events.md` gives `workbook.ready` an optional `url`, set by this adapter. F-close links to it when it's there, so the owner downloads the server's file with its chart. In scripted mode the browser keeps building its own copy.
 - **Adapter** (`src/sources/live/b06-workbook.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b06`.
-  - `produce(event)`: post the month's records from `src/mock` and return the result.
+  - `produce(event)`: post the month's records from `src/mock`, set `url` on the returned `workbook.ready` to `/api/b06/files/` plus its `fileName`, and return it.
 
 ## Tasks
 
@@ -45,6 +45,7 @@ The month close produces a real Excel workbook, built on the server with openpyx
 - The workbook has the four sheets, formula totals and one native bar chart, and its totals match the dataset.
 - The file is served with the xlsx content type, and path tricks give 404.
 - The browser's SheetJS workbook still works in scripted mode.
+- In live mode `close-download` gets the server's file through the event's `url`.
 - `npm run test:server` passes, and G4 passes in scripted and live mode.
 
 ## Out of scope

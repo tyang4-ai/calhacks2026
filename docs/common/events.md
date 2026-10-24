@@ -17,6 +17,7 @@ interface CindiaEvent<T extends EventType = EventType> {
 }
 ```
 
+- An event's `key` names the source that produced it. The Key column in the tables below is the source whose live adapter replaces the scripted event of that type in the timeline. A live event carries the key of the adapter that made it, so the matches B05 returns for a judge's file carry `b05-scenario`.
 - IDs inside payloads point at the entities in `data-model.md`. Components look the entity up with `getById()` from `src/mock`. Payloads don't copy entity data.
 - The exception is numbers a live adapter recomputes: `split.shown`, `receipt.updated`, `statement.issued`, `impact.updated` and `followup.drafted` carry their figures and text in the payload, and the screens render them from the event, never from the entity. The scripted events carry the same figures as `src/mock/`.
 - `Text` is `{ en: string; zh: string }`. Amounts are integer cents.
@@ -51,11 +52,11 @@ interface CindiaEvent<T extends EventType = EventType> {
 |---|---|---|
 | `month.started` | `monthId` | |
 | `record.arrived` | `recordId`, `recordType: "order" \| "payout" \| "refund" \| "statement" \| "bank_txn"`, `date` | |
-| `match.made` | `matchId`, `kind` (from Match), `recordIds` | `b01-match` |
+| `match.made` | `matchId`, `kind` (from Match), `recordIds`, `intoMonthId?` (only for `carried_over`, the month it counts in) | `b01-match` |
 | `flag.raised` | `flagId`, `kind`, `recordIds`, `expectedCents`, `actualCents`, `deltaCents` | `b01-match` |
 | `flag.explained` | `flagId`, `trustRecordId`, `explanation: Text` | `b02-explain` |
 | `ledger.posted` | `entryIds: string[]` | |
-| `month.closed` | `monthId`, `salesCents`, `feesCents`, `makerPayCents`, `heldCents` | |
+| `month.closed` | `monthId`, `salesCents` (gross of the month's orders, less refunds), `feesCents` (card fees, Cindia fees and gallery commission as charged), `makerPayCents` (the approved maker payouts), `heldCents` (34000 in September) | |
 
 ### Cindy (every feature that shows the agent)
 
@@ -73,10 +74,10 @@ interface CindiaEvent<T extends EventType = EventType> {
 | `approval.granted` | `approvalId`, `by: "own_01"`, `date` | `b08-approvals` |
 | `approval.declined` | `approvalId`, `by: "own_01"`, `reason: Text` | `b08-approvals` |
 | `followup.drafted` | `followUpId`, `approvalId`, `to: Text`, `subject: Text`, `body: Text` | `b02-explain` |
-| `followup.sent` | `followUpId`, `approvalId` | `b02-explain` |
+| `followup.sent` | `followUpId`, `approvalId` | |
 | `payout.sent` | `makerPayoutId`, `makerId`, `amountCents`, `date` | `b04-bank` |
 
-Only the owner's surface emits `approval.granted` or `approval.declined` with `source: "user"`. The demo timeline also carries a scripted `approval.granted`, so the 60-second run plays by itself. The store ignores a second grant for the same approval, so a person tapping first is fine.
+Only the owner's surface emits `approval.granted` or `approval.declined` with `source: "user"`. The demo timeline also carries a scripted `approval.granted`, so the 60-second run plays by itself. The first decision on an approval wins: the store ignores any later grant or decline for it, so a person tapping before the scripted grant is fine, and a grant after a decline changes nothing.
 
 ### The close (F-close, F-maker-statement, F-impact)
 
@@ -93,7 +94,7 @@ Only the owner's surface emits `approval.granted` or `approval.declined` with `s
 | `proof.scored` | `caught`, `total`, `results: { errorId; caught: boolean }[]` | `b03-proof` |
 | `ask.asked` | `questionId`, `text`, `lang` | |
 | `ask.answered` | `questionId`, `answer: Text`, `chart?: ChartSpec`, `refIds: string[]` | `b07-ask` |
-| `scenario.loaded` | `scenarioId`, `fileName`, `recordIds`, `content?` (the file's text, at most 200 KB, sent only when a person drops in their own file) | `b05-scenario` |
+| `scenario.loaded` | `scenarioId`, `fileName`, `recordIds?` (the sample's `scn_` IDs, absent for a person's own file), `content?` (the file's text, at most 200 KB, sent only when a person drops in their own file) | `b05-scenario` |
 
 `ChartSpec` is `{ type: "bar" \| "line"; title: Text; labels: string[]; series: { name: Text; valuesCents: number[] }[] }`. Recharts draws it with the kit's `chartTheme`.
 
@@ -129,7 +130,7 @@ interface Player {
 - `userEvent(type, payload)` from `src/core/events.ts` builds a person's event: the next `evt_user_` ID, `at` from `player.now()`, `source: "user"`. Features use it for every tap and typed request.
 - `useCindia(selector)` reads state in components, built on `useSyncExternalStore`. No other state library.
 - Every reducer is idempotent per entity ID, so replaying or duplicating an event never double-counts.
-- The state holds IDs and statuses only, under these keys: `clock`, `mode` (`"scripted" \| "live"`), `lang` (`"auto" \| "en" \| "zh"`, starting at `auto`, see `ui-contract.md`), `buyer`, `money`, `month`, `agent`, `approvals`, `close`, `proof`, `ask`, `impact`, `demo`, `scenario`, and `sources` (`Record<SourceKey, "scripted" \| "live">`, the last source that delivered each key).
+- The state holds IDs, statuses and the figures that keyed events carry in their payloads (see the payload rule at the top), under these keys: `clock`, `mode` (`"scripted" \| "live"`), `lang` (`"auto" \| "en" \| "zh"`, starting at `auto`, see `ui-contract.md`), `buyer`, `money`, `month`, `agent`, `approvals`, `close`, `proof`, `ask`, `impact`, `demo`, `scenario`, and `sources` (`Record<SourceKey, "scripted" \| "live">`, the last source that delivered each key).
 - The scaffolder writes a reducer for every event type in this file in S1, with unit tests. Features add none.
 
 ## Sources and live replacement (`src/sources/`)
@@ -154,16 +155,16 @@ interface LiveAdapter {
 
 ## Requests from people
 
-Some events start from a person, not the timeline: the buyer typing their own request, the owner asking Cindy, a judge dropping in a file. The feature emits the request with `source: "user"`, and the sources registry answers it.
+Some events start from a person, not the timeline: the buyer typing their own request, the owner asking Cindy, a judge dropping in a file. The feature emits the request with `userEvent()`, so it has `source: "user"` and no `key`. The sources registry picks the key from the table below by event type, and answers it.
 
 | Request | Key | Scripted answer | Live answer |
 |---|---|---|---|
 | `concierge.asked` | `b09-concierge` | `concierge.answered` with the curated set from `src/mock/` (`pc_01`, `pc_07`, `pc_11` for any request) | the B09 adapter |
 | `ask.asked` | `b07-ask` | `ask.answered` from `src/mock/ask.ts`: the canned answer whose question matches, or else one saying scripted mode answers the three demo questions | the B07 adapter |
-| `scenario.loaded` | `b05-scenario` | the held-back statement's `record.arrived`, `match.made` and `flag.raised` events from `src/mock/scenario.ts` | the B05 adapter, which parses `content` when a person sent their own file |
+| `scenario.loaded` | `b05-scenario` | the held-back statement's `record.arrived`, `match.made` and `flag.raised` events from `src/mock/scenario.ts`. For a person's own file, the same sample answer plus an `agent.acted` line saying scripted mode reads the sample and live mode reads their file | the B05 adapter, which parses `content` when a person sent their own file |
 | `approval.granted`, `approval.declined` | `b08-approvals` | nothing more, the store has already applied it | the B08 adapter forwards it to the server, so the other screen sees it |
 
-- The scripted answer arrives 1.2 seconds later on the player clock, so it reads as Cindy working.
+- The scripted answer arrives 1.2 seconds later in real time, with a timer, so it reads as Cindy working. This is the one wall-clock wait in the app: it answers a person, and the player may be paused or past 60.0 when they ask. The answer's `at` is the player clock when it's delivered.
 - In live mode the registry tries the adapter first, with the same 8-second timeout and the scripted answer as the fallback.
 - The demo timeline's own `concierge.asked` and `ask.asked` events carry `source: "scripted"` and their answers are already in the timeline, so the registry doesn't answer those.
 - Live adapters call only `/api/...` on localhost. Keys stay on the server.

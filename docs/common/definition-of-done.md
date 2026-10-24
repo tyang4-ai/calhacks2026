@@ -15,7 +15,7 @@ Examples:
 ```text
 npm run check:scope -- src/features/money-map/ → exit 0, 0 errors, 0 warnings
 npm run test:feature -- money-map → exit 0, 6 passed, 0 failed
-artifacts/demo/beat-03.png → matches beat 3, money-map-flow-line visible
+artifacts/demo/d03-split.png → matches beat 3, money-map-flow-line visible
 ```
 
 - No line, no claim. "Should pass" is not evidence.
