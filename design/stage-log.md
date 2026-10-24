@@ -16,7 +16,13 @@ Figma track, Cal Hacks 13.0. Four stages, 200 words at most per stage. Times are
 
 ## 2 · Prototyping
 
-Not started. Next after drop 1: flows, wireframes, components, mockups, illustrations and a clickable prototype of the main path.
+14:59 to 15:42 so far, in progress · rating 4 of 5 · items 1 to 3 of the ten kept screens exported
+
+**Tools.** Figma Design through `use_figma`, one script per screen or component batch, with every color bound to a variable and every text to a style. Grayscale wireframes of the ten kept screens came first, 14 frames. Components were then built as each screen needed them: the beam and process blocks, buttons, chips, badges, icons, the seal, PieceCard, ShareBar, ChatBubble and the rest. The eight piece illustrations are thread SVGs drawn in Python, imported behind a hash check, so each Figma component matches its file byte for byte.
+
+**Friction.** The first import took shortcuts that didn't match the files, and the hash check caught it. Three scripts were refused and rolled back cleanly. Hidden layers inside instances are skipped unless `skipInvisibleInstanceChildren` is off, `combineAsVariants` needs its nodes on the target page, and a layer nested in an instance can't be moved. Review screenshots caught keyword chips without their remove mark and a crowded search column.
+
+**Into the build.** Each finished screen goes straight into `design/screens/`, named by route and state.
 
 ## 3 · Handoff
 
@@ -74,18 +80,29 @@ All three files sit in Gordon's drafts on his Figma team, which moved from the S
 | 14:47 | Style tiles: color, space and lines, elevation, then type, chart, motion, then the beam and kit, icons, illustration | use_figma |
 | 14:50 | Review: equal process blocks fixed, clipped tiles and icon strokes fixed | get_screenshot, use_figma |
 | 14:52 | Final screenshot saved as `design/style-tiles.png` | get_screenshot |
+| 14:59 | Thread illustration generator written: eight pieces as SVG, no text, no images, under 11 KB each | Python |
+| 15:00 | Wireframes, Components and Screens pages. 14 grayscale wireframes of the ten kept screens | use_figma |
+| 15:01 | First components: ProcessBlock (8 variants), Beam (Shop and Sell), Button, Chip, Badge, MakerMark, Seal | use_figma |
+| 15:03 | Illustrations imported with simplified shapes. Replaced at 15:11 and 15:14 by the exact files, hash-checked | use_figma |
+| 15:23 | Shop components: 15 icons, Tag, VerificationLine, Checkbox, Field, SearchBar, PieceCard, Label/18 style | use_figma |
+| 15:29 | Piece page script refused on a hidden layer and rolled back. Rerun at 15:31 built both states | use_figma |
+| 15:32 | `shop-piece-pc_01--checkout.png` and `--token.png` exported | get_screenshot |
+| 15:35 | Receipt script refused by `combineAsVariants`. Rerun at 15:36 built both states and the wide ShareBar | use_figma |
+| 15:38 | Search script refused on a nested position. Rerun at 15:39 built results and the home hero | use_figma |
+| 15:40 | Review: the remove mark added to keyword chips, Sample tags aligned, the search column restacked | get_screenshot, use_figma |
+| 15:41 | `shop-search--results.png`, `shop-home--hero.png` and both receipt states exported | get_screenshot |
 
 ### Figma MCP calls
 
-| Tool | Stage 1 calls | Stage 3 calls | Counts toward the limit |
-|---|---|---|---|
-| use_figma | 12 | 7 | yes |
-| get_screenshot | 8 | 3 | yes |
-| create_new_file | 2 | 1 | no, exempt |
-| create_session | 1 | 0 | no |
-| whoami | 2 | 1 | no, exempt |
-| upload_assets | 1 | 0 | its upload URL was unreachable from the sandbox |
-| get_figma_skill | 13 | 2 | no, skill docs |
+| Tool | Stage 1 calls | Stage 3 calls | Stage 2 calls, to 15:42 | Counts toward the limit |
+|---|---|---|---|---|
+| use_figma | 12 | 7 | 15, three of them refused and rolled back | yes |
+| get_screenshot | 8 | 3 | 10 | yes |
+| create_new_file | 2 | 1 | 0 | no, exempt |
+| create_session | 1 | 0 | 0 | no |
+| whoami | 2 | 1 | 0 | no, exempt |
+| upload_assets | 1 | 0 | 0 | its upload URL was unreachable from the sandbox |
+| get_figma_skill | 13 | 2 | 0 | no, skill docs |
 
 The limit for a View or Collab seat is up to 20 calls a month. An Education plan (Edu verified) gets the Professional limits for Full and Dev seats: up to 200 calls a day and 10 a minute. Source: https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/. After Gordon's verification the team shows the student tier and the calls went through again, though whoami still lists his seat as View.
 
