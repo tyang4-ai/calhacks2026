@@ -114,3 +114,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 03:17 PT · integrator fixed test:feature (--project=), smoke aborts and slot checks; orchestrator added vite/client to tsconfig.node.json; check PASS · decisions.md
 - 2026-10-24 03:20 PT · G3 approvals PASS 3/3, verifier PASS, tag w1-approvals · artifacts/gates/G3-0316.md · artifacts/verify/F-approvals-G3-0309.md
 - 2026-10-24 03:20 PT · G3 reconcile PASS 3/3, verifier PASS, tag w1-reconcile · artifacts/gates/G3-0317.md · artifacts/verify/F-reconcile-G3-0310.md
+- 2026-10-24 03:20 PT · G3 buyer PASS 3/3, verifier PASS, tag w1-buyer · artifacts/gates/G3-0317.md · artifacts/verify/F-buyer-G3-0312.md
