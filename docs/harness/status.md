@@ -2,11 +2,12 @@ STAGE: PLANNING
 NEXT: R0
 SHARED_LOCK: off
 STOP_CHECK: on
+GUARDS: on
 UPDATED: 2026-10-23 23:00 PT
 
 # Status board
 
-The orchestrator owns this file. The five lines above are read by the hooks and by `/goal`. Keep them first and keep their spelling. Everything below is for people and for the orchestrator after a compaction.
+The orchestrator owns this file. The six lines above are read by the hooks and by `/goal`. Keep them first and keep their spelling. Everything below is for people and for the orchestrator after a compaction.
 
 ## Now
 

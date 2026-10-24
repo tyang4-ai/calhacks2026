@@ -114,7 +114,7 @@ add('Node 22.12 or later', versionAtLeast(nodeV, '22.12.0'), `node ${nodeV}`);
   try {
     hit = fs.readdirSync(base).find((d) => /^chromium/.test(d)) || null;
   } catch { /* folder missing */ }
-  add('Playwright Chromium downloaded', Boolean(hit), hit ? path.join(base, hit) : `not found in ${base}. Run: npx playwright install chromium`, 'warning');
+  add('Playwright Chromium downloaded', Boolean(hit), hit ? path.join(base, hit) : `not found in ${base} yet. S1 installs the build that matches its Playwright version`, 'warning');
 }
 
 // 8. Ports

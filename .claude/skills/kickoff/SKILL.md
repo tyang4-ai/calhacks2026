@@ -16,7 +16,12 @@ Run these steps in order. At the first blocker, stop, say exactly what to fix, a
 6. **Record.** Copy the preflight results table into the Environment section of `status.md`.
 7. **Markers.** Set `STAGE: S0`, `NEXT: R1` and `UPDATED: <now, PT>`. Add a Log line: the time, "kickoff passed", and `artifacts/preflight.md`.
 8. **Commit.** `git add -A`, then `git commit -m "G0: kickoff checks pass"`, then `git push origin main`.
-9. **Hand over.** Print this line exactly, so Gordon can paste it:
+9. **Heartbeat.** Create a recurring session task with CronCreate, cron `*/15 * * * *`, with this prompt:
+   ```text
+   Heartbeat. Read the top of docs/harness/status.md. If STAGE is PLANNING or FROZEN, reply "idle" and stop. Otherwise check which agents are running, then continue the runbook from NEXT.
+   ```
+   It keeps the build moving when `/goal` can't: `/goal` skips its check while the dev server runs in the background, and after a usage limit a Remote Control session doesn't resume on its own. If CronCreate isn't available, tell Gordon to type `/loop 15m` followed by the same prompt.
+10. **Hand over.** Print this line exactly, so Gordon can paste it:
 
 ```text
 /goal Run the build in docs/harness/runbook.md until docs/harness/status.md reads STAGE: FROZEN and the G6 summary is printed in this conversation, or until it is past 6:00 AM PT Sunday and the freeze steps are done.

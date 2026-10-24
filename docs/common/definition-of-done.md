@@ -49,7 +49,7 @@ artifacts/demo/beat-03.png → matches beat 3, money-map-flow-line visible
 **The lead:**
 - [ ] Every task in the plan is done, or reported failed with what was learned.
 - [ ] `src/features/<slug>/index.ts` exports the feature module from `ui-contract.md` and fills the slots the plan names.
-- [ ] `npm run check:scope -- src/features/<slug>/ tests/features/<slug>*` → exit 0.
+- [ ] `npm run check:scope -- src/features/<slug>/ tests/features/<slug>-*` → exit 0.
 - [ ] `npm run test:feature -- <slug>` → exit 0, and every Acceptance line in the plan has a passing test.
 - [ ] `npm run test:smoke` → exit 0. The rest of the app still works.
 - [ ] Every panel still fed by scripted events shows the `Simulated` badge.
@@ -119,9 +119,9 @@ Each gate runs through the gate skill: `npm run gate -- <gate> [<slug>]` when th
 
 ### G3 Feature, after each feature, then the whole wave
 
-**Commands:** `npm run check`, `npm run test:feature -- <slug>`, `npm run test:smoke`, plus the verifier's boundary trace
+**Commands:** `npm run check:scope -- src/features/<slug>/ tests/features/<slug>-*`, `npm run test:feature -- <slug>`, `npm run test:smoke`, plus the verifier's boundary trace. Other features may still be half-built while this gate runs, so the per-feature gate never runs the whole-repo `npm run check`.
 
-**Passes when** the Feature checklist above passes: the feature's acceptance tests pass, the rest of the app still works, and every event and field it uses exists in the contracts.
+**Passes when** the Feature checklist above passes: the feature's acceptance tests pass, the rest of the app still works, and every event and field it uses exists in the contracts. A smoke failure that traces to a different feature still being built doesn't fail this gate. The verifier names the file each failure comes from.
 
 **Then:** tag `w1-<slug>` for a W1 feature or `w2-<slug>` for a W2 feature. After the W1 wave, tag `w1`.
 
@@ -134,13 +134,15 @@ Each gate runs through the gate skill: `npm run gate -- <gate> [<slug>]` when th
 - No request beyond localhost.
 - Each beat's screenshot in `artifacts/demo/` matches its beat in `demo-script.md`: the view, the test IDs on screen and the numbers shown.
 
-**Then:** tag `demo-ok-1`. If Wrangler is logged in, the orchestrator also deploys a Cloudflare Pages preview so Gordon can watch the demo on his phone (runbook R5, step 4).
+**Then:** tag `demo-ok-1`. The session never deploys anything. Gordon can put a phone preview online himself (`docs/harness/kickoff.md`).
 
 ### G5 Upgrade, after each of B01 to B10
 
 **Commands:** `npm run test:server`, the upgrade's contract test against `api-contract.md`, one live call first as a pre-smoke, then G4 in scripted mode and in live mode
 
 **Passes when** the live path works and the scripted fallback still passes G4.
+
+G4, G5 and G6 all build `dist/` and use port 4173, so only one of them runs at a time.
 
 **Then:** tag `demo-ok-bNN`, for example `demo-ok-b04`.
 
@@ -150,7 +152,7 @@ Each gate runs through the gate skill: `npm run gate -- <gate> [<slug>]` when th
 
 **Passes when:**
 - G4 passes on the final build.
-- Secrets scan: `git ls-files` lists no `.env`, `git grep -n "sk-ant-"` finds nothing, and no key value appears in `dist/`.
+- Secrets scan: `node scripts/secrets-scan.mjs` → exit 0. It checks tracked files and `dist/` for the key values and key patterns and prints file names only. Never search for keys any other way, since a recursive search can print `.env`.
 - `git status` is clean and `main` is pushed.
 - The README and the what's-real list match the Cut and simulated section of `status.md`.
 
@@ -164,7 +166,7 @@ Each gate runs through the gate skill: `npm run gate -- <gate> [<slug>]` when th
 - [ ] Keys are read only through the server config module. Nothing prints, logs or returns a key.
 - [ ] Every live call has a timeout. On any failure the adapter falls back to scripted events, and the panel keeps its `Simulated` badge until live data arrives.
 - [ ] `npm run test:server` → exit 0. The live test ran when its key was present, or was skipped because it was missing, and the report says which.
-- [ ] `npm run check` → exit 0 and `npm run test:smoke` → exit 0.
+- [ ] `npm run check:scope -- <your SCOPE entries>` → exit 0 and `npm run test:smoke` → exit 0. A smoke failure from a feature still being built is noted, not fixed.
 - [ ] The REPORT block. The orchestrator then runs G5.
 
 ## Writing (scribe)

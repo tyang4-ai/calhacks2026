@@ -48,7 +48,8 @@ Rules for npm scripts, because they run in `cmd.exe` on Windows:
 | `src/sources/live/` | backend-builder | One adapter file per upgrade |
 | `src/mock/` | data-smith | Dataset, answer key, scripted timelines |
 | `src/features/<id>/` | that feature's lead and its builders | |
-| `server/` | backend-builder | One router per upgrade in `server/routers/` |
+| Server skeleton: `server/*.py` (files directly in `server/`), `server/routers/__init__.py`, `server/requirements.txt`, `tests/server/__init__.py`, `tests/server/conftest.py` | scaffolder in S1, then integrator | Shared, frozen after G1. `main.py` loads every router it finds |
+| `server/routers/`, other files under `server/` | backend-builder | One router per upgrade, plus files its plan names with its own `bNN` prefix |
 | `tests/smoke/`, `tests/demo/`, `tests/offline/` | scaffolder in S1, then integrator | |
 | `tests/data/` | data-smith | |
 | `tests/features/` | feature leads and builders | Files named `<feature-slug>-<what>.spec.ts` |
@@ -69,7 +70,7 @@ SCOPE: src/features/buyer/ConciergeChat.tsx, src/features/buyer/CuratedGrid.tsx,
 ```
 
 - `ROLE` matches the agent's name. `TASK` is `all` when the agent owns the whole plan.
-- `SCOPE` lists the only paths the agent may write, comma-separated, repo-relative, with forward slashes. A path that ends in `/` covers the folder and everything under it. `*` matches within one path segment, as in `tests/features/buyer*`.
+- `SCOPE` lists the only paths the agent may write, comma-separated, repo-relative, with forward slashes. A path that ends in `/` covers the folder and everything under it. `*` matches within one path segment, as in `tests/features/buyer-*`. Keep the whole list on the one `SCOPE` line.
 - The edit guard reads the first `SCOPE:` line of the delegation message. Entries outside the role's own area (the table above) are ignored, so a header can narrow an agent's paths but never widen them.
 - A verifier's header has `ROLE: verifier` and no `SCOPE`. It writes only to `artifacts/`.
 
@@ -82,6 +83,7 @@ STAGE: S0
 NEXT: R1
 SHARED_LOCK: off
 STOP_CHECK: on
+GUARDS: on
 UPDATED: 2026-10-24 00:00 PT
 ```
 
@@ -89,6 +91,7 @@ UPDATED: 2026-10-24 00:00 PT
 - `NEXT`: the runbook step to do next.
 - `SHARED_LOCK`: `on` after G1 passes. While it's on, the edit guard lets only the integrator and the orchestrator write shared code, root config and contracts.
 - `STOP_CHECK`: `off` turns off the builder stop check (see `docs/harness/hooks-spec.md`).
+- `GUARDS`: `off` turns off the edit guard and command guard. Emergency only. Never use `disableAllHooks` instead, because it also turns off `/goal`.
 
 ## Naming
 
@@ -122,7 +125,16 @@ Money is stored and passed as integer cents. Formatting to dollars happens only 
 - One branch, `main`. It always holds the last green build. Nothing red gets committed.
 - Push after every passed gate: `git push origin main --follow-tags`. Never force-push.
 - Tags are annotated: `git tag -a g1-scaffold -m "G1 passed"`.
-- To cut a feature, restore its folder from its last green tag: `git restore --source <tag> -- src/features/<slug>/ tests/features/<slug>*`.
+- To cut a feature, restore its folder from its last green tag: `git restore --source <tag> -- src/features/<slug>/ tests/features/<slug>-*`.
+
+## Tests that run side by side
+
+Several agents run checks at the same time, so the S1 scaffold sets these up:
+- Playwright writes each run to its own folder under `test-results/` (an `outputDir` per run), because a run wipes its output folder when it starts.
+- Vite's dev and preview servers use `strictPort: true`, so a stale process makes them fail loudly instead of moving to another port.
+- `npm run server` runs uvicorn with `--reload`, so a new router loads without a restart.
+- G4, G5 and G6 build `dist/` and use port 4173, so only one of them runs at a time.
+- Tests reach the dev server, they never start one. Only gate scripts start the preview on 4173.
 
 ## Windows
 

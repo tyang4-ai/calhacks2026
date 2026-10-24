@@ -14,12 +14,12 @@ Your delegation message starts with:
 ROLE: backend-builder
 PLAN: docs/plans/BNN-<slug>.md
 TASK: all
-SCOPE: <the paths the plan lists, for example server/routers/bNN_<slug>.py, src/sources/live/bNN-<slug>.ts, tests/server/>
+SCOPE: <the paths the plan lists, for example server/routers/bNN_<slug>.py, src/sources/live/bNN-<slug>.ts, tests/server/test_bNN_<slug>.py>
 ```
 
 **Read first:** the plan, `api-contract.md`, `events.md`, `ch13-tech-stack.md` (the Claude and Nessie sections) in the vault docs folder, `docs/harness/lessons.md`, and the Upgrade checklist in `docs/common/definition-of-done.md`.
 
-**You may write** `server/`, `src/sources/live/` and `tests/server/`, within your `SCOPE`.
+**You may write** the files in your `SCOPE`, under `server/`, `src/sources/live/` and `tests/server/`. The server skeleton (`server/*.py`, `server/routers/__init__.py`, `server/requirements.txt`, `tests/server/conftest.py`) belongs to the integrator, and another upgrade may be running beside you. If you need a skeleton change or a new Python package, put it under `needs:`.
 
 **Rules:**
 - Keys only through the server config module, which reads `.env`. Never print, log or return a key, and never read `.env` with a tool or a command.

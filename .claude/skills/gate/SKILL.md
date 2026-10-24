@@ -8,7 +8,7 @@ argument-hint: "[G1-G6] [slug for G3 and G5]"
 
 The gate is `$ARGUMENTS`. Its checklist is under Gates in `docs/common/definition-of-done.md`. Read that section first.
 
-1. **Checks.** If `package.json` has a `gate` script, run `npm run gate -- $ARGUMENTS`. It writes `artifacts/gates/<gate>-<HHMM>.md`. Otherwise run each command in the gate's checklist yourself and write that file, one evidence line per check.
+1. **Checks.** G4, G5 and G6 share `dist/` and port 4173, so never run two of them at once. If `package.json` has a `gate` script, run `npm run gate -- $ARGUMENTS`. It writes `artifacts/gates/<gate>-<HHMM>.md`. Otherwise run each command in the gate's checklist yourself and write that file, one evidence line per check.
 2. **Review.** Spawn one verifier (subagent type `verifier`) whose prompt starts with:
    ```text
    ROLE: verifier
@@ -20,15 +20,19 @@ The gate is `$ARGUMENTS`. Its checklist is under Gates in `docs/common/definitio
 4. **Record** in `docs/harness/status.md`: the gate row (result, time, report path, tag), the feature or upgrade row when there is one, and a Log line. Refresh `UPDATED`.
 5. **On a pass:**
    - After G1, set `SHARED_LOCK: on`. After G6, set `STAGE: FROZEN`. Set `NEXT` to the next runbook step.
-   - `git add -A`
+   - Stage only what this gate covers. Run `git status --short` first and leave other agents' files unstaged.
+     - G3: `git add src/features/<slug>/ tests/features/<slug>-* docs/harness/`
+     - G5: `git add` the upgrade's `SCOPE` paths and `docs/harness/`
+     - G1, G2, G4 and G6, when no other agent is running: `git add -A`
    - `git commit -m "<gate>: <what passed>"`
    - `git tag -a <tag> -m "<gate> passed"`, with the tag the checklist names (`g1-scaffold`, `g2-data`, `w1-<slug>`, `w2-<slug>`, `w1`, `demo-ok-1`, `demo-ok-bNN`, `final`)
    - `git push origin main --follow-tags`
 6. **On a fail,** follow the failure policy:
    1. Send the verifier's report to the agent that built the piece. It gets two fix rounds, diagnosing before it changes code. Then run the gate again.
    2. Still failing after two rounds: run the cut skill for that plan, and the wave goes on.
-   3. Root cause in shared code or a contract: spawn the integrator with the `needs:` lines, log the change in `docs/harness/decisions.md`, and message the leads still running.
-   4. Nothing red gets committed, and no test gets weakened to pass a gate.
+   3. Stage gates (G1, G2, G4, G6) can't be cut. After two rounds, spawn a fresh agent of the same role with the verifier's report for one more round. Still red: add it under Needs Gordon, send a push if you can, and keep going on anything that doesn't depend on it. If nothing can go on, run the freeze (runbook R7) on the last green tag.
+   4. Root cause in shared code or a contract: spawn the integrator with the `needs:` lines, log the change in `docs/harness/decisions.md`, and message the leads still running.
+   5. Nothing red gets committed, and no test gets weakened to pass a gate.
 7. **Summary.** Print this in the conversation every time, pass or fail, because `/goal` reads the conversation, not files:
 
 ```text

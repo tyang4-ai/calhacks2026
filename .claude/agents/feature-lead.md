@@ -12,7 +12,7 @@ You own one feature. Your delegation message starts with:
 ROLE: feature-lead
 PLAN: docs/plans/F-<slug>.md
 TASK: all
-SCOPE: src/features/<slug>/, tests/features/<slug>*
+SCOPE: src/features/<slug>/, tests/features/<slug>-*
 ```
 
 **Read first:** the whole plan, every common doc it lists (from disk), `docs/harness/lessons.md`, and the Feature section of `docs/common/definition-of-done.md`.
@@ -30,7 +30,7 @@ SCOPE: src/features/<slug>/, tests/features/<slug>*
    ```
 3. Wait for each builder's REPORT. Start the next tasks as their dependencies finish.
 4. Do the assembly task yourself (the row marked `lead`): `index.ts` and the wiring.
-5. Run `npm run check:scope -- src/features/<slug>/ tests/features/<slug>*`, `npm run test:feature -- <slug>` and `npm run test:smoke`.
+5. Run `npm run check:scope -- src/features/<slug>/ tests/features/<slug>-*`, `npm run test:feature -- <slug>` and `npm run test:smoke`.
 6. Spawn one verifier with `ROLE: verifier`, `PLAN: docs/plans/F-<slug>.md`, `TASK: G3`. It reruns the checks and does the boundary trace.
 7. On a FAIL, send the findings to the builder that owns the file (a new builder with the same `SCOPE`), or fix your own assembly files. At most 2 fix rounds, then report `failed`.
 8. Report.

@@ -23,20 +23,20 @@ S0 preflight → S1 scaffold → G1 → S2 mock data → G2 → W1 P0 features �
 | Agent | Job | May write |
 |---|---|---|
 | orchestrator (main session) | Runs the runbook, spawns agents, runs git, installs packages, keeps status | anything, but mostly `docs/harness/` |
-| scaffolder | S1: shell, event engine, UI kit, demo controls, check and test scripts | shared code, root config, `scripts/`, `tests/smoke/` |
+| scaffolder | S1: shell, event engine, UI kit, demo controls, server skeleton, check and test scripts | shared code, root config, the server skeleton, `scripts/`, `tests/smoke/`, `tests/demo/`, `tests/offline/`, `public/` |
 | data-smith | S2: mock dataset, answer key, scripted timelines | `src/mock/`, `tests/data/` |
-| feature-lead | One feature: splits it into tasks, spawns builders and a verifier, assembles, reports | `src/features/<slug>/`, `tests/features/<slug>*` |
+| feature-lead | One feature: splits it into tasks, spawns builders and a verifier, assembles, reports | `src/features/<slug>/`, `tests/features/<slug>-*` |
 | builder | One task from a plan file | the files in its `SCOPE` |
 | verifier | Runs checks, reviews screenshots, traces boundaries. Never fixes anything | `artifacts/` |
-| integrator | I1 demo stage, plus any change to shared code or contracts after G1 | shared code, root config, `docs/common/`, `tests/demo/`, `tests/offline/` |
-| backend-builder | One Phase 2 upgrade | `server/`, its adapter in `src/sources/live/`, `tests/server/` |
+| integrator | I1 demo stage, plus any change to shared code or contracts after G1 | shared code, root config, the server skeleton, `docs/common/`, `scripts/`, `tests/smoke/`, `tests/demo/`, `tests/offline/`, `public/` |
+| backend-builder | One Phase 2 upgrade | its router in `server/routers/`, its adapter in `src/sources/live/`, its tests in `tests/server/` |
 | scribe | README, the what's-real list, a Devpost skeleton for Gordon | `README.md`, `docs/devpost/` |
 
 The full path table is in `docs/common/conventions.md`. Every delegation message starts with the header defined there (`ROLE`, `PLAN`, `TASK`, `SCOPE`).
 
 ## Rules for every agent
 
-1. **Stay in your paths.** Your `SCOPE` line is the list of files you may write. Shared code (`src/app/`, `src/core/`, `src/ui/`, `src/sources/` outside `live/`), contracts (`docs/common/`), `package.json` and root config are frozen after G1. If you need a change there, stop and put it under `needs:` in your report. A hook blocks writes outside your paths.
+1. **Stay in your paths.** Your `SCOPE` line is the list of files you may write. Shared code (`src/app/`, `src/core/`, `src/ui/`, `src/sources/` outside `live/`), the server skeleton (`server/*.py`, `server/routers/__init__.py`, `server/requirements.txt`, `tests/server/conftest.py`), contracts (`docs/common/`), `package.json` and root config are frozen after G1. If you need a change there, stop and put it under `needs:` in your report. A hook blocks writes outside your paths.
 2. **The contracts are the truth.** Event names and payloads come from `docs/common/events.md`, fields and IDs from `data-model.md`, routes, slots and test IDs from `ui-contract.md`, endpoints from `api-contract.md`. Never invent a name one of them should define. Read them from disk when you start, because they can change during the build.
 3. **No installs and no git writes.** Only the orchestrator runs git commands that change anything. Only the orchestrator, the scaffolder and the integrator add packages.
 4. **Never start a server.** The orchestrator runs the dev server on port 5173 and, in Phase 2, the API on 8000. Gates start the production preview on 4173 themselves.

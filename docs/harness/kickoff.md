@@ -7,7 +7,6 @@ The build runs on the Windows desktop at home, driven from the phone or laptop t
 - `claude update`, then sign in with the claude.ai account. Remote Control needs the subscription login, not an API key.
 - In Claude Code, open `/config` and turn on **Push when actions required** and **Push when Claude decides**. Sign in to the Claude app on the phone with the same account.
 - Node 22.12 or later, Python 3.12 or later, Git for Windows, then `gh auth login`.
-- `npx playwright install chromium`
 - Both keys in `C:\dev\secrets\cindia.env`, outside the vault, because Syncthing copies the vault to other devices:
   ```text
   ANTHROPIC_API_KEY=...
@@ -36,7 +35,7 @@ claude --permission-mode auto --remote-control "Cindia build" --add-dir "$V\reso
 
 ## 3. Start the build (in the Claude session)
 
-1. Type `/kickoff`. It runs G0, fills in the Environment section of `status.md`, and prints the goal line.
+1. Type `/kickoff`. It runs G0, fills in the Environment section of `status.md`, sets a 15-minute heartbeat, and prints the goal line. The heartbeat restarts the build whenever it goes quiet, which `/goal` alone doesn't do while the dev server runs in the background.
 2. Type the goal line exactly:
 
 ```text
@@ -49,6 +48,7 @@ claude --permission-mode auto --remote-control "Cindia build" --add-dir "$V\reso
 - **Pushes** arrive when a gate passes, a feature is cut, or a question lands under Needs Gordon. Each question already has a default in use, so the build keeps going if you don't answer.
 - **GitHub:** `docs/harness/status.md` is pushed after every gate.
 - **The demo laptop** pulls `main` from GitHub. `demo-ok-1` and later tags are safe builds to demo.
+- **Phone preview (optional, you only):** after `demo-ok-1`, on the laptop, `npm run build` then `npx wrangler pages deploy dist`. The session never deploys anything itself.
 
 ## 5. If something stops
 
@@ -56,7 +56,8 @@ claude --permission-mode auto --remote-control "Cindia build" --add-dir "$V\reso
 |---|---|
 | The session crashed or the window closed | In `C:\dev\calhacks2026`, run `claude --continue --permission-mode auto --remote-control "Cindia build" --add-dir "B:\Alioth\Notes\Hackathons\my-entries\2026-10-cal-hacks-13\resources\tech"`. The goal comes back with it |
 | It seems stuck | On the phone, look for a pending prompt. Type `/goal` to see the goal's status |
-| A usage limit was hit | Nothing. The session waits for the reset and continues |
-| A hook blocks everything | Read `artifacts/hooks/guard-errors.log`. Emergency only: create `.claude/settings.local.json` with `{"disableAllHooks": true}`, which turns off every guard |
+| A usage limit was hit | A Remote Control session doesn't start the wait by itself. The heartbeat picks the build back up within 15 minutes of the reset. If you're around, run `/rate-limit-options` and pick "Wait here, then continue automatically" |
+| A push says an action needs your approval | Auto mode pauses after 3 blocked actions in a row or 20 in a session. Approve the action from the phone if it's safe, and auto mode turns back on |
+| A hook blocks everything | Read `artifacts/hooks/guard-errors.log`. Emergency only: set `GUARDS: off` in `docs/harness/status.md`. Don't use `disableAllHooks`, because it also turns off `/goal` |
 | The session printed "Goal cleared after an unrecoverable error" | Fix the cause it names, then type the goal line again |
 | You want to stop the build | Press Esc in the session, or type `/goal clear` |
