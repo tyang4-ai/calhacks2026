@@ -628,17 +628,19 @@ Rules:
 
 | Gate | After | Commands | Tag |
 |---|---|---|---|
-| R0 | `R0-reskin`, before everything else in V1 | `npm run gate -- G2`, then `npm run gate -- G4` (v1's data and demo gates, with the expected strings updated to the new names), `npm run test:smoke`, `npm run test:server`. Every v1 check green, every number unchanged | `v2-reskin` |
+| R0 | `R0-reskin`, before everything else in V1 | `npm run check`, `npm run check:data`, `npm run test:smoke`, `npm run build`, `npm run test:demo` 3 times (v1's 60-second demo on the new names), `npm run test:offline`, `npm run test:server`, the verifier's screenshot review, and the old-names search in `R0-reskin.md`. Every v1 check green, every number unchanged. `scripts/gate.mjs` learns the time rule below only in `I2-core`, so the orchestrator applies it here from `report.json` itself | `v2-reskin` |
+| core | `I2-core`'s first spawn with the fallout step, committed together | `npm run check`, `npm run test:server` | `v2-core` |
 | G1b | `I2-core`, `I2-shell`, `I2-kit` | `npm run check`, `npm run test:smoke`, `npm run build`, `npm run test:demo` once with the Phase A mapping, `npm run test:offline`, a verifier review | `v2-shell` |
 | G2b | `S3-catalog` | `npm run check:data` (v1's figures 1 to 10 and v2's 11 to 16), `npm run check:scope -- src/mock/ tests/data/ src/sources/`, `npm run art -- --check`, a verifier review. It runs when no integrator is mid-task | `v2-data` |
 | G3 | each v2 feature or migration | as v1. A migration that owns several folders passes with all its slugs listed | `v2-<slug>` |
 | G4v2 | `I2-tour` | `npm run build`, `npm run test:demo` 3 times on the tour, `npm run test:offline`, the verifier's screenshot review against section 8. It runs with no other agent active | `demo-ok-v2` |
 | G5 | each of B11 to B16 | below | `demo-ok-b11` to `demo-ok-b16` |
+| D-deploy | `D-deploy` | its Acceptance commands, a verifier review | `v2-deploy` |
 | G6 | the freeze | as v1, with the secrets scan reading the v2 names | `final` |
 
 - **Time limits.** Every gate that plays the demo times the tour test alone and passes when `artifacts/demo/report.json`'s `endedAtWallMs` is at most the loaded timeline's `durationMs` plus 15 seconds: 75 seconds for v1's 60-second demo, 220 seconds for the 205-second tour. R0, G1b, G4v2, G5 and G6 all use this rule.
 - **G5 for v2 upgrades** (B11 to B16) runs `npm run test:server`, the upgrade's contract and live tests, its named live feature specs, then `npm run test:demo` once in live mode and `npm run test:offline`. It passes when the server tests pass, the live feature spec answers a person's own request end to end with every event valid, and the scripted tour still passes with the source in live mode. The tour's keyed events for that source are listed in `ALLOWED_EMPTY_FALLBACKS`. v1 upgrades keep v1's G5 on the Phase A demo.
-- **Tags.** In the cloud session the orchestrator pushes the branch only, because the GitHub proxy refuses tag pushes. It makes each tag locally, records the tag and its commit SHA in the Tags table of `status.md`, and cuts by SHA when a tag is missing. Gordon creates and pushes the tags from Windows at the freeze. A design drop may add `demo-ok-v2-dN`.
+- **Git in the cloud** (`conventions.md`, Git, in place of `git push origin main --follow-tags`): the GitHub proxy refuses tag pushes, so the orchestrator pushes with `git push origin main` only, makes each tag locally after the push, and records the tag and its full commit SHA in the Tags table of `status.md`. A cut restores from the SHA when the tag is missing, and never restores a folder that R0 or the fallout step touched from anything older than `v2-core`. Gordon creates and pushes the tags from Windows at the freeze. A design drop may add `demo-ok-v2-dN`.
 
 ## 11. Additions from the plans (Oct 24, 2:40 PM)
 
@@ -808,6 +810,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - `artifacts/mock/mock.json` holds one key per non-function export of `src/mock/index.ts`, plus `_generatedAt`.
   - npm scripts `export:mock` and `art` (with `--check`), plus `scripts/check-contrast.mjs`.
   - `scripts/gate.mjs` learns G1b, G2b and G4v2, with section 10's time rule.
+  - D-deploy adds `npm run build:public` (`scripts/build-public.mjs`, the build with `VITE_PUBLIC_SITE=1`, which writes `dist/public-build.json`), `scripts/make-market.mjs` (the sandbox market's pages in `public/market/`, from `mock.json`), `scripts/check-public.mjs` (checks the public build and `public/_redirects`) and `scripts/laptop-setup.mjs` (the demo laptop's setup and its rehearsal checklist).
 
 ### Glossary
 
@@ -821,8 +824,8 @@ The plan writers found these gaps. Each one is settled here, and where two plans
 - **Where the new approvals live:** `apr_03` and `fup_02` in `watch.ts`, `apr_04` in `listings.ts`, `apr_05` in `projects.ts`. `getById()` finds them, and the approvals feature reads them the same way as `apr_01` and `apr_02`.
 - **`Policy`** is a list of topics (`pol_01` onward), each with `title: Text`, `body: Text` and an optional `data` record. `pol_01` (shipping) holds `{ transitDaysMin: 6, transitDaysMax: 10 }`.
 - **B14 requests** carry `runId` and `idStart`, and the listing request adds `vibeVocabulary` and an optional `image`.
-- **`listing.indexed`** is keyed `b14-swarm`, because the listing run's Indexer produces it. B12's adapter answers it with `[]`.
-- **B12's module functions** are `search`, `surprise`, `converse` and `index_one`.
+- **`listing.indexed`** is keyed `b14-swarm`, because the listing run's Indexer produces it, and B12's adapter answers that one with `[]`. B12's publish sends its own, keyed `b12-search`.
+- **B12's module functions** are `search`, `surprise`, `converse`, `index_draft` and `publish`. `ALLOWED_EMPTY_FALLBACKS` adds `b12-search` for `search.answered` and `surprise.drawn`.
 - **B13:** the table columns and reducer arguments are as `docs/plans/B13-live.md` writes them. A Rust module needs the hosts `static.rust-lang.org`, `index.crates.io` and `static.crates.io`.
 - **B15:**
   - `ALLOWED_EMPTY_FALLBACKS` adds `b15-watch` for `watch.scanned`, `counterfeit.flagged` and `followup.drafted`, and lists the tour's keyed events for every v2 source (section 10).
