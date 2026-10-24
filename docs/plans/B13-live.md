@@ -6,7 +6,7 @@ Priority: P0 · Wave: V2 · Depends on: I2-core (the `b13-live` source key, `dat
 
 ## Goal
 
-One database holds everything the demo is about (fix-plan 1.4, pillar 3). SpacetimeDB keeps the catalog (seeded from the mock data), the listings, the orders, the approvals, the swarm's runs and steps, each process's status and the screens that are watching. Every screen in live mode reads it: the data view shows its tables with row counts and newest rows, the process bar shows how many screens are watching and which processes are working, and the swarm view shows a run's steps as the agents take them, on every open screen at once. The SpacetimeDB track asks for shared live state at the core of the app, and this is that.
+One database holds everything the demo is about (fix-plan 1.4, pillar 3). SpacetimeDB keeps the catalog (seeded from the mock data), the listings, the orders, the approvals, the swarm's runs and steps, each process's status and the screens that are watching. Every screen in live mode reads it: the data view shows its tables with row counts and newest rows, the process bar shows how many screens are watching and which processes are working, and the swarm view shows a run's steps as the agents take them, on every open screen at once. The SpacetimeDB track asks for shared live state at the core of the platform, and this is that.
 
 Everything in it is fictional demo data from `src/mock/` and the events a session makes (fix-plan 1.6). It stores IDs, kinds, statuses, amounts and the catalog's own titles, never a person's free text.
 
