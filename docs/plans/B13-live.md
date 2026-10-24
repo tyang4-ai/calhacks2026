@@ -60,7 +60,7 @@ Everything in it is fictional demo data from `src/mock/` and the events a sessio
     - `touch_screen(screen_id, role)`: inserts a screen (logged as a change) or refreshes its `last_seen` (not logged).
     - `expire_screens(older_than_ms)`: deletes screens not seen in that long (logged).
     - `clear_runs()`: deletes every run and step, a demo-prep step (B2-2).
-  - `server/b13_spacetime/README.md` gives the exact commands for the installed version: install the module's packages, build, `spacetime publish -s local cindia` (never the CLI's Maincloud default), save the token, clear runs before a demo (`spacetime call -s local cindia clear_runs`), and, optionally, Maincloud.
+  - `server/b13_spacetime/README.md` gives the exact commands for the installed version, each with the folder it runs from: install the module's packages and build in `server/b13_spacetime/module/`, `spacetime publish -s local cindia` from `server/b13_spacetime/module/` (never the CLI's Maincloud default), `python server/b13_spacetime/save_token.py` from the repo root, clear runs before a demo (`spacetime call -s local cindia clear_runs`, from anywhere), and, optionally, Maincloud.
 - **Bridge** (`server/b13_spacetime/bridge.py`), imported inside functions by B12, B14, B15 and B16:
   - `start_run(run_id, thread_id, side)`, `add_step(payload)` (a `swarm.step` payload dict), `finish_run(run_id)`, `set_process(process_id, status, count)`, `record(events)`, `seed_catalog(payload)`, `touch_screen(screen_id, role)`, `expire_screens(ms)`, `sql(query) -> list[dict]`.
   - Each is one HTTP call to `SPACETIME_URL` (default `http://127.0.0.1:3000`): `POST /v1/database/<db>/call/<reducer>` with a JSON array of the arguments in order, or `POST /v1/database/<db>/sql` with the query text, with the headers from `config.spacetime_headers()` and a 0.8-second timeout.
@@ -119,8 +119,9 @@ One backend-builder does T1 to T7 in order. Each task adds its own tests to `tes
 ### Orchestrator steps (not the builder's)
 
 - **V0:** install the SpacetimeDB CLI into the home directory (on a 403 from a GitHub release download, fetch the asset from `release-assets.githubusercontent.com` with curl, D2-27), run `spacetime server set-default local`, and start `spacetime start --listen-addr 127.0.0.1:3000` in the background. The heartbeat restarts it when port 3000 stops answering.
-- **After T1:** install the module's packages, run `spacetime publish -s local cindia` from the README, then `python server/b13_spacetime/save_token.py`, restart `npm run server`, and confirm `GET /api/b13/status` reports `spacetime: true`.
-- **After T5:** `POST /api/b13/seed` once, or let the adapter do it.
+- **After T1:** install the module's packages and run `spacetime publish -s local cindia` from `server/b13_spacetime/module/`, as the README says.
+- **After T4:** run `python server/b13_spacetime/save_token.py` (T4 writes it), then restart `npm run server` so `config.py` reads `SPACETIME_TOKEN`.
+- **After T5:** confirm `GET /api/b13/status` reports `spacetime: true`, then `POST /api/b13/seed` once, or let the adapter do it.
 - **Before every recorded demo:** `spacetime call -s local cindia clear_runs`, so no old run shows.
 
 ## Acceptance

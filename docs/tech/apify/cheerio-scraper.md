@@ -110,9 +110,12 @@ B15's Scout, in httpx, with the token in the header. `PUBLIC_SITE_URL` comes fro
 ```python
 PAGE_FUNCTION = """async function pageFunction(context) {
   const { $, request } = context;
-  const title = $('title').first().text().trim().slice(0, 300);
+  if (/\\/market\\/(index\\.html)?$/.test(request.url)) return;  // the index page only links listings
+  const title = $('h1').first().text().replace(/\\s+/g, ' ').trim().slice(0, 300);
+  if (!title) return;
+  const snippet = $('main p').first().text().replace(/\\s+/g, ' ').trim().slice(0, 300);
   const text = $('main').text().replace(/\\s+/g, ' ').trim().slice(0, 2000);
-  return { url: request.url, title, text };
+  return { url: request.url, title, snippet, text };
 }"""
 
 market = PUBLIC_SITE_URL.rstrip("/") + "/market/"
@@ -135,11 +138,11 @@ r = httpx.post(
     json=body,
     timeout=45,
 )
-items = r.json() if r.status_code == 201 else []   # each item: { "url", "title", "text" }
+items = r.json() if r.status_code == 201 else []   # each item: { "url", "title", "snippet", "text" }
 ```
 
 Notes for B15:
 - The globs pin the crawl to our own `/market/` pages, so it never leaves the sandbox market.
 - The public site's `robots.txt` disallows every crawler so search engines stay off it. `respectRobotsTxtFile` stays at its default `false`, because the Scout crawls only our own site.
 - `proxyConfiguration` is required. Send `{"useApifyProxy": false}` for our own site. If a run rejects that, send the default `{"useApifyProxy": true}` instead.
-- `text` comes from the page's `<main>`, so the market pages put each listing's title, seller line, claim and description inside `<main>`.
+- The page function reads the market pages as D-deploy writes them: the listing's title in an `h1`, its snippet as the first paragraph inside `<main>`, and the seller line, claim and description inside `<main>`. The function returns nothing for the index page, which only links the listings, so the Actor saves no item for it. B15's server drops it again by URL in case the page function changes.

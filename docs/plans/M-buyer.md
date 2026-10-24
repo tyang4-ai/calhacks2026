@@ -65,7 +65,7 @@ A judge opens a piece on the desktop Shop and takes it in at a glance: who made 
 | T1 | Spec helper and the v1 specs moved onto event-anchored seeks | tests/features/buyer-lib.ts, tests/features/buyer-checkout.spec.ts, tests/features/buyer-receipt.spec.ts, tests/features/buyer-story.spec.ts, tests/features/buyer-flow.spec.ts, tests/features/buyer-concierge.spec.ts | none | sonnet |
 | T2 | Piece page left column: story, process steps, verification line, the demo note | src/features/buyer/PieceStory.tsx, src/features/buyer/StoryCard.tsx, src/features/buyer/ProcessTimeline.tsx, src/features/buyer/PieceVerification.tsx, tests/features/buyer-piece-story.spec.ts | T0, T1 | opus |
 | T3 | Piece page price column: the price, the split, the gallery comparison and the split request | src/features/buyer/PieceSplit.tsx, src/features/buyer/PriceSplit.tsx, src/features/buyer/PriceCompare.tsx, tests/features/buyer-piece-split.spec.ts | T0, T1 | opus |
-| T4 | Desktop checkout: pay and the public build's block, the project add-on, the token, the inline order status and the promise | src/features/buyer/Checkout.tsx, src/features/buyer/ProjectAddOn.tsx, src/features/buyer/checkoutRules.ts, src/features/buyer/checkoutRules.test.ts, src/features/buyer/BuyerFlow.tsx (only to pass `publicSite` to `Checkout`), tests/features/buyer-piece-pay.spec.ts | T0, T1 | opus |
+| T4 | Desktop checkout: pay and the public build's block, the project add-on, the token, the inline order status and the promise | src/features/buyer/Checkout.tsx, src/features/buyer/ProjectAddOn.tsx, src/features/buyer/checkoutRules.ts, src/features/buyer/checkoutRules.test.ts, src/features/buyer/BuyerFlow.tsx, tests/features/buyer-piece-pay.spec.ts | T0, T1 | opus |
 | T5 | The receipt page: status, promise, the maker's note, the demo receipt note | src/features/buyer/ReceiptPage.tsx, src/features/buyer/Receipt.tsx, tests/features/buyer-receipt-page.spec.ts | T0, T1 | sonnet |
 | T6 | Assemble the pages and fill the slots (lead) | src/features/buyer/PiecePage.tsx, src/features/buyer/index.ts, tests/features/buyer-desktop-flow.spec.ts | T2 to T5 | lead |
 | T7 | After G4v2 only: retire the phone flow and all five phone-flow specs (lead) | src/features/buyer/BuyerFlow.tsx, src/features/buyer/ConciergeChat.tsx, src/features/buyer/CuratedGrid.tsx, src/features/buyer/index.ts, tests/features/buyer-checkout.spec.ts, tests/features/buyer-receipt.spec.ts, tests/features/buyer-story.spec.ts, tests/features/buyer-flow.spec.ts, tests/features/buyer-concierge.spec.ts | G4v2, contract change 6 below | lead |
@@ -81,7 +81,11 @@ A judge opens a piece on the desktop Shop and takes it in at a glance: who made 
 - When the timeline holds the event, it seeks there with `seekToEvent`.
 - Until I2-tour puts v2 events such as `project.funded` `ctb_01` into the timeline, it pauses the player and emits `seed`, the scripted payloads from `src/mock/`, with `window.__cindia.emit()`.
 
-The v1 events (`split.shown`, `checkout.started`, `card.tokenized`, `order.placed`, `receipt.updated`) are in the timeline already. The five v1 specs swap their fixed beat times for `seekToEvent` and open `/shop/legacy`, where I2-shell renders `buyer.main` in Phase A, so they pass until I2-tour. T7 deletes them. This matters because I2-tour moves every beat's time, while the events and figures stay.
+The v1 events (`split.shown`, `checkout.started`, `card.tokenized`, `order.placed`, `receipt.updated`) are in the timeline already. All five v1 specs swap their fixed beat times for `seekToEvent`, because I2-tour moves every beat's time while the events and figures stay. Then (B1-25):
+- `buyer-checkout`, `buyer-receipt` and `buyer-story` move to the desktop pages, `/shop/piece/<pieceId>` and `/shop/receipt/ord_001`, so none of them depends on `/shop/legacy`. They pass once T6 fills the slots.
+- `buyer-flow` and `buyer-concierge` test the phone flow itself, so they stay on `/shop/legacy`, the one place I2-shell renders `buyer.main` in Phase A.
+
+T7 deletes all five.
 
 **T2.** `PieceStory` is the left part of the piece page.
 - It reuses `StoryCard` (`buyer-story-card`) with a `layout="page"` prop: the title in both languages, the maker's name and `MakerMark`, hours of work, materials, the craft line ("About the craft"), and the piece's illustration with its `imageAlt` and an "Illustration" label.
@@ -130,7 +134,7 @@ The v1 events (`split.shown`, `checkout.started`, `card.tokenized`, `order.place
 - `index.ts` exports the module above.
 - `buyer-desktop-flow.spec.ts` walks the piece page and the receipt page through the tour's events with `tourEvent`.
 
-**T7.** After G4v2 the tour no longer uses `buyer.main`. The lead removes `BuyerFlow`, `ConciergeChat`, `CuratedGrid` and the `buyer.main` entry in `index.ts`, and deletes all five phone-flow specs: `buyer-checkout`, `buyer-receipt`, `buyer-story`, `buyer-flow` and `buyer-concierge`. All five look for `/shop/legacy`, the route I2-tour T5 deletes (B1-25). T7 runs right after G4v2 and before any V4 round reruns G3, once the integrator has removed `buyer.main` and the two concierge test IDs from the contract (change 6). Then G3 again.
+**T7.** After G4v2 the tour no longer uses `buyer.main`. The lead removes `BuyerFlow`, `ConciergeChat`, `CuratedGrid` and the `buyer.main` entry in `index.ts`, and deletes all five phone-flow specs: `buyer-checkout`, `buyer-receipt`, `buyer-story`, `buyer-flow` and `buyer-concierge` (B1-25). `buyer-flow` and `buyer-concierge` look for `/shop/legacy`, which I2-tour T5 removes before G4v2, and the other three only repeat what the desktop specs check. T7 runs right after G4v2 and before any V4 round reruns G3, once the integrator has removed `buyer.main` and the two concierge test IDs from the contract (change 6). Then G3 again.
 
 ## Acceptance
 Every spec opens the route named, reaches tour events with `seekToEvent` or `tourEvent` from `buyer-lib.ts` (never a fixed time), and checks by test ID only. A spec seeks before it acts, because a seek drops a pending answer (lessons, F-ask-cindy). An answer to a person counts as arrived when it shows within Playwright's default expect timeout, never inside a wall-clock window (B1-27). Expected values come from `src/mock/`, not typed in. "Inside the frame" means the element's box sits fully inside `frame-buyer` and every clipping ancestor at 1440 by 900.
@@ -150,7 +154,7 @@ Every spec opens the route named, reaches tour events with `seekToEvent` or `tou
 7. **Given** `checkoutRules.test.ts`, **then** with `publicSite` every piece's pay is blocked and the add-on can't emit, and without it pay is open for every piece until that piece's own checkout starts. On the public build, `buyer-pay-blocked` stands where `buyer-pay-button` was (D-deploy checks the built site).
 8. **Given** scripted mode, **then** each page shows `simulated-badge`.
 9. **Given** `demo-lang-toggle` switched to Chinese, **then** every label on both pages is Chinese, L4 to L7 and L10 included, the maker's note stays as she wrote it, and the amounts are unchanged.
-10. **Given** the Phase A demo (before I2-tour), **then** every v1 buyer spec passes on `/shop/legacy` with event-anchored seeks, and `buyer.main` still shows the v1 phone flow.
+10. **Given** the Phase A demo (before I2-tour), **then** every v1 buyer spec passes with event-anchored seeks: `buyer-checkout`, `buyer-receipt` and `buyer-story` on the desktop pages, and `buyer-flow` and `buyer-concierge` on `/shop/legacy`, where `buyer.main` still shows the v1 phone flow.
 11. **Given** the tour (after I2-tour), **then** at the end of `d03-piece`, `d05-pay` and `d12-receipt` every buyer test ID that beat lists in fix-plan 1.2's table is inside the frame, `buyer-split-compare`, `buyer-receipt-promise` and `buyer-receipt-maker-note` included. The desktop flow spec checks this with the same events.
 
 ## Out of scope

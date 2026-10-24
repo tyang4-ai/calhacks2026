@@ -1,26 +1,29 @@
 # v2 · plans and order
 
-Read with `docs/v2/brief.md` (what and why), `docs/v2/contracts.md` (names) and `docs/harness/v2-runbook.md` (how the orchestrator runs it). Every v2 plan file lives in `docs/plans/` next to the v1 ones and follows the template in `docs/plans/README.md`.
+Read with `docs/v2/brief.md` (what and why), `docs/v2/contracts.md` (names) and `docs/harness/v2-runbook.md` (how the orchestrator runs it). The decisions behind this list are in `docs/v2/fix-plan.md` section 1. Every v2 plan file lives in `docs/plans/` next to the v1 ones and follows the template in `docs/plans/README.md`.
 
 ## Decisions behind v2 (Gordon, Oct 24 afternoon)
 
-- **Framing:** Indigenous and heritage makers worldwide. The Gu studio stays the deep dive and the named community. Gu embroidery is never called Indigenous.
+- **Framing:** Cindia is a platform for underrepresented makers, starting with Native American makers. Selling online takes time, broadband and marketing reach that many makers on tribal lands don't have, so Cindia does the selling, the marketing and the books for them. It's called a platform, never an app.
+- **The named community** is the fictional Diné Weaving and Silver Co-op on the Navajo Nation, Arizona: v1's studio, re-skinned in R0 with every v1 number kept. Three more fictional Native American communities sit beside it in the catalog: an Ojibwe beadwork co-op, an Acoma pottery studio and a Seminole patchwork co-op. Other communities are next, each only with that community's own organizations.
+- **Mock data only.** Nothing real goes into the data, the databases or the embeddings, in any mode or on the public site.
+- **The demo is 3 minutes:** three pitch cards, the buyer minute and the seller minute, always scripted, with a presenter mode that pauses at each beat. Live mode answers people's own requests after the tour.
+- **The backend rests on three pillars:** a swarm of small Claude agents on Haiku and Sonnet only, our own embedding model that embeds every seller entry, and one database, SpacetimeDB, that holds everything, with Elastic as the search index built from it.
 - **Projects** means both community projects anyone can fund and works in progress (commissions paid in stages).
-- **Databases:**
-  - Elastic Serverless holds the index, with our own embeddings and hybrid search, plus an Agent Builder agent.
-  - SpacetimeDB holds the live shared state for the swarm and the process blocks.
-- **Extra tracks:** Apify (counterfeit watch) and the MLH GoDaddy domain. Gordon registers the domain himself.
+- **Extra tracks:** Apify (the copy watch, crawling our own sandbox market) and the MLH GoDaddy domain, which points at the public site. Gordon registers the domain himself.
+- **The public site** is the scripted build on Cloudflare Pages, uploaded by Gordon. It sells nothing and search engines are kept out.
 - **Desktop only.** Judges see the desktop site and a recorded video, which Gordon makes himself.
 - **The agent swarm** is many narrow agents, one job each, with an orchestrator that only routes.
 - **Cindia core is the index and the management.** Each seller gets a storefront at their own link with a block page builder. The builder is post-MVP, so v2 ships a working mock labeled as a preview.
-- **Scale and depth win over time worries.** Nothing is dropped for time. Everything lands only through its gate, so `main` is always demoable.
-- **The build runs in a Claude Code cloud session** on the repo, so it keeps going while Gordon is away.
+- **Scale and depth win over time worries.** Nothing is dropped for time. Everything lands only through its gate, so `main` is always demoable. What the build can't make true in time is listed in the brief's "Backend if time".
+- **The build runs in a Claude Code cloud session** on the repo, so it keeps going while Gordon is away. The model trains on the cloud VM by default, and the hand-off to every machine is the private Hugging Face repo.
 
 ## The plans
 
 | Plan ID | Agent | Wave | Depends on | Priority |
 |---|---|---|---|---|
-| I2-core | integrator | V1 | none | P0 |
+| R0-reskin | data-smith, integrator, feature-lead and backend-builder, one commit | V1, step 0 | V0 | P0 |
+| I2-core | integrator | V1 | R0-reskin | P0 |
 | I2-kit | integrator | V1 | I2-core | P0 |
 | I2-shell | integrator | V1 | I2-core, I2-kit T1 | P0 |
 | S3-catalog | data-smith | V1 | I2-core | P0 |
@@ -30,22 +33,29 @@ Read with `docs/v2/brief.md` (what and why), `docs/v2/contracts.md` (names) and 
 | F-support | feature-lead | V2 | G1b, G2b | P0 |
 | F-process | feature-lead | V2 | G1b, G2b | P0 |
 | F-communities | feature-lead | V2 | G1b, G2b | P0 |
-| M-approvals | feature-lead | V2 | G1b | P0 |
-| F-seller-hub | feature-lead | V2 | G1b, G2b | P1 |
+| M-approvals | feature-lead | V2 | G1b, G2b, and B13's B08 owner-route task before its G3 | P0 |
+| M-desktop | feature-lead | V2 | G1b, G2b, right after M-approvals | P0 |
+| F-seller-hub | feature-lead | V2 | G1b, G2b | P0 |
 | F-watch | feature-lead | V2 | G1b, G2b | P1 |
 | F-storefront | feature-lead | V2 | G1b, G2b | P1 |
-| M-maker-statement | feature-lead | V2 | G1b | P1 |
-| M-desktop | feature-lead | V2 | G1b | P1 |
+| M-maker-statement | feature-lead | V2 | G1b, G2b | P1 |
 | B11-embed | backend-builder | V2 | I2-core (code), S3-catalog (training) | P0 |
-| B13-live | backend-builder | V2 | I2-core | P1 |
+| B13-live | backend-builder | V2 | I2-core, S3-catalog (the data it seeds) | P0 |
 | B12-search | backend-builder | V2 | B11-embed | P0 |
+| B16-bank-books | backend-builder | V2 | B13-live green or cut, `NESSIE_KEY` | P1 |
 | B14-swarm | backend-builder | V2 | B13-live, B12-search | P0 |
-| B15-watch | backend-builder | V2 | B11-embed | P1 |
-| I2-tour | integrator and data-smith | V3 | the V2 features above | P0 |
-| I3-redesign | integrator | V4 | a design drop on branch `design` | P1 |
+| B15-watch | backend-builder | V2 | B11-embed. Live scans need the public site (D-deploy), and it plays on its fixture until then | P1 |
+| D-deploy | integrator, then Gordon for the upload | V2 | G1b, G2b | P0 |
+| I2-tour | integrator and data-smith | V3 | the V2 features above, M-desktop and M-maker-statement included, green or cut | P0 |
+| I3-redesign | integrator | V4 | a drop under `design/` on `main` (or on branch `design`, copied over), only after G4v2 | P1 |
 | D-sponsors | scribe | any, 8:00 PM and the freeze | status.md | P1 |
 
-Feature order in the queue: `F-search`, `M-buyer`, `F-support`, `F-process`, `F-communities`, `M-approvals`, `F-seller-hub`, `F-watch`, `F-storefront`, `M-maker-statement`, `M-desktop`.
+**Queue order:**
+- V1: `R0-reskin` first, alone, then `I2-core` with its fallout step, then `I2-kit`, `I2-shell` and `S3-catalog`, then `I2-art`.
+- V2 features, P0: `F-search`, `M-buyer`, `F-support`, `F-process`, `F-communities`, `M-approvals`, `M-desktop`, `F-seller-hub`. Then P1: `F-watch`, `F-storefront`, `M-maker-statement`. `M-desktop` runs right after `M-approvals` because `d06` to `d10` are the finance tracks' moment, and `F-seller-hub` is P0 because its `d15-listing` beat is in the tour's spine.
+- V2 upgrades: `B11-embed`, then `B13-live` and `B12-search`, then `B16-bank-books` once B13 is green or cut, then `B14-swarm`, then `B15-watch`.
+- `D-deploy` as soon as G1b and G2b are green, beside the features.
+- V3 `I2-tour`, then V4 `I3-redesign` for each design drop.
 
 ## New feature folders
 

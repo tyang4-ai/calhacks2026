@@ -137,7 +137,7 @@ The envelope, the store and the player stay. These change:
 - `split.shown` adds `compare?: { channelId: "ch_gallery"; commissionBps; makerShareCents }`, what the maker would get for the same piece through the gallery (figure 16).
 - **Per-key timeouts.** The registry gives `produce()` 8 seconds by default, 20 seconds for `b14-swarm` and 60 seconds for `b15-watch`. Each adapter aborts 0.5 seconds earlier.
 - Events a live adapter pushes through `start(emit)` take `at` from the player clock when they arrive.
-- **Store keys added:** `search`, `surprise`, `support`, `swarm`, `listings`, `projects`, `wip`, `model`, `watch`, `storefront`, `questions`, `database` (the newest `data.synced` and the newest `index.synced`), `log` (section 11) and `demo.process` and `demo.drawer`. `I2-core` writes a reducer for every new type, with unit tests. Features add none.
+- **Store keys added:** `search`, `surprise`, `support`, `swarm`, `listings`, `projects`, `wip`, `model`, `watch`, `storefront`, `questions`, `sync` (`sync.data`, the newest `data.synced`, and `sync.index`, the newest `index.synced`), `log` (section 11) and `demo.process` and `demo.drawer`. `I2-core` writes a reducer for every new type, with unit tests. Features add none.
 
 ### New event types
 
@@ -283,7 +283,7 @@ Each camera shows one frame at full stage size (the stage is 1440 by 900, scaled
 
 | Camera | Frame and page |
 |---|---|
-| `pitch` | The beat's pitch card, full frame, with no Shop or Sell frame, top bar or process bar. The words come from `src/app/demo/pitch.ts`, which Gordon writes. Until he does, each card is a labeled placeholder |
+| `pitch` | The beat's pitch card, full frame, with no Shop or Sell frame, top bar or process bar. The words come from `src/app/demo/pitch.ts`, which Gordon writes. Until he does, each card holds placeholder text marked [GORDON] in `pitch.ts`, with no label on screen, and shows L1 at its foot, since the pitch camera has no top bar |
 | `shop-home` | `frame-buyer` on `/shop` |
 | `shop-search` | `frame-buyer` on `/shop/search` for the latest query |
 | `shop-piece` | `frame-buyer` on `/shop/piece/<the open piece>` |
@@ -296,9 +296,10 @@ Each camera shows one frame at full stage size (the stage is 1440 by 900, scaled
 **Phase A mapping** (`I2-shell`, so v1's beats keep passing on the desktop shell until `I2-tour`): `buyer` and `receipt` → `shop-legacy` (`frame-buyer` on `/shop/legacy`), `buyer-studio` → `sell-map`, `studio-month` → `sell-month`, `studio-catch` → `sell-catch`, `studio-owner` → `sell-approvals`, `studio-close` → `sell-close`, `maker` → `maker`. `demo-script.md` gets a Phase A column after its Camera column. `I2-tour` removes `shop-legacy`.
 
 **Modes and starts:**
-- `/demo` auto-plays every beat and ends on the end card. Tests and the video use it.
+- `/demo` auto-plays every beat and ends on the end card. The tests use it.
+- **Video mode** (`?video=1`): a 5-second cold open at 153.999, the last millisecond of `d08-catch`, on `sell-catch` with v1's line. Then the spine with each pitch card held for 10 seconds instead of 20 (the player seeks to the next beat), the buyer and seller minutes at 1x, no controls or beat label, and the end card for 5 seconds. About 2 minutes 40 seconds, under Figma's 3-minute limit. Chapter 2 isn't in the video.
 - **Presenter mode,** `/demo?mode=present`, pauses at the end of every beat. Space or the right arrow plays the next beat, and the left arrow replays the current one. After `d12-receipt` it shows the end card, and the right arrow continues into chapter 2.
-- `?start=<beatId>` seeks to that beat's first event and plays from there, pausing at its end in presenter mode. `?start=catch` and the `demo-start-at-catch` control seek to `d08-catch`. Video mode's cold open seeks to `d08-catch`.
+- `?start=<beatId>` seeks to that beat's first event and plays from there, pausing at its end in presenter mode. `?start=catch` and the `demo-start-at-catch` control seek to `d08-catch`.
 - **The end card** carries the search proof with L28, the planted-error score, the list of live sources with L29, L30, and one seats line: "Cindy's agents fill three seats: bookkeeper, collections and support. A person approves anything that moves money."
 
 ### Test IDs added
@@ -307,7 +308,7 @@ Shell: `shell-topnav`, `shell-side-shop`, `shell-side-sell` (the Shop and Sell s
 
 | Test ID | Feature | Element |
 |---|---|---|
-| `pitch-card-what`, `pitch-card-why`, `pitch-card-how` | tour (`I2-tour`) | The three pitch cards |
+| `pitch-card-what`, `pitch-card-why`, `pitch-card-how` | the stage (`I2-tour`) | The three pitch cards |
 | `process-bar` | process | The process bar |
 | `process-block-<processId>` | process | One block |
 | `process-live-summary` | process | "Live: N of 11" |
@@ -674,7 +675,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - `log`: one `{ id, type, at, source, key }` per event, idempotent by `id`, keeping the newest 400. A status event (`data.synced`, `index.synced`) replaces the log's earlier entry of its own type instead of adding one, so live polling never pushes the tour's events out. The process views and block counts read it.
   - `demo.process` and `demo.drawer`. `I2-core` owns both, with `beat.started.process` and `beat.started.drawer`, their schema and their reducer. `I2-tour` only sets them on the tour's beats.
   - `questions`, by `questionId`: the forwarded question and, once it arrives, the maker's answer.
-  - `database`: the newest `data.synced` and the newest `index.synced`.
+  - `sync`: `sync.data`, the newest `data.synced`, and `sync.index`, the newest `index.synced`.
 - **New types in `src/core/types.ts`:** `ScriptedRun` (`runId`, `side`, `threadId`, `trigger`, `steps`, `final`), `PlannedEvent`, `ModelReport`, `DemoSearch`, `DemoSurprise`, `ScriptedScan`, `PolicyTopic`, `Policy` and `InlineApproval`, with the fields `I2-core.md` gives them:
   - `ScriptedRun.trigger` is `{ kind: "support"; matches: string[]; pieceId? }`, `{ kind: "listing"; listingId; notes }`, `{ kind: "storefront"; storefrontId }` or `{ kind: "question"; questionId }`. `final` is an ordered list of events, approvals and follow-ups included.
   - `ScriptedScan` is `{ scanId, makerId, queries, cftIds, followUpId?, approvalId? }`.

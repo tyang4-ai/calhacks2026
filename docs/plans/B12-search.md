@@ -104,7 +104,7 @@ The tour is always scripted (fix-plan 1.2). B12 answers people's own searches an
   - `produce(event, state)`:
     - **A person's `search.queried`:** post it to `/api/b12/search`. When B11 is healthy, also post `/api/b11/map` and append its `search.mapped`. All within 7.5 seconds.
     - **A person's `surprise.asked`:** post `/api/b12/surprise` with its keyword, method and seed.
-    - **The tour's keyed `search.answered` and `surprise.drawn`:** `[]`, so the tour plays scripted in both modes (fix-plan 1.2). `ALLOWED_EMPTY_FALLBACKS` lists both for `b12-search` (I2-tour T6, B2-11).
+    - **The tour's keyed `search.answered` and `surprise.drawn`:** `[]` at once, with no network call, so the tour plays scripted and on time in both modes (fix-plan 1.2). `ALLOWED_EMPTY_FALLBACKS` lists both for `b12-search` (I2-tour T6, B2-11).
     - Anything else: `[]`. `listing.indexed` is keyed `b14-swarm` (contracts section 11), so this adapter never sees it.
     - Every fetch aborts at 7.5 seconds.
   - `start(emit)`:

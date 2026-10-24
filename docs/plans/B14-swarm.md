@@ -119,7 +119,7 @@ The tour is always scripted (fix-plan 1.2). B14 answers people's own questions, 
     - **A person's `support.asked`:** post `/api/b14/support` with that side's records only (above), `runId`, `idTag` and `idStart`, and return the events.
     - **A person's `listing.requested`:** post `/api/b14/listing` with the listing, the maker, the community and the vibe vocabulary from `src/mock`.
     - **A person's `storefront.requested`:** post `/api/b14/storefront` with that storefront's community and pieces.
-    - **The tour's keyed events** (`swarm.step`, `support.answered`, `listing.drafted`, `listing.indexed`, `question.forwarded` and `question.answered` of the scripted runs): `[]`, so the tour plays scripted in both modes. `ALLOWED_EMPTY_FALLBACKS` lists those types for `b14-swarm` (I2-tour T6).
+    - **The tour's keyed events** (`swarm.step`, `support.answered`, `listing.drafted`, `listing.indexed`, `question.forwarded` and `question.answered` of the scripted runs): `[]` at once, with no network call, so the tour plays scripted and on time in both modes. `ALLOWED_EMPTY_FALLBACKS` lists those types for `b14-swarm` (I2-tour T6).
     - Every fetch aborts at 19.5 seconds, under the registry's 20-second key timeout.
 
 ## Tasks
