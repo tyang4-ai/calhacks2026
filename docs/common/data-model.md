@@ -36,7 +36,7 @@ Read by the data-smith, every feature and the backend. It fixes every entity, fi
 | PlantedError | `err_01` to `err_04` | `kind`, `recordIds`, `expected` (what a correct matcher reports, used by the answer key) |
 | Impact | `imp_2026_09` | `makerShareBps` (average over Cindia sales), `daysCloseToPayout`, `daysCloseToPayoutBefore`, `bookkeepingHoursSaved`, `estimate: true` |
 
-IDs that live only in events: `mv_0001` onward for `money.moved` (in the order they fire), `acct_studio` for the studio's bank account in `account.synced`, `act_0001` onward for `agent.acted`, `ask_01` to `ask_03` for the canned Ask Cindy questions, `scn_01` for the judge's scenario and `scn_` record IDs inside it, and `beat` IDs from `demo-script.md`.
+IDs that live only in events: `mv_0001` onward for `money.moved` (in the order they fire), `acct_studio` for the studio's bank account in `account.synced`, `act_0001` onward for `agent.acted`, `ask_01` to `ask_03` for the canned Ask Cindy questions, `ask_user_1` onward for questions the owner types, `scn_01` for the judge's scenario and `scn_` record IDs inside it, and `beat` IDs from `demo-script.md`.
 
 Ledger accounts: `cash`, `sales_cindia`, `sales_site`, `sales_gallery`, `card_fees`, `platform_fees`, `gallery_commission`, `materials`, `maker_pay`, `receivable_gallery`, `refunds`.
 
@@ -109,7 +109,7 @@ The answer key lives in `src/mock/answerKey.ts` and lists exactly these four. Th
 | `answerKey.ts` | The four planted errors and the expected results |
 | `ask.ts` | `cannedAnswers`: three canned Ask Cindy answers (`ask_01` to `ask_03`), the first for 这个月哪件作品最赚钱?, and `fallbackAnswer` for any other question in scripted mode |
 | `impact.ts` | The impact numbers, marked as estimates |
-| `scenario.ts` | One held-back statement for the judge's scenario (W2), not used in September's totals, and `scenarioReplies`: the events the scripted responder emits, with `at` as an offset from the request |
+| `scenario.ts` | One held-back statement for the judge's scenario (W2), not used in September's totals, `sampleFileName` and `sampleRecordIds` (its `scn_` record IDs, which the `scenario.loaded` request carries), and `scenarioReplies`: the events the scripted responder emits, with `at` as an offset from the request |
 | `timelines/demo.ts` | The 60-second demo timeline, from `demo-script.md` |
 | `timelines/month.ts` | The fast-forward month: every record arriving in date order, with Cindy's matches and the flag |
 | `index.ts` | Re-exports everything, and a `getById()` lookup |

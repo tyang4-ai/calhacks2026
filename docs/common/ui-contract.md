@@ -68,6 +68,7 @@ interface SlotProps {
   surface: SurfaceId;
   lang: "en" | "zh";        // already resolved by the shell, see Language
   makerId?: string;         // the maker surface only: from /maker/:makerId, and mkr_01 on /demo
+  refId?: string;           // the audit drawer only: from ?drawer=audit&ref=<entity id>
 }
 
 interface FeatureModule {
