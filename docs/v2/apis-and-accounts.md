@@ -31,7 +31,7 @@ From the Claude Code docs on cloud sessions and cloud environments (https://code
   - The proxy never attaches a secret to `api.anthropic.com`, to GitHub, to the package registries, or to requests made by the setup script.
   - A secret can't be edited. Delete it and add it again.
   - The docs describe only header secrets (and username and password). Nothing puts a secret in a query string, so Nessie's `?key=` can't use one.
-- **The proxy itself.** All outbound traffic goes through `HTTPS_PROXY`, and TLS is re-signed by the proxy's CA (`/root/.ccr/ca-bundle.crt`, already in `SSL_CERT_FILE` and `REQUESTS_CA_BUNDLE`). A client that ignores `HTTPS_PROXY` gets no network and no secret. `httpx` and `requests` read the proxy settings by default. The Elasticsearch Python client's default node class (urllib3) does not, so build it with `node_class="requests"`, or call Elasticsearch with `httpx` as the B12 plan does. Node's built-in `fetch` needs `NODE_USE_ENV_PROXY=1`.
+- **The proxy itself.** All outbound traffic goes through `HTTPS_PROXY`, and TLS is re-signed by the proxy's CA (`/root/.ccr/ca-bundle.crt`, already in `SSL_CERT_FILE` and `REQUESTS_CA_BUNDLE`). A client that ignores `HTTPS_PROXY` gets no network and no secret. `httpx` and `requests` read the proxy settings by default. The Elasticsearch Python client's default node class (urllib3) does not, so build it with `node_class="requests"`, or call Elasticsearch with `httpx` as the B12 plan does. Node's built-in `fetch` needs `NODE_USE_ENV_PROXY=1` (Node 22.21 or later), per the session's proxy notes in `/root/.ccr/README.md`.
 - **What the session could reach today.** At 1:22 PM the proxy refused `huggingface.co`, `api.apify.com`, `cloud.elastic.co`, `api.nessieisreal.com` and `maincloud.spacetimedb.com`. At 2:50 PM it also refused `install.spacetimedb.com` and `spacetimedb-client-binaries.s3.amazonaws.com`. GitHub release downloads worked (302 to `release-assets.githubusercontent.com`). `api.github.com` answered 403 for repos not attached to the session, as the docs describe. So the environment was not yet on Full or a complete Custom list.
 - **VM size.** About 4 vCPUs, 16 GB of RAM and 30 GB of disk. The docs list no GPU, so B11 trains on CPU.
 - **Docs:** none in `docs/tech/`. The source pages are the two URLs at the top of this section.
@@ -41,7 +41,7 @@ From the Claude Code docs on cloud sessions and cloud environments (https://code
 - **For:** every Claude call in v1 and v2: the catch explanation (B02), Ask Cindy (B07), the v1 concierge (B09), the training pairs for B11, the agent swarm (B14), and B15's Claims and Reporter.
 - **Account:** Gordon's own Claude Console org, where he redeemed the $50 Cal Hacks credit (link in the vault's `ch13-sponsor-anthropic` note). The key is made in the Console.
 - **Variables:** `CINDIA_ANTHROPIC_API_KEY` as a cloud environment variable. `ANTHROPIC_API_KEY` only in `.env` on the Windows machines, because setting it in the cloud would change how the cloud session itself is billed.
-- **Auth:** a header. The Python SDK 2.x sends `Authorization: Bearer <key>`.
+- **Auth:** a header. The Python SDK 2.x sends `Authorization: Bearer <key>` (Gordon's tech-stack note, Oct 22).
 - **Network secret:** no. Cloud docs: secrets are never attached to `api.anthropic.com`. That's why contracts use a plain environment variable.
 - **Hosts:** `api.anthropic.com`, reachable at every network level.
 - **Limits:** the Console shows the org's rate limits and credit. Gordon's tech-stack note (Oct 22) lists prices per million tokens, input and output: Haiku 5.5 from $0.10 and $0.50, Sonnet 5.5 $2 and $10, Opus 5.5 $4 and $20.
@@ -151,7 +151,7 @@ From the Claude Code docs on cloud sessions and cloud environments (https://code
 - **Variable:** `HF_TOKEN`, optional. Public downloads work without it. The Sentence Transformers docs suggest logging in anyway for higher Hub rate limits.
 - **Auth:** `Authorization: Bearer hf_...`.
 - **Network secret:** probably, since it's a Bearer header, but untested. `huggingface_hub` may look for a local token before a write. For the one publish, the plain variable is the safer route.
-- **Hosts:** `huggingface.co`, `*.huggingface.co`, `*.hf.co` (file storage runs on Xet hosts under `hf.co`).
+- **Hosts:** `huggingface.co`, `*.huggingface.co`, `*.hf.co`, as contracts section 1 lists them. Model downloads may redirect to file storage hosts, which those wildcards are meant to cover.
 - **Limits:** none that matter at this size.
 - **Docs:** `docs/tech/huggingface-hub/` and `docs/tech/sentence-transformers/`. The base model's notes are in `docs/tech/sentence-transformers/multilingual-e5-small.md`.
 - **Gotchas:**
@@ -204,6 +204,6 @@ Places where the official docs say something other than what `docs/v2/contracts.
 6. **The snippet field (sections 2 and 5, B15).** `CounterfeitCandidate.snippet` and "title, URL and snippet" assume a field named snippet. The Actor returns it as `description`, inside `organicResults`, with one dataset item per results page. Map `description` to `snippet`.
 7. **"At most 10 results per query" (section 5, B15).** The Actor has no input for a result count. Apify's own LangChain integration says so and pages with `maxPagesPerQuery`, about 10 results a page. `queries` is a single newline-separated string, not a list. Send `maxPagesPerQuery: 1` and cut to 10 on our side.
 8. **The Apify call (section 5, B15).** Contracts say only "run-sync". The canonical endpoint is `POST /v2/actors/apify~google-search-scraper/run-sync-get-dataset-items`. It answers 201 on success, and 408 when the run takes more than 300 seconds. The run's `timeout` parameter ends the run itself, and the docs don't promise the saved items come back when it fires.
-9. **Publishing locally (section 5, B13).** Contracts say the module is published as `cindia` on the local server. The docs show `spacetime dev` publishing to Maincloud and `spacetime init` needing `--local`. Use `spacetime publish -s local cindia`, or set `local` as the default server first.
+9. **Publishing locally (section 5, B13).** Contracts say the module is published as `cindia` on the local server. The docs point the other way by default: the `spacetime dev` page says the database "will be available at https://maincloud.spacetimedb.com", and `spacetime init` needs `--local` for a local deployment. Use `spacetime publish -s local cindia`, or set `local` as the default server first.
 
 Checked and consistent: Nessie's `?key=` and the Anthropic key can't be network secrets, which matches contracts keeping both as plain variables. The `query: ` and `passage: ` prefixes and the 384 dimensions match the E5 docs. Section 11's calibrated similarity fits the model card's warning about high cosine scores. TypeScript modules work in the CLI that installs today (2.13.0). Snake_case table and reducer names match 2.x canonical names. Apify's Bearer header matches `config.apify_headers()`.
