@@ -25,11 +25,40 @@ export function specialMatches(month: MonthSlice): MatchState[] {
 export interface HandledStripProps {
   month: MonthSlice;
   lang: Lang;
+  /** One line of chips, for when the catch sits above and only the strip's top edge may show. */
+  compact?: boolean;
 }
 
-export function HandledStrip({ month, lang }: HandledStripProps) {
+/** A special match's full strip text, for the compact chip's title. */
+function matchTitle(m: MatchState, lang: Lang): string {
+  const payout = matchPayout(m);
+  return [matchKindLabel(m.kind, lang), payout ? formatDate(payout.date, lang) : "", matchReason(m, lang), m.recordIds.join(", ")]
+    .filter(Boolean)
+    .join(" · ");
+}
+
+export function HandledStrip({ month, lang, compact = false }: HandledStripProps) {
   const special = specialMatches(month);
   if (special.length === 0) return null;
+  if (compact) {
+    // The same matches as chips on one line after the title, so no header ever shows without its rows.
+    return (
+      <section
+        data-testid="reconcile-handled"
+        aria-label={t(UI.handledTitle, lang)}
+        className="flex flex-nowrap items-center gap-2 overflow-hidden text-sm"
+      >
+        <span className="shrink-0 font-semibold">{t(UI.handledTitle, lang)}</span>
+        <ul className="m-0 flex list-none flex-nowrap gap-2 p-0">
+          {special.map((m) => (
+            <li key={m.matchId} data-testid={matchTestId(m.matchId)} title={matchTitle(m, lang)} className="shrink-0">
+              <Badge variant="jade">{matchKindLabel(m.kind, lang)}</Badge>
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  }
   return (
     <section
       data-testid="reconcile-handled"

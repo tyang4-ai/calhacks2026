@@ -6,6 +6,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { scenarioId } from "../../src/mock/index";
 import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
+import { hideB05 } from "./scenario-lib";
 
 interface LoggedEvent {
   type: string;
@@ -84,6 +85,8 @@ async function dropFile(page: Page, name: string, text: string, type: string) {
 }
 
 async function goLive(page: Page) {
+  // These cases test the request and the notes, not the server's answer (scenario-live.spec.ts does).
+  await hideB05(page);
   await page.getByTestId("demo-mode-toggle").click();
   await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().mode)).toBe("live");
 }

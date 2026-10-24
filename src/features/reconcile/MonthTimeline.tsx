@@ -14,6 +14,8 @@ export interface MonthTimelineProps {
   lang: Lang;
   /** Height of the scroll area in px. The table keeps its newest rows in view inside it. */
   maxHeight?: number;
+  /** Once the catch sits above, the "Cindy handled" strip shrinks to one line of chips. */
+  compactHandled?: boolean;
 }
 
 /** Wraps each cell so the row slides into its new place. A match row takes over its payout's cells. */
@@ -32,7 +34,7 @@ function animateRows(rows: LedgerRow[], layoutKeyFor: (row: LedgerRow) => string
   });
 }
 
-export function MonthTimeline({ lang, maxHeight = 360 }: MonthTimelineProps) {
+export function MonthTimeline({ lang, maxHeight = 360, compactHandled = false }: MonthTimelineProps) {
   const records = useCindia((s) => s.month.records);
   const recordIds = useCindia((s) => s.month.recordIds);
   const matches = useCindia((s) => s.month.matches);
@@ -108,7 +110,7 @@ export function MonthTimeline({ lang, maxHeight = 360 }: MonthTimelineProps) {
           </li>
         ))}
       </ul>
-      <HandledStrip month={month} lang={lang} />
+      <HandledStrip month={month} lang={lang} compact={compactHandled} />
       <div ref={scrollRef} data-testid="reconcile-list" className="overflow-y-auto [&_th]:sticky [&_th]:top-0 [&_th]:z-10">
         {rows.length === 0 ? (
           <p className="py-4 text-sm" style={{ color: "var(--c-color-ink-soft)" }}>

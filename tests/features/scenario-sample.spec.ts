@@ -7,6 +7,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { sampleFileName, sampleRecordIds, scenarioCsv, scenarioId, scenarioReplies } from "../../src/mock/index";
 import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
+import { hideB05 } from "./scenario-lib";
 
 interface LoggedEvent {
   type: string;
@@ -164,6 +165,8 @@ test("the sample never changes September's totals, the proof score or the close"
 test("live mode: an own file answered by the scripted fallback says these are the sample's results", async ({ page }) => {
   const watch = watchPage(page);
   await openAtEnd(page);
+  // The fallback is what this case tests, so b05 is hidden from health (scenario-live.spec.ts tests the live answer).
+  await hideB05(page);
   await page.getByTestId("demo-mode-toggle").click();
   await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().mode)).toBe("live");
   await page.evaluate(

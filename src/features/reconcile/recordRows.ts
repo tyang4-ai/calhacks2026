@@ -6,7 +6,7 @@ import type { MatchState, MonthState, RecordArrival } from "../../core/state";
 import type { BankTxn, Channel, ChannelPayout, Order, Piece, Refund, Statement } from "../../core/types";
 import { getById } from "../../mock";
 import { Money, formatDate, formatMonth, type LedgerRow } from "../../ui";
-import { matchCells } from "./MatchRow";
+import { OneLine, PARTY_MAX, matchCells } from "./MatchRow";
 import { RECORD_TYPE_LABELS, RECORD_TYPE_ORDER, t } from "./strings";
 
 export type Lang = "en" | "zh";
@@ -23,6 +23,11 @@ function channelName(channelId: string, lang: Lang): string {
 function pieceTitle(pieceId: string, lang: Lang): string {
   const p = getById<Piece>(pieceId);
   return p ? p.title[lang] : pieceId;
+}
+
+/** A date cell kept on one line, so a row is no taller than its type label. */
+export function noWrap(text: string): ReactNode {
+  return createElement("span", { style: { whiteSpace: "nowrap" } }, text);
 }
 
 function money(cents: number, tone: "neutral" | "in" | "out" | "pending"): ReactNode {
@@ -48,7 +53,7 @@ export function recordDate(recordId: string, recordType: RecordType, fallback = 
 /** One record as table cells: date, type, party, detail and amount. */
 export function recordRow(recordId: string, recordType: RecordType, lang: Lang, fallbackDate = ""): RecordCells {
   const date = recordDate(recordId, recordType, fallbackDate);
-  const base = { date: date ? formatDate(date, lang) : "", type: t(RECORD_TYPE_LABELS[recordType], lang) };
+  const base = { date: date ? noWrap(formatDate(date, lang)) : "", type: t(RECORD_TYPE_LABELS[recordType], lang) };
   switch (recordType) {
     case "order": {
       const o = getById<Order>(recordId);
@@ -134,6 +139,14 @@ export function isSpecialMatch(match: Pick<MatchState, "kind">): boolean {
   return match.kind !== "one_to_one";
 }
 
+/** Holds a record's details and party to one line each, so a long name can't make a tall row. */
+function oneLineDetail(cells: RecordCells): RecordCells {
+  const out = { ...cells };
+  if (typeof cells.detail === "string" && cells.detail) out.detail = createElement(OneLine, { title: cells.detail }, cells.detail);
+  if (typeof cells.party === "string" && cells.party) out.party = createElement(OneLine, { title: cells.party, maxWidth: PARTY_MAX }, cells.party);
+  return out;
+}
+
 /** The month's rows in date order: unmatched records alone, matched ones folded into their match. */
 export function buildTimelineRows(month: MonthSlice, lang: Lang): LedgerRow[] {
   const matched = matchedRecordIds(month);
@@ -148,7 +161,7 @@ export function buildTimelineRows(month: MonthSlice, lang: Lang): LedgerRow[] {
       key: recordSortKey(a),
       row: {
         id: rid,
-        cells: recordRow(rid, a.recordType, lang, a.date),
+        cells: oneLineDetail(recordRow(rid, a.recordType, lang, a.date)),
         ...(a.recordType === "payout" ? { state: "pending" as const } : {}),
         testId: recordTestId(rid),
       },

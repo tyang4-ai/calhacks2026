@@ -3,7 +3,7 @@ NEXT: R6
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 06:12 PT
+UPDATED: 2026-10-24 06:22 PT
 
 # Status board
 
@@ -18,8 +18,8 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - W1 done 3:27 AM: all 9 P0 features green, wave gate PASS, tag w1.
 - G4 passed 4:15 AM after two fix rounds (d08 approvals compact card, d10 toast, d06 handled strip, d07 label). Tag demo-ok-1: the build to demo if everything after fails.
 - W2 green (3/3); P2: six no-key upgrades green (B01, B03, B05, B06, B08, B10); B02, B04, B07, B09 wait on .env.
-- Now: R6. Polish round 1 green, tag demo-ok-2. Next: browser tests of the B05 drop zone and the B08 owner tab in live mode, more polish. Dev server 5173, API 8000.
-- G4 polish after round 3 (verifier r3): fixed d00 caption, d01 request, d06 strip; partly d07 crop (label touches the right edge); left d08 Month panel clipped behind the phone, d06 list lands on one tall wrapped row, d00/d07 empty strip header at the bottom edge.
+- Now: R6. Polish round 2 green, tag demo-ok-3. B05 and B08 live paths proven in the browser. Waiting on .env for B02, B04, B07, B09. Scribe at 8:00 PM. Dev server 5173, API 8000.
+- G4 polish after round 4 (verifier r4): all listed items fixed except the d07 beat label slightly touching the right panel's top edge (not blocking).
 
 ## Gates
 
@@ -107,6 +107,10 @@ Each item names the default already in use, so the build never waits.
 |---|---|---|
 | Oct 24 2:01 AM | `.env` is missing, so there's no `ANTHROPIC_API_KEY` or `NESSIE_KEY`. Copy `C:\dev\secrets\cindia.env` to `.env` | The upgrades that need these keys stay scripted: B02, B07, B09 (Anthropic) and B04 (Nessie) are blocked; B01, B03, B05, B06, B08, B10 run without keys |
 
+## Demo notes for Gordon
+
+- Live two-screen approval (B08): restart the API (`npm run server`) right before a demo that uses a real owner screen on `/owner`. B08 keeps approvals in memory and decisions are final, so an earlier run's apr_01 and apr_02 would otherwise answer at once. Any GET of the pending list marks an owner screen connected for 10 s.
+
 ## Cut and simulated
 
 Everything that ends up cut or still on scripted events, for the README and Devpost.
@@ -173,3 +177,7 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 06:08 PT · reconcile polish in (squared strip on a grid, list fits whole rows; feature 12/12, smoke 22/22) · status.md
 - 2026-10-24 06:03 PT · integrator polish in (cold-open caption card, catch camera aligned to the content corner; d08 back panel left as is); G3 buyer and reconcile PASS 3/3, G4 PASS 5/5; verifier round 3 running · artifacts/gates/G4-0600.md
 - 2026-10-24 06:12 PT · polish round: G3 buyer and reconcile 3/3, G4 5/5, verifier r3 PASS, tag demo-ok-2 · artifacts/gates/G4-0600.md, artifacts/gates/G4-verifier-r3.md
+- 2026-10-24 06:08 PT · polish round 2 started: reconcile (d06 rows, d08 panel height, empty strip header), scenario live browser spec (B05), approvals two-tab live spec (B08) · artifacts/gates/G5-batch-verifier.md
+- 2026-10-24 06:12 PT · scenario live spec in: B05 live path proven in the browser (sample live with $8.50 flag, judge CSV live with stm_scn_ and $5.00, bad file falls back readably); old fallback specs now hide b05 from health; feature 12/12 x3, smoke 22/22 · status.md
+- 2026-10-24 06:16 PT · approvals two-tab live spec in (owner taps on /owner, console gets the live grant by own_01, never auto-grants with an owner connected; feature 20/20 x3, smoke 22/22) · status.md
+- 2026-10-24 06:22 PT · polish round 2: G3 reconcile, scenario, approvals 3/3, G4 5/5, verifier r4 PASS (live specs ran: scenario 12 incl. 3 live, approvals 20 incl. 1 live), tag demo-ok-3 · artifacts/gates/G4-0612.md, artifacts/gates/G4-verifier-r4.md
