@@ -2,6 +2,8 @@
 
 **Status: APPROVED by Gordon at 4:25 PM PT on Oct 24, with his changes: Native American makers only (scope C), the "underrepresented makers" framing, and Cindia called a platform. Being applied now.** Fix agents apply it to the plans, the contracts and the harness. A fresh agent re-checks the result, and the build session starts.
 
+**Build sessions: don't start V0 until this status line says APPLIED.** Until then the plans on `main` are mid-edit.
+
 Sources: Gordon's 12 points (3:05 PM), his answers (4:25 PM), and the seven reviews in `docs/v2/reviews/` (A1 novelty, A2 culture and trust, B1 architecture, B2 backend and ML, C tracks, D1 contracts and data, D2 connections). A finding is written as review and number, so `B1-4` is finding 4 in `B1-architecture.md`.
 
 ## 1. Decisions

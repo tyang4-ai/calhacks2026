@@ -4,20 +4,20 @@ Every session and every subagent in this repo loads this file. If you are the ma
 
 ## The project in five lines
 
-- **Cindia** (Craft Inheritance Network, Direct from Independent Artisans) is the index and back office for Indigenous and heritage makers. Buyers find pieces by describing a feeling (vibe search on our own embedding model), each seller gets a storefront at their own link, and a swarm of small agents led by **Cindy** answers customers and runs the makers' money. A person approves anything that moves money.
-- **The named community** is the Gu embroidery (顾绣) studio in Shanghai with its owner and three makers. Seven fictional Indigenous communities sit beside it in the catalog. Gu embroidery is a heritage craft and is never called Indigenous. Why and what: `docs/v2/brief.md`.
-- Gordon Yang is building it solo at Cal Hacks 13.0. **The desktop site, the guided tour (`/demo`) and the idea matter more than the product.** Desktop only.
-- **v1** (Phase 1 frontend on scripted events, Phase 2 upgrades B01 to B10) is green as `demo-ok-4`. **v2** adds the plans in `docs/v2/README.md` on top of it, with every new name in `docs/v2/contracts.md` until `I2-core` merges them into `docs/common/`. Screens render events, and backend upgrades replace event sources.
+- **Cindia** (Craft Inheritance Network, Direct from Independent Artisans) is a platform for underrepresented makers, starting with Native American makers. Selling online takes time, broadband and marketing reach that many makers on tribal lands don't have, so Cindia does the selling, the marketing and the books for them. Buyers find pieces by describing a feeling (vibe search on our own embedding model), each seller gets a storefront at their own link, and a swarm of small agents led by **Cindy** answers customers and runs the makers' money. A person approves anything that moves money.
+- **The named community** is the fictional Diné Weaving and Silver Co-op (`com_dine`, studio `std_dine`) on the Navajo Nation, Arizona, with its owner and three makers. It is v1's studio, re-skinned in step R0 with every v1 number kept. Three more fictional Native American communities sit beside it in the catalog: an Ojibwe beadwork co-op, an Acoma pottery studio and a Seminole patchwork co-op. Other communities are "next", each only with that community's own organizations. Every maker, community and story is fictional. Why and what: `docs/v2/brief.md` and `docs/v2/fix-plan.md`.
+- Gordon Yang is building it solo at Cal Hacks 13.0. **The desktop site, the guided tour (`/demo`) and the idea matter more than the product.** Desktop only. The tour is the 3-minute pitch: the pitch cards, the buyer minute and the seller minute, always scripted.
+- **v1** (Phase 1 frontend on scripted events, Phase 2 upgrades B01 to B10) is green as `demo-ok-4`. **v2** starts with R0, then adds the plans in `docs/v2/README.md` on top, with every new name in `docs/v2/contracts.md` until `I2-core` merges them into `docs/common/`. Screens render events, and backend upgrades replace event sources.
 - **Deadlines, Pacific time:** building stops Sunday Oct 25 at 6:00 AM. Devpost closes at 9:00 AM. The build runs in a Claude Code cloud session on the GitHub repo.
 
 ## How the build runs
 
 v1: S0 preflight → S1 scaffold → G1 → S2 mock data → G2 → W1 P0 features → G3 → I1 demo stage → G4 → W2 P1 features and P2 backend upgrades side by side, each with its gate. Done.
 
-v2: V0 hand-off and cloud preflight → V1 shared code and data (G1b, G2b) → V2 features, migrations and upgrades B11 to B15 (G3, G5) → V3 the tour (G4v2) → V4 design drops from Figma → freeze → G6
+v2: V0 network check, hand-off and cloud preflight → V1 R0 re-skin, then shared code and data (G1b, G2b) → V2 features, migrations, upgrades B11 to B16 and the public site (G3, G5) → V3 the tour (G4v2) → V4 design drops from Figma → freeze → G6
 
 - A **gate** is a set of checks with recorded evidence, defined in `docs/common/definition-of-done.md`. Nothing moves past a failed gate.
-- After each passed gate the orchestrator commits, tags (`g1-scaffold`, `g2-data`, `w1-<slug>`, `demo-ok-1`, `demo-ok-b04` and so on), pushes and updates `status.md`.
+- After each passed gate the orchestrator commits, pushes, tags (`g1-scaffold`, `w1-<slug>`, `demo-ok-b04`, `v2-reskin`, `demo-ok-v2` and so on) and updates `status.md`. In the cloud session it pushes the branch only, because the GitHub proxy refuses tag pushes. Tags stay local, each one and its commit SHA go in the Tags table of `status.md`, and Gordon pushes them from Windows at the freeze.
 - `main` always holds the last green build. A demo that runs beats a feature that doesn't.
 
 ## Who does what
@@ -33,7 +33,7 @@ v2: V0 hand-off and cloud preflight → V1 shared code and data (G1b, G2b) → V
 | integrator | I1 demo stage, plus any change to shared code or contracts after G1 | shared code, root config, the server skeleton, `docs/common/`, `scripts/`, `tests/smoke/`, `tests/demo/`, `tests/offline/`, `public/` |
 | backend-builder | One Phase 2 upgrade | its router in `server/routers/`, files under `server/` with its own `bNN` prefix, its adapter in `src/sources/live/`, its tests in `tests/server/` |
 | scribe | README, the what's-real list, a Devpost skeleton for Gordon, one folder per sponsor track | `README.md`, `docs/devpost/`, `sponsors/` |
-| design lead | A general-purpose agent with the Figma tools: research, moodboards, style tiles, mockups, prototype, the handoff drops | `design/` |
+| design lead | A general-purpose agent with the Figma tools, in the planning session only: research, moodboards, style tiles, mockups, prototype, the handoff drops | `design/`, pushed by the planning session. The build session never writes it |
 
 The full path table is in `docs/common/conventions.md`. Every delegation message starts with the header defined there (`ROLE`, `PLAN`, `TASK`, `SCOPE`).
 
@@ -62,7 +62,7 @@ The scaffolder creates these in S1. The names are fixed here so every plan can r
 | `npm run check:data` | Integrity tests for the mock dataset and the answer key |
 | `npm run test:smoke` | Playwright: every route renders with no console errors |
 | `npm run test:feature -- <slug>` | Playwright: one feature's acceptance tests, against the dev server |
-| `npm run test:demo` | Playwright: plays the 60-second demo on the production build and saves a screenshot per beat |
+| `npm run test:demo` | Playwright: plays the demo on the production build and saves a screenshot per beat. That's v1's 60-second demo (with the co-op's names from R0 on) until `I2-tour` lands, then the tour |
 | `npm run test:offline` | The demo with every request beyond localhost blocked, failing on any attempt |
 | `npm run gate -- <gate> [<slug>]` | Runs one gate's checks (G1 to G6, with a feature or upgrade slug for G3 and G5) and writes `artifacts/gates/<gate>-<time>.md` |
 | `npm run build`, `npm run preview` | Production build, served on http://localhost:4173 |
@@ -71,6 +71,13 @@ The scaffolder creates these in S1. The names are fixed here so every plan can r
 | `npm run export:mock` | v2, from `I2-core`: writes `src/mock/` as JSON to `artifacts/mock/mock.json`, for the Python side |
 | `npm run art` | v2, from `I2-art`: draws the piece illustrations into `public/images/` |
 | `python server/b11_embed/train.py` | v2, from `B11-embed`: trains and scores the embedding model. Use the `.venv` Python |
+| `python server/b11_embed/fetch_model.py` | v2, from `B11-embed`: pulls the newest published model from the Hugging Face repo into `CINDIA_MODEL_DIR`. Use the `.venv` Python |
+| `spacetime start --listen-addr 127.0.0.1:3000` | v2: the local SpacetimeDB server on port 3000, bound to this machine only. The orchestrator starts it once and the heartbeat restarts it. Never a bare `spacetime start` |
+| `spacetime publish --server local --module-path server/b13_spacetime/module cindia` | v2, after `B13-live` T1: publishes the module to the local server as `cindia`. The orchestrator runs it. `server/b13_spacetime/README.md` holds the exact command and the token step |
+| `npm run build:public` | v2, from `D-deploy`: the public scripted build in `dist/` (`VITE_PUBLIC_SITE=1`, no Pay, the sandbox market at `/market/`), for Gordon's Cloudflare Pages upload |
+| `node scripts/laptop-setup.mjs` | v2, from `D-deploy`: prepares the Windows demo laptop for live mode and prints `/api/health`. Gordon runs it there, never in the cloud |
+
+R0's checks are every v1 command above: `check`, `check:data`, `test:smoke`, `build`, `test:demo`, `test:offline` and `test:server`, all green before its one commit.
 
 Two exist from the start: `node .claude/hooks/test-hooks.mjs` (hook self-test) and `node scripts/preflight.mjs` (G0 checks).
 

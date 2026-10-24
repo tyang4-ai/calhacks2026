@@ -24,7 +24,7 @@ import {
 } from './lib/policy.mjs';
 
 const REASONS = {
-  secret: 'Keys stay in .env and never enter the conversation. Check for the file with test -f .env or Test-Path .env instead.',
+  secret: 'Keys never enter the conversation. They live in .env on Windows and in the cloud environment\'s variables. Check for the file with test -f .env or Test-Path .env, and check which keys the API sees with curl -s http://localhost:8000/api/health, which reports each one as true or false.',
   dump: 'Printing the environment could print the API keys. Ask for one non-secret variable by name instead.',
   git: 'Only the orchestrator runs git commands that change anything. Put what you need under needs: in your report.',
   force: 'Force-pushing or deleting remote branches is never allowed. main must keep its history.',
@@ -38,13 +38,33 @@ const REASONS = {
   encoded: 'Encoded commands can not be checked. Run the command in plain text.',
 };
 
-const KEY_NAMES = ['ANTHROPIC_API_KEY', 'NESSIE_KEY'];
-const KEY_RE = [
-  /\$\{?(ANTHROPIC_API_KEY|NESSIE_KEY)\b/,
-  /\$env:(ANTHROPIC_API_KEY|NESSIE_KEY)\b/i,
-  /%(ANTHROPIC_API_KEY|NESSIE_KEY)%/i,
-  /\benv:(ANTHROPIC_API_KEY|NESSIE_KEY)\b/i,
+// The variables that hold keys: the v1 and v2 names, plus any name that ends in _KEY, _TOKEN or
+// _SECRET. In the cloud session the keys live in the environment, not in .env, so an echo, a
+// printenv, a substring expansion or an interpreter one-liner would put them in the conversation.
+const KEY_NAMES = [
+  'ANTHROPIC_API_KEY',
+  'CINDIA_ANTHROPIC_API_KEY',
+  'NESSIE_KEY',
+  'ELASTIC_API_KEY',
+  'APIFY_TOKEN',
+  'HF_TOKEN',
+  'SPACETIME_TOKEN',
 ];
+const NAMED = KEY_NAMES.join('|');
+const SUFFIXED = '[A-Za-z_][A-Za-z0-9_]*_(?:KEY|TOKEN|SECRET)';
+const ANY_KEY = `(?:${NAMED}|${SUFFIXED})`;
+const KEY_RE = [
+  new RegExp(`\\$\\{?${ANY_KEY}\\b`, 'i'),
+  new RegExp(`\\$env:${ANY_KEY}\\b`, 'i'),
+  new RegExp(`%${ANY_KEY}%`, 'i'),
+  new RegExp(`\\benv:${ANY_KEY}\\b`, 'i'),
+];
+const KEY_NAME_RE = new RegExp(`^${ANY_KEY}$`, 'i');
+const isKeyName = (s) => KEY_NAME_RE.test(String(s));
+// Code that reads the environment and names a key within 60 characters.
+const CODE_READS_KEY_RE = new RegExp(`(environ|process\\.env|getenv|GetEnvironmentVariable|ENV\\[)[^\\n]{0,60}${ANY_KEY}\\b`, 'i');
+// /proc/<pid>/environ holds every variable of that process, keys included.
+const PROC_ENVIRON_RE = /^\/proc\/[^/]+\/environ$/;
 
 const READ_VERBS = new Set([
   'cat', 'tac', 'nl', 'type', 'more', 'less', 'most', 'head', 'tail', 'get-content', 'gc',
@@ -58,6 +78,7 @@ const READ_VERBS = new Set([
 ]);
 
 const INTERPRETERS = new Set(['python', 'python3', 'py', 'node', 'deno', 'bun', 'ruby', 'perl', 'php']);
+const isInterpreter = (name) => INTERPRETERS.has(name) || /^python3\.\d+$/.test(name);
 const SHELLS_BASH = new Set(['bash', 'sh', 'zsh', 'dash', 'ksh']);
 const SHELLS_PS = new Set(['pwsh', 'powershell']);
 
@@ -1283,10 +1304,11 @@ function checkSimple(ctx, sub, dialect, state, depth) {
 
   // ---- everyone
   for (const r of reads) if (isEnvLike(r)) return REASONS.secret;
+  for (const r of reads) if (PROC_ENVIRON_RE.test(String(r))) return REASONS.dump;
 
   if (name === 'printenv') {
     const pos = args.filter((a) => !isFlag(a));
-    if (!pos.length || pos.some((a) => KEY_NAMES.includes(a))) return REASONS.dump;
+    if (!pos.length || pos.some((a) => isKeyName(a))) return REASONS.dump;
   }
   if (name === 'set' && args.length === 0) return REASONS.dump;
   if (['export', 'declare', 'typeset'].includes(name) && args.every((a) => isFlag(a))) return REASONS.dump;
@@ -1295,12 +1317,17 @@ function checkSimple(ctx, sub, dialect, state, depth) {
   }
 
   if (READ_VERBS.has(name)) {
-    for (const a of fileArgs(name, args)) for (const part of argParts(a)) if (isEnvLike(part)) return REASONS.secret;
+    for (const a of fileArgs(name, args)) {
+      for (const part of argParts(a)) {
+        if (isEnvLike(part)) return REASONS.secret;
+        if (PROC_ENVIRON_RE.test(part)) return REASONS.dump;
+      }
+    }
   }
 
-  if (INTERPRETERS.has(name)) {
+  if (isInterpreter(name)) {
     const code = args.join(' ');
-    if (/(environ|process\.env|getenv|GetEnvironmentVariable|ENV\[)[^\n]{0,60}(ANTHROPIC_API_KEY|NESSIE_KEY)/i.test(code)) return REASONS.secret;
+    if (CODE_READS_KEY_RE.test(code)) return REASONS.secret;
     if (/(os\.environ|process\.env)\s*(\)|;|,|$)/.test(code)) return REASONS.dump;
     if (/dotenv/i.test(code) && args.some((a) => ['-c', '-e', '--eval', '-p', '--print'].includes(a))) return REASONS.secret;
     if (/(open|readFileSync|readFile|read_text|Get-Content)\s*\(\s*['"][^'"]*\.env['"]/i.test(code)) return REASONS.secret;

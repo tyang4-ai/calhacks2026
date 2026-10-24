@@ -340,6 +340,36 @@ check('main: node -e process.env key', C, sh(null, null, 'node -e "console.log(p
 check('main: grep for the name in code', C, sh(null, null, 'grep -rn ANTHROPIC_API_KEY server/'), 'allow');
 check('main: rg pattern .env', C, sh(null, null, 'rg "\\.env" src'), 'allow');
 
+// v2 key names, and any variable that ends in _KEY, _TOKEN or _SECRET (B2-21, D2-6).
+// In the cloud session the keys live in the environment, so each route is checked per name.
+for (const name of ['CINDIA_ANTHROPIC_API_KEY', 'ELASTIC_API_KEY', 'APIFY_TOKEN', 'HF_TOKEN', 'SPACETIME_TOKEN']) {
+  check(`v2 key: echo $${name}`, C, sh(null, null, `echo $${name}`), 'deny');
+  check(`v2 key: printenv ${name}`, C, sh(null, null, `printenv ${name}`), 'deny');
+  check(`v2 key: substring \${${name}:0:6}`, C, sh(null, null, `echo "\${${name}:0:6}"`), 'deny');
+  check(`v2 key: python print ${name}`, C, sh(null, null, `python3 -c "import os; print(os.environ['${name}'])"`), 'deny');
+}
+check('v2 key: builder echo $APIFY_TOKEN', C, sh('builder', 'b1', 'echo $APIFY_TOKEN'), 'deny');
+check('v2 key: python os.getenv HF_TOKEN', C, sh(null, null, `python -c "import os; print(os.getenv('HF_TOKEN'))"`), 'deny');
+check('v2 key: .venv python prints a key', C, sh(null, null, `.venv/bin/python -c "import os; print(os.environ['ELASTIC_API_KEY'])"`), 'deny');
+check('v2 key: python3.13 prints a key', C, sh(null, null, `python3.13 -c "import os; print(os.environ.get('APIFY_TOKEN'))"`), 'deny');
+check('v2 key: node prints SPACETIME_TOKEN', C, sh(null, null, 'node -e "console.log(process.env.SPACETIME_TOKEN)"'), 'deny');
+check('v2 key: PowerShell $env:HF_TOKEN', C, sh(null, null, 'Write-Output $env:HF_TOKEN', { tool: 'PowerShell' }), 'deny');
+check('v2 key: cmd %APIFY_TOKEN%', C, sh(null, null, 'cmd /c echo %APIFY_TOKEN%'), 'deny');
+check('key suffix: echo $GITHUB_TOKEN', C, sh(null, null, 'echo $GITHUB_TOKEN'), 'deny');
+check('key suffix: echo ${STRIPE_SECRET}', C, sh(null, null, 'echo "${STRIPE_SECRET}"'), 'deny');
+check('key suffix: printenv OPENAI_API_KEY', C, sh(null, null, 'printenv OPENAI_API_KEY'), 'deny');
+check('key suffix: node prints a _TOKEN', C, sh(null, null, 'node -e "console.log(process.env.CLAUDE_CODE_OAUTH_TOKEN)"'), 'deny');
+check('key suffix: PowerShell $env: in lower case', C, sh(null, null, 'Write-Output $env:my_secret', { tool: 'PowerShell' }), 'deny');
+check('environ: cat /proc/self/environ', C, sh(null, null, 'cat /proc/self/environ'), 'deny');
+check('environ: redirect from /proc/1/environ', C, sh(null, null, 'tr "\\0" "\\n" < /proc/1/environ'), 'deny');
+check('not a key: echo $HOME', C, sh(null, null, 'echo $HOME'), 'allow');
+check('not a key: printenv PATH', C, sh(null, null, 'printenv PATH'), 'allow');
+check('not a key: the health check', C, sh(null, null, 'curl -s http://localhost:8000/api/health'), 'allow');
+check('not a key: torch version', C, sh(null, null, '.venv/bin/python -c "import torch; print(torch.__version__)"'), 'allow');
+check('not a key: playwright install with the skip flag unset', C, sh(null, null, 'env -u PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD npx playwright install chromium'), 'allow');
+check('not a key: spacetime start on localhost', C, sh(null, null, 'spacetime start --listen-addr 127.0.0.1:3000'), 'allow');
+check('not a key: push the branch only', C, sh(null, null, 'git push origin main'), 'allow');
+
 check('main: git push --force', C, sh(null, null, 'git push --force origin main'), 'deny');
 check('main: git push -f', C, sh(null, null, 'git push -f'), 'deny');
 check('main: git push +main', C, sh(null, null, 'git push origin +main'), 'deny');

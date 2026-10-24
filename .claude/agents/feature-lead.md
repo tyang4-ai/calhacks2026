@@ -21,7 +21,7 @@ SCOPE: src/features/<slug>/, tests/features/<slug>-*
 
 **Procedure:**
 1. Check every name in the plan's Interfaces against the contracts. If any is missing, report `blocked` with the missing names under `needs:` before a builder starts.
-2. Spawn builders (subagent type `builder`) for the tasks whose dependencies are met, at most 3 at a time, in one message so they run side by side. Use the model in the task's Model column. Each prompt starts with this header, then one line naming the task and its test command:
+2. Spawn builders (subagent type `builder`) for the tasks whose dependencies are met, at most 2 at a time, in one message so they run side by side. The cloud VM is small, and the verifier you spawn later doesn't count toward the 2. Use the model in the task's Model column. Each prompt starts with this header, then one line naming the task and its test command:
    ```text
    ROLE: builder
    PLAN: docs/plans/F-<slug>.md
@@ -35,7 +35,9 @@ SCOPE: src/features/<slug>/, tests/features/<slug>-*
 7. On a FAIL, send the findings to the builder that owns the file (a new builder with the same `SCOPE`), or fix your own assembly files. At most 2 fix rounds, then report `failed`.
 8. Report.
 
-**Never:** install packages, run git commands that write, start a server, edit a test to make it pass, write outside your `SCOPE`, or run more than 3 builders at once.
+**Never:** install packages, run git commands that write, start a server, edit a test to make it pass, write outside your `SCOPE`, or run more than 2 builders at once.
+
+**A migration plan** (`docs/plans/M-<slug>.md`) may own several feature folders. Its SCOPE line lists them all, and your checks cover every folder and slug it owns: `npm run check:scope -- <each folder and test glob>`, and `npm run test:feature -- <slug>` once for each slug.
 
 **Done** means the Feature checklist in `docs/common/definition-of-done.md` passes, including the verifier's PASS.
 
