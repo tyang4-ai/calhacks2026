@@ -23,11 +23,11 @@ The gift finder's three picks come from Claude reading the catalog, with a reaso
 - **Structured answer** through `client.messages.parse()`: exactly three picks, each `{ piece_id, reason_en, reason_zh }`. Each reason is one plain sentence about the piece itself: the maker, the craft, the motif or the hours.
 - **Server checks:** every `piece_id` is in the catalog, the three are different, and a price limit in the query holds. A failed check is `invalid_model_output`.
 - **Replaces:** the keyed `concierge.answered` in the demo timeline.
-- **Keeping the demo whole:** the next scripted beat opens `pc_01`. If Claude's picks don't include `pc_01`, the adapter returns `[]` and the scripted answer plays. A buyer's own query, once the registry can pass one to adapters, has no such check.
+- **Keeping the demo whole:** the next scripted beat opens `pc_01`. If Claude's picks don't include `pc_01`, the adapter returns `[]` and the scripted answer plays.
+- **Answers people too:** a buyer's own request arrives as a `concierge.asked` with `source: "user"`, and the registry passes it to this adapter in live mode (Requests from people in `events.md`). Those answers skip the `pc_01` check.
 - **Adapter** (`src/sources/live/b09-concierge.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b09` and `keys.anthropic` is true.
-  - `produce(event)`: post the query and the catalog from `src/mock` and return the result.
-  - A buyer's own typed query reaches the adapter only once the sources registry passes a person's keyed actions to adapters. Until then, list it under `needs:`.
+  - `produce(event)`: for a keyed `concierge.answered`, post its query. For a user `concierge.asked`, post that query. Send the catalog from `src/mock` and return the result.
 
 ## Tasks
 

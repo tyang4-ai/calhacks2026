@@ -18,6 +18,7 @@ interface CindiaEvent<T extends EventType = EventType> {
 ```
 
 - IDs inside payloads point at the entities in `data-model.md`. Components look the entity up with `getById()` from `src/mock`. Payloads don't copy entity data.
+- The exception is numbers a live adapter recomputes: `split.shown`, `receipt.updated`, `statement.issued`, `impact.updated` and `followup.drafted` carry their figures and text in the payload, and the screens render them from the event, never from the entity. The scripted events carry the same figures as `src/mock/`.
 - `Text` is `{ en: string; zh: string }`. Amounts are integer cents.
 
 ## Event types
@@ -39,7 +40,7 @@ interface CindiaEvent<T extends EventType = EventType> {
 
 | Type | Payload | Key |
 |---|---|---|
-| `money.moved` | `moveId`, `kind: "sale" \| "fee" \| "settlement" \| "payout_in" \| "materials" \| "maker_pay" \| "refund"`, `from: Party`, `to: Party`, `amountCents`, `refId`, `date` | `b04-bank` |
+| `money.moved` | `moveId`, `kind: "sale" \| "fee" \| "settlement" \| "payout_in" \| "materials" \| "maker_pay" \| "refund"`, `from: Party`, `to: Party`, `amountCents`, `refId`, `date`, `nessieId?` (set only by the live B04 adapter) | `b04-bank` |
 | `account.synced` | `accountId`, `balanceCents`, `asOf` (a date) | `b04-bank` |
 
 `Party` is `{ kind: "buyer" \| "cindia" \| "card_network" \| "studio" \| "maker" \| "gallery" \| "processor" \| "supplier"; id?: string }`.
@@ -71,6 +72,7 @@ interface CindiaEvent<T extends EventType = EventType> {
 | `approval.requested` | `approvalId` | `b08-approvals` |
 | `approval.granted` | `approvalId`, `by: "own_01"`, `date` | `b08-approvals` |
 | `approval.declined` | `approvalId`, `by: "own_01"`, `reason: Text` | `b08-approvals` |
+| `followup.drafted` | `followUpId`, `approvalId`, `to: Text`, `subject: Text`, `body: Text` | `b02-explain` |
 | `followup.sent` | `followUpId`, `approvalId` | `b02-explain` |
 | `payout.sent` | `makerPayoutId`, `makerId`, `amountCents`, `date` | `b04-bank` |
 
@@ -80,9 +82,9 @@ Only the owner's surface emits `approval.granted` or `approval.declined` with `s
 
 | Type | Payload | Key |
 |---|---|---|
-| `workbook.ready` | `monthId`, `fileName`, `sheets: string[]` | `b06-workbook` |
-| `statement.issued` | `makerStatementId`, `makerId` | `b10-derived` |
-| `impact.updated` | `impactId` | `b10-derived` |
+| `workbook.ready` | `monthId`, `fileName`, `sheets: string[]`, `url?` (set by the live B06 adapter, a path under `/api/b06/files/`. Without it the feature builds the file in the browser) | `b06-workbook` |
+| `statement.issued` | `makerStatementId`, `makerId`, `lines: { orderId; pieceId; makerShareCents }[]`, `totalCents`, `heldCents`, `payoutDate` | `b10-derived` |
+| `impact.updated` | `impactId`, `makerShareBps`, `daysCloseToPayout`, `daysCloseToPayoutBefore`, `bookkeepingHoursSaved`, `estimate: boolean` | `b10-derived` |
 
 ### Proof, Ask Cindy, the scenario
 
@@ -91,7 +93,7 @@ Only the owner's surface emits `approval.granted` or `approval.declined` with `s
 | `proof.scored` | `caught`, `total`, `results: { errorId; caught: boolean }[]` | `b03-proof` |
 | `ask.asked` | `questionId`, `text`, `lang` | |
 | `ask.answered` | `questionId`, `answer: Text`, `chart?: ChartSpec`, `refIds: string[]` | `b07-ask` |
-| `scenario.loaded` | `scenarioId`, `fileName`, `recordIds` | `b05-scenario` |
+| `scenario.loaded` | `scenarioId`, `fileName`, `recordIds`, `content?` (the file's text, at most 200 KB, sent only when a person drops in their own file) | `b05-scenario` |
 
 `ChartSpec` is `{ type: "bar" \| "line"; title: Text; labels: string[]; series: { name: Text; valuesCents: number[] }[] }`. Recharts draws it with the kit's `chartTheme`.
 
@@ -124,6 +126,7 @@ interface Player {
 ## The store (`src/core/store.ts`)
 
 - `emit(event)` adds an event. The player, live adapters and user actions all go through it.
+- `userEvent(type, payload)` from `src/core/events.ts` builds a person's event: the next `evt_user_` ID, `at` from `player.now()`, `source: "user"`. Features use it for every tap and typed request.
 - `useCindia(selector)` reads state in components, built on `useSyncExternalStore`. No other state library.
 - Every reducer is idempotent per entity ID, so replaying or duplicating an event never double-counts.
 - The state holds IDs and statuses only, under these keys: `clock`, `mode` (`"scripted" \| "live"`), `lang` (`"auto" \| "en" \| "zh"`, starting at `auto`, see `ui-contract.md`), `buyer`, `money`, `month`, `agent`, `approvals`, `close`, `proof`, `ask`, `impact`, `demo`, `scenario`, and `sources` (`Record<SourceKey, "scripted" \| "live">`, the last source that delivered each key).
@@ -139,10 +142,12 @@ interface LiveAdapter {
   key: SourceKey;
   health(): Promise<boolean>;                                   // GET /api/health and its own check
   produce(event: CindiaEvent, state: CindiaState): Promise<CindiaEvent[]>;
+  start?(emit: (e: CindiaEvent) => void): () => void;           // optional: push events on its own schedule (B08's second screen), returns a stop function
 }
 ```
 
-- The registry finds adapters in `src/sources/live/` with `import.meta.glob`. Adding an adapter never edits the registry.
+- The registry finds adapters in `src/sources/live/` with `import.meta.glob`. Each file `src/sources/live/bNN-<slug>.ts` default-exports one `LiveAdapter`. Adding an adapter never edits the registry.
+- In live mode the registry calls `start()` on each healthy adapter that has one, and calls the returned stop function when the mode goes back to scripted.
 - **Scripted mode:** every event comes from the player as written.
 - **Live mode:** when the player reaches an event whose `key` has a healthy adapter, the registry calls `produce()` with an 8-second timeout. On success it emits the returned events with `source: "live"`. On an error, a timeout or an empty result, it emits the scripted event instead and logs why. The demo never stalls on a network call.
 - A panel shows the `Simulated` badge while `sources[key]` for any key it renders is `"scripted"`.
@@ -155,7 +160,8 @@ Some events start from a person, not the timeline: the buyer typing their own re
 |---|---|---|---|
 | `concierge.asked` | `b09-concierge` | `concierge.answered` with the curated set from `src/mock/` (`pc_01`, `pc_07`, `pc_11` for any request) | the B09 adapter |
 | `ask.asked` | `b07-ask` | `ask.answered` from `src/mock/ask.ts`: the canned answer whose question matches, or else one saying scripted mode answers the three demo questions | the B07 adapter |
-| `scenario.loaded` | `b05-scenario` | the held-back statement's `record.arrived`, `match.made` and `flag.raised` events from `src/mock/scenario.ts` | the B05 adapter |
+| `scenario.loaded` | `b05-scenario` | the held-back statement's `record.arrived`, `match.made` and `flag.raised` events from `src/mock/scenario.ts` | the B05 adapter, which parses `content` when a person sent their own file |
+| `approval.granted`, `approval.declined` | `b08-approvals` | nothing more, the store has already applied it | the B08 adapter forwards it to the server, so the other screen sees it |
 
 - The scripted answer arrives 1.2 seconds later on the player clock, so it reads as Cindy working.
 - In live mode the registry tries the adapter first, with the same 8-second timeout and the scripted answer as the fallback.

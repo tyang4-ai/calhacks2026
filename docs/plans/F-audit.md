@@ -7,39 +7,39 @@ Any figure can be traced. The audit drawer unfolds a figure's trail one step at 
 
 ## Read first
 - `docs/common/data-model.md`: Entities (every `orderIds`, `refundIds`, `recordIds`, `refId` and `nettedInPayoutId` link), Money rules, Demo-critical figures 1, 4, 6 and 8.
-- `docs/common/events.md`: the store keys and the Simulated badge rule.
-- `docs/common/ui-contract.md`: the `studio.drawer.audit` slot, how the console opens drawers, the test IDs below, and the test hook for driving the player.
-- `docs/common/design-system.md`: `Panel`, `LedgerTable`, `Money`, `EvidenceCard`, `Badge`, the motion rule for things a person opens.
+- `docs/common/events.md`: the store.
+- `docs/common/ui-contract.md`: the `studio.drawer.audit` slot and its source key, Drawers, Language, Simulated badge, Test hooks.
+- `docs/common/design-system.md`: `Panel`, `LedgerTable`, `Money`, `EvidenceCard`, and the motion rule for things a person opens.
 - `docs/common/glossary.md`: audit trail, ledger, bank record, payout, statement, contract, held.
 
 ## Interfaces
 - Reads:
   - Data through `getById()`: maker payouts, orders, channel payouts, the refund, the gallery statement and contract, bank transactions, ledger entries, matches and the flag.
-  - Store keys: `month`, `close`, `approvals`, `sources`, `lang`.
-  - UI kit: `Panel`, `LedgerTable`, `Money`, `EvidenceCard`, `Badge` (Simulated).
+  - Store keys: `month`, `close`, `approvals`. The language comes from `SlotProps.lang`.
+  - UI kit: `Panel` (declaring `b10-derived`), `LedgerTable`, `Money`, `EvidenceCard`.
 - Emits: nothing.
 - Exports: `{ id: "audit", slots: { "studio.drawer.audit": AuditDrawer } }` from `src/features/audit/index.ts`.
 - Test IDs, all internal to this feature: `audit-drawer`, `audit-start-list`, `audit-start-<recordId>`, `audit-trail`, `audit-step-<recordId>`, `audit-bank-record`.
-- Source key it renders: `b10-derived`.
+- Source key: `b10-derived`.
 
 ## Tasks
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
 | T1 | Trail builder: a pure function from a record ID to its ordered steps, following the links in data-model.md and ending at the bank transaction and the ledger entries that point at it. Unit tests cover `mpo_01` (through `ord_001` and `pay_001`), `flg_01` (contract, statement, bank deposit) and `ord_020` (through `rfd_001` and the payout it was netted from) | `src/features/audit/buildTrail.ts`, `src/features/audit/buildTrail.test.ts` | none | opus |
-| T2 | Trail view: the steps unfold one at a time when opened, each with its record kind, date, amount through `Money` and memo, the bank record last and marked as the source of truth | `src/features/audit/TrailView.tsx`, `tests/features/audit-trail.spec.ts` | T1 | opus |
-| T3 | Drawer and start list: the month's traceable figures (the three maker payouts, the flag, the buyer's order) with their amounts, and the trail of the one picked. The Simulated badge shows while `sources["b10-derived"]` is `"scripted"` | `src/features/audit/AuditDrawer.tsx`, `src/features/audit/StartList.tsx`, `tests/features/audit-drawer.spec.ts` | T1, T2 | opus |
+| T2 | Trail view: the steps unfold one at a time when opened, each with its record kind, date, amount through `Money` and memo, with the bank record last and marked as the source of truth | `src/features/audit/TrailView.tsx`, `tests/features/audit-trail.spec.ts` | T1 | opus |
+| T3 | Drawer and start list: the month's traceable figures (the three maker payouts, the flag and the buyer's order) with their amounts, and the trail of the one picked | `src/features/audit/AuditDrawer.tsx`, `src/features/audit/StartList.tsx`, `tests/features/audit-drawer.spec.ts` | T1, T2 | opus |
 | T4 | Wire the slot (lead) | `src/features/audit/index.ts` | T3 | lead |
 
-Builders run their own spec with `npm run test:feature -- audit`.
+Builders run their own spec with `npm run test:feature -- audit`, moving the player with `window.__cindia.player.seek()`.
 
 ## Acceptance
-- Given the month has closed, when the audit drawer opens, then `audit-start-list` lists `mpo_01`, `mpo_02`, `mpo_03`, `flg_01` and `ord_001`, each with its amount.
+- Given `/studio/close?drawer=audit` after the close, then `audit-start-list` lists `mpo_01`, `mpo_02`, `mpo_03`, `flg_01` and `ord_001`, each with its amount.
 - When `audit-start-mpo_01` is clicked, then `audit-trail` unfolds steps including `audit-step-ord_001`, and ends with `audit-bank-record` for the transaction that paid the maker.
 - When `audit-start-flg_01` is clicked, then the trail shows the contract, the statement and the bank deposit, with expected 2,040.00 and actual 1,700.00 through `Money`.
 - When the trail for `ord_020` is built, then it reaches `rfd_001` and the payout it was netted from.
 - Every amount in a trail equals the field in the dataset.
-- While `sources["b10-derived"]` is `"scripted"`, the drawer shows `simulated-badge`.
+- In scripted mode the drawer shows `simulated-badge`.
 
 ## Out of scope
-- Opening the drawer by clicking a number inside another feature. That needs a shared opener in the console, which belongs to the integrator.
+- Showing the trail for the `ref` in `?drawer=audit&ref=<entity id>`, and opening the drawer by clicking a number inside another feature. Both need the console to hand the drawer its `ref`, which `SlotProps` doesn't carry yet. That's a shell change for the integrator.
 - Editing records and exporting a trail.

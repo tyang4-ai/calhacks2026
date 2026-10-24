@@ -24,7 +24,7 @@ The owner approves on a real second screen, a phone or a second tab, and the con
   - `health()`: `GET /api/health` lists `b08`.
   - On the keyed `approval.requested`: post it to `/api/b08/approvals` and return the live twin.
   - On the scripted `approval.granted`: check `GET /api/b08/status`. With no owner screen connected, return `[]` at once, so the scripted grant plays on time. With one connected, long-poll `GET /api/b08/approvals/{id}?wait=6` and return the owner's decision, or `[]` if none came.
-- **The owner's phone:** the owner surface polls pending approvals every 2 seconds and posts the owner's decision. That needs the sources registry to let an adapter push events into the store on its own schedule, which `events.md` doesn't offer yet. List it under `needs:` with that exact sentence. Until it exists, the console side and the tested routes are the deliverable.
+- **The owner's phone:** the owner surface polls pending approvals every 2 seconds and posts the owner's decision. Two things in `events.md` are missing for that: a way for an adapter to push events into the store on its own schedule, and `approval.granted` and `approval.declined` in the Requests from people table, so the registry hands the owner's tap to this adapter. List both under `needs:`. Until they exist, the console side and the tested routes are the deliverable.
 
 ## Tasks
 

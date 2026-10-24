@@ -7,7 +7,7 @@ Read by every backend-builder, by the integrator, and by the scaffolder for the 
 - **Where it runs:** FastAPI on http://localhost:8000, started by the orchestrator with `npm run server` (uvicorn with `--reload`). In the browser, the Vite dev server and the preview proxy `/api` to port 8000, so the app calls relative paths like `/api/b01/reconcile`. No CORS setup is needed.
 - **Nothing in the browser calls Claude or Nessie.** Only `server/` does, with the keys from `server/config.py`. Live adapters in `src/sources/live/` call only `/api/...`.
 - **One prefix per upgrade:** every route of upgrade NN lives under `/api/bNN/` and is defined in `server/routers/bNN_<slug>.py` as `router = APIRouter(prefix="/api/bNN")`. `server/main.py` includes the `router` of every module in `server/routers/` that defines one, so an upgrade never edits it. A helper module with the upgrade's prefix and no `router`, such as `server/routers/b04_nessie.py`, is skipped.
-- **Requests** are JSON with `Content-Type: application/json`, except the B05 upload. Every POST body has a `trigger` field: the scripted event the adapter is replacing, or `null` when a person's action started the call. The adapter sends the records the server needs in the body, taken from `src/mock`, because the server can't read the TypeScript dataset.
+- **Requests** are JSON with `Content-Type: application/json`, except the B05 upload. Every POST body has a `trigger` field: the scripted event the adapter is replacing, the person's request event when the registry passes one on (see Requests from people in `events.md`), or `null` when nothing in the store started the call. The adapter sends the records the server needs in the body, taken from `src/mock`, because the server can't read the TypeScript dataset.
 - **A success** is status 200 with the body `{ "events": CindiaEvent[] }`. Every returned event follows the envelope in `events.md`, with:
   - `source: "live"` and `key` set to the upgrade's key (`b01-match` and so on).
   - `id` as `evt_live_` plus a number, unique within the server process.
@@ -141,7 +141,7 @@ Creates one withdrawal per maker payout, described "Maker payout mpo_01", then r
 
 **`POST /api/b05/scenario`** · multipart form · no key needed · under 3 seconds · builds on B01
 
-Form fields: `file` (a CSV or a JSON statement, at most 1 MB), `monthId`, and `records` (the month's records as a JSON string, same shape as B01). `python-multipart` comes with `fastapi[standard]`.
+Form fields: `trigger` (the event as a JSON string), `file` (a CSV or a JSON statement, at most 1 MB), `monthId`, and `records` (the month's records as a JSON string, same shape as B01). `python-multipart` comes with `fastapi[standard]`.
 
 The CSV columns are `date,orderId,pieceId,saleCents,commissionBps,netCents`, one statement line per row. A JSON file is a Statement object from `data-model.md`. The server parses the file into a statement with the ID `stm_scn_` plus a number, runs B01's matcher over the month's records plus that statement, and returns a `scenario.loaded`, then every `match.made` and `flag.raised` that involves the new statement.
 
@@ -198,7 +198,7 @@ No key needed. The server holds approvals in memory, so a restart clears them.
 
 **`POST /api/b09/concierge`** · `ANTHROPIC_API_KEY` · `claude-haiku-5-5` with a 4-second timeout, because it opens the demo
 
-Request: `{ "trigger": { "...": "the scripted concierge.answered, or null for a buyer's own query" }, "query": "a gift under $200 for my mom, she loves peonies", "lang": "en", "catalog": [] }`
+Request: `{ "trigger": { "...": "the scripted concierge.answered, or the buyer's own concierge.asked" }, "query": "a gift under $200 for my mom, she loves peonies", "lang": "en", "catalog": [] }`
 
 `catalog` holds every piece with its title, price, maker, hours and story. Claude answers through `messages.parse()` with exactly three picks, each `{ piece_id, reason_en, reason_zh }`. The server checks that every `piece_id` is in the catalog, that there are three different ones, and that a price limit stated in the query holds.
 

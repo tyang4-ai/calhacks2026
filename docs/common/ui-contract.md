@@ -67,6 +67,7 @@ type SlotId =
 interface SlotProps {
   surface: SurfaceId;
   lang: "en" | "zh";        // already resolved by the shell, see Language
+  makerId?: string;         // the maker surface only: from /maker/:makerId, and mkr_01 on /demo
 }
 
 interface FeatureModule {

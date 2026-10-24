@@ -27,10 +27,10 @@ The owner asks in Chinese or English, for example 这个月哪件作品最赚钱
 - **Server checks on `answer`:** every `ref_ids` entry exists in the records, and every chart value equals a value some tool returned in this request. A failed check is `invalid_model_output`.
 - **The prompt:** Cindy answers in the question's language first, but always fills both. Numbers only from tool results. She says plainly when the records can't answer.
 - **Replaces:** the keyed `ask.answered` for each scripted `ask.asked` in the demo's question time.
-- **A question the owner types** reaches the adapter only once the sources registry passes a person's keyed actions to adapters. Until then, list that under `needs:`, and the scripted questions are the deliverable.
+- **Answers people too:** a question the owner types arrives as an `ask.asked` request with `source: "user"`, and the registry passes it to this adapter in live mode (Requests from people in `events.md`). The adapter handles both triggers the same way.
 - **Adapter** (`src/sources/live/b07-ask.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b07` and `keys.anthropic` is true.
-  - `produce(event)`: post the question with the records from `src/mock` and return the result.
+  - `produce(event)`: for a keyed `ask.answered`, post its question. For a user `ask.asked`, post that question. Send the records from `src/mock` and return the result.
 
 ## Tasks
 

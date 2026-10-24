@@ -15,7 +15,7 @@ Read by the data-smith, every feature and the backend. It fixes every entity, fi
 
 | Entity | ID | Fields |
 |---|---|---|
-| Studio | `std_gu` | `name: Text`, `craft: Text` (Gu embroidery, 顾绣), `city: Text` (Shanghai, 上海), `ownerId`, `makerIds`, `nessieAccountId?` |
+| Studio | `std_gu` | `name: Text`, `craft: Text` (Gu embroidery, 顾绣), `city: Text` (Shanghai, 上海), `ownerId`, `makerIds`, `payoutLimitCents: 50000`, `nessieAccountId?` |
 | Person | `own_01`, `mkr_01` to `mkr_03`, `buy_01` to `buy_20` | `role: "owner" \| "maker" \| "buyer"`, `name: Text`, `surnameChar` (one character, for the kit's `MakerMark`), `lang: "zh" \| "en"` |
 | Piece | `pc_01` to `pc_12` | `title: Text`, `makerId`, `kind: "featured" \| "series"`, `hours`, `materialsCents`, `priceCents`, `story: Text`, `heritage: Text`, `process: { step: Text; hours: number }[]`, `image` (a path under `/images/`, a marked placeholder until Gordon supplies photos) |
 | Channel | `ch_cindia`, `ch_site`, `ch_gallery` | `name: Text`, `kind: "marketplace" \| "own_site" \| "consignment"` |
@@ -24,11 +24,12 @@ Read by the data-smith, every feature and the backend. It fixes every entity, fi
 | ChannelPayout | `pay_001` onward | `channelId`, `date`, `grossCents`, `feesCents`, `refundCents`, `netCents`, `orderIds`, `refundIds`, `monthId` |
 | Refund | `rfd_001` | `orderId`, `date`, `amountCents`, `nettedInPayoutId` |
 | Statement | `stm_gallery_2026_09` | `channelId`, `monthId`, `issuedDate`, `lines: { orderId; pieceId; saleCents; commissionBps; commissionCents; netCents }[]`, `totalSaleCents`, `totalCommissionCents`, `totalNetCents` |
-| BankTxn | `txn_001` onward | `date`, `direction: "in" \| "out"`, `amountCents`, `counterparty: Text`, `memo`, `refId` (a payout, maker payout or purchase ID), `nessieId?` |
+| Purchase | `pur_001` onward | `date`, `supplier: Text`, `amountCents`, `memo`, `txnId` (materials bought for the month, paid out of the studio's account) |
+| BankTxn | `txn_001` onward | `date`, `direction: "in" \| "out"`, `amountCents`, `counterparty: Text`, `memo`, `refId` (a `pay_`, `mpo_` or `pur_` ID), `nessieId?` |
 | Match | `mat_001` onward | `kind: "one_to_one" \| "bundled" \| "refund_netted" \| "carried_over"`, `recordIds`, `monthId` |
 | Flag | `flg_01` | `kind: "short_payment"`, `recordIds: [contractId, statementId, txnId]`, `expectedCents`, `actualCents`, `deltaCents`, `trustRecordId`, `explanation: Text` |
 | MakerPayout | `mpo_01` to `mpo_03` | `makerId`, `monthId`, `amountCents`, `orderIds`, `heldCents`, `status: "proposed" \| "approved" \| "sent" \| "held"` |
-| Approval | `apr_01`, `apr_02` | `kind: "follow_up" \| "maker_payouts"`, `subjectIds`, `proposedBy: "cindy"`, `amountCents?`, `overLimit: boolean`, `status: "pending" \| "granted" \| "declined"` |
+| Approval | `apr_01`, `apr_02` | `kind: "follow_up" \| "maker_payouts"`, `subjectIds`, `proposedBy: "cindy"`, `amountCents?`, `overLimit: boolean`, `decisionDate: "2026-10-01"` (the date any grant or decline carries, so a tap never reads the wall clock), `status: "pending" \| "granted" \| "declined"` |
 | FollowUp | `fup_01` | `approvalId`, `to: Text`, `subject: Text`, `body: Text` |
 | LedgerEntry | `led_0001` onward | `date`, `account`, `debitCents`, `creditCents`, `refId`, `memo` |
 | MakerStatement | `mst_01` to `mst_03` | `makerId`, `monthId`, `lines: { orderId; pieceId; makerShareCents }[]`, `totalCents`, `heldCents`, `payoutDate` |
@@ -102,13 +103,13 @@ The answer key lives in `src/mock/answerKey.ts` and lists exactly these four. Th
 | File | Holds |
 |---|---|
 | `people.ts` | The owner, makers and buyers, with fictional names |
-| `catalog.ts` | The twelve pieces above |
+| `catalog.ts` | The twelve pieces above, and `curatedSet` (`pc_01`, `pc_07`, `pc_11`), the scripted concierge answer |
 | `channels.ts` | The three channels and the gallery contract |
-| `month.ts` | Orders, payouts, refunds, the statement, bank transactions, ledger entries, maker payouts and statements for September |
+| `month.ts` | Orders, payouts, refunds, purchases, the statement, bank transactions, ledger entries, maker payouts, approvals, the follow-up and maker statements for September |
 | `answerKey.ts` | The four planted errors and the expected results |
-| `ask.ts` | Three canned Ask Cindy answers, the first for 这个月哪件作品最赚钱? |
+| `ask.ts` | `cannedAnswers`: three canned Ask Cindy answers (`ask_01` to `ask_03`), the first for 这个月哪件作品最赚钱?, and `fallbackAnswer` for any other question in scripted mode |
 | `impact.ts` | The impact numbers, marked as estimates |
-| `scenario.ts` | One held-back statement for the judge's scenario (W2), not used in September's totals |
+| `scenario.ts` | One held-back statement for the judge's scenario (W2), not used in September's totals, and `scenarioReplies`: the events the scripted responder emits, with `at` as an offset from the request |
 | `timelines/demo.ts` | The 60-second demo timeline, from `demo-script.md` |
 | `timelines/month.ts` | The fast-forward month: every record arriving in date order, with Cindy's matches and the flag |
 | `index.ts` | Re-exports everything, and a `getById()` lookup |

@@ -3,47 +3,44 @@
 Priority: P0 · Wave: W1 · Depends on: G2 · Folder: src/features/ask-cindy/ · Made real by: B07
 
 ## Goal
-The owner opens Ask Cindy and asks in Chinese or English. 这个月哪件作品最赚钱? turns into a chart, and "why did you flag this?" gets Cindy's reasons with the records behind them.
+The owner opens Ask Cindy and asks in Chinese or English. 这个月哪件作品最赚钱? turns into a chart, and "Why did you flag the gallery payment?" gets Cindy's reasons with links to the three records.
 
 ## Read first
-- `docs/common/data-model.md`: Units and rules, the Piece, Flag and Statement rows, and `src/mock/ask.ts` in the files table.
-- `docs/common/events.md`: `ask.asked`, `ask.answered`, `ChartSpec`, the envelope (sources `"user"` and `"scripted"`, the `key` field), the store, and the Simulated badge rule.
-- `docs/common/ui-contract.md`: the `studio.drawer.ask` slot, how the console opens drawers, the test IDs below, the language rules, and the test hook for driving the player.
-- `docs/common/design-system.md`: `Panel`, `Button`, `Badge`, `MakerMark`, `chartTheme`, the voice rules for Cindy under Words on screen.
+- `docs/common/data-model.md`: Units and rules, the IDs that live only in events (`ask_01` to `ask_03`), the Piece and Flag rows, and `src/mock/ask.ts` in the files table.
+- `docs/common/events.md`: `ask.asked`, `ask.answered`, `ChartSpec`, Requests from people (the registry answers `ask.asked`, 1.2 seconds later on the player clock), and the store.
+- `docs/common/ui-contract.md`: the `studio.drawer.ask` slot and its source key, Drawers (the top bar's Ask Cindy button opens this one), Language, Simulated badge, Test hooks, and the test IDs below.
+- `docs/common/design-system.md`: `Panel`, `Button`, `MakerMark`, `chartTheme`, and Cindy's voice under Words on screen.
 - `docs/common/glossary.md`: Ask Cindy, flag, the catch, trust, piece.
-- `docs/common/demo-script.md`: what plays after the 60 seconds.
+- `docs/common/demo-script.md`: After the 60 seconds, item 1.
 
 ## Interfaces
 - Reads:
-  - Data: the three canned entries in `src/mock/ask.ts`, each a question in both languages plus the `ask.answered` payload (`questionId`, `answer`, `chart?`, `refIds`). The records named in `refIds` come through `getById()`.
-  - Store keys: `ask`, `lang`, `sources`, `clock`.
-  - UI kit: `Panel`, `Button`, `Badge` (Simulated), `MakerMark`, `chartTheme` for Recharts.
-- Emits:
-  - `ask.asked` with `source: "user"`, `questionId`, `text`, `lang`, when the owner sends a question.
-  - `ask.answered` with `source: "scripted"` and `key: "b07-ask"`, carrying the matching canned payload, through the store's `emit()` like every scripted event, so B07 can take it over without a screen change.
+  - Data: the three canned questions in `src/mock/ask.ts` (`ask_01` to `ask_03`, each in both languages) for the suggestions. The records named in an answer's `refIds` come through `getById()`.
+  - Store keys: `ask`, `clock`. The language comes from `SlotProps.lang`.
+  - UI kit: `Panel` (declaring `b07-ask`), `Button`, `MakerMark`, `chartTheme` for Recharts.
+- Emits: `ask.asked` with `source: "user"` and `key: "b07-ask"` (`questionId`, `text`, `lang`) when the owner sends a question. A suggestion sends its own ID (`ask_01` to `ask_03`). A typed question gets `ask_user_<n>`, counting from 1 in the store's `ask` state. The sources registry answers with `ask.answered`, scripted from `src/mock/ask.ts` or live from B07. The feature never writes an answer itself.
 - Exports: `{ id: "ask-cindy", slots: { "studio.drawer.ask": AskDrawer } }` from `src/features/ask-cindy/index.ts`.
-- Test IDs: `ask-cindy-input`, `ask-cindy-answer`, `ask-cindy-chart`. Internal to this feature: `ask-cindy-send`, `ask-cindy-suggestion-<n>` (the three canned questions, `n` from 1), `ask-cindy-refs`.
-- Source key it renders: `b07-ask`.
+- Test IDs: `ask-cindy-input`, `ask-cindy-answer`, `ask-cindy-chart`. Internal to this feature: `ask-cindy-send`, `ask-cindy-suggestion-<n>` (the three canned questions, `n` from 1), `ask-cindy-refs`, `ask-cindy-thinking` (shown while a question waits for its answer).
+- Source key: `b07-ask`.
 
 ## Tasks
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T1 | Question matcher: a pure function from typed text and language to one canned entry or none. It trims, ignores case and treats full-width and half-width punctuation alike (？ and ?). Unit tests cover all three canned questions in both languages and a miss | `src/features/ask-cindy/matchQuestion.ts`, `src/features/ask-cindy/matchQuestion.test.ts` | none | opus |
-| T2 | Answer view: the answer text in the current language, the chart from a `ChartSpec` (bar or line, Recharts with `chartTheme`, amounts from cents), and the list of records in `refIds` with short labels | `src/features/ask-cindy/AnswerCard.tsx`, `src/features/ask-cindy/AnswerChart.tsx`, `tests/features/ask-cindy-answer.spec.ts` | none | opus |
-| T3 | Drawer and input: the question box with send, the three suggestions in the current language, the thread of questions and answers, and on send the two events above. A question with no match gets a short reply that lists the three suggestions. The Simulated badge shows while `sources["b07-ask"]` is `"scripted"` | `src/features/ask-cindy/AskDrawer.tsx`, `src/features/ask-cindy/AskInput.tsx`, `tests/features/ask-cindy-ask.spec.ts` | T1, T2 | opus |
-| T4 | Wire the slot (lead) | `src/features/ask-cindy/index.ts` | T3 | lead |
+| T1 | Answer view: the answer text in `SlotProps.lang`, the chart from a `ChartSpec` (bar or line, Recharts with `chartTheme`, amounts from cents), and the list of records in `refIds` with short labels | `src/features/ask-cindy/AnswerCard.tsx`, `src/features/ask-cindy/AnswerChart.tsx`, `tests/features/ask-cindy-answer.spec.ts` | none | opus |
+| T2 | Drawer and input: the question box with send, the three suggestions, the thread of questions and answers read from the store, the waiting state until the answer for a `questionId` arrives, and `ask.asked` on send | `src/features/ask-cindy/AskDrawer.tsx`, `src/features/ask-cindy/AskInput.tsx`, `tests/features/ask-cindy-ask.spec.ts` | T1 | opus |
+| T3 | Wire the slot (lead) | `src/features/ask-cindy/index.ts` | T2 | lead |
 
-T1 and T2 run side by side. Builders run their own spec with `npm run test:feature -- ask-cindy`.
+Builders run their own spec with `npm run test:feature -- ask-cindy`. Tests move the player past the 1.2-second answer delay with `window.__cindia.player.seek()` instead of waiting.
 
 ## Acceptance
-- Given the console after the close with the drawer open, when the owner clicks `ask-cindy-suggestion-1` (这个月哪件作品最赚钱?), then `ask-cindy-answer` shows the canned answer in Chinese and `ask-cindy-chart` draws one bar per label in its `ChartSpec`.
-- When the owner types "why did you flag this?" in `ask-cindy-input` and sends, then `ask-cindy-answer` shows the English explanation and `ask-cindy-refs` lists the records of `flg_01`.
+- Given `/studio/close?drawer=ask` after the close, when the owner clicks `ask-cindy-suggestion-1` (这个月哪件作品最赚钱?), then `ask-cindy-thinking` shows, and once the player moves 1.2 seconds on, `ask-cindy-answer` shows the canned answer and `ask-cindy-chart` draws one bar per label in its `ChartSpec`.
+- When the owner types "Why did you flag the gallery payment?" in `ask-cindy-input` and sends, then `ask-cindy-answer` shows the explanation and `ask-cindy-refs` lists the three records of `flg_01`.
 - When the language toggle switches, then the shown answer switches language without asking again.
-- When the owner sends a question that matches nothing, then the reply lists the three suggestions and no `ask.answered` is emitted.
-- After a matched send, the store holds an `ask.asked` with `source: "user"` and an `ask.answered` with `key: "b07-ask"` for the same `questionId`. Sending the same question twice shows one answer, not two.
-- While `sources["b07-ask"]` is `"scripted"`, the drawer shows `simulated-badge`.
+- When the owner sends a question that matches none of the three, then the registry's reply (that scripted mode answers the three demo questions) shows in `ask-cindy-answer`, and the suggestions stay visible.
+- After a send, the store holds an `ask.asked` with `source: "user"` and `key: "b07-ask"`, and one `ask.answered` for the same `questionId`.
+- In scripted mode the drawer shows `simulated-badge`.
 - No request goes beyond localhost.
 
 ## Out of scope
-- Claude answering free-form questions. That's B07.
+- Matching questions to answers. The sources registry does that in scripted mode and B07 in live mode.
 - Voice input, saving the history, and opening the audit drawer from a record (F-audit, W2).

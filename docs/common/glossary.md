@@ -77,3 +77,19 @@ Filled in during planning, one row per word: the word, its code name, the Englis
 | estimate | `estimate: true` | Estimate | 估算 | A number Cindia doesn't measure yet, shown as such |
 | Ask Cindy | `ask-cindy` | Ask Cindy | 问Cindy | The owner's question box, answered with a card or a chart |
 | audit trail | `audit` | Where this number comes from | 数字来源 | The chain from a number back to its record, rule or person |
+| hours of work | `Piece.hours` | Hours of work | 工时 | How long the maker spent on a piece |
+| simulated checkout | `checkout.started` | Demo checkout, no real charge | 演示结账，不会扣款 | The checkout is simulated, and the screen says so |
+| received | `status: "received"` | Received | 已收款 | The receipt status right after the sale |
+| proposed by Cindy | `proposedBy: "cindy"` | Cindy proposed this. Only you can approve it. | Cindy提议，只有您能批准 | Shown on every approval |
+| decline | `approval.declined` | Decline | 不批准 | The owner's no, with a reason |
+| declined | `status: "declined"` | Declined | 未批准 | An approval the owner turned down |
+| approved | `status: "granted"` | Approved | 已批准 | An approval the owner sealed |
+| sent | `followup.sent`, `payout.sent` | Sent | 已发送 | A follow-up or payout that went out after approval |
+| held note | `heldCents` | Held until the gallery pays what it owes | 待画廊补齐欠款后发放 | Why part of a maker's share is held |
+| payout date | `payoutDate` | Payout date | 发放日期 | When the maker's money goes out |
+| paid | `status: "sent"` | Paid | 已发放 | A maker payout that went out |
+| no sales yet | empty statement | No sales this month yet | 本月暂无销售 | A maker statement with no lines |
+| card network | `Party.kind: "card_network"` | Card network | 卡组织 | Who takes the card fee |
+| card processor | `Party.kind: "processor"` | Card processor | 收单机构 | Who pays out the studio site's card sales |
+| supplier | `Party.kind: "supplier"` | Supplier | 供应商 | Where the studio buys silk and thread |
+| gallery | `ch_gallery` | Gallery | 画廊 | The San Francisco gallery that sells on consignment |

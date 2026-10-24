@@ -71,6 +71,7 @@ The scaffolder builds these in S1. Each takes only the props listed in `ui-contr
 | `Panel` | The mounted panel above. Title in the heading font, optional actions on the right |
 | `Button` | `primary` (ink fill, paper text), `quiet` (ink text, line border), `seal` (seal fill, paper text, for the one urgent action) |
 | `Money` | Formats integer cents. Props: `cents`, `tone` (`neutral`, `in`, `out`, `pending`) |
+| `formatDate` | `formatDate(iso, lang)` turns `2026-10-02` into "Oct 2, 2026" or "2026年10月2日", in UTC, never from the wall clock |
 | `Thread` | The animated money flow between two anchor points, with an amount label at its midpoint |
 | `Seal` | A square cinnabar stamp with one Chinese character and a date, for approvals |
 | `MakerMark` | A small square ink seal with the maker's surname character, used instead of photo avatars |
@@ -89,4 +90,4 @@ The scaffolder builds these in S1. Each takes only the props listed in `ui-contr
 - Plain verbs and the user's own words: "Approve payout", "Pay makers", "Send follow-up". An action keeps its name through the flow, so "Approve payout" leads to "Payout approved".
 - Cindy speaks in first person, short and specific: "The gallery paid $340 less than the contract says. Here are the three records." It never claims certainty it doesn't have.
 - Errors say what happened and what to do next. They don't apologize.
-- Both languages come from the label table in `glossary.md`. A UI string not in the glossary goes under `needs:`.
+- Domain words come from the label table in `glossary.md`, in both languages. Other short UI strings (button text, empty states, notes) live in the feature's own `strings.ts` with English and Chinese side by side. A new domain word goes under `needs:`.

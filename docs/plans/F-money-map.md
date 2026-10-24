@@ -17,7 +17,7 @@ A judge sees the buyer's $180.00 travel as thread: into Cindia, the card fee pee
 - **Reads events** through `useCindia()`: `money.moved` (every move in arrival order) and `account.synced` (the latest one). Also reads `sources`. The language comes from `SlotProps.lang`.
 - **Reads data** with `getById()`: the studio `std_gu`, the makers named in a move's `Party` (`mkr_01` to `mkr_03`, name and `surnameChar`), and the move's `refId` when a label needs it (for example `pay_001`).
 - **Emits:** nothing.
-- **Exports:** `src/features/money-map/index.ts` default-exports `{ id: "money-map", slots: { "studio.map.main": MoneyMap } }`, typed with `FeatureModule` from `src/app/featureTypes.ts`.
+- **Exports:** `src/features/money-map/index.ts` default-exports `{ id: "money-map", slots: { "studio.map.main": MoneyMap } }`, typed with `FeatureModule` from `src/core/featureTypes.ts`.
 - **Source key on the badge:** `b04-bank`. While it is `"scripted"`, the panel shows `simulated-badge`. Once it is `"live"`, the badge goes and the balance is labeled as the studio's account on Nessie.
 - **Test IDs:** `money-map-canvas`, `money-map-balance`, `money-map-thread-<moveId>` (one per `money.moved`, for example `money-map-thread-mv_0001`). Internal to this feature: `money-map-node-<party kind>` for party nodes, with the maker's ID added for makers (`money-map-node-maker-mkr_01`).
 - **Labels from the glossary:** money map, money flow, balance, payout, maker payout, card fee, Cindia fee, plus the party names (buyer, Cindia, card network, studio, gallery, card processor, supplier, and each maker by name). A party label missing from the glossary goes under `needs:`.

@@ -29,7 +29,7 @@ A judge drops a statement or a CSV into the console and Cindy reconciles it on t
 - **Adapter** (`src/sources/live/b05-scenario.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b01` and `b05`.
   - `produce(event)`: for the keyed scripted `scenario.loaded`, upload the held-back statement from `src/mock/scenario.ts` as a CSV and return the result.
-  - A judge's own dropped file reaches the adapter only once the sources registry has a way to pass a person's action to an adapter. Until then, list that under `needs:`, and the held-back path is the deliverable.
+  - A judge's dropped file arrives as a `scenario.loaded` request with `source: "user"` (Requests from people in `events.md`). Its payload has no field for the file's contents yet, so the adapter can't upload a judge's own file until `events.md` adds one. List that under `needs:`, and the held-back path is the deliverable.
 
 ## Tasks
 
