@@ -3,7 +3,7 @@ NEXT: R4
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 02:58 PT
+UPDATED: 2026-10-24 03:20 PT
 
 # Status board
 
@@ -112,3 +112,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 03:15 PT · F-money-map lead blocked on the same shared test bugs (feature clean, 9/9 direct); proof lead started; pending for integrator: money-map-balance-nessie test ID in ui-contract.md · artifacts/verify/F-money-map-G3-0312.md
 - 2026-10-24 03:16 PT · F-buyer lead done (verifier PASS with caveats), G3 waits on integrator fix; ask-cindy lead started · artifacts/verify/F-buyer-G3-0312.md
 - 2026-10-24 03:17 PT · integrator fixed test:feature (--project=), smoke aborts and slot checks; orchestrator added vite/client to tsconfig.node.json; check PASS · decisions.md
+- 2026-10-24 03:20 PT · G3 approvals PASS 3/3, verifier PASS, tag w1-approvals · artifacts/gates/G3-0316.md · artifacts/verify/F-approvals-G3-0309.md
