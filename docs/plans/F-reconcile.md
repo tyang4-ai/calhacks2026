@@ -20,18 +20,19 @@ A judge watches the studio's whole September play in ten seconds while Cindy tie
 - **Exports:** `src/features/reconcile/index.ts` default-exports `{ id: "reconcile", slots: { "studio.month.main": ReconcileView } }`, typed with `FeatureModule` from `src/core/featureTypes.ts`.
 - **Source keys on the badge:** `b01-match`, `b02-explain`. The panel shows `simulated-badge` while either is `"scripted"`.
 - **Test IDs:** `reconcile-timeline`, `reconcile-match-<matchId>`, `reconcile-flag`, `reconcile-evidence-contract`, `reconcile-evidence-statement`, `reconcile-evidence-bank`, `reconcile-explanation`. Internal to this feature: `reconcile-counter-<recordType>` for the running counts, and `reconcile-record-<recordId>` for an unmatched record row.
-- **Labels from the glossary:** match, bundled payout, refund taken out, carried to next month, flag, evidence, trust this record, contract, commission, statement, bank record, payout, plus the record types (order, payout, refund, statement, bank record). A missing one goes under `needs:`.
-- **Dates** use the kit's date helper if `src/ui/` has one, otherwise `Intl.DateTimeFormat` on the ISO string with `timeZone: "UTC"`. Never the wall clock.
+- **Labels from the glossary:** match, bundled payout, refund taken out, carried to next month, flag, evidence, trust this record, contract, commission, statement, bank record, payout, plus the record types (order, payout, refund, statement, bank record). Order and refund have no glossary row yet: keep them in `strings.ts` (T0) and list them under `needs:` so the integrator can add the rows. Don't block on them.
+- **Dates** use the kit's `formatDate(iso, lang)`. Never the wall clock.
 
 ## Tasks
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T1 | Match rows with their kind | src/features/reconcile/matchLabels.ts, src/features/reconcile/MatchRow.tsx, tests/features/reconcile-matches.spec.ts | none | opus |
+| T0 | UI strings (lead): every short string these screens need that the glossary lacks, English and Chinese side by side | src/features/reconcile/strings.ts | none | lead |
+| T1 | Match rows with their kind | src/features/reconcile/matchLabels.ts, src/features/reconcile/MatchRow.tsx, tests/features/reconcile-matches.spec.ts | T0 | opus |
 | T2 | The month timeline | src/features/reconcile/recordRows.ts, src/features/reconcile/MonthTimeline.tsx, tests/features/reconcile-month.spec.ts | T1 (`MatchRow`) | opus |
-| T3 | The catch: flag, evidence and explanation | src/features/reconcile/CatchPanel.tsx, src/features/reconcile/EvidenceTrio.tsx, tests/features/reconcile-catch.spec.ts | none | opus |
+| T3 | The catch: flag, evidence and explanation | src/features/reconcile/CatchPanel.tsx, src/features/reconcile/EvidenceTrio.tsx, tests/features/reconcile-catch.spec.ts | T0 | opus |
 | T4 | Assemble the view and fill the slot (lead) | src/features/reconcile/ReconcileView.tsx, src/features/reconcile/index.ts, tests/features/reconcile-flow.spec.ts | T1 to T3 | lead |
 
-**How the tasks fit:** builders run `npm run check:scope` on their files and write their spec. The specs run for the first time once T4 fills the slot, and the lead sends any failure back to the builder who owns the file.
+**How the tasks fit:** the lead writes T0 before spawning any builder, because `design-system.md` puts a feature's short UI strings in its own `strings.ts`. A builder that needs a string T0 lacks lists it under `needs:`, and the lead adds it. Builders run `npm run check:scope` on their files and write their spec. The specs run for the first time once T4 fills the slot, and the lead sends any failure back to the builder who owns the file.
 
 **T1.** `matchLabels.ts` maps each Match `kind` to its glossary label and to the one short reason line the row shows ("one payout, three orders", "the $95.00 refund taken out", "lands Oct 2, counts in October"), with amounts and dates filled in from the records, never typed in. `MatchRow` (`reconcile-match-<matchId>`) shows the matched records together on one row with a jade check, the kind as a chip for the three special kinds, and the amounts.
 

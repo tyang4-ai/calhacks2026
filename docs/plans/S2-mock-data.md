@@ -21,7 +21,7 @@ One month of believable, fully reconciled records for the Gu embroidery studio, 
 - **Exports:** every file in the `data-model.md` file table, typed with the core types. `src/mock/index.ts` re-exports everything and offers `getById(id)`, which finds any entity by its ID across every collection.
 - **Emits:** scripted events only, inside `timelines/demo.ts` and `timelines/month.ts`, each with the `key` `events.md` gives for its type.
 - **IDs:** exactly the formats in `data-model.md`, including its list of IDs that live only in events (`mv_`, `acct_studio`, `act_`, `ask_`, `scn_` and the beat IDs).
-- **Exports the sources registry reads** to answer requests from people (`events.md`), with these exact names: `curatedSet` from `catalog.ts`, `cannedAnswers` and `fallbackAnswer` from `ask.ts`, and `scenarioReplies` from `scenario.ts`.
+- **Exports the sources registry reads** to answer requests from people (`events.md`), with these exact names: `curatedSet` from `catalog.ts`, `cannedAnswers` and `fallbackAnswer` from `ask.ts`, and `scenarioReplies` from `scenario.ts`. The scenario feature also reads `sampleFileName` and `sampleRecordIds` from `scenario.ts`.
 
 ## Tasks
 
@@ -40,7 +40,7 @@ The data-smith does these in order. Each task's files belong to it alone.
 
 ### T1 · People, catalog, channels
 
-- `people.ts`: `own_01`, `mkr_01` to `mkr_03` and `buy_01` to `buy_20`. Fictional names in both languages, with a comment at the top saying they're placeholders Gordon can swap. Makers' `surnameChar` values are all different, and the owner's differs from the makers'. Makers and the owner have `lang: "zh"`. Buyers have `lang: "en"`.
+- `people.ts`: the studio `std_gu` with every Studio field in `data-model.md`, including `payoutLimitCents: 50000` (the file table gives the studio no file, so it sits with its owner and makers), then `own_01`, `mkr_01` to `mkr_03` and `buy_01` to `buy_20`. Fictional names in both languages, with a comment at the top saying they're placeholders Gordon can swap. Makers' `surnameChar` values are all different, and the owner's differs from the makers'. Makers and the owner have `lang: "zh"`. Buyers have `lang: "en"`.
 - `catalog.ts`: the twelve pieces exactly as the `data-model.md` table gives them (titles, makers, kinds, prices, hours, materials). Write each piece's `story`, `heritage` line and `process` steps in plain English and Simplified Chinese. The process hours add up to the piece's `hours`. `image` is `/images/<pieceId>.svg`, the placeholders S1 created.
 - `catalog.ts` also exports `curatedSet`: `{ pieceIds: ["pc_01", "pc_07", "pc_11"], reasons: Record<pieceId, Text> }`. Each reason is one short line naming what fits the request (peonies, under $200, a gift) and one fact about the piece. The demo timeline's `concierge.answered` and the registry's scripted answer both use it.
 - `channels.ts`: the three channels and `ctr_gallery_01`. The gallery gets a fictional San Francisco name. The contract's `terms` say 40% commission on each sale, a statement on the 30th, and payment with the statement.
@@ -53,12 +53,13 @@ The data-smith does these in order. Each task's files belong to it alone.
 - **Cindia payouts:** one per Cindia order, the same day, net of card and platform fees. `pay_001` is the one for `ord_001`, netting 15648.
 - **Site payouts:** every one covers exactly one order, except three: the bundle covering `ord_015`, `ord_016` and `ord_017` (figure 5), the payout that nets out `rfd_001` (figure 6), and the late payout for `ord_025` and `ord_026` dated `2026-10-02` (figure 7).
 - **The gallery:** `stm_gallery_2026_09`, issued `2026-09-30`, with one line per gallery order at 5000 bps, and one gallery payout of 170000 on `2026-09-30` (figure 4).
-- **Bank transactions:** one deposit per payout on its date, two or three materials purchases from a fictional silk supplier, and the three maker payouts on `2026-10-02`. Pick an opening balance and state it in the file.
+- **Purchases:** two or three materials purchases, `pur_001` onward, from a fictional silk supplier, each with the `txnId` of its bank withdrawal.
+- **Bank transactions:** one deposit per payout on its date, one withdrawal per purchase (`refId` the `pur_` ID), and the three maker payouts on `2026-10-02` (`refId` the `mpo_` ID). Pick an opening balance and state it in the file.
 - **Ledger:** balanced double entries for every order, fee, payout, refund, purchase and maker payout, in the accounts `data-model.md` lists. Debits equal credits in every entry and in total.
 - **Cindy's results:** one `Match` per payout of kind `one_to_one`, `bundled`, `refund_netted` or `carried_over` as above. The gallery gets no match. It gets `flg_01` instead, with the figures from data-model error 1, the contract as `trustRecordId`, and an explanation in both languages that says what the statement charged, what the contract says, what the bank shows, and what's owed.
-- **Payouts to makers:** `mpo_01` to `mpo_03` per figure 8. Each pays the maker's share of their September orders whose money has arrived. The refunded order pays nothing. The late orders wait for October. Gallery orders pay on what was received, and the shortfall is `heldCents`: 9500 for `mkr_01`, 8000 for `mkr_02`, 16500 for `mkr_03`. `mst_01` to `mst_03` list the same lines.
-- **Approvals:** `apr_01` (`follow_up`, `amountCents` 34000, subject `fup_01`) and `apr_02` (`maker_payouts`, subjects `mpo_01` to `mpo_03`), both `proposedBy: "cindy"` and `pending`. `overLimit` is true when any single payout in it is over 50000.
-- **The follow-up:** `fup_01`, a short, polite English email to the gallery that names the contract's 40%, the statement's 50%, and the $340.00 owed, and asks for it by a date in October.
+- **Payouts to makers:** `mpo_01` to `mpo_03` per figure 8. Each pays the maker's share of their September orders whose money has arrived. The refunded order pays nothing. The late orders wait for October. Gallery orders pay on what was received, and the shortfall is `heldCents`: 9500 for `mkr_01`, 8000 for `mkr_02`, 16500 for `mkr_03`. `mst_01` to `mst_03` list the same lines. Each maker payout starts as `proposed`, and the timeline's events move it on.
+- **Approvals:** `apr_01` (`follow_up`, `amountCents` 34000, subject `fup_01`) and `apr_02` (`maker_payouts`, subjects `mpo_01` to `mpo_03`), both `proposedBy: "cindy"`, `pending` and `decisionDate: "2026-10-01"`. `overLimit` is true when any single payout in it is over the studio's `payoutLimitCents` (50000).
+- **The follow-up:** `fup_01`, a short, polite email to the gallery that names the contract's 40%, the statement's 50%, and the $340.00 owed, and asks for it by a date in October. `to`, `subject` and `body` are `Text`, so write both languages. The English is what the gallery gets.
 
 ### T3 · The answer key
 
@@ -68,11 +69,11 @@ The data-smith does these in order. Each task's files belong to it alone.
 
 - `ask.ts` exports `cannedAnswers`, three entries `ask_01` to `ask_03`, and `fallbackAnswer: Text`. Each entry has `questionId`, `questions: Text` (the question in both languages), `answer: Text`, `refIds`, and a `ChartSpec` where a chart helps. `fallbackAnswer` says scripted mode answers the three demo questions and names them.
   - `ask_01`: 这个月哪件作品最赚钱? (Which piece earned the most this month?) A bar chart of maker share by piece for September, and the answer naming the top piece with its figure.
-  - `ask_02`: why the gallery payment was flagged, citing `ctr_gallery_01`, `stm_gallery_2026_09` and the gallery's bank deposit.
+  - `ask_02`: "Why did you flag the gallery payment?" in English, exactly as `demo-script.md` has it, answered with why the gallery payment was flagged, citing `ctr_gallery_01`, `stm_gallery_2026_09` and the gallery's bank deposit as its `refIds`.
   - `ask_03`: how much one maker gets this month, with their payout, what's held and why.
   - Every figure in an answer comes from `month.ts`, computed, never typed in.
 - `impact.ts`: `imp_2026_09`. `makerShareBps` is computed from the Cindia orders. `daysCloseToPayout` is 2 (Sep 30 to Oct 2). `daysCloseToPayoutBefore` and `bookkeepingHoursSaved` are estimates: put a comment on each saying it's illustrative and waiting for Gordon's numbers, and keep `estimate: true`.
-- `scenario.ts`: one held-back record set for the judge's scenario, `scn_01`, with record IDs starting `scn_`. An early-October card processor payout report, both as CSV text and as parsed records, covering three new orders where one fee line doesn't follow the 290 bps plus 30 cents rule. It also exports `scenarioReplies`: the `record.arrived`, `match.made` and `flag.raised` events a correct matcher produces for it, with `at` as an offset in ms from the request (0 onward), `source: "scripted"` and the keys `events.md` gives. It is not part of September's totals, and only the registry and the scenario feature import it.
+- `scenario.ts`: one held-back gallery statement for the judge's scenario, `scn_01`, with record IDs starting `scn_`: three new early-October gallery sales, one of whose lines charges more than the contract's 4000 bps. It holds the statement as parsed records and as CSV text in the columns `api-contract.md` gives for B05 (`date,orderId,pieceId,saleCents,commissionBps,netCents`), so B05 can upload it as it is. It exports `sampleFileName` (the CSV's file name), `sampleRecordIds` (its `scn_` record IDs, which the `scenario.loaded` request carries) and `scenarioReplies`: the `record.arrived`, `match.made` and `flag.raised` events a correct matcher produces for it, with `at` as an offset in ms from the request (0 onward, the registry adds its 1.2 seconds), `source: "scripted"` and the keys `events.md` gives. It is not part of September's totals, and only the registry and the scenario feature use it.
 
 ### T5 · The month timeline
 
@@ -91,7 +92,8 @@ The data-smith does these in order. Each task's files belong to it alone.
 `timelines/demo.ts` exports a `Timeline` with `id: "demo"` and the `durationMs` `demo-script.md` gives.
 
 - One `beat.started` per beat, at the beat's start time, with its `beatId` and `camera` exactly as `demo-script.md` lists them.
-- Each beat's events exactly as the beat sheet lists them, no more and no fewer, at its times and with its values: the query text, `curatedSet` in the `concierge.answered`, the split from figure 1, the token `tok_7Q2M9X4KD1PA` with last4 4242, `mv_0001` to `mv_0006`, `acct_studio`, the approval dates, the `payout.sent` amounts from the `mpo_` records, the workbook `cindia-close-2026-09.xlsx` with its four sheets, `mst_01`, and the receipt for `ord_001` at `paid_to_maker`, 13448, `2026-10-02`.
+- Each beat's events exactly as the beat sheet lists them, no more and no fewer, at its times and with its values: the query text, `curatedSet` in the `concierge.answered`, the split from figure 1, the token `tok_7Q2M9X4KD1PA` with last4 4242, `mv_0001` to `mv_0006`, `acct_studio`, `followup.drafted` for `fup_01` and `apr_01` at 35.7, each `approval.granted` dated with its approval's `decisionDate`, the `payout.sent` amounts from the `mpo_` records, `month.closed` with `heldCents` 34000, the workbook `cindia-close-2026-09.xlsx` with its four sheets, `mst_01`, and the receipt for `ord_001` at `paid_to_maker`, 13448, `2026-10-02`.
+- The five derived events carry their figures and text in the payload, taken from the records so they always match: `split.shown` and both `receipt.updated` from `ord_001`, `statement.issued` from `mst_01` (`lines`, `totalCents`, `heldCents`, `payoutDate`), `impact.updated` from `imp_2026_09`, and `followup.drafted` from `fup_01` (`to`, `subject`, `body`).
 - The month timeline's events are included, shifted by 20200 ms.
 - Event IDs are `evt_0001` onward, unique across the whole timeline, sorted by `at`.
 
@@ -106,7 +108,7 @@ The data-smith does these in order. Each task's files belong to it alone.
 - `tests/data/figures.test.ts`: each of the ten demo-critical figures in `data-model.md`, one test each, with the exact cents.
 - `tests/data/reconcile.test.ts`: every payout equals its orders' gross less fees and refunds. Every payout has its bank deposit at the same amount on the same date. The ledger balances. Maker payouts and held amounts follow the rule above. The statement's lines add up to its totals. Nothing is off except the gallery's 34000.
 - `tests/data/answer-key.test.ts`: the key lists exactly `err_01` to `err_04`, every record ID in it exists, and each error's records really show its problem.
-- `tests/data/timelines.test.ts`: every event in both timelines and in `scenarioReplies` passes `validateEvent()`, IDs are unique, `at` never goes backwards, every entity ID in a payload resolves with `getById()`, every `key` matches its type's key in `events.md`, and every beat in `demo-script.md` has its `beat.started` at its start time with its camera.
+- `tests/data/timelines.test.ts`: every event in both timelines and in `scenarioReplies` passes `validateEvent()`, IDs are unique, `at` never goes backwards, every entity ID in a payload resolves with `getById()` (the IDs `data-model.md` says live only in events excepted), every `key` matches its type's key in `events.md`, every beat in `demo-script.md` has its `beat.started` at its start time with its camera, and each derived event's payload equals the record it comes from.
 - `tests/data/determinism.test.ts`: no file in `src/mock/` contains `Math.random`, `Date.now`, `performance.now` or a `new Date()` with no argument.
 
 ## Acceptance

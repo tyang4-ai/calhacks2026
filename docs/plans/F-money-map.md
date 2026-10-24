@@ -20,17 +20,18 @@ A judge sees the buyer's $180.00 travel as thread: into Cindia, the card fee pee
 - **Exports:** `src/features/money-map/index.ts` default-exports `{ id: "money-map", slots: { "studio.map.main": MoneyMap } }`, typed with `FeatureModule` from `src/core/featureTypes.ts`.
 - **Source key on the badge:** `b04-bank`. While it is `"scripted"`, the panel shows `simulated-badge`. Once it is `"live"`, the badge goes and the balance is labeled as the studio's account on Nessie.
 - **Test IDs:** `money-map-canvas`, `money-map-balance`, `money-map-thread-<moveId>` (one per `money.moved`, for example `money-map-thread-mv_0001`). Internal to this feature: `money-map-node-<party kind>` for party nodes, with the maker's ID added for makers (`money-map-node-maker-mkr_01`).
-- **Labels from the glossary:** money map, money flow, balance, payout, maker payout, card fee, Cindia fee, plus the party names (buyer, Cindia, card network, studio, gallery, card processor, supplier, and each maker by name). A party label missing from the glossary goes under `needs:`.
+- **Labels from the glossary:** money map, money flow, balance, payout, maker payout, card fee, Cindia fee, plus the party names (buyer, card network, studio, gallery, card processor, supplier, and each maker by name). Cindia as a party has no glossary row yet: label it "Cindia" in both languages, the way the glossary writes Cindy, keep it in `strings.ts` (T0), and list it under `needs:` so the integrator can add the row. Don't block on it.
 
 ## Tasks
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T1 | Party layout and nodes | src/features/money-map/partyLayout.ts, src/features/money-map/PartyNodes.tsx, tests/features/money-map-nodes.spec.ts | none | opus |
+| T0 | UI strings (lead): every short string these screens need that the glossary lacks, English and Chinese side by side | src/features/money-map/strings.ts | none | lead |
+| T1 | Party layout and nodes | src/features/money-map/partyLayout.ts, src/features/money-map/PartyNodes.tsx, tests/features/money-map-nodes.spec.ts | T0 | opus |
 | T2 | One thread per move | src/features/money-map/threadGroups.ts, src/features/money-map/MoveThreads.tsx, tests/features/money-map-threads.spec.ts | T1 (the anchor points from `partyLayout.ts`) | opus |
-| T3 | Balance and account label | src/features/money-map/AccountBalance.tsx, tests/features/money-map-balance.spec.ts | none | opus |
+| T3 | Balance and account label | src/features/money-map/AccountBalance.tsx, tests/features/money-map-balance.spec.ts | T0 | opus |
 | T4 | Assemble the map and fill the slot (lead) | src/features/money-map/MoneyMap.tsx, src/features/money-map/index.ts, tests/features/money-map-flow.spec.ts | T1 to T3 | lead |
 
-**How the tasks fit:** builders run `npm run check:scope` on their files and write their spec. The specs run for the first time once T4 fills the slot, and the lead sends any failure back to the builder who owns the file.
+**How the tasks fit:** the lead writes T0 before spawning any builder, because `design-system.md` puts a feature's short UI strings in its own `strings.ts`. A builder that needs a string T0 lacks lists it under `needs:`, and the lead adds it. Builders run `npm run check:scope` on their files and write their spec. The specs run for the first time once T4 fills the slot, and the lead sends any failure back to the builder who owns the file.
 
 **T1.** `partyLayout.ts` is a pure function from a party (`Party.kind` and `id`) to a fixed point on a 1000 by 600 canvas and back to its anchor for threads. Money comes in from the left (buyer, Cindia, the card processor, the gallery), the studio account sits in the middle, the three makers stand on the right, the card network sits above Cindia so fees peel upward, and the supplier sits below the studio. `PartyNodes` draws each party that appears in at least one move, plus the studio and the three makers from the start, with `MakerMark` for makers. A node shows money that stayed with it (in minus out) when that isn't zero, so Cindia's $18.00 fee shows without a thread of its own.
 
