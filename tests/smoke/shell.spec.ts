@@ -1,12 +1,44 @@
 // The shell's behavior: language resolution, the demo controls and their keys, video mode,
 // and the live badge rule through window.__cindia.emit().
 import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, watchPage } from "./lib";
+import { waitForHooks, waitForSlots, watchPage } from "./lib";
 
 async function frameLangs(page: Page) {
   const out: Record<string, string | null> = {};
   for (const f of ["buyer", "studio", "owner", "maker"]) out[f] = await page.getByTestId(`frame-${f}`).getAttribute("lang");
   return out;
+}
+
+/**
+ * For every slot inside each frame, empty or filled: the language its content resolves to (the
+ * nearest lang attribute at or above the slot's first element). The placeholder sets its own, and
+ * a feature either sets one from SlotProps.lang or inherits the frame's.
+ */
+async function slotLangs(page: Page) {
+  const out: Record<string, { frame: string | null; slots: Record<string, string | null> }> = {};
+  for (const f of ["buyer", "studio", "owner", "maker"]) {
+    const frame = page.getByTestId(`frame-${f}`);
+    const slots = await frame.locator("[data-slot]").evaluateAll((els) =>
+      Object.fromEntries(
+        els.map((el) => {
+          const root = el.firstElementChild ?? el;
+          return [el.getAttribute("data-slot"), root.closest("[lang]")?.getAttribute("lang") ?? null];
+        }),
+      ),
+    );
+    out[f] = { frame: await frame.getAttribute("lang"), slots };
+  }
+  return out;
+}
+
+/** Every frame has at least one slot, and each slot's content is in its frame's language. */
+async function expectSlotsFollowFrames(page: Page) {
+  await waitForSlots(page);
+  const langs = await slotLangs(page);
+  for (const [f, { frame, slots }] of Object.entries(langs)) {
+    expect(Object.keys(slots).length, `frame-${f} has a slot`).toBeGreaterThan(0);
+    for (const [slot, lang] of Object.entries(slots)) expect(lang, `${slot} follows frame-${f}`).toBe(frame);
+  }
 }
 
 const now = (page: Page) => page.evaluate(() => window.__cindia!.player.now());
@@ -17,16 +49,19 @@ test("language: auto puts buyer and studio in English, owner and maker in Chines
   await page.goto("/demo");
   await waitForHooks(page);
   expect(await page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("auto");
+  // At every step, each slot's content (placeholder or feature) follows its surface's language,
+  // whichever slots W1 has filled so far.
   expect(await frameLangs(page)).toEqual({ buyer: "en", studio: "en", owner: "zh", maker: "zh" });
+  await expectSlotsFollowFrames(page);
   await page.getByTestId("demo-lang-toggle").click();
   expect(await frameLangs(page)).toEqual({ buyer: "en", studio: "en", owner: "en", maker: "en" });
+  await expectSlotsFollowFrames(page);
   await page.getByTestId("demo-lang-toggle").click();
   expect(await frameLangs(page)).toEqual({ buyer: "zh", studio: "zh", owner: "zh", maker: "zh" });
+  await expectSlotsFollowFrames(page);
   await page.getByTestId("demo-lang-toggle").click();
   expect(await frameLangs(page)).toEqual({ buyer: "en", studio: "en", owner: "zh", maker: "zh" });
-  // The placeholders follow their surface's language.
-  await expect(page.getByTestId("slot-owner-main")).toHaveAttribute("lang", "zh");
-  await expect(page.getByTestId("slot-buyer-main")).toHaveAttribute("lang", "en");
+  await expectSlotsFollowFrames(page);
   watch.expectClean();
 });
 

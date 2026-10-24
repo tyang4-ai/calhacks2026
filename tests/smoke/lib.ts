@@ -1,6 +1,6 @@
 // Shared Playwright helpers: console and request watchers, and waits on window.__cindia.
 // Feature tests may import these too.
-import { expect, type Page } from "@playwright/test";
+import { expect, type Frame, type Page, type Request } from "@playwright/test";
 
 export const SLOT_IDS = [
   "buyer.main",
@@ -48,17 +48,52 @@ export function watchPage(page: Page) {
   page.on("request", (req) => {
     if (!isLocal(req.url())) remote.push(req.url());
   });
+  // A navigation (page.goto, a reload, a Vite full reload) cancels the old document's in-flight
+  // requests with net::ERR_ABORTED, often lazily loaded modules. Those aren't errors. Count each
+  // frame's navigations, note the count when a request starts, and when an abort comes in, keep it
+  // for later. expectClean() lets an abort through only if its frame navigated after the request
+  // started (the abort can fire before framenavigated does). Every other failure counts at once.
+  const navCount = new WeakMap<Frame, number>();
+  const navAtStart = new WeakMap<Request, number>();
+  const mainNavAtStart = new WeakMap<Request, number>();
+  const aborted: { req: Request; frame: Frame | null; text: string }[] = [];
+  const frameOf = (req: Request): Frame | null => {
+    try {
+      return req.frame();
+    } catch {
+      return null; // service worker requests have no frame
+    }
+  };
+  page.on("framenavigated", (f) => navCount.set(f, (navCount.get(f) ?? 0) + 1));
+  page.on("request", (req) => {
+    const f = frameOf(req);
+    if (f) navAtStart.set(req, navCount.get(f) ?? 0);
+    mainNavAtStart.set(req, navCount.get(page.mainFrame()) ?? 0);
+  });
   page.on("requestfailed", (req) => {
-    if (isLocal(req.url()) && !/favicon/.test(req.url())) errors.push(`request failed: ${req.url()} ${req.failure()?.errorText ?? ""}`);
+    if (!isLocal(req.url()) || /favicon/.test(req.url())) return;
+    const text = req.failure()?.errorText ?? "";
+    const line = `request failed: ${req.url()} ${text}`;
+    if (text === "net::ERR_ABORTED") aborted.push({ req, frame: frameOf(req), text: line });
+    else errors.push(line);
   });
   page.on("response", (res) => {
     if (isLocal(res.url()) && res.status() >= 400) errors.push(`HTTP ${res.status()}: ${res.url()}`);
   });
+  const abortsNotFromNavigation = () =>
+    aborted.filter(({ req, frame }) => {
+      // A subframe's requests also abort when the page around it navigates.
+      const mainStart = mainNavAtStart.get(req);
+      if (mainStart !== undefined && (navCount.get(page.mainFrame()) ?? 0) > mainStart) return false;
+      if (!frame) return true;
+      const start = navAtStart.get(req);
+      return start === undefined || (navCount.get(frame) ?? 0) <= start;
+    });
   return {
     errors,
     remote,
     expectClean() {
-      expect(errors, "console errors, page errors or failed requests").toEqual([]);
+      expect([...errors, ...abortsNotFromNavigation().map((a) => a.text)], "console errors, page errors or failed requests").toEqual([]);
       expect(remote, "requests beyond localhost").toEqual([]);
     },
   };

@@ -58,7 +58,7 @@ process.on('SIGINT', () => void stopAndExit(130));
 process.on('SIGTERM', () => void stopAndExit(143));
 
 try {
-  code = await runLive(process.execPath, [BIN.playwright, 'test', '--project', project, ...extra], {
+  code = await runLive(process.execPath, [BIN.playwright, 'test', `--project=${project}`, ...extra], {
     env: {
       CINDIA_BASE_URL: baseURL,
       CINDIA_OUTPUT_DIR: outputDir,

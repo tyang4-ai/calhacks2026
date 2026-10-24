@@ -19,7 +19,7 @@ In under 15 seconds a judge watches a buyer ask for a gift, meet the maker behin
 - **Emits,** with `source: "user"`, built with `userEvent()` from `src/core/events.ts` so their IDs and `at` follow `events.md`: `concierge.asked` (`query`, `lang`) when the buyer types a request and presses Enter, `piece.opened` (tapping a curated piece) and `checkout.started` (the pay button). The sources registry answers a typed request with `concierge.answered`, the curated set in scripted mode. Every other buyer event comes from the timeline in Phase 1.
 - **Exports:** `src/features/buyer/index.ts` default-exports `{ id: "buyer", slots: { "buyer.main": BuyerFlow } }`, typed with `FeatureModule` from `src/core/featureTypes.ts`.
 - **Source keys on the badge:** `b09-concierge`, `b10-derived`, `b04-bank`. The panel shows `simulated-badge` while any of them is `"scripted"` in `sources`.
-- **Test IDs:** `buyer-concierge-input`, `buyer-concierge-results`, `buyer-story-card`, `buyer-process-timeline`, `buyer-split-bar`, `buyer-split-maker-share`, `buyer-pay-button`, `buyer-token`, `buyer-receipt`, `buyer-receipt-status`. Internal to this feature: `buyer-result-<pieceId>` for each curated piece.
+- **Test IDs:** `buyer-concierge-input`, `buyer-concierge-results`, `buyer-story-card`, `buyer-process-timeline`, `buyer-split-bar`, `buyer-split-maker-share`, `buyer-pay-button`, `buyer-token`, `buyer-receipt`, `buyer-receipt-status`. Internal to this feature: `buyer-result-<pieceId>` for each curated piece, `buyer-simulated-note` (the checkout note) and `buyer-split-price` (the price above the split).
 - **Labels from the glossary:** maker share, materials, Cindia fee, card fee, token, receipt, received, paid to the maker, simulated checkout, hours of work, heritage.
 
 ## Tasks

@@ -33,14 +33,14 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 
 | Plan | Wave | State | Lead | Last green tag | Notes |
 |---|---|---|---|---|---|
-| F-buyer | W1 | running | feature-lead | | |
-| F-money-map | W1 | running | feature-lead | | |
-| F-reconcile | W1 | running | feature-lead | | |
-| F-approvals | W1 | running | feature-lead | | |
-| F-maker-statement | W1 | todo |  | | |
-| F-close | W1 | todo |  | | |
-| F-proof | W1 | todo |  | | |
-| F-ask-cindy | W1 | todo |  | | |
+| F-buyer | W1 | running | feature-lead | | lead done, verifier PASS with caveats, 30 specs pass directly; G3 waits on integrator fix |
+| F-money-map | W1 | running | feature-lead | | lead blocked: feature clean, 9/9 specs pass directly; verifier FAIL only on shared smoke and test:feature bugs |
+| F-reconcile | W1 | running | feature-lead | | lead done, verifier PASS; G3 waits on integrator test-runner fix; 1 lint warning MatchRow.tsx:84 |
+| F-approvals | W1 | running | feature-lead | | lead done, verifier PASS; G3 waits on integrator test-runner fix |
+| F-maker-statement | W1 | running | feature-lead | | |
+| F-close | W1 | running | feature-lead | | |
+| F-proof | W1 | running | feature-lead | | |
+| F-ask-cindy | W1 | running | feature-lead | | |
 | F-impact | W1 | todo |  | | |
 
 States: `todo`, `running`, `green`, `failed`, `CUT`.
@@ -107,3 +107,8 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 02:55 PT · S2 reported done; G2 checks 2/2; smoke 21/22 (shell.spec c-key assumes empty timeline); integrator fixing smoke and Vitest cache; G2 verifier running · artifacts/gates/G2-0252.md
 - 2026-10-24 02:58 PT · integrator fixed the c-key smoke test and set vitest fsModuleCache off; check PASS, smoke 22/22 · artifacts/gates/G2-verifier.md
 - 2026-10-24 02:58 PT · G2 passed, tag g2-data; W1 leads started for buyer, money-map, reconcile, approvals · artifacts/gates/G2-0252.md
+- 2026-10-24 03:12 PT · F-approvals lead done (verifier PASS); integrator spawned for run-playwright --project bug, smoke ERR_ABORTED and stale placeholder checks; maker-statement lead started · artifacts/verify/F-approvals-G3-0309.md
+- 2026-10-24 03:14 PT · F-reconcile lead done (verifier PASS), G3 waits on integrator fix; close lead started · artifacts/verify/F-reconcile-G3-0310.md
+- 2026-10-24 03:15 PT · F-money-map lead blocked on the same shared test bugs (feature clean, 9/9 direct); proof lead started; pending for integrator: money-map-balance-nessie test ID in ui-contract.md · artifacts/verify/F-money-map-G3-0312.md
+- 2026-10-24 03:16 PT · F-buyer lead done (verifier PASS with caveats), G3 waits on integrator fix; ask-cindy lead started · artifacts/verify/F-buyer-G3-0312.md
+- 2026-10-24 03:17 PT · integrator fixed test:feature (--project=), smoke aborts and slot checks; orchestrator added vite/client to tsconfig.node.json; check PASS · decisions.md
