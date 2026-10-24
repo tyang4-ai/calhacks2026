@@ -73,11 +73,11 @@ The scaffolder creates these in S1. The names are fixed here so every plan can r
 | `python server/b11_embed/train.py` | v2, from `B11-embed`: trains and scores the embedding model. Use the `.venv` Python |
 | `python server/b11_embed/fetch_model.py` | v2, from `B11-embed`: pulls the newest published model from the Hugging Face repo into `CINDIA_MODEL_DIR`. Use the `.venv` Python |
 | `spacetime start --listen-addr 127.0.0.1:3000` | v2: the local SpacetimeDB server on port 3000, bound to this machine only. The orchestrator starts it once and the heartbeat restarts it. Never a bare `spacetime start` |
-| `spacetime publish --server local --module-path server/b13_spacetime/module cindia` | v2, after `B13-live` T1: publishes the module to the local server as `cindia`. The orchestrator runs it. `server/b13_spacetime/README.md` holds the exact command and the token step |
+| `spacetime publish -s local cindia` | v2, after `B13-live` T1: publishes the module to the local server as `cindia`, run the way `server/b13_spacetime/README.md` says. Then `python server/b13_spacetime/save_token.py` writes the owner's token to `.env` without printing it. The orchestrator runs both |
 | `npm run build:public` | v2, from `D-deploy`: the public scripted build in `dist/` (`VITE_PUBLIC_SITE=1`, no Pay, the sandbox market at `/market/`), for Gordon's Cloudflare Pages upload |
 | `node scripts/laptop-setup.mjs` | v2, from `D-deploy`: prepares the Windows demo laptop for live mode and prints `/api/health`. Gordon runs it there, never in the cloud |
 
-R0's checks are every v1 command above: `check`, `check:data`, `test:smoke`, `build`, `test:demo`, `test:offline` and `test:server`, all green before its one commit.
+R0's checks are v1's gates on the re-skinned names: `npm run gate -- G2`, `npm run gate -- G4`, `npm run test:smoke` and `npm run test:server` (`docs/v2/contracts.md` section 10), all green before its one commit.
 
 Two exist from the start: `node .claude/hooks/test-hooks.mjs` (hook self-test) and `node scripts/preflight.mjs` (G0 checks).
 

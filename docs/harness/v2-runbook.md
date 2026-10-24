@@ -55,7 +55,7 @@ The standing rules of `docs/harness/runbook.md` still apply (you coordinate and 
    - `python3 -m venv .venv` and `.venv/bin/python -m pip install -r server/requirements.txt`.
    - If torch is installed now or by any later install (I2-core's T6, B11's training requirements), check it's the CPU build. `.venv/bin/python -c "import torch; print(torch.__version__)"` must end in `+cpu`. Without `download.pytorch.org` pip quietly takes PyPI's CUDA build, several GB. If it doesn't end in `+cpu`, uninstall torch and install it again from the CPU index, and log it.
    - The Playwright browser, with the image's skip flag unset for this one command: `env -u PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD npx playwright install chromium`. The image presets an older Chromium that may not match the repo's Playwright. Step 6 proves it launches.
-   - The SpacetimeDB CLI from `install.spacetimedb.com`, into the user's home, never a global system path. If the installer's release download answers 403, fetch the same asset from `release-assets.githubusercontent.com` with curl and install it by hand, as `docs/tech/spacetimedb/install-and-run-locally.md` describes.
+   - The SpacetimeDB CLI from `install.spacetimedb.com`, into the user's home, never a global system path. If the installer's release download answers 403, fetch the same asset from `release-assets.githubusercontent.com` with curl and install it by hand, as `docs/tech/spacetimedb/install-and-run-locally.md` describes. Then `spacetime server set-default local`, so no command reaches Maincloud by default.
    
    Log each install in `decisions.md`. A host that refuses means the network changed back. Go back to step 0.
 5. Run `node .claude/hooks/test-hooks.mjs`. It must pass in full. A failure that comes from Linux paths gets fixed in the hooks (you own `.claude/`) and logged in `lessons.md`. Use `GUARDS: off` only as the last resort.
@@ -77,26 +77,28 @@ The standing rules of `docs/harness/runbook.md` still apply (you coordinate and 
 The order below follows the architecture review (B1-1, B1-19, B1-20). Commit each step with only the paths it owns plus `docs/harness/`.
 
 0. **R0, the re-skin (`docs/plans/R0-reskin.md`).** v1's studio becomes the Diné Weaving and Silver Co-op. Every number stays, and only names, words and art change.
-   - Spawn its four agents at once, each with the SCOPE line its task in the plan gives: the data-smith, the integrator, a feature-lead and a backend-builder. The SCOPEs don't overlap, and nothing else runs beside them, so this is the one step allowed past the cap of 3.
-   - When all four report, run every v1 check: `npm run check`, `npm run check:data`, `npm run test:smoke`, `npm run build`, `npm run test:demo` once, `npm run test:offline` and `npm run test:server`. All must exit 0.
+   - Spawn its four agents at once, each with the SCOPE line its task in the plan gives: the data-smith (T1), the integrator (T2), a feature-lead (T3) and a backend-builder (T4). The SCOPEs don't overlap, and nothing else runs beside them, so this is the one step allowed past the cap of 3.
+   - When the data-smith reports, tell the backend-builder with SendMessage that the new `src/mock/` is in, because it rebuilds its fixtures from that data. Each agent runs its own scoped checks.
+   - When all four have reported, run R0's checks as `docs/v2/contracts.md` section 10 gives them: `npm run gate -- G2`, then `npm run gate -- G4` (v1's data and demo gates, with the expected strings updated to the new names), then `npm run test:smoke` and `npm run test:server`. Together they cover every check in the plan's Acceptance, and all must pass. Then run the old-names search from the plan's Acceptance, which must find nothing.
+   - Log the plan's line in `decisions.md`: the v1 tests' expected names, titles and default languages follow the re-skinned data, and no assertion was removed.
    - Then one commit, `R0: re-skin to the Diné co-op`, holding all four agents' paths. Push the branch, then tag `v2-reskin` and record it in the Tags table. This is also the first v2 push, so check that the branch push went through.
    - A red check: send the failure to the agent that owns the file, two rounds at most. R0 can't be cut, because every later plan uses its names. Still red after two rounds: a fresh agent of the same role for one more round, then Needs Gordon.
 1. **I2-core, first spawn.** Spawn the integrator for `I2-core` (`docs/plans/I2-core.md`, the SCOPE line its plan gives), every task except T5. It merges `docs/v2/contracts.md` into `docs/common/` and writes the types, reducers, validation, sources, server config and `export:mock`.
    - **The fallout step (B1-1).** Widening the core types breaks files the integrator may not edit. When the integrator reports, and before the first `npm run check`, spawn I2-core's two fallout tasks at once, each with the delegation header `docs/plans/I2-core.md` gives it: FO1 for a feature-lead (placeholder entries in the v1 feature files the widened types break) and FO2 for a data-smith (the minimal v2 fields on the twelve co-op pieces).
-   - Then run `npm run check` and `npm run test:smoke`. Commit the integrator's and the two fallout tasks' paths together as `I2-core: v2 contracts and core`, push, then tag `v2-core` and record it.
+   - When both report, run `npm run check`, `npm run test:smoke` and `npm run test:demo`. Commit the integrator's and the two fallout tasks' paths together as `I2-core: v2 contracts and core`, push, then tag `v2-core` and record it.
    - Run `npm run export:mock`, which exists from this commit on. The Python side reads R0's names from it.
    - Check the torch build again (V0 step 4), since T6 installs the v2 requirements. uvicorn reloads `config.py`, so read `/api/health` again and run the B02, B07 and B09 G5s now if `anthropic` is true (V0 step 8).
    - Nothing else starts before this lands.
 2. **S3's stubs.** Spawn the data-smith for `S3-catalog` task T1 only (the typed stub files). Commit it as soon as `npm run check` passes.
 3. **Then, within the cap of 3:**
-   - the integrator for `I2-core`'s second spawn, task T5 (the responders, which import those stubs). Commit it on its own `npm run check:scope -- src/sources/` pass, with T5's paths only,
+   - the integrator for `I2-core`'s second spawn, tasks T5 then T8 (the scripted responders, which import those stubs). Commit it on its own `npm run check:scope -- src/sources/` pass, with its paths only,
    - the data-smith for S3's first data spawn: the tasks that don't need T5, which B1-20 names T2 to T5 and T7, as S3's task table splits them,
    - the integrator for `I2-kit` task T1 (the frame components), then the rest of I2-kit,
    - once I2-kit's T1 is in, the integrator for `I2-shell`,
    - the integrator for `I2-art` task T0 (`npm run art -- --placeholders`, a placeholder SVG for each of the 54 pieces, so no card shows a broken image). Commit it on its own, with its paths only, before G1b.
    
    Two integrators may run at once only with SCOPE lines that don't overlap. The plans give them.
-4. **S3's second data spawn** (the tasks B1-20 names T6 and T8: the demo search, the eval queries, the swarm runs and the integrity tests) starts only after I2-core T5 is committed and after G1b has run, if G1b is due (step 5).
+4. **S3's second data spawn** (the tasks B1-20 names T6 and T8: the demo search, the eval queries, the swarm runs and the integrity tests) starts only after I2-core's second spawn is committed and after G1b has run, if G1b is due (step 5).
 5. **G1b,** when I2-shell, I2-kit and I2-art's T0 are done. A gate sees every agent's half-written files, so run it at a moment no data-smith or integrator is mid-edit: if an S3 spawn is running, wait for it to report, run G1b, then start S3's next spawn. Run it with the gate skill. Tag `v2-shell`.
 6. **G2b,** when both S3 spawns are done and no integrator is mid-task. Its checks are `npm run check:data` and `npm run check:scope -- src/mock/ tests/data/ src/sources/`, plus the 54 placeholder files and a verifier review. Run it with the gate skill. Tag `v2-data`.
 7. Then run `npm run export:mock`, and spawn the integrator for `I2-art` tasks T1 to T3 (the real illustrations and the contact sheet).
@@ -111,7 +113,7 @@ The order below follows the architecture review (B1-1, B1-19, B1-20). Commit eac
 Notes on the queue:
 - `M-desktop` is P0 and runs right after `M-approvals`, before the tour, because `d06` to `d10` are the moment for the finance tracks (C-11). Its lead starts with T2 and T3 (the money map, then the month and the catch at desktop size), before its other tasks.
 - `F-seller-hub` is P0, because its `d15-listing` beat is in the tour's spine.
-- B13's task for B08's owner route (`docs/plans/B13-live.md`) must land before `M-approvals`' G3. If M-approvals reports first, its G3 waits for that task, and the B13 backend-builder runs it next.
+- B13's T7, B08's owner route (`docs/plans/B13-live.md`), must land before `M-approvals`' G3. If M-approvals reports first, its G3 waits for that task, and the B13 backend-builder runs it next.
 - Each gets a feature-lead with `PLAN: docs/plans/<plan>.md`, `TASK: all`, and the SCOPE line its plan gives. A migration plan may own more than one feature folder.
 - G3 on each. A migration plan's G3 takes every slug it owns, for example `npm run gate -- G3 money-map reconcile scenario close impact proof dashboard ask-cindy audit` for `M-desktop`. Tags `v2-<slug>`, where an `M-` plan's slug is its ID without `M-` (`v2-desktop`).
 - After each green feature, rerun `npm run test:demo` once and `npm run test:offline` (the Phase A demo, later the tour) when no other Playwright gate is running.
@@ -123,11 +125,16 @@ Notes on the queue:
 4. Then `B14-swarm`.
 5. Then `B15-watch`. It crawls the sandbox market once the public site is up (D-deploy), and plays on its fixture until then.
 
-Your own steps around the upgrades (builders can't install, publish or run servers):
-- **Before B11's training task:** run `npm run export:mock`, then install the training requirements with `.venv/bin/python -m pip install -r server/b11_embed/requirements-train.txt`, and check the torch build (V0 step 4).
-- **B11's training run** happens inside the B11 task (`python server/b11_embed/train.py`, in the background with a checkpoint each epoch, as B11's plan says). When it has produced `report.json`, spawn the data-smith for `S3-catalog` task T9, which copies the real report into `src/mock/model.ts`. Then rerun `npm run export:mock` and G2b's data check.
-- **If Gordon trains on the Akbari machine instead** (`scripts/train-akbari.sh`, his own `HF_TOKEN`), run `.venv/bin/python server/b11_embed/fetch_model.py` once he says his run is published, then S3's T9 as above. The model, `vectors.json` and the index must share one fingerprint, or B11 refuses them.
-- **After B13's T1:** install the module's packages inside `server/b13_spacetime/module/` if it's TypeScript, publish it to the local server as `cindia` with the command in `server/b13_spacetime/README.md` (for example `spacetime publish --server local --module-path server/b13_spacetime/module cindia`), hand the publisher's token to the API as `SPACETIME_TOKEN` the way that README says, never printing it, restart `npm run server`, and confirm `GET /api/b13/status` reports `spacetime: true`.
+Your own steps around the upgrades (builders can't install, publish or run servers). Each plan's "Orchestrator steps" section is the source, and these follow it. Use the `.venv` Python for every `python` command.
+- **B11, before T3:** `npm run export:mock`, then `python server/b11_embed/data.py --snapshot`, then install the training requirements with `.venv/bin/python -m pip install -r server/b11_embed/requirements-train.txt`, and check the torch build (V0 step 4).
+- **B11, T5's run:** confirm `huggingface.co` answers (V0 step 0). Run `python server/b11_embed/train.py --probe` in the foreground and read its peak memory and seconds per step. Then start `python server/b11_embed/train.py` with `run_in_background` and a 60-minute timeout. It counts as one agent, and nothing heavy runs beside it. It saves a checkpoint each epoch, so a killed run resumes.
+- **B11, after T5:** spawn the data-smith for `S3-catalog` task T9, which copies the real report into `src/mock/model.ts` and grades `unjudged.json`. Then run `python server/b11_embed/train.py --eval-only`, have T9 copy the report again, rerun `npm run export:mock` before B12's seed, and rerun G2b's data check.
+- **B11, after T8:** add `scripts/train-akbari.sh`, the one-line wrapper B11's plan gives, for Gordon's optional run at the lab.
+- **If Gordon trains on the Akbari machine instead** (`scripts/train-akbari.sh`, his own `HF_TOKEN`), run `python server/b11_embed/fetch_model.py` once he says his run is published, then S3's T9 as above. The model, `vectors.json` and the index must share one fingerprint, or B11 refuses them.
+- **B13, after T1:** install the module's packages, then publish it to the local server with `spacetime publish -s local cindia`, run the way `server/b13_spacetime/README.md` says. Never the CLI's Maincloud default.
+- **B13, once `save_token.py` exists (its T4):** run `python server/b13_spacetime/save_token.py`. It writes the publisher's token to `.env` as `SPACETIME_TOKEN` without printing it. Restart `npm run server` and confirm `GET /api/b13/status` reports `spacetime: true`.
+- **B13, after T5:** `POST /api/b13/seed` once, or let the adapter do it in live mode.
+- **B13's T7** (B08's owner screen at `/sell/approvals?screen=owner`) gates M-approvals' G3. Commit T7's files on their own once its tests pass, so `main` never holds M-approvals' owner spec without the adapter it needs.
 - **Before each G5 of B11 to B16:** rerun `npm run export:mock`.
 - **An upgrade whose service isn't reachable or whose key isn't set:** finish it against mocks, mark it `blocked` with the reason under Needs Gordon, and move on. The scripted source keeps the demo whole.
 
@@ -205,7 +212,7 @@ Then the details if he asks. Keep the pitch and Devpost work in his voice (the s
 | A host refuses (`000` from curl) | The cloud environment's network blocks it. Back to V0 step 0: Needs Gordon, Full network access or the host in a Custom allowlist (`docs/v2/contracts.md` section 1). Keep going with mocks only for work that doesn't need that host |
 | A push is refused because it holds a tag | Expected in the cloud. Push the branch alone with `git push origin main`, and keep the tag local and in the Tags table |
 | A tag is missing when you need it | The VM was rebuilt. Use its SHA from the Tags table (`git restore --source <sha> -- <paths>`), and recreate it with `git tag -a <tag> <sha> -m "<tag>"` |
-| The VM was rebuilt | Rerun V0 steps 4 and 6, restore the model with `.venv/bin/python server/b11_embed/fetch_model.py`, republish the B13 module, recreate the local tags from the Tags table, and recreate the heartbeat. Log it |
+| The VM was rebuilt | Rerun V0 steps 4 and 6, restore the model with `.venv/bin/python server/b11_embed/fetch_model.py`, republish the B13 module and rerun `save_token.py`, recreate the local tags from the Tags table, and recreate the heartbeat. Log it |
 | A server is down | The heartbeat restarts it from the main session with `run_in_background` and logs it. Restart `npm run server` after any key change |
 | The VM runs out of memory during a build or a training run | Drop to 2 agents, rerun the step alone, and log it |
 | `send_later` heartbeat stopped arriving | Create it again, check with the scheduled tasks list, keep exactly one |

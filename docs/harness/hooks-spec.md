@@ -67,7 +67,7 @@ Runs before every Bash and PowerShell command. It splits compound commands on `;
 | Denied | Examples |
 |---|---|
 | Reading, printing, copying or moving a `.env` file (not `.env.example`) | `cat .env`, `Get-Content .env`, `grep KEY .env`, `cp .env x`, `wc -l < .env` |
-| Expanding a key | `echo $ANTHROPIC_API_KEY`, `${NESSIE_KEY}`, `$env:NESSIE_KEY`, `%NESSIE_KEY%`, `node -e "...process.env.ANTHROPIC_API_KEY..."` |
+| Expanding a key | `echo $ANTHROPIC_API_KEY`, `${NESSIE_KEY}`, `$env:NESSIE_KEY`, `%NESSIE_KEY%`, `node -e "...process.env.ANTHROPIC_API_KEY..."`. In v2 also the cloud names `CINDIA_ANTHROPIC_API_KEY`, `ELASTIC_API_KEY`, `APIFY_TOKEN`, `HF_TOKEN` and `SPACETIME_TOKEN`, any variable whose name ends in `_KEY`, `_TOKEN` or `_SECRET` (in bash, PowerShell, cmd and node, substring forms like `${HF_TOKEN:0:6}` and presence checks like `${HF_TOKEN:+set}` included), Python reads of those names, and reads of `/proc/<pid>/environ`. Check keys through `/api/health` only |
 | Dumping the environment | bare `env`, `printenv`, `set`, `export`, `Get-ChildItem env:` |
 | Rewriting remote history | `git push --force`, `-f`, `--force-with-lease`, `+main`, `--delete`, `:branch` |
 | Deleting what can't come back | a recursive delete of `.git`, `/`, `~`, a drive root, the repo root or a parent of it |

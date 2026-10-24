@@ -369,6 +369,10 @@ check('not a key: torch version', C, sh(null, null, '.venv/bin/python -c "import
 check('not a key: playwright install with the skip flag unset', C, sh(null, null, 'env -u PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD npx playwright install chromium'), 'allow');
 check('not a key: spacetime start on localhost', C, sh(null, null, 'spacetime start --listen-addr 127.0.0.1:3000'), 'allow');
 check('not a key: push the branch only', C, sh(null, null, 'git push origin main'), 'allow');
+check('not a key: save the SpacetimeDB token', C, sh(null, null, '.venv/bin/python server/b13_spacetime/save_token.py'), 'allow');
+check('not a key: publish the module locally', C, sh(null, null, 'spacetime publish -s local cindia'), 'allow');
+check('not a key: clear the swarm runs', C, sh(null, null, 'spacetime call -s local cindia clear_runs'), 'allow');
+check('not a key: the training probe', C, sh(null, null, '.venv/bin/python server/b11_embed/train.py --probe'), 'allow');
 
 check('main: git push --force', C, sh(null, null, 'git push --force origin main'), 'deny');
 check('main: git push -f', C, sh(null, null, 'git push -f'), 'deny');

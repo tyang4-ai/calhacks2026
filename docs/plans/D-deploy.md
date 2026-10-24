@@ -47,13 +47,13 @@ Three things the build session can't do by itself, made ready so Gordon finishes
   Add any other route family `src/app/routes.tsx` serves. Never a rule for `/assets/`, `/images/`, `/market/`, `/robots.txt`, `/favicon.svg` or `/public-build.json`. `dist/` holds no top-level `404.html`, which would turn off Cloudflare Pages' own fallback to the root page for paths the file doesn't list.
 - **`scripts/make-market.mjs`** reads `artifacts/mock/mock.json` and writes `public/market/`:
   - `index.html`, which lists every listing with a plain link,
-  - one page per entry of `counterfeitCandidates`, at `public/market/<cftId>.html`: the title in the page's `<h1>`, the snippet as the first paragraph, the claim, an invented seller line, and a price if the data has one. Nothing comes from anywhere but the mock data.
+  - one page per entry of `counterfeitCandidates` whose `url` is a path under `/market/` (`docs/v2/contracts.md` section 2), written at that path under `public/` (a path ending in `/` gets an `index.html`). Candidates on `example.com` or `example.org` get no page. Each page holds the title in its `<h1>`, the snippet as the first paragraph, the claim, an invented seller line, and a price if the data has one. Nothing comes from anywhere but the mock data.
   - Every market page shows L1, then the line "A sandbox market made for testing Cindia's copy watch. These listings are fictional.", and carries `<meta name="robots" content="noindex">`. No script tags, no images, no fonts, no stylesheet links and no URL to another host. Inline CSS only, plain and readable.
   - The claim-only listing names no maker and no community, exactly as its data reads.
   - The pages are committed, so the dev server and every build serve them too. Rerun the script whenever `src/mock/watch.ts` changes.
 - **`scripts/check-public.mjs`** checks a built `dist/` without a browser and prints one line per check:
   - `dist/public-build.json` says `"publicSite": true`,
-  - `dist/_redirects` parses as Cloudflare's format (one `source destination code` per line, `#` comments), and a matcher with Cloudflare's splat rule sends `/demo`, `/shop`, `/shop/piece/pc_01`, `/sell/month`, `/store/dine-weavers` and `/maker/mkr_01` to `/` with 200, and matches nothing for `/assets/index.js`, `/images/pc_01.svg`, `/market/`, `/market/cft_01.html` and `/robots.txt`,
+  - `dist/_redirects` parses as Cloudflare's format (one `source destination code` per line, `#` comments), and a matcher with Cloudflare's splat rule sends `/demo`, `/shop`, `/shop/piece/pc_01`, `/sell/month`, `/store/dine-weavers` and `/maker/mkr_01` to `/` with 200, and matches nothing for `/assets/index.js`, `/images/pc_01.svg`, `/market/`, each listing's `/market/` path from the data, and `/robots.txt`,
   - `dist/robots.txt` disallows everything for every agent,
   - `dist/index.html` holds `<meta name="robots" content="noindex">`,
   - there's no `dist/404.html`,
@@ -63,9 +63,13 @@ Three things the build session can't do by itself, made ready so Gordon finishes
   1. `git pull --ff-only origin main`.
   2. The Python venv: create `.venv` if it's missing (`py -3 -m venv .venv` on Windows, `python3 -m venv .venv` elsewhere), install `server/requirements.txt` with the venv's Python, and check that `torch.__version__` ends in `+cpu`.
   3. `npm ci`, then `npm run export:mock`.
-  4. The `.env` names, read inside Node and printed as "present" or "missing", never their values: `CINDIA_ANTHROPIC_API_KEY` or `ANTHROPIC_API_KEY`, `NESSIE_KEY`, `ELASTIC_URL`, `KIBANA_URL`, `ELASTIC_API_KEY`, `APIFY_TOKEN`, `HF_TOKEN`, `CINDIA_HF_REPO` (the model's Hugging Face repo), `PUBLIC_SITE_URL`, and `SPACETIME_TOKEN` if B13's README says the laptop sets it. An `ELASTIC_AUTH=proxy` or `APIFY_AUTH=proxy` line fails the step with "Proxy mode works only in the cloud. Put the real key in .env."
-  5. The model: `.venv`'s Python runs `server/b11_embed/fetch_model.py`, which pulls the newest published model into `CINDIA_MODEL_DIR`.
-  6. SpacetimeDB: `spacetime --version` must answer, or the step prints the Windows install command from the SpacetimeDB docs and stops. If `http://127.0.0.1:3000/v1/ping` doesn't answer, it starts `spacetime start --listen-addr 127.0.0.1:3000` in a window of its own and waits up to 30 seconds. Then it publishes the module and seeds it with the commands in `server/b13_spacetime/README.md`, with the old data deleted, so no earlier run's swarm steps remain.
+  4. The `.env` names, read inside Node and printed as "present" or "missing", never their values: `CINDIA_ANTHROPIC_API_KEY` or `ANTHROPIC_API_KEY`, `NESSIE_KEY`, `ELASTIC_URL`, `KIBANA_URL`, `ELASTIC_API_KEY`, `APIFY_TOKEN`, `HF_TOKEN`, `CINDIA_HF_REPO` (the model's Hugging Face repo) and `PUBLIC_SITE_URL`. `SPACETIME_TOKEN` comes later, from step 6. An `ELASTIC_AUTH=proxy` or `APIFY_AUTH=proxy` line fails the step with "Proxy mode works only in the cloud. Put the real key in .env."
+  5. The model: `.venv`'s Python runs `server/b11_embed/fetch_model.py`, which pulls the newest published model into `CINDIA_MODEL_DIR` and checks it against `report.json`.
+  6. SpacetimeDB, with the commands in `server/b13_spacetime/README.md`:
+     - `spacetime --version` must answer, or the step prints the Windows install command from the SpacetimeDB docs and stops. Then `spacetime server set-default local`.
+     - If `http://127.0.0.1:3000/v1/ping` doesn't answer, it starts `spacetime start --listen-addr 127.0.0.1:3000` in a window of its own and waits up to 30 seconds.
+     - It installs the module's packages, publishes with `spacetime publish -s local cindia`, and runs `server/b13_spacetime/save_token.py` with `.venv`'s Python, which writes `SPACETIME_TOKEN` to `.env` without printing it. Then it checks the name is present.
+     - It clears earlier runs with `spacetime call -s local cindia clear_runs`. The API seeds the catalog itself once it's up (`POST /api/b13/seed`, or the B13 adapter in live mode).
   7. The API: if `http://localhost:8000/api/health` doesn't answer, it starts `npm run server` in a window of its own and waits up to 60 seconds.
   8. Health: it prints each key and service from `/api/health` as true or false, and the routers it lists. It exits 1 if any is false, naming the step that fixes it.
   9. It prints the rehearsal checklist below.
@@ -85,10 +89,10 @@ T1 and T3 can run side by side. The integrator never starts a server and never r
 
 ## Acceptance
 
-- Given `artifacts/mock/mock.json`, when `node scripts/make-market.mjs` runs, then `public/market/` holds `index.html` and one page per `counterfeitCandidates` entry, and `node --test scripts/make-market.test.mjs` exits 0. The test proves that each page shows L1 and the sandbox line, carries `noindex`, holds no script, image, font or stylesheet tag and no URL to another host, and that the claim-only listing names no maker.
+- Given `artifacts/mock/mock.json`, when `node scripts/make-market.mjs` runs, then `public/market/` holds `index.html` and one page for each `counterfeitCandidates` entry whose `url` is under `/market/`, at that path, and `node --test scripts/make-market.test.mjs` exits 0. The test proves that each page shows L1 and the sandbox line, carries `noindex`, holds no script, image, font or stylesheet tag and no URL to another host, and that the claim-only listing names no maker.
 - Given a clean checkout, when `npm run build:public` runs, then it exits 0, `node scripts/check-public.mjs` passes every check above, and `node --test scripts/check-public.test.mjs` exits 0.
 - Given the public build in `dist/`, when `node scripts/secrets-scan.mjs` runs, then it exits 0.
-- Given the cloud VM, when `node scripts/laptop-setup.mjs --dry-run` runs, then it exits 0, prints steps 1 to 9 in order with their commands, and runs none of them.
+- Given the cloud VM, when `node scripts/laptop-setup.mjs --dry-run` runs, then it exits 0, prints steps 1 to 9 in order with their commands, and runs none of them. The B11 and B13 commands it prints match their plans' "Orchestrator steps" and `server/b13_spacetime/README.md`.
 - Given a temporary folder with a `.env` holding fake values, when `node --test scripts/laptop-setup.test.mjs` runs, then it exits 0. The test proves that the names step prints each name with "present" or "missing" and no value, and that a `*_AUTH=proxy` line fails the step with the proxy message.
 - Given `node scripts/preflight.mjs`, then it reports port 3000 and each v2 variable name by presence, as warnings.
 - `npm run check` and `npm run test:smoke` exit 0. The next production-build gate rebuilds `dist/` for localhost.
@@ -120,7 +124,7 @@ From `docs/tech/cloudflare-pages/direct-upload.mdx`. Direct Upload can't switch 
    - Turn Live on, then type a search and a support question of your own. Each answers live, and the badges say Live.
    - Close the API's window and ask again. The answer comes from the scripted source with the Simulated badge, and the tour still plays the same.
    - Run `node scripts/laptop-setup.mjs --check` to bring the API back and confirm health.
-5. Right before judging, republish the module with its data deleted and restart the API, as `server/b13_spacetime/README.md` says, so the swarm view starts empty.
+5. Right before judging, clear the swarm runs with `spacetime call -s local cindia clear_runs` and restart the API, as `server/b13_spacetime/README.md` says, so the swarm view starts empty.
 6. Reserve an ethernet cable and bring a USB-C ethernet adapter. Hotspots are banned. If the network drops during judging, the tour needs none.
 
 ## Out of scope
