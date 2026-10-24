@@ -104,7 +104,30 @@ test("demo controls respond to their keys, except in a text input", async ({ pag
   await page.keyboard.press("r");
   await expect(page.getByTestId("demo-play")).toBeVisible();
   expect(await now(page)).toBe(0);
+  // c starts at the catch: seek to d07-catch's beat.started and play. With no catch beat loaded it does nothing.
+  const [catchAt, nextBeatAt] = await page.evaluate(() => {
+    const beats = (window.__cindia!.player.getTimeline()?.events ?? []).filter((e) => e.type === "beat.started");
+    const i = beats.findIndex((e) => (e.payload as { beatId: string }).beatId === "d07-catch");
+    if (i < 0) return [null, null] as const;
+    return [beats[i].at, beats[i + 1]?.at ?? Number.POSITIVE_INFINITY] as const;
+  });
   await page.keyboard.press("c");
+  if (catchAt === null) {
+    expect(await now(page)).toBe(0);
+    expect(await playing(page)).toBe(false);
+  } else {
+    await expect(page.getByTestId("demo-pause")).toBeVisible();
+    expect(await playing(page)).toBe(true);
+    await expect.poll(() => now(page)).toBeGreaterThanOrEqual(catchAt);
+    // Pause, so the input check below proves Space typed in an input doesn't start the player.
+    await page.keyboard.press("Space");
+    await expect(page.getByTestId("demo-play")).toBeVisible();
+    expect(await playing(page)).toBe(false);
+    const pausedAt = await now(page);
+    expect(pausedAt).toBeGreaterThanOrEqual(catchAt);
+    // It landed in d07-catch, not somewhere later in the demo.
+    expect(pausedAt).toBeLessThan(nextBeatAt!);
+  }
 
   // While a text input has focus, the keys are left alone.
   await page.evaluate(() => {

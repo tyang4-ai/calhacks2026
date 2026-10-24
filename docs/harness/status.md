@@ -1,9 +1,9 @@
-STAGE: S2
-NEXT: R3
+STAGE: W1
+NEXT: R4
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 02:35 PT
+UPDATED: 2026-10-24 02:58 PT
 
 # Status board
 
@@ -14,7 +14,8 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - Kickoff passed (Oct 24, 2:01 AM): 25 plan files and 9 contracts present, hooks 292/292, preflight 0 blockers.
 - Heartbeat cron f57ce95e every 15 min (session-only).
 - G1 passed 2:35 AM (5/5, verifier PASS). Shared lock on.
-- Now: R3, S2 mock data. Data-smith running. Dev server on 5173.
+- G2 passed 2:58 AM (2/2, verifier PASS; smoke 22/22 after the integrator fix).
+- Now: R4, W1. Leads running for buyer, money-map, reconcile, approvals. Dev server on 5173.
 
 ## Gates
 
@@ -22,7 +23,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 |---|---|---|---|---|
 | G0 | PASS | Oct 24 2:01 AM | `artifacts/preflight.md` (0 blockers, 1 warning: no `.env`) | none |
 | G1 | PASS | Oct 24 2:33 AM | `artifacts/gates/G1-0233.md`, `artifacts/gates/G1-verifier.md` | g1-scaffold |
-| G2 | | | | |
+| G2 | PASS | Oct 24 2:58 AM | `artifacts/gates/G2-0252.md`, `artifacts/gates/G2-verifier.md` | g2-data |
 | G3 (W1) | | | | |
 | G4 | | | | |
 | G5 | | | | |
@@ -32,6 +33,15 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 
 | Plan | Wave | State | Lead | Last green tag | Notes |
 |---|---|---|---|---|---|
+| F-buyer | W1 | running | feature-lead | | |
+| F-money-map | W1 | running | feature-lead | | |
+| F-reconcile | W1 | running | feature-lead | | |
+| F-approvals | W1 | running | feature-lead | | |
+| F-maker-statement | W1 | todo |  | | |
+| F-close | W1 | todo |  | | |
+| F-proof | W1 | todo |  | | |
+| F-ask-cindy | W1 | todo |  | | |
+| F-impact | W1 | todo |  | | |
 
 States: `todo`, `running`, `green`, `failed`, `CUT`.
 
@@ -94,3 +104,6 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 02:35 PT · G1 passed 5/5, verifier PASS, shared lock on, tag g1-scaffold · `artifacts/gates/G1-0233.md`
 - 2026-10-24 02:38 PT · dev server started on 5173 (200); data-smith spawned for S2; integrator spawned for the conventions.md and glossary.md fixes from S1 · status.md
 - 2026-10-24 02:45 PT · integrator fixed conventions.md and glossary.md (check PASS, smoke 22/22) · decisions.md
+- 2026-10-24 02:55 PT · S2 reported done; G2 checks 2/2; smoke 21/22 (shell.spec c-key assumes empty timeline); integrator fixing smoke and Vitest cache; G2 verifier running · artifacts/gates/G2-0252.md
+- 2026-10-24 02:58 PT · integrator fixed the c-key smoke test and set vitest fsModuleCache off; check PASS, smoke 22/22 · artifacts/gates/G2-verifier.md
+- 2026-10-24 02:58 PT · G2 passed, tag g2-data; W1 leads started for buyer, money-map, reconcile, approvals · artifacts/gates/G2-0252.md

@@ -24,3 +24,6 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - S1-scaffold: The demo controls row is only faded out when collapsed, so Playwright can click `demo-play` directly; clicking the page's bottom-right corner may hit the hidden bar.
 - S1-scaffold: The kit's money formatter is `src/ui/formatCents.ts`; a `money.ts` next to `Money.tsx` clashes on Windows' case-insensitive disk.
 - S1-scaffold: The API error shape is `from server import ApiError` (in `server/__init__.py`).
+- S2-mock-data: Vitest 5's fsModuleCache serves stale transforms of files that use `import.meta.glob`, so new files under a globbed folder stay invisible to tests until `npx vitest --clearCache` ; typed calls `import.meta.glob<T>(` dodge its skip check, so `vitest.config.ts` sets `test.fsModuleCache: false`.
+- S2-mock-data: A helper `.ts` in `src/mock/timelines/` would load as a timeline, so shared timeline helpers live in `src/mock/`.
+- F-close: `month.closed` `feesCents` counts the gallery commission as charged (170000), while the ledger books the contract's 136000 and keeps 34000 in `receivable_gallery`.
