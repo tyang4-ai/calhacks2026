@@ -1,6 +1,6 @@
 ---
 name: cut
-description: Cuts a feature or upgrade that failed its gate after two fix rounds, or that the clock rules out. Puts its files back to the last green tag, or that tag's SHA when the tag is missing, records the cut and keeps the app green.
+description: Cuts a feature or upgrade that failed its gate after two fix rounds, or that the clock rules out. Puts its files back to the last green tag, or that tag's SHA when the tag is missing, records the cut and keeps the build green.
 argument-hint: "[plan id]"
 ---
 
@@ -17,8 +17,8 @@ The plan is `$ARGUMENTS`.
 4. **Restore,** only when there is a restore point, with the command from `conventions.md` and the tag or its SHA as the source:
    - Feature: `git restore --source <tag or sha> -- src/features/<slug>/ tests/features/<slug>-*`, once per slug
    - Upgrade: the same command with the files in its plan's `SCOPE`
-   With no restore point, skip this step. The feature is simply gone from the app.
+   With no restore point, skip this step. The feature is simply gone from the site.
 5. **Record** in `docs/harness/status.md`: mark its row `CUT`, add one line to Cut and simulated saying what's missing, for the README and Devpost, and add a Log line.
 6. **Tell the others.** If a running lead depends on it, send that lead a message with SendMessage: what was cut and what to do instead. A cut `M-` plan also has to be set aside in the demo (`cutFeatures()` in `tests/demo/beats.ts` reads `M-` rows as their slugs).
-7. **Check the app.** Run `npm run test:smoke`. Once a demo tag exists (`demo-ok-1` in v1, `v2-shell` in v2), also run `npm run build` and `npm run test:demo`. If the demo fails because a beat needs the cut feature, spawn the integrator to make the demo stage skip that beat.
+7. **Check the site.** Run `npm run test:smoke`. Once a demo tag exists (`demo-ok-1` in v1, `v2-shell` in v2), also run `npm run build` and `npm run test:demo`. If the demo fails because a beat needs the cut feature, spawn the integrator to make the demo stage skip that beat.
 8. **Commit.** Stage only the cut paths and `docs/harness/` (other agents may have work in progress), then `git commit -m "<plan id>: cut, restored to <tag> (<short sha>)"`, or `"<plan id>: cut, never green"` when there was no restore point. Then `git pull --rebase origin main` and `git push origin main`, the branch only.
