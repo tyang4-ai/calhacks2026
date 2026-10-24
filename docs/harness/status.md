@@ -3,7 +3,7 @@ NEXT: R6
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 05:58 PT
+UPDATED: 2026-10-24 06:12 PT
 
 # Status board
 
@@ -18,8 +18,8 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - W1 done 3:27 AM: all 9 P0 features green, wave gate PASS, tag w1.
 - G4 passed 4:15 AM after two fix rounds (d08 approvals compact card, d10 toast, d06 handled strip, d07 label). Tag demo-ok-1: the build to demo if everything after fails.
 - W2 green (3/3); P2: six no-key upgrades green (B01, B03, B05, B06, B08, B10); B02, B04, B07, B09 wait on .env.
-- Now: R6 polish. Integrator (stage: cold-open caption, catch crop, d08 back panel), reconcile (handled strip layout), buyer (request input cut off). Then G3 for each and G4. Dev server 5173, API 8000.
-- G4 polish, not blocking: d00 caption covers the end of the explanation; d06 handled strip rows wrap unevenly; d08 Month panel cut at its bottom; d07 and d00 catch camera crops the top bar and rail; d01 request input text cut off.
+- Now: R6. Polish round 1 green, tag demo-ok-2. Next: browser tests of the B05 drop zone and the B08 owner tab in live mode, more polish. Dev server 5173, API 8000.
+- G4 polish after round 3 (verifier r3): fixed d00 caption, d01 request, d06 strip; partly d07 crop (label touches the right edge); left d08 Month panel clipped behind the phone, d06 list lands on one tall wrapped row, d00/d07 empty strip header at the bottom edge.
 
 ## Gates
 
@@ -169,3 +169,7 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 05:58 PT · G5 B10-derived PASS 13/13, verifier PASS, tag demo-ok-b10 · artifacts/gates/G5-0534.md, artifacts/gates/G5-batch-verifier.md
 - 2026-10-24 05:58 PT · G5 B05-scenario PASS 13/13, verifier PASS, tag demo-ok-b05 · artifacts/gates/G5-0543.md, artifacts/gates/G5-batch-verifier.md
 - 2026-10-24 05:58 PT · six no-key upgrades green; staying in R6 for polish (decisions.md); integrator, reconcile and buyer polish started · artifacts/gates/G4-verifier-r2.md
+- 2026-10-24 06:05 PT · buyer polish in (request box grows to show the full request; feature 30/30, smoke 22/22); G3 and G4 after the other polish lands · status.md
+- 2026-10-24 06:08 PT · reconcile polish in (squared strip on a grid, list fits whole rows; feature 12/12, smoke 22/22) · status.md
+- 2026-10-24 06:03 PT · integrator polish in (cold-open caption card, catch camera aligned to the content corner; d08 back panel left as is); G3 buyer and reconcile PASS 3/3, G4 PASS 5/5; verifier round 3 running · artifacts/gates/G4-0600.md
+- 2026-10-24 06:12 PT · polish round: G3 buyer and reconcile 3/3, G4 5/5, verifier r3 PASS, tag demo-ok-2 · artifacts/gates/G4-0600.md, artifacts/gates/G4-verifier-r3.md

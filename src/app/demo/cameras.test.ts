@@ -52,6 +52,15 @@ describe("camera poses", () => {
     // The focus point lands at the center when it can.
     expect(left + 640 * CATCH_SCALE).toBeCloseTo(800, 0);
   });
+
+  it("aligns studio-catch to the view area's corner when the focus box fits, and centers otherwise", () => {
+    const corner = { x: 89, y: 57 };
+    const p = catchPose({ x: 484, y: 384, box: { top: 147, left: 135, bottom: 620, right: 833 }, corner });
+    expect(p.cx - (1280 * CATCH_SCALE) / 2).toBeCloseTo(-corner.x * CATCH_SCALE, 5);
+    expect(p.cy - (800 * CATCH_SCALE) / 2).toBeCloseTo(-corner.y * CATCH_SCALE, 5);
+    const tall = catchPose({ x: 484, y: 500, box: { top: 147, left: 135, bottom: 760, right: 833 }, corner });
+    expect(tall.cy - (800 * CATCH_SCALE) / 2).not.toBeCloseTo(-corner.y * CATCH_SCALE, 0);
+  });
 });
 
 const opts = (epoch: number, playing = true, reduced = false) => ({ epoch, playing, reduced });

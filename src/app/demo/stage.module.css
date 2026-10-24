@@ -77,6 +77,21 @@
   box-shadow: 0 8px 32px rgb(28 26 23 / 0.25);
 }
 
+/* The cold open's caption sits in the right column under "Try a statement", which the catch zoom
+   leaves empty, so it covers none of the flag, the evidence or Cindy's explanation. */
+.coldOpen {
+  composes: overlay;
+  justify-content: flex-end;
+  padding: 0 40px 56px 0;
+}
+
+.coldLine {
+  composes: line;
+  max-width: 480px;
+  text-align: left;
+  padding: 18px 24px;
+}
+
 .rewind {
   composes: line;
   font-size: var(--c-text-24);

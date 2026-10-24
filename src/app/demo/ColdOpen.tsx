@@ -15,8 +15,8 @@ export function ColdOpen() {
     return id !== undefined ? s.month.flags[id]?.deltaCents ?? null : null;
   });
   return (
-    <div className={styles.overlay} data-video-phase="cold-open">
-      <p className={styles.line}>
+    <div className={styles.coldOpen} data-video-phase="cold-open">
+      <p className={styles.coldLine}>
         {delta === null ? "The gallery paid less than the contract says." : `The gallery paid ${dollars(delta)} less than the contract says.`}
       </p>
     </div>

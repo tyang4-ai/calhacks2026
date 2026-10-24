@@ -62,3 +62,6 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - B10-derived: `makerPayouts` in src/mock have no date, so the receipt's `paidDate` comes from the `payout.sent` payload or the `maker_pay` ledger entry.
 - G5: Every healthy upgrade with timeline events must play live in each G5 run, so a broken built-but-ungated adapter fails later G5s; `b05-scenario` and `b07-ask` have no timeline events, so their live proof comes from feature tests.
 - B05-scenario: The scenario panel lists records only from `record.arrived`, which B05's endpoint doesn't return, so the adapter adds them; give each router its own `evt_live_` range (B05 starts at 500001).
+- F-buyer: For a box that grows with its text, set its height from scrollHeight in useLayoutEffect keyed on the value, with no transition, so a seek never shows a jump.
+- F-reconcile: Fit a scroll list to whole rows by summing `tr.offsetHeight` from the bottom in a useLayoutEffect; offsetHeight ignores the demo stage's scale and Motion transforms.
+- I1-demo-stage: The studio-catch zoom is fixed at 1.35 by ui-contract.md, so reframing comes from placement: align the content area's top-left corner (`main[data-view]`) to the stage corner.

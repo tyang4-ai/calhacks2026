@@ -1,7 +1,9 @@
 // F-reconcile G4 fix: a short "Cindy handled" strip above the streaming month list. It pins the three
 // special matches (bundled, refund netted, carried over) so they stay in view at the end of d06-month
-// while the list keeps scrolling to its newest rows. One compact line per match, in the matches'
-// date order, from the store alone and with no animation, so every seek renders the same.
+// while the list keeps scrolling to its newest rows. Each match is two aligned lines on a shared grid:
+// kind chip, date and reason, amount on the first; the matched record IDs under the reason on the
+// second. Rows come in the matches' date order, from the store alone and with no animation, so every
+// seek renders the same.
 // These strip rows carry reconcile-match-<matchId>, because they are what's on screen at the d06
 // screenshot. The same matches' table rows carry the internal reconcile-row-<matchId>.
 import type { MatchState } from "../../core/state";
@@ -32,26 +34,37 @@ export function HandledStrip({ month, lang }: HandledStripProps) {
     <section
       data-testid="reconcile-handled"
       aria-label={t(UI.handledTitle, lang)}
-      className="flex flex-col gap-1 px-3 py-2 text-sm"
-      style={{ border: "1px solid var(--c-color-line)", borderRadius: "var(--c-radius-chip)" }}
+      className="flex flex-col text-sm"
+      style={{ border: "1px solid var(--c-color-line)", borderRadius: "var(--c-radius-panel)" }}
     >
-      <span className="font-semibold">{t(UI.handledTitle, lang)}</span>
-      <ul className="m-0 flex list-none flex-col gap-1 p-0">
+      <span className="px-3 py-1 font-semibold" style={{ background: "var(--c-color-mat)" }}>
+        {t(UI.handledTitle, lang)}
+      </span>
+      {/* One grid for all rows, so chips, text and amounts line up in columns across the three matches. */}
+      <ul className="m-0 grid list-none p-0" style={{ gridTemplateColumns: "max-content minmax(0, 1fr) max-content" }}>
         {special.map((m) => {
           const payout = matchPayout(m);
           return (
-            <li key={m.matchId} data-testid={matchTestId(m.matchId)} className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-              <Badge variant="jade">{matchKindLabel(m.kind, lang)}</Badge>
-              {payout ? <span className="tabular-nums">{formatDate(payout.date, lang)}</span> : null}
-              <span className="tabular-nums" style={{ color: "var(--c-color-ink-soft)" }}>
+            <li
+              key={m.matchId}
+              data-testid={matchTestId(m.matchId)}
+              className="grid items-baseline gap-x-3 px-3 py-1.5"
+              style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid", borderTop: "1px solid var(--c-color-line)" }}
+            >
+              <span style={{ gridColumn: 1, gridRow: 1 }}>
+                <Badge variant="jade">{matchKindLabel(m.kind, lang)}</Badge>
+              </span>
+              <span style={{ gridColumn: 2, gridRow: 1 }}>
+                {payout ? <span className="tabular-nums font-medium">{formatDate(payout.date, lang)}</span> : null}
+                {payout ? <span aria-hidden="true"> · </span> : null}
+                <span>{matchReason(m, lang)}</span>
+              </span>
+              <span className="text-right tabular-nums" style={{ gridColumn: 3, gridRow: 1 }}>
+                {payout ? <Money cents={payout.netCents} tone="in" /> : null}
+              </span>
+              <span className="tabular-nums" style={{ gridColumn: "2 / -1", gridRow: 2, color: "var(--c-color-ink-soft)" }}>
                 {m.recordIds.join(", ")}
               </span>
-              <span>{matchReason(m, lang)}</span>
-              {payout ? (
-                <span className="ml-auto">
-                  <Money cents={payout.netCents} tone="in" />
-                </span>
-              ) : null}
             </li>
           );
         })}

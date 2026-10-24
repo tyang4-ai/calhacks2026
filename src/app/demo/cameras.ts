@@ -16,10 +16,24 @@ export interface Pose {
 
 export type CameraPose = Record<SurfaceId, Pose>;
 
-/** A point inside the studio frame, in its own unscaled pixels, for studio-catch to zoom to. */
+/** A box inside the studio frame, in its own unscaled pixels. */
+export interface Box {
+  top: number;
+  left: number;
+  bottom: number;
+  right: number;
+}
+
+/**
+ * A point inside the studio frame, in its own unscaled pixels, for studio-catch to zoom to. With
+ * `box` (the flag, evidence and explanation) and `corner` (the view area's top left, past the top
+ * bar and the rail), the zoom aligns that corner to the stage's corner when the box fits.
+ */
 export interface Focus {
   x: number;
   y: number;
+  box?: Box;
+  corner?: { x: number; y: number };
 }
 
 export const MOVE_MS = 600;
@@ -52,11 +66,31 @@ function clamp(v: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, v));
 }
 
-/** studio-catch: the studio at 1.35 with the focus point at the stage center, kept filling the stage. */
+/** Room kept between the focus box and the stage edge when the zoom aligns to the view area's corner. */
+const CATCH_MARGIN = 16;
+
+/**
+ * studio-catch: the studio at 1.35. When the focus box fits, the view area's top left corner sits at
+ * the stage's top left, so the crop falls on the top bar's and rail's edges instead of through them.
+ * Otherwise the focus point goes to the stage center, with the zoomed studio still filling the stage.
+ */
 export function catchPose(focus: Focus | null): Pose {
   const w = CONSOLE_WIDTH * CATCH_SCALE;
   const h = CONSOLE_HEIGHT * CATCH_SCALE;
   if (!focus) return at(MID_X, CATCH_SCALE);
+  if (focus.box && focus.corner) {
+    const left = -focus.corner.x * CATCH_SCALE;
+    const top = -focus.corner.y * CATCH_SCALE;
+    const b = focus.box;
+    const fits =
+      left >= STAGE_WIDTH - w &&
+      top >= STAGE_HEIGHT - h &&
+      left + b.left * CATCH_SCALE >= CATCH_MARGIN &&
+      top + b.top * CATCH_SCALE >= CATCH_MARGIN &&
+      left + b.right * CATCH_SCALE <= STAGE_WIDTH - CATCH_MARGIN &&
+      top + b.bottom * CATCH_SCALE <= STAGE_HEIGHT - CATCH_MARGIN;
+    if (fits) return { cx: left + w / 2, cy: top + h / 2, scale: CATCH_SCALE, opacity: 1 };
+  }
   const left = clamp(MID_X - focus.x * CATCH_SCALE, STAGE_WIDTH - w, 0);
   const top = clamp(MID_Y - focus.y * CATCH_SCALE, STAGE_HEIGHT - h, 0);
   return { cx: left + w / 2, cy: top + h / 2, scale: CATCH_SCALE, opacity: 1 };

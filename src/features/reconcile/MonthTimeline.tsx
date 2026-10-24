@@ -2,7 +2,7 @@
 // own row when it arrives; when a match.made names it, its rows draw together into one match row.
 // Counters per record type and a payouts-matched line sit above. Motion only eases the layout
 // change; the rows and their order come from the store alone, so every seek renders the same.
-import { useEffect, useMemo, useRef, type ReactNode } from "react";
+import { useLayoutEffect, useMemo, useRef, type ReactNode } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { useCindia } from "../../core/store";
 import { LedgerTable, UI_MS, useReducedMotion, type LedgerColumn, type LedgerRow } from "../../ui";
@@ -64,12 +64,28 @@ export function MonthTimeline({ lang, maxHeight = 360 }: MonthTimelineProps) {
     [lang],
   );
 
-  // Keep the newest rows in view: rows are in date order, so the newest sit at the bottom.
+  // Keep the newest rows in view: rows are in date order, so the newest sit at the bottom. The scroll
+  // area shrinks to the most whole rows (counted from the bottom) that fit under the sticky header in
+  // maxHeight, so the top of the view lands on a row edge instead of a half-visible row. Layout sizes
+  // (offsetHeight) ignore the demo stage's scale and Motion's transforms, so every seek measures the same.
   const scrollRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = scrollRef.current;
-    if (el && rows.length > 0) el.scrollTop = el.scrollHeight;
-  }, [rows]);
+    if (!el) return;
+    el.style.maxHeight = `${maxHeight}px`;
+    if (rows.length === 0) return;
+    const headerH = el.querySelector("thead")?.offsetHeight ?? 0;
+    const trs = Array.from(el.querySelectorAll<HTMLTableRowElement>("tbody > tr"));
+    let fitted = 0;
+    for (let i = trs.length - 1; i >= 0; i--) {
+      const h = trs[i]!.offsetHeight;
+      if (headerH + fitted + h > maxHeight) break;
+      fitted += h;
+    }
+    // When even the newest row is taller than the room, keep the full height and show its top.
+    if (fitted > 0 && el.scrollHeight > maxHeight) el.style.maxHeight = `${headerH + fitted}px`;
+    el.scrollTop = el.scrollHeight;
+  }, [rows, maxHeight]);
 
   return (
     <section data-testid="reconcile-timeline" className="flex flex-col gap-2">
@@ -93,7 +109,7 @@ export function MonthTimeline({ lang, maxHeight = 360 }: MonthTimelineProps) {
         ))}
       </ul>
       <HandledStrip month={month} lang={lang} />
-      <div ref={scrollRef} data-testid="reconcile-list" className="overflow-y-auto [&_th]:sticky [&_th]:top-0 [&_th]:z-10" style={{ maxHeight }}>
+      <div ref={scrollRef} data-testid="reconcile-list" className="overflow-y-auto [&_th]:sticky [&_th]:top-0 [&_th]:z-10">
         {rows.length === 0 ? (
           <p className="py-4 text-sm" style={{ color: "var(--c-color-ink-soft)" }}>
             {t(UI.noRecordsYet, lang)}

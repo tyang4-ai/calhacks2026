@@ -53,7 +53,10 @@ function measureFocus(frame: HTMLElement | null): Focus | null {
   // When the flag and its evidence are taller than the zoomed view, keep the flag's top in view.
   const viewH = STAGE_HEIGHT / CATCH_SCALE;
   const y = box.bottom - box.top > viewH - 48 ? box.top - 24 + viewH / 2 : (box.top + box.bottom) / 2;
-  return { x: Math.round((box.left + box.right) / 2), y: Math.round(y) };
+  // The view area's top left, past the top bar and the rail, for the zoom to align to.
+  const m = frame.querySelector("main[data-view]")?.getBoundingClientRect();
+  const corner = m && m.width > 0 ? { x: Math.round((m.left - f.left) / ratio), y: Math.round((m.top - f.top) / ratio) } : undefined;
+  return { x: Math.round((box.left + box.right) / 2), y: Math.round(y), box, corner };
 }
 
 /** Places the four frames for the camera, imperatively on every player and store change, so the surfaces never re-render for a move. */
