@@ -46,7 +46,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 | F-ask-cindy | W1 | green | feature-lead | w1-ask-cindy | G3 3/3, verifier PASS |
 | F-impact | W1 | green | feature-lead | w1-impact | G3 3/3, verifier PASS; mid-count check made unconditional |
 | F-audit | W2 | green | feature-lead | w2-audit | G3 3/3, verifier PASS |
-| F-dashboard | W2 | running | feature-lead | | |
+| F-dashboard | W2 | green | feature-lead | w2-dashboard | G3 3/3, verifier PASS |
 | F-scenario | W2 | todo |  | | |
 
 States: `todo`, `running`, `green`, `failed`, `CUT`.
@@ -154,3 +154,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 04:27 PT · B03 built; API restarted (reload missed new routers), health lists b01 and b03; B03 G5 waits for B01 · status.md
 - 2026-10-24 04:28 PT · B06 backend-builder started · status.md
 - 2026-10-24 04:42 PT · G3 audit PASS 3/3, verifier PASS, tag w2-audit · artifacts/gates/G3-0438.md, artifacts/verify/F-audit-G3-1131.md
+- 2026-10-24 04:42 PT · G3 dashboard PASS 3/3, verifier PASS, tag w2-dashboard · artifacts/gates/G3-0438.md, artifacts/verify/F-dashboard-G3-0432.md
