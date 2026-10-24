@@ -44,7 +44,6 @@ This section backs up the entries above and is not part of their word count.
 |---|---|---|
 | Cindia · 01 Research (FigJam) | https://www.figma.com/board/T3lxV76Wc6petCKoRE0TNu | What Cindia is, why it matters (World Bank, FDIC, ICT News), the buyer, the maker (陆芸 Lu Yun), the studio owner (沈若兰 Shen Ruolan), the judge at a table, the community as a stakeholder, the Visa, Hyphenate and Figma criteria, the judge's one-minute story, 15 references (described and linked, never copied), 8 principles, the screen rules, 4 open questions with defaults |
 | Cindia · 02 Moodboards (FigJam) | https://www.figma.com/board/KAOXGbhwnS0A0tJ8j5ABj7 | How the directions were checked, A · Museum label, B · Warp and weft, C · Daylight market (idea, palette, type, texture and imagery, the product vignette), a side-by-side table and the recommendation, with a sticky for Gordon's pick |
-
 | Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 17 text styles, the overlay shadow, and the Style tiles page (`design/style-tiles.png`) |
 
 All three files sit in Gordon's drafts on his Figma team, which moved from the Starter tier to the student tier after his Edu verification. None is shared yet: "Anyone with the link" has to be set in Figma by Gordon, because the MCP server has no sharing tool.
