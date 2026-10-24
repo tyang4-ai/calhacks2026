@@ -1,9 +1,9 @@
-STAGE: W1
-NEXT: R4
+STAGE: I1
+NEXT: R5
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 03:28 PT
+UPDATED: 2026-10-24 03:29 PT
 
 # Status board
 
@@ -15,7 +15,8 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - Heartbeat cron f57ce95e every 15 min (session-only).
 - G1 passed 2:35 AM (5/5, verifier PASS). Shared lock on.
 - G2 passed 2:58 AM (2/2, verifier PASS; smoke 22/22 after the integrator fix).
-- Now: R4, W1. Eight features green; impact lead on a test fix round. Dev server on 5173.
+- W1 done 3:27 AM: all 9 P0 features green, wave gate PASS, tag w1.
+- Now: R5, I1 demo stage. Integrator running. Dev server on 5173.
 
 ## Gates
 
@@ -24,7 +25,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 | G0 | PASS | Oct 24 2:01 AM | `artifacts/preflight.md` (0 blockers, 1 warning: no `.env`) | none |
 | G1 | PASS | Oct 24 2:33 AM | `artifacts/gates/G1-0233.md`, `artifacts/gates/G1-verifier.md` | g1-scaffold |
 | G2 | PASS | Oct 24 2:58 AM | `artifacts/gates/G2-0252.md`, `artifacts/gates/G2-verifier.md` | g2-data |
-| G3 (W1) | | | | |
+| G3 (W1) | PASS | Oct 24 3:27 AM | `artifacts/gates/G3-0327.md` (wave: check, smoke 22/22, build); 9/9 features green | w1 |
 | G4 | | | | |
 | G5 | | | | |
 | G6 | | | | |
@@ -125,3 +126,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 03:25 PT · G3 close PASS 3/3, verifier PASS, tag w1-close · artifacts/gates/G3-0324.md, artifacts/verify/F-close-G3-0326.md
 - 2026-10-24 03:25 PT · pending for the integrator at I1: add `player.epoch()` and `player.getTimeline()` to the Player interface in events.md · F-close report
 - 2026-10-24 03:28 PT · G3 impact PASS 3/3 (feature 10/10 on 3 runs), verifier PASS, tag w1-impact · artifacts/gates/G3-0326.md, artifacts/verify/F-impact-G3-1025.md
+- 2026-10-24 03:29 PT · W1 wave gate PASS 3/3, tag w1; stage I1; integrator spawned for I1 · artifacts/gates/G3-0327.md
