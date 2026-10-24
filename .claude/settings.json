@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npm run check)",
+      "Bash(npm run check:scope -- *)",
+      "Bash(npm run check:data)",
+      "Bash(npm run test:smoke)",
+      "Bash(npm run test:feature -- *)",
+      "Bash(npm run test:demo)",
+      "Bash(npm run test:offline)",
+      "Bash(npm run gate -- *)",
+      "Bash(npm run build)",
+      "Bash(npm run test:server)",
+      "Bash(node .claude/hooks/test-hooks.mjs)",
+      "Bash(node scripts/preflight.mjs*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(date)",
+      "PowerShell(npm run check)",
+      "PowerShell(npm run check:scope -- *)",
+      "PowerShell(npm run check:data)",
+      "PowerShell(npm run test:smoke)",
+      "PowerShell(npm run test:feature -- *)",
+      "PowerShell(npm run test:demo)",
+      "PowerShell(npm run test:offline)",
+      "PowerShell(npm run gate -- *)",
+      "PowerShell(npm run build)",
+      "PowerShell(npm run test:server)",
+      "PowerShell(node .claude/hooks/test-hooks.mjs)",
+      "PowerShell(node scripts/preflight.mjs*)",
+      "PowerShell(git status*)",
+      "PowerShell(git diff*)",
+      "PowerShell(git log*)",
+      "PowerShell(git show*)",
+      "PowerShell(date)",
+      "PowerShell(Get-Date)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Edit(.env)",
+      "Read(.env.local)",
+      "Edit(.env.local)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/edit-guard.mjs"],
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/command-guard.mjs"],
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/context-refresh.mjs"],
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "builder",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/stop-check.mjs"],
+            "timeout": 300
+          }
+        ]
+      }
+    ]
+  }
+}

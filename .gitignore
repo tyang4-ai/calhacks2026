@@ -1,0 +1,28 @@
+# Keys: never committed. .env.example lists the names.
+.env
+.env.*
+!.env.example
+
+# Dependencies and builds
+node_modules/
+dist/
+.vite/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Test output, gate reports, hook logs
+artifacts/
+test-results/
+playwright-report/
+blob-report/
+
+# Claude Code local files
+.claude/worktrees/
+.claude/settings.local.json
+CLAUDE.local.md
+
+# OS clutter
+.DS_Store
+Thumbs.db
