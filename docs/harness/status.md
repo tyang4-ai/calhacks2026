@@ -3,7 +3,7 @@ NEXT: R6
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 06:22 PT
+UPDATED: 2026-10-24 07:00 PT
 
 # Status board
 
@@ -18,7 +18,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - W1 done 3:27 AM: all 9 P0 features green, wave gate PASS, tag w1.
 - G4 passed 4:15 AM after two fix rounds (d08 approvals compact card, d10 toast, d06 handled strip, d07 label). Tag demo-ok-1: the build to demo if everything after fails.
 - W2 green (3/3); P2: six no-key upgrades green (B01, B03, B05, B06, B08, B10); B02, B04, B07, B09 wait on .env.
-- Now: R6. Polish round 2 green, tag demo-ok-3. B05 and B08 live paths proven in the browser. Waiting on .env for B02, B04, B07, B09. Scribe at 8:00 PM. Dev server 5173, API 8000.
+- Now: R6. All ten upgrades built; six live and green, four committed and waiting on .env (B02, B07, B09 need ANTHROPIC_API_KEY; B04 needs NESSIE_KEY). Regression G5 with all ten routers PASS, tag demo-ok-4. Scribe at 8:00 PM. Dev server 5173, API 8000.
 - G4 polish after round 4 (verifier r4): all listed items fixed except the d07 beat label slightly touching the right panel's top edge (not blocking).
 
 ## Gates
@@ -57,14 +57,14 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
 | B01-match | green | yes, live at 20.5 s, no fallback | demo-ok-b01 | G5 13/13 (round 1 added the live-source check) |
-| B02-explain | blocked | | | needs ANTHROPIC_API_KEY |
+| B02-explain | built and committed, awaiting key | | | server 136 passed (18 mocked + 1 live skipped); G5 needs ANTHROPIC_API_KEY |
 | B03-proof | green | live at 59.0 s | demo-ok-b03 | G5 13/13, verifier PASS |
-| B04-bank | blocked | | | needs NESSIE_KEY |
+| B04-bank | built and committed, awaiting key | | | server 25 mocked passed + 2 live skipped; G5 needs NESSIE_KEY; integrator adding allowed money.moved fallbacks |
 | B05-scenario | green | TestClient flow tests (no timeline events) | demo-ok-b05 | G5 13/13, verifier PASS |
 | B06-workbook | green | live at 44.6 s | demo-ok-b06 | G5 13/13, verifier PASS |
-| B07-ask | blocked | | | needs ANTHROPIC_API_KEY |
+| B07-ask | built and committed, awaiting key | | | server 31 mocked passed + 1 live skipped; G5 needs ANTHROPIC_API_KEY plus an ask-cindy-live spec |
 | B08-approvals | green | live, scripted grant allowed | demo-ok-b08 | G5 13/13, verifier PASS |
-| B09-concierge | blocked | | | needs ANTHROPIC_API_KEY |
+| B09-concierge | built and committed, awaiting key | | | server 36 mocked passed + 1 live skipped; G5 needs ANTHROPIC_API_KEY |
 | B10-derived | green | live at 8.3 s | demo-ok-b10 | G5 13/13, verifier PASS |
 
 ## Environment
@@ -181,3 +181,11 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 06:12 PT · scenario live spec in: B05 live path proven in the browser (sample live with $8.50 flag, judge CSV live with stm_scn_ and $5.00, bad file falls back readably); old fallback specs now hide b05 from health; feature 12/12 x3, smoke 22/22 · status.md
 - 2026-10-24 06:16 PT · approvals two-tab live spec in (owner taps on /owner, console gets the live grant by own_01, never auto-grants with an owner connected; feature 20/20 x3, smoke 22/22) · status.md
 - 2026-10-24 06:22 PT · polish round 2: G3 reconcile, scenario, approvals 3/3, G4 5/5, verifier r4 PASS (live specs ran: scenario 12 incl. 3 live, approvals 20 incl. 1 live), tag demo-ok-3 · artifacts/gates/G4-0612.md, artifacts/gates/G4-verifier-r4.md
+- 2026-10-24 06:22 PT · B02 and B07 backend-builders started without keys (decisions.md) · status.md
+- 2026-10-24 06:30 PT · B02 built without key (mocked tests pass, health false without key); B09 builder started · status.md
+- 2026-10-24 06:36 PT · B07 built without key; B04 builder started · status.md
+- 2026-10-24 06:40 PT · B09 built without key · status.md
+- 2026-10-24 06:50 PT · B04 built without key; integrator adding its allowed fallbacks and contract notes; API restarted with the four keyed routers · status.md
+- 2026-10-24 06:45 PT · G5 b10 regression with all ten routers FAIL 9/13: B06 save race (os.replace onto an open xlsx, flaky, 3 reruns pass) and live demo 78 s (harness waits 15 s for keyless adapters); backend-builder fixing B06, integrator fixing the wait; keyed upgrades stay uncommitted until green · artifacts/gates/G5-0638.md
+- 2026-10-24 06:58 PT · B06 save race fixed (unique file per build, the file route serves the newest under the contract name; server 230 passed x3) · status.md
+- 2026-10-24 07:00 PT · harness health wait fixed; regression G5 b10 PASS 13/13 with all ten routers (60 s runs; b01, b03, b06, b08, b10 live); keyed upgrades committed untagged; tag demo-ok-4 · artifacts/gates/G5-0653.md

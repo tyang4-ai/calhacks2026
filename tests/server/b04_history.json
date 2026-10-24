@@ -1,0 +1,54 @@
+{
+  "_note": "Written from src/mock (data-model.md demo-critical figures 1 and 8): September's bank history without pay_001 and the maker payouts, the sale, the three maker payouts, and the balances balanceAsOf() gives after each.",
+  "studio": { "id": "std_gu", "name": { "en": "Gu Embroidery Studio", "zh": "顾绣工作室" }, "openingBalanceCents": 1250000 },
+  "history": {
+    "deposits": [
+      { "id": "txn_002", "date": "2026-09-02", "amountCents": 4151, "memo": "Cindia settlement pay_002", "refId": "pay_002" },
+      { "id": "txn_004", "date": "2026-09-04", "amountCents": 10422, "memo": "Cindia settlement pay_003", "refId": "pay_003" },
+      { "id": "txn_005", "date": "2026-09-05", "amountCents": 6281, "memo": "Card processor payout pay_004", "refId": "pay_004" },
+      { "id": "txn_006", "date": "2026-09-06", "amountCents": 5631, "memo": "Cindia settlement pay_005", "refId": "pay_005" },
+      { "id": "txn_007", "date": "2026-09-07", "amountCents": 11622, "memo": "Card processor payout pay_006", "refId": "pay_006" },
+      { "id": "txn_008", "date": "2026-09-09", "amountCents": 8244, "memo": "Cindia settlement pay_007", "refId": "pay_007" },
+      { "id": "txn_009", "date": "2026-09-11", "amountCents": 7373, "memo": "Cindia settlement pay_008", "refId": "pay_008" },
+      { "id": "txn_010", "date": "2026-09-12", "amountCents": 16514, "memo": "Card processor payout pay_009", "refId": "pay_009" },
+      { "id": "txn_011", "date": "2026-09-13", "amountCents": 3280, "memo": "Cindia settlement pay_010", "refId": "pay_010" },
+      { "id": "txn_012", "date": "2026-09-14", "amountCents": 9194, "memo": "Card processor payout pay_011", "refId": "pay_011" },
+      { "id": "txn_013", "date": "2026-09-15", "amountCents": 4151, "memo": "Cindia settlement pay_012", "refId": "pay_012" },
+      { "id": "txn_015", "date": "2026-09-16", "amountCents": 6281, "memo": "Card processor payout pay_013", "refId": "pay_013" },
+      { "id": "txn_016", "date": "2026-09-17", "amountCents": 10422, "memo": "Cindia settlement pay_014", "refId": "pay_014" },
+      { "id": "txn_017", "date": "2026-09-18", "amountCents": 9194, "memo": "Card processor payout pay_015", "refId": "pay_015" },
+      { "id": "txn_018", "date": "2026-09-19", "amountCents": 5631, "memo": "Cindia settlement pay_016", "refId": "pay_016" },
+      { "id": "txn_019", "date": "2026-09-23", "amountCents": 2122, "memo": "Card processor payout pay_017", "refId": "pay_017" },
+      { "id": "txn_020", "date": "2026-09-24", "amountCents": 16962, "memo": "Card processor payout pay_018", "refId": "pay_018" },
+      { "id": "txn_022", "date": "2026-09-25", "amountCents": 8244, "memo": "Cindia settlement pay_019", "refId": "pay_019" },
+      { "id": "txn_023", "date": "2026-09-26", "amountCents": 4631, "memo": "Card processor payout pay_020", "refId": "pay_020" },
+      { "id": "txn_024", "date": "2026-09-27", "amountCents": 7373, "memo": "Cindia settlement pay_021", "refId": "pay_021" },
+      { "id": "txn_025", "date": "2026-09-28", "amountCents": 8223, "memo": "Card processor payout pay_022", "refId": "pay_022" },
+      { "id": "txn_026", "date": "2026-09-30", "amountCents": 170000, "memo": "Gallery payment pay_023", "refId": "pay_023" },
+      { "id": "txn_027", "date": "2026-10-02", "amountCents": 9941, "memo": "Card processor payout pay_024", "refId": "pay_024" }
+    ],
+    "withdrawals": [
+      { "id": "txn_003", "date": "2026-09-03", "amountCents": 18500, "memo": "Mulberry silk ground fabric, 6 m", "refId": "pur_001" },
+      { "id": "txn_014", "date": "2026-09-15", "amountCents": 7200, "memo": "Silk floss, 40 colors", "refId": "pur_002" },
+      { "id": "txn_021", "date": "2026-09-24", "amountCents": 4600, "memo": "Backing cotton and fan frames", "refId": "pur_003" }
+    ]
+  },
+  "sale": {
+    "orderId": "ord_001",
+    "payoutId": "pay_001",
+    "netCents": 15648,
+    "date": "2026-09-01",
+    "description": "Cindia sale ord_001, Peony fan, net of fees",
+    "pieceId": "pc_01",
+    "channelId": "ch_cindia",
+    "buyerId": "buy_01",
+    "grossCents": 18000,
+    "moveId": "mv_0003"
+  },
+  "makerPayouts": [
+    { "makerPayoutId": "mpo_01", "makerId": "mkr_01", "amountCents": 114918, "date": "2026-10-02", "moveId": "mv_0004" },
+    { "makerPayoutId": "mpo_02", "makerId": "mkr_02", "amountCents": 83650, "date": "2026-10-02", "moveId": "mv_0005" },
+    { "makerPayoutId": "mpo_03", "makerId": "mkr_03", "amountCents": 102032, "date": "2026-10-02", "moveId": "mv_0006" }
+  ],
+  "expected": { "balanceAfterSale": 1265648, "balanceAfterPayouts": 1280635 }
+}

@@ -220,6 +220,25 @@ export const ALLOWED_EMPTY_FALLBACKS: Record<string, { types: readonly string[];
     types: ["approval.granted", "approval.declined"],
     why: "docs/plans/B08-approvals.md: with no owner screen connected the adapter returns [] for the scripted decision, so it plays on time",
   },
+  // The registry's warning names only the event type, not the moveId, so this can't be narrowed
+  // to mv_0001 and mv_0002 here. The key must still go live at least once (mv_0003 onward, account.synced).
+  "b04-bank": {
+    types: ["money.moved"],
+    why: "docs/plans/B04-bank.md, Adapter: the sale's other moves (the buyer's payment mv_0001 and the card fee mv_0002) return [], since Nessie records only the settlement",
+  },
+};
+
+/**
+ * The server key each live source needs before its adapter can turn healthy, named as in
+ * /api/health's `keys` (docs/plans/B02-explain.md, B04-bank.md, B07-ask.md, B09-concierge.md).
+ * Sources not listed need no key. In live mode the harness doesn't wait for an adapter whose key
+ * /api/health reports missing, since it can never turn healthy.
+ */
+export const REQUIRED_KEYS: Record<string, "anthropic" | "nessie"> = {
+  "b02-explain": "anthropic",
+  "b04-bank": "nessie",
+  "b07-ask": "anthropic",
+  "b09-concierge": "anthropic",
 };
 
 export const FRAME_IDS: FrameId[] =["frame-buyer", "frame-studio", "frame-owner", "frame-maker"];

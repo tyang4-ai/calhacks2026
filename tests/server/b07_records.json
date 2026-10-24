@@ -1,0 +1,1878 @@
+{
+ "monthId": "2026-09",
+ "records": {
+  "orders": [
+   {
+    "id": "ord_001",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_01",
+    "buyerId": "buy_01",
+    "date": "2026-09-01",
+    "grossCents": 18000,
+    "cardFeeCents": 552,
+    "platformFeeCents": 1800,
+    "commissionCents": 0,
+    "materialsCents": 2200,
+    "makerShareCents": 13448,
+    "status": "paid"
+   },
+   {
+    "id": "ord_002",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_07",
+    "buyerId": "buy_02",
+    "date": "2026-09-02",
+    "grossCents": 4800,
+    "cardFeeCents": 169,
+    "platformFeeCents": 480,
+    "commissionCents": 0,
+    "materialsCents": 600,
+    "makerShareCents": 3551,
+    "status": "paid"
+   },
+   {
+    "id": "ord_003",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_09",
+    "buyerId": "buy_03",
+    "date": "2026-09-04",
+    "grossCents": 12000,
+    "cardFeeCents": 378,
+    "platformFeeCents": 1200,
+    "commissionCents": 0,
+    "materialsCents": 1200,
+    "makerShareCents": 9222,
+    "status": "paid"
+   },
+   {
+    "id": "ord_004",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_02",
+    "buyerId": "buy_04",
+    "date": "2026-09-06",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 650,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 4831,
+    "status": "paid"
+   },
+   {
+    "id": "ord_005",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_12",
+    "buyerId": "buy_05",
+    "date": "2026-09-09",
+    "grossCents": 9500,
+    "cardFeeCents": 306,
+    "platformFeeCents": 950,
+    "commissionCents": 0,
+    "materialsCents": 1000,
+    "makerShareCents": 7244,
+    "status": "paid"
+   },
+   {
+    "id": "ord_006",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_10",
+    "buyerId": "buy_06",
+    "date": "2026-09-11",
+    "grossCents": 8500,
+    "cardFeeCents": 277,
+    "platformFeeCents": 850,
+    "commissionCents": 0,
+    "materialsCents": 900,
+    "makerShareCents": 6473,
+    "status": "paid"
+   },
+   {
+    "id": "ord_007",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_08",
+    "buyerId": "buy_07",
+    "date": "2026-09-13",
+    "grossCents": 3800,
+    "cardFeeCents": 140,
+    "platformFeeCents": 380,
+    "commissionCents": 0,
+    "materialsCents": 500,
+    "makerShareCents": 2780,
+    "status": "paid"
+   },
+   {
+    "id": "ord_008",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_07",
+    "buyerId": "buy_08",
+    "date": "2026-09-15",
+    "grossCents": 4800,
+    "cardFeeCents": 169,
+    "platformFeeCents": 480,
+    "commissionCents": 0,
+    "materialsCents": 600,
+    "makerShareCents": 3551,
+    "status": "paid"
+   },
+   {
+    "id": "ord_009",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_09",
+    "buyerId": "buy_09",
+    "date": "2026-09-17",
+    "grossCents": 12000,
+    "cardFeeCents": 378,
+    "platformFeeCents": 1200,
+    "commissionCents": 0,
+    "materialsCents": 1200,
+    "makerShareCents": 9222,
+    "status": "paid"
+   },
+   {
+    "id": "ord_010",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_02",
+    "buyerId": "buy_10",
+    "date": "2026-09-19",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 650,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 4831,
+    "status": "paid"
+   },
+   {
+    "id": "ord_011",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_12",
+    "buyerId": "buy_11",
+    "date": "2026-09-25",
+    "grossCents": 9500,
+    "cardFeeCents": 306,
+    "platformFeeCents": 950,
+    "commissionCents": 0,
+    "materialsCents": 1000,
+    "makerShareCents": 7244,
+    "status": "paid"
+   },
+   {
+    "id": "ord_012",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_10",
+    "buyerId": "buy_12",
+    "date": "2026-09-27",
+    "grossCents": 8500,
+    "cardFeeCents": 277,
+    "platformFeeCents": 850,
+    "commissionCents": 0,
+    "materialsCents": 900,
+    "makerShareCents": 6473,
+    "status": "paid"
+   },
+   {
+    "id": "ord_013",
+    "channelId": "ch_site",
+    "pieceId": "pc_02",
+    "buyerId": "buy_13",
+    "date": "2026-09-03",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 5481,
+    "status": "paid"
+   },
+   {
+    "id": "ord_014",
+    "channelId": "ch_site",
+    "pieceId": "pc_09",
+    "buyerId": "buy_14",
+    "date": "2026-09-05",
+    "grossCents": 12000,
+    "cardFeeCents": 378,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 1200,
+    "makerShareCents": 10422,
+    "status": "paid"
+   },
+   {
+    "id": "ord_015",
+    "channelId": "ch_site",
+    "pieceId": "pc_07",
+    "buyerId": "buy_15",
+    "date": "2026-09-08",
+    "grossCents": 4800,
+    "cardFeeCents": 169,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 600,
+    "makerShareCents": 4031,
+    "status": "paid"
+   },
+   {
+    "id": "ord_016",
+    "channelId": "ch_site",
+    "pieceId": "pc_08",
+    "buyerId": "buy_16",
+    "date": "2026-09-09",
+    "grossCents": 3800,
+    "cardFeeCents": 140,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 500,
+    "makerShareCents": 3160,
+    "status": "paid"
+   },
+   {
+    "id": "ord_017",
+    "channelId": "ch_site",
+    "pieceId": "pc_10",
+    "buyerId": "buy_17",
+    "date": "2026-09-10",
+    "grossCents": 8500,
+    "cardFeeCents": 277,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 900,
+    "makerShareCents": 7323,
+    "status": "paid"
+   },
+   {
+    "id": "ord_018",
+    "channelId": "ch_site",
+    "pieceId": "pc_12",
+    "buyerId": "buy_18",
+    "date": "2026-09-12",
+    "grossCents": 9500,
+    "cardFeeCents": 306,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 1000,
+    "makerShareCents": 8194,
+    "status": "paid"
+   },
+   {
+    "id": "ord_019",
+    "channelId": "ch_site",
+    "pieceId": "pc_02",
+    "buyerId": "buy_19",
+    "date": "2026-09-14",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 5481,
+    "status": "paid"
+   },
+   {
+    "id": "ord_020",
+    "channelId": "ch_site",
+    "pieceId": "pc_12",
+    "buyerId": "buy_20",
+    "date": "2026-09-16",
+    "grossCents": 9500,
+    "cardFeeCents": 306,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 1000,
+    "makerShareCents": 8194,
+    "status": "refunded"
+   },
+   {
+    "id": "ord_021",
+    "channelId": "ch_site",
+    "pieceId": "pc_09",
+    "buyerId": "buy_01",
+    "date": "2026-09-20",
+    "grossCents": 12000,
+    "cardFeeCents": 378,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 1200,
+    "makerShareCents": 10422,
+    "status": "paid"
+   },
+   {
+    "id": "ord_022",
+    "channelId": "ch_site",
+    "pieceId": "pc_11",
+    "buyerId": "buy_02",
+    "date": "2026-09-22",
+    "grossCents": 17500,
+    "cardFeeCents": 538,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 2100,
+    "makerShareCents": 14862,
+    "status": "paid"
+   },
+   {
+    "id": "ord_023",
+    "channelId": "ch_site",
+    "pieceId": "pc_07",
+    "buyerId": "buy_03",
+    "date": "2026-09-24",
+    "grossCents": 4800,
+    "cardFeeCents": 169,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 600,
+    "makerShareCents": 4031,
+    "status": "paid"
+   },
+   {
+    "id": "ord_024",
+    "channelId": "ch_site",
+    "pieceId": "pc_10",
+    "buyerId": "buy_04",
+    "date": "2026-09-26",
+    "grossCents": 8500,
+    "cardFeeCents": 277,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 900,
+    "makerShareCents": 7323,
+    "status": "paid"
+   },
+   {
+    "id": "ord_025",
+    "channelId": "ch_site",
+    "pieceId": "pc_08",
+    "buyerId": "buy_05",
+    "date": "2026-09-28",
+    "grossCents": 3800,
+    "cardFeeCents": 140,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 500,
+    "makerShareCents": 3160,
+    "status": "paid"
+   },
+   {
+    "id": "ord_026",
+    "channelId": "ch_site",
+    "pieceId": "pc_02",
+    "buyerId": "buy_06",
+    "date": "2026-09-29",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 5481,
+    "status": "paid"
+   },
+   {
+    "id": "ord_027",
+    "channelId": "ch_gallery",
+    "pieceId": "pc_03",
+    "buyerId": "buy_07",
+    "date": "2026-09-06",
+    "grossCents": 120000,
+    "cardFeeCents": 0,
+    "platformFeeCents": 0,
+    "commissionCents": 48000,
+    "materialsCents": 9500,
+    "makerShareCents": 62500,
+    "status": "paid"
+   },
+   {
+    "id": "ord_028",
+    "channelId": "ch_gallery",
+    "pieceId": "pc_04",
+    "buyerId": "buy_08",
+    "date": "2026-09-13",
+    "grossCents": 95000,
+    "cardFeeCents": 0,
+    "platformFeeCents": 0,
+    "commissionCents": 38000,
+    "materialsCents": 8000,
+    "makerShareCents": 49000,
+    "status": "paid"
+   },
+   {
+    "id": "ord_029",
+    "channelId": "ch_gallery",
+    "pieceId": "pc_05",
+    "buyerId": "buy_09",
+    "date": "2026-09-19",
+    "grossCents": 80000,
+    "cardFeeCents": 0,
+    "platformFeeCents": 0,
+    "commissionCents": 32000,
+    "materialsCents": 7000,
+    "makerShareCents": 41000,
+    "status": "paid"
+   },
+   {
+    "id": "ord_030",
+    "channelId": "ch_gallery",
+    "pieceId": "pc_06",
+    "buyerId": "buy_10",
+    "date": "2026-09-25",
+    "grossCents": 45000,
+    "cardFeeCents": 0,
+    "platformFeeCents": 0,
+    "commissionCents": 18000,
+    "materialsCents": 4500,
+    "makerShareCents": 22500,
+    "status": "paid"
+   }
+  ],
+  "catalog": [
+   {
+    "id": "pc_01",
+    "title": {
+     "en": "Peony fan",
+     "zh": "牡丹团扇"
+    },
+    "makerId": "mkr_01",
+    "kind": "featured",
+    "hours": 26,
+    "materialsCents": 2200,
+    "priceCents": 18000,
+    "story": {
+     "en": "A round silk fan with a single peony in full bloom. The petals are built up from hair-fine split thread, so the pink deepens toward the heart of the flower the way paint would.",
+     "zh": "一柄圆形绢面团扇，绣一朵盛开的牡丹。花瓣用细如发丝的劈丝层层绣出，粉色向花心渐深，宛如设色。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Peonies stand for wealth and honor.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。牡丹寓意富贵。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 3
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 4
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 12
+     },
+     {
+      "step": {
+       "en": "Blending the shaded stitches",
+       "zh": "施针晕色"
+      },
+      "hours": 5
+     },
+     {
+      "step": {
+       "en": "Mounting on the fan frame",
+       "zh": "上扇框装裱"
+      },
+      "hours": 2
+     }
+    ],
+    "image": "/images/pc_01.svg"
+   },
+   {
+    "id": "pc_02",
+    "title": {
+     "en": "Plum blossom bookmarks",
+     "zh": "梅花书签"
+    },
+    "makerId": "mkr_02",
+    "kind": "series",
+    "hours": 9,
+    "materialsCents": 800,
+    "priceCents": 6500,
+    "story": {
+     "en": "A set of silk bookmarks, each with a branch of winter plum. Small enough to stitch in a few sittings, with the same split-thread shading as the large pieces.",
+     "zh": "一套绢面书签，每枚绣一枝寒梅。尺幅虽小，用的仍是大件作品的劈丝晕色。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Plum blossom opens in the cold and stands for resilience.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。梅花凌寒而开，象征坚韧。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 1
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 2
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 5
+     },
+     {
+      "step": {
+       "en": "Sewing up and finishing",
+       "zh": "缝合收尾"
+      },
+      "hours": 1
+     }
+    ],
+    "image": "/images/pc_02.svg"
+   },
+   {
+    "id": "pc_03",
+    "title": {
+     "en": "Koi pond panel",
+     "zh": "锦鲤图"
+    },
+    "makerId": "mkr_03",
+    "kind": "featured",
+    "hours": 160,
+    "materialsCents": 9500,
+    "priceCents": 120000,
+    "story": {
+     "en": "Three koi turning under lotus leaves. Gu embroidery is half painting and half stitching: the water is a painted wash, and the fish are stitched over it scale by scale.",
+     "zh": "三尾锦鲤在荷叶下回游。顾绣半绣半绘：水面以淡彩渲染，鱼身在其上逐片绣出鳞片。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Koi stand for abundance, year after year.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。锦鲤寓意年年有余。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 12
+     },
+     {
+      "step": {
+       "en": "Painting the base colors",
+       "zh": "敷底色"
+      },
+      "hours": 18
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 20
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 80
+     },
+     {
+      "step": {
+       "en": "Blending the shaded stitches",
+       "zh": "施针晕色"
+      },
+      "hours": 24
+     },
+     {
+      "step": {
+       "en": "Stretching and framing",
+       "zh": "绷框装裱"
+      },
+      "hours": 6
+     }
+    ],
+    "image": "/images/pc_03.svg"
+   },
+   {
+    "id": "pc_04",
+    "title": {
+     "en": "Lotus at dawn",
+     "zh": "晨荷图"
+    },
+    "makerId": "mkr_01",
+    "kind": "featured",
+    "hours": 130,
+    "materialsCents": 8000,
+    "priceCents": 95000,
+    "story": {
+     "en": "A lotus opening in early light, after the style of the old Gu studio's copies of Song dynasty paintings. The mist is left as bare silk.",
+     "zh": "清晨初开的荷花，仿顾绣绣宋画的旧法。晨雾处留出素绢，不着一针。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. The Gu family studio was known for stitching famous paintings.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。顾氏绣坊以绣名画著称。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 10
+     },
+     {
+      "step": {
+       "en": "Painting the base colors",
+       "zh": "敷底色"
+      },
+      "hours": 14
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 16
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 64
+     },
+     {
+      "step": {
+       "en": "Blending the shaded stitches",
+       "zh": "施针晕色"
+      },
+      "hours": 20
+     },
+     {
+      "step": {
+       "en": "Stretching and framing",
+       "zh": "绷框装裱"
+      },
+      "hours": 6
+     }
+    ],
+    "image": "/images/pc_04.svg"
+   },
+   {
+    "id": "pc_05",
+    "title": {
+     "en": "Orchid scroll",
+     "zh": "兰花轴"
+    },
+    "makerId": "mkr_02",
+    "kind": "featured",
+    "hours": 110,
+    "materialsCents": 7000,
+    "priceCents": 80000,
+    "story": {
+     "en": "A hanging scroll of wild orchids on a rock. The long leaves are single unbroken runs of stitching, which is the hardest part to get right.",
+     "zh": "一幅兰石立轴。修长的兰叶各以一气呵成的长针绣成，这是最难的地方。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. The orchid is one of the four gentlemen of Chinese painting.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。兰为“四君子”之一。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 8
+     },
+     {
+      "step": {
+       "en": "Painting the base colors",
+       "zh": "敷底色"
+      },
+      "hours": 10
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 14
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 56
+     },
+     {
+      "step": {
+       "en": "Blending the shaded stitches",
+       "zh": "施针晕色"
+      },
+      "hours": 16
+     },
+     {
+      "step": {
+       "en": "Mounting as a scroll",
+       "zh": "装裱成轴"
+      },
+      "hours": 6
+     }
+    ],
+    "image": "/images/pc_05.svg"
+   },
+   {
+    "id": "pc_06",
+    "title": {
+     "en": "Sparrow on bamboo",
+     "zh": "竹雀图"
+    },
+    "makerId": "mkr_03",
+    "kind": "featured",
+    "hours": 60,
+    "materialsCents": 4500,
+    "priceCents": 45000,
+    "story": {
+     "en": "A sparrow resting on a bamboo stem. The feathers use short, overlapping stitches in a dozen browns.",
+     "zh": "一只麻雀栖于竹枝。羽毛以十余种褐色短针层层叠绣。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Bamboo bends without breaking.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。竹子宁折不弯，象征气节。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 5
+     },
+     {
+      "step": {
+       "en": "Painting the base colors",
+       "zh": "敷底色"
+      },
+      "hours": 6
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 8
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 30
+     },
+     {
+      "step": {
+       "en": "Blending the shaded stitches",
+       "zh": "施针晕色"
+      },
+      "hours": 8
+     },
+     {
+      "step": {
+       "en": "Stretching and framing",
+       "zh": "绷框装裱"
+      },
+      "hours": 3
+     }
+    ],
+    "image": "/images/pc_06.svg"
+   },
+   {
+    "id": "pc_07",
+    "title": {
+     "en": "Peony sachet",
+     "zh": "牡丹香囊"
+    },
+    "makerId": "mkr_02",
+    "kind": "series",
+    "hours": 6,
+    "materialsCents": 600,
+    "priceCents": 4800,
+    "story": {
+     "en": "A small silk sachet with a peony on one side, filled with dried osmanthus. A traditional gift to carry or hang.",
+     "zh": "一只小巧的绢面香囊，一面绣牡丹，内装干桂花。是可佩可挂的传统礼物。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Embroidered sachets were given as tokens of care.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。绣香囊自古是表达心意的信物。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 1
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 1
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 3
+     },
+     {
+      "step": {
+       "en": "Sewing up and finishing",
+       "zh": "缝合收尾"
+      },
+      "hours": 1
+     }
+    ],
+    "image": "/images/pc_07.svg"
+   },
+   {
+    "id": "pc_08",
+    "title": {
+     "en": "Silk coasters",
+     "zh": "丝绣杯垫"
+    },
+    "makerId": "mkr_03",
+    "kind": "series",
+    "hours": 4,
+    "materialsCents": 500,
+    "priceCents": 3800,
+    "story": {
+     "en": "A pair of coasters, each with a small ripple pattern in blue and silver thread, backed with cotton so they can be used every day.",
+     "zh": "一对杯垫，以蓝银两色丝线绣水波纹，背衬棉布，可日常使用。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Everyday pieces keep the stitches in daily use.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。日用小件让针法走进日常。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 0.5
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 0.5
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 2
+     },
+     {
+      "step": {
+       "en": "Sewing up and finishing",
+       "zh": "缝合收尾"
+      },
+      "hours": 1
+     }
+    ],
+    "image": "/images/pc_08.svg"
+   },
+   {
+    "id": "pc_09",
+    "title": {
+     "en": "Crane brooch",
+     "zh": "仙鹤胸针"
+    },
+    "makerId": "mkr_01",
+    "kind": "series",
+    "hours": 14,
+    "materialsCents": 1200,
+    "priceCents": 12000,
+    "story": {
+     "en": "A red-crowned crane in flight, stitched on silk and set in a brass frame to wear as a brooch.",
+     "zh": "一只飞翔的丹顶鹤，绣于绢上，嵌入黄铜框，可作胸针佩戴。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. The crane stands for long life.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。仙鹤寓意长寿。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 2
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 2
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 7
+     },
+     {
+      "step": {
+       "en": "Blending the shaded stitches",
+       "zh": "施针晕色"
+      },
+      "hours": 2
+     },
+     {
+      "step": {
+       "en": "Sewing up and finishing",
+       "zh": "缝合收尾"
+      },
+      "hours": 1
+     }
+    ],
+    "image": "/images/pc_09.svg"
+   },
+   {
+    "id": "pc_10",
+    "title": {
+     "en": "Cloud pouch",
+     "zh": "祥云荷包"
+    },
+    "makerId": "mkr_03",
+    "kind": "series",
+    "hours": 10,
+    "materialsCents": 900,
+    "priceCents": 8500,
+    "story": {
+     "en": "A drawstring pouch with auspicious clouds worked in gold and indigo thread.",
+     "zh": "一只抽绳荷包，以金线与靛蓝丝线绣祥云纹。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Auspicious clouds wish the carrier good fortune.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。祥云纹寓意吉祥如意。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 1
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 2
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 5
+     },
+     {
+      "step": {
+       "en": "Sewing up and finishing",
+       "zh": "缝合收尾"
+      },
+      "hours": 2
+     }
+    ],
+    "image": "/images/pc_10.svg"
+   },
+   {
+    "id": "pc_11",
+    "title": {
+     "en": "Chrysanthemum fan",
+     "zh": "菊花团扇"
+    },
+    "makerId": "mkr_02",
+    "kind": "featured",
+    "hours": 24,
+    "materialsCents": 2100,
+    "priceCents": 17500,
+    "story": {
+     "en": "A round fan with autumn chrysanthemums. Each curled petal is a separate run of thread, shaded from gold to cream.",
+     "zh": "一柄团扇，绣秋日菊花。每片卷曲的花瓣单独起针，由金黄晕至米白。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Chrysanthemums bloom late and stand for long life.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。菊花傲霜晚开，寓意长寿。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 3
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 4
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 11
+     },
+     {
+      "step": {
+       "en": "Blending the shaded stitches",
+       "zh": "施针晕色"
+      },
+      "hours": 4
+     },
+     {
+      "step": {
+       "en": "Mounting on the fan frame",
+       "zh": "上扇框装裱"
+      },
+      "hours": 2
+     }
+    ],
+    "image": "/images/pc_11.svg"
+   },
+   {
+    "id": "pc_12",
+    "title": {
+     "en": "Phoenix needle case",
+     "zh": "凤凰针盒"
+    },
+    "makerId": "mkr_01",
+    "kind": "series",
+    "hours": 11,
+    "materialsCents": 1000,
+    "priceCents": 9500,
+    "story": {
+     "en": "A small hard-sided case for needles, its lid stitched with a phoenix tail in five colors.",
+     "zh": "一只硬面针盒，盒盖绣五彩凤尾。"
+    },
+    "heritage": {
+     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. The phoenix stands for good omens.",
+     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。凤凰寓意祥瑞。"
+    },
+    "process": [
+     {
+      "step": {
+       "en": "Drawing the design onto silk",
+       "zh": "在绢上勾稿"
+      },
+      "hours": 1
+     },
+     {
+      "step": {
+       "en": "Splitting and dyeing the silk thread",
+       "zh": "劈丝染线"
+      },
+      "hours": 2
+     },
+     {
+      "step": {
+       "en": "Stitching",
+       "zh": "刺绣"
+      },
+      "hours": 6
+     },
+     {
+      "step": {
+       "en": "Sewing up and finishing",
+       "zh": "缝合收尾"
+      },
+      "hours": 2
+     }
+    ],
+    "image": "/images/pc_12.svg"
+   }
+  ],
+  "makerStatements": [
+   {
+    "id": "mst_01",
+    "makerId": "mkr_01",
+    "monthId": "2026-09",
+    "lines": [
+     {
+      "orderId": "ord_001",
+      "pieceId": "pc_01",
+      "makerShareCents": 13448
+     },
+     {
+      "orderId": "ord_003",
+      "pieceId": "pc_09",
+      "makerShareCents": 9222
+     },
+     {
+      "orderId": "ord_005",
+      "pieceId": "pc_12",
+      "makerShareCents": 7244
+     },
+     {
+      "orderId": "ord_009",
+      "pieceId": "pc_09",
+      "makerShareCents": 9222
+     },
+     {
+      "orderId": "ord_011",
+      "pieceId": "pc_12",
+      "makerShareCents": 7244
+     },
+     {
+      "orderId": "ord_014",
+      "pieceId": "pc_09",
+      "makerShareCents": 10422
+     },
+     {
+      "orderId": "ord_018",
+      "pieceId": "pc_12",
+      "makerShareCents": 8194
+     },
+     {
+      "orderId": "ord_021",
+      "pieceId": "pc_09",
+      "makerShareCents": 10422
+     },
+     {
+      "orderId": "ord_028",
+      "pieceId": "pc_04",
+      "makerShareCents": 49000
+     }
+    ],
+    "totalCents": 124418,
+    "heldCents": 9500,
+    "payoutDate": "2026-10-02"
+   },
+   {
+    "id": "mst_02",
+    "makerId": "mkr_02",
+    "monthId": "2026-09",
+    "lines": [
+     {
+      "orderId": "ord_002",
+      "pieceId": "pc_07",
+      "makerShareCents": 3551
+     },
+     {
+      "orderId": "ord_004",
+      "pieceId": "pc_02",
+      "makerShareCents": 4831
+     },
+     {
+      "orderId": "ord_008",
+      "pieceId": "pc_07",
+      "makerShareCents": 3551
+     },
+     {
+      "orderId": "ord_010",
+      "pieceId": "pc_02",
+      "makerShareCents": 4831
+     },
+     {
+      "orderId": "ord_013",
+      "pieceId": "pc_02",
+      "makerShareCents": 5481
+     },
+     {
+      "orderId": "ord_015",
+      "pieceId": "pc_07",
+      "makerShareCents": 4031
+     },
+     {
+      "orderId": "ord_019",
+      "pieceId": "pc_02",
+      "makerShareCents": 5481
+     },
+     {
+      "orderId": "ord_022",
+      "pieceId": "pc_11",
+      "makerShareCents": 14862
+     },
+     {
+      "orderId": "ord_023",
+      "pieceId": "pc_07",
+      "makerShareCents": 4031
+     },
+     {
+      "orderId": "ord_029",
+      "pieceId": "pc_05",
+      "makerShareCents": 41000
+     }
+    ],
+    "totalCents": 91650,
+    "heldCents": 8000,
+    "payoutDate": "2026-10-02"
+   },
+   {
+    "id": "mst_03",
+    "makerId": "mkr_03",
+    "monthId": "2026-09",
+    "lines": [
+     {
+      "orderId": "ord_006",
+      "pieceId": "pc_10",
+      "makerShareCents": 6473
+     },
+     {
+      "orderId": "ord_007",
+      "pieceId": "pc_08",
+      "makerShareCents": 2780
+     },
+     {
+      "orderId": "ord_012",
+      "pieceId": "pc_10",
+      "makerShareCents": 6473
+     },
+     {
+      "orderId": "ord_016",
+      "pieceId": "pc_08",
+      "makerShareCents": 3160
+     },
+     {
+      "orderId": "ord_017",
+      "pieceId": "pc_10",
+      "makerShareCents": 7323
+     },
+     {
+      "orderId": "ord_024",
+      "pieceId": "pc_10",
+      "makerShareCents": 7323
+     },
+     {
+      "orderId": "ord_027",
+      "pieceId": "pc_03",
+      "makerShareCents": 62500
+     },
+     {
+      "orderId": "ord_030",
+      "pieceId": "pc_06",
+      "makerShareCents": 22500
+     }
+    ],
+    "totalCents": 118532,
+    "heldCents": 16500,
+    "payoutDate": "2026-10-02"
+   }
+  ],
+  "flags": [
+   {
+    "id": "flg_01",
+    "kind": "short_payment",
+    "recordIds": [
+     "ctr_gallery_01",
+     "stm_gallery_2026_09",
+     "txn_026"
+    ],
+    "expectedCents": 204000,
+    "actualCents": 170000,
+    "deltaCents": 34000,
+    "trustRecordId": "ctr_gallery_01",
+    "explanation": {
+     "en": "The gallery's September statement charged 50% commission on all four sales and paid $1,700.00. The signed contract says 40%, which leaves the studio $2,040.00 on $3,400.00 of sales. The bank shows $1,700.00 on Sep 30, matching the statement, not the contract. I trust the contract, so the gallery owes $340.00.",
+     "zh": "画廊9月对账单对四笔销售都按50%收取佣金，实付$1,700.00。已签合同约定40%，按$3,400.00的销售额，工作室应得$2,040.00。银行流水显示9月30日到账$1,700.00，与对账单一致，与合同不符。我以合同为准，画廊还欠$340.00。"
+    }
+   }
+  ],
+  "makerPayouts": [
+   {
+    "id": "mpo_01",
+    "makerId": "mkr_01",
+    "monthId": "2026-09",
+    "amountCents": 114918,
+    "orderIds": [
+     "ord_001",
+     "ord_003",
+     "ord_005",
+     "ord_009",
+     "ord_011",
+     "ord_014",
+     "ord_018",
+     "ord_021",
+     "ord_028"
+    ],
+    "heldCents": 9500,
+    "status": "proposed"
+   },
+   {
+    "id": "mpo_02",
+    "makerId": "mkr_02",
+    "monthId": "2026-09",
+    "amountCents": 83650,
+    "orderIds": [
+     "ord_002",
+     "ord_004",
+     "ord_008",
+     "ord_010",
+     "ord_013",
+     "ord_015",
+     "ord_019",
+     "ord_022",
+     "ord_023",
+     "ord_029"
+    ],
+    "heldCents": 8000,
+    "status": "proposed"
+   },
+   {
+    "id": "mpo_03",
+    "makerId": "mkr_03",
+    "monthId": "2026-09",
+    "amountCents": 102032,
+    "orderIds": [
+     "ord_006",
+     "ord_007",
+     "ord_012",
+     "ord_016",
+     "ord_017",
+     "ord_024",
+     "ord_027",
+     "ord_030"
+    ],
+    "heldCents": 16500,
+    "status": "proposed"
+   }
+  ],
+  "contracts": [
+   {
+    "id": "ctr_gallery_01",
+    "channelId": "ch_gallery",
+    "commissionBps": 4000,
+    "statementDay": 30,
+    "signedDate": "2026-03-02",
+    "terms": {
+     "en": "Fogline Gallery sells the studio's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the studio the balance with the statement.",
+     "zh": "雾线画廊寄售工作室作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向工作室支付余款。"
+    }
+   }
+  ],
+  "statements": [
+   {
+    "id": "stm_gallery_2026_09",
+    "channelId": "ch_gallery",
+    "monthId": "2026-09",
+    "issuedDate": "2026-09-30",
+    "lines": [
+     {
+      "orderId": "ord_027",
+      "pieceId": "pc_03",
+      "saleCents": 120000,
+      "commissionBps": 5000,
+      "commissionCents": 60000,
+      "netCents": 60000
+     },
+     {
+      "orderId": "ord_028",
+      "pieceId": "pc_04",
+      "saleCents": 95000,
+      "commissionBps": 5000,
+      "commissionCents": 47500,
+      "netCents": 47500
+     },
+     {
+      "orderId": "ord_029",
+      "pieceId": "pc_05",
+      "saleCents": 80000,
+      "commissionBps": 5000,
+      "commissionCents": 40000,
+      "netCents": 40000
+     },
+     {
+      "orderId": "ord_030",
+      "pieceId": "pc_06",
+      "saleCents": 45000,
+      "commissionBps": 5000,
+      "commissionCents": 22500,
+      "netCents": 22500
+     }
+    ],
+    "totalSaleCents": 340000,
+    "totalCommissionCents": 170000,
+    "totalNetCents": 170000
+   }
+  ],
+  "bankTxns": [
+   {
+    "id": "txn_001",
+    "date": "2026-09-01",
+    "direction": "in",
+    "amountCents": 15648,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_001",
+    "refId": "pay_001"
+   },
+   {
+    "id": "txn_002",
+    "date": "2026-09-02",
+    "direction": "in",
+    "amountCents": 4151,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_002",
+    "refId": "pay_002"
+   },
+   {
+    "id": "txn_003",
+    "date": "2026-09-03",
+    "direction": "out",
+    "amountCents": 18500,
+    "counterparty": {
+     "en": "Suzhou Morning Silk Co.",
+     "zh": "苏州晨丝坊"
+    },
+    "memo": "Mulberry silk ground fabric, 6 m",
+    "refId": "pur_001"
+   },
+   {
+    "id": "txn_004",
+    "date": "2026-09-04",
+    "direction": "in",
+    "amountCents": 10422,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_003",
+    "refId": "pay_003"
+   },
+   {
+    "id": "txn_005",
+    "date": "2026-09-05",
+    "direction": "in",
+    "amountCents": 6281,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_004",
+    "refId": "pay_004"
+   },
+   {
+    "id": "txn_006",
+    "date": "2026-09-06",
+    "direction": "in",
+    "amountCents": 5631,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_005",
+    "refId": "pay_005"
+   },
+   {
+    "id": "txn_007",
+    "date": "2026-09-07",
+    "direction": "in",
+    "amountCents": 11622,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_006",
+    "refId": "pay_006"
+   },
+   {
+    "id": "txn_008",
+    "date": "2026-09-09",
+    "direction": "in",
+    "amountCents": 8244,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_007",
+    "refId": "pay_007"
+   },
+   {
+    "id": "txn_009",
+    "date": "2026-09-11",
+    "direction": "in",
+    "amountCents": 7373,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_008",
+    "refId": "pay_008"
+   },
+   {
+    "id": "txn_010",
+    "date": "2026-09-12",
+    "direction": "in",
+    "amountCents": 16514,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_009",
+    "refId": "pay_009"
+   },
+   {
+    "id": "txn_011",
+    "date": "2026-09-13",
+    "direction": "in",
+    "amountCents": 3280,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_010",
+    "refId": "pay_010"
+   },
+   {
+    "id": "txn_012",
+    "date": "2026-09-14",
+    "direction": "in",
+    "amountCents": 9194,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_011",
+    "refId": "pay_011"
+   },
+   {
+    "id": "txn_013",
+    "date": "2026-09-15",
+    "direction": "in",
+    "amountCents": 4151,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_012",
+    "refId": "pay_012"
+   },
+   {
+    "id": "txn_014",
+    "date": "2026-09-15",
+    "direction": "out",
+    "amountCents": 7200,
+    "counterparty": {
+     "en": "Suzhou Morning Silk Co.",
+     "zh": "苏州晨丝坊"
+    },
+    "memo": "Silk floss, 40 colors",
+    "refId": "pur_002"
+   },
+   {
+    "id": "txn_015",
+    "date": "2026-09-16",
+    "direction": "in",
+    "amountCents": 6281,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_013",
+    "refId": "pay_013"
+   },
+   {
+    "id": "txn_016",
+    "date": "2026-09-17",
+    "direction": "in",
+    "amountCents": 10422,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_014",
+    "refId": "pay_014"
+   },
+   {
+    "id": "txn_017",
+    "date": "2026-09-18",
+    "direction": "in",
+    "amountCents": 9194,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_015",
+    "refId": "pay_015"
+   },
+   {
+    "id": "txn_018",
+    "date": "2026-09-19",
+    "direction": "in",
+    "amountCents": 5631,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_016",
+    "refId": "pay_016"
+   },
+   {
+    "id": "txn_019",
+    "date": "2026-09-23",
+    "direction": "in",
+    "amountCents": 2122,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_017",
+    "refId": "pay_017"
+   },
+   {
+    "id": "txn_020",
+    "date": "2026-09-24",
+    "direction": "in",
+    "amountCents": 16962,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_018",
+    "refId": "pay_018"
+   },
+   {
+    "id": "txn_021",
+    "date": "2026-09-24",
+    "direction": "out",
+    "amountCents": 4600,
+    "counterparty": {
+     "en": "Suzhou Morning Silk Co.",
+     "zh": "苏州晨丝坊"
+    },
+    "memo": "Backing cotton and fan frames",
+    "refId": "pur_003"
+   },
+   {
+    "id": "txn_022",
+    "date": "2026-09-25",
+    "direction": "in",
+    "amountCents": 8244,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_019",
+    "refId": "pay_019"
+   },
+   {
+    "id": "txn_023",
+    "date": "2026-09-26",
+    "direction": "in",
+    "amountCents": 4631,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_020",
+    "refId": "pay_020"
+   },
+   {
+    "id": "txn_024",
+    "date": "2026-09-27",
+    "direction": "in",
+    "amountCents": 7373,
+    "counterparty": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "memo": "Cindia settlement pay_021",
+    "refId": "pay_021"
+   },
+   {
+    "id": "txn_025",
+    "date": "2026-09-28",
+    "direction": "in",
+    "amountCents": 8223,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_022",
+    "refId": "pay_022"
+   },
+   {
+    "id": "txn_026",
+    "date": "2026-09-30",
+    "direction": "in",
+    "amountCents": 170000,
+    "counterparty": {
+     "en": "Fogline Gallery",
+     "zh": "雾线画廊"
+    },
+    "memo": "Gallery payment pay_023",
+    "refId": "pay_023"
+   },
+   {
+    "id": "txn_027",
+    "date": "2026-10-02",
+    "direction": "in",
+    "amountCents": 9941,
+    "counterparty": {
+     "en": "Harborline Payments (card processor)",
+     "zh": "Harborline Payments（收单机构）"
+    },
+    "memo": "Card processor payout pay_024",
+    "refId": "pay_024"
+   },
+   {
+    "id": "txn_028",
+    "date": "2026-10-02",
+    "direction": "out",
+    "amountCents": 114918,
+    "counterparty": {
+     "en": "Maker payout mkr_01",
+     "zh": "匠人结算 mkr_01"
+    },
+    "memo": "Maker payout mpo_01",
+    "refId": "mpo_01"
+   },
+   {
+    "id": "txn_029",
+    "date": "2026-10-02",
+    "direction": "out",
+    "amountCents": 83650,
+    "counterparty": {
+     "en": "Maker payout mkr_02",
+     "zh": "匠人结算 mkr_02"
+    },
+    "memo": "Maker payout mpo_02",
+    "refId": "mpo_02"
+   },
+   {
+    "id": "txn_030",
+    "date": "2026-10-02",
+    "direction": "out",
+    "amountCents": 102032,
+    "counterparty": {
+     "en": "Maker payout mkr_03",
+     "zh": "匠人结算 mkr_03"
+    },
+    "memo": "Maker payout mpo_03",
+    "refId": "mpo_03"
+   }
+  ],
+  "makers": [
+   {
+    "id": "mkr_01",
+    "role": "maker",
+    "name": {
+     "en": "Lu Yun",
+     "zh": "陆芸"
+    },
+    "surnameChar": "陆",
+    "lang": "zh"
+   },
+   {
+    "id": "mkr_02",
+    "role": "maker",
+    "name": {
+     "en": "Han Jing",
+     "zh": "韩静"
+    },
+    "surnameChar": "韩",
+    "lang": "zh"
+   },
+   {
+    "id": "mkr_03",
+    "role": "maker",
+    "name": {
+     "en": "Zhou Mei",
+     "zh": "周梅"
+    },
+    "surnameChar": "周",
+    "lang": "zh"
+   }
+  ],
+  "channels": [
+   {
+    "id": "ch_cindia",
+    "name": {
+     "en": "Cindia",
+     "zh": "Cindia"
+    },
+    "kind": "marketplace"
+   },
+   {
+    "id": "ch_site",
+    "name": {
+     "en": "Studio website",
+     "zh": "工作室网站"
+    },
+    "kind": "own_site"
+   },
+   {
+    "id": "ch_gallery",
+    "name": {
+     "en": "Fogline Gallery, San Francisco",
+     "zh": "雾线画廊（旧金山）"
+    },
+    "kind": "consignment"
+   }
+  ]
+ },
+ "canned": [
+  {
+   "questionId": "ask_01",
+   "questions": {
+    "en": "Which piece earned the most this month?",
+    "zh": "这个月哪件作品最赚钱?"
+   },
+   "refIds": [
+    "pc_03",
+    "ord_027"
+   ]
+  },
+  {
+   "questionId": "ask_02",
+   "questions": {
+    "en": "Why did you flag the gallery payment?",
+    "zh": "你为什么标记画廊的付款?"
+   },
+   "refIds": [
+    "ctr_gallery_01",
+    "stm_gallery_2026_09",
+    "txn_026"
+   ]
+  },
+  {
+   "questionId": "ask_03",
+   "questions": {
+    "en": "How much does Lu Yun get this month?",
+    "zh": "陆芸这个月能拿多少?"
+   },
+   "refIds": [
+    "mpo_01",
+    "mst_01",
+    "flg_01"
+   ]
+  }
+ ]
+}

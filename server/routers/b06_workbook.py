@@ -1,8 +1,10 @@
 """B06 · the month-close workbook (`b06-workbook`).
 
 POST /api/b06/workbook builds `cindia-close-<monthId>.xlsx` with openpyxl from the month's records
-and returns one `workbook.ready`. GET /api/b06/files/{fileName} serves a built workbook from
-artifacts/files/. No key, no network.
+and returns one `workbook.ready`. GET /api/b06/files/{fileName} serves the newest build of that
+workbook from artifacts/files/, downloaded under the contract name. Each build is saved under its
+own name on disk (see save_workbook), so concurrent builds and downloads never collide on Windows.
+No key, no network.
 
 The sheets follow the browser's SheetJS workbook (src/features/close/buildWorkbook.ts), plus a
 native bar chart on Makers, which SheetJS can't write:
@@ -23,8 +25,10 @@ from __future__ import annotations
 import itertools
 import os
 import re
+import secrets
 import tempfile
 import threading
+import time
 from pathlib import Path
 from typing import Any, Optional
 
@@ -45,6 +49,7 @@ XLSX_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 SHEETS = ["Ledger", "Reconciliation", "Profit and loss", "Makers"]
 FILES_DIR = Path(__file__).resolve().parents[2] / "artifacts" / "files"
 SAFE_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*\.xlsx$")
+KEEP = 5  # builds of one workbook kept on disk; older ones are removed when not open
 
 MONEY = "#,##0.00"
 RATE = "0%"
@@ -366,10 +371,34 @@ def build_workbook(records: Records, month_id: str) -> Workbook:
     return wb
 
 
+def _version_pattern(file_name: str) -> re.Pattern[str]:
+    stem = file_name[: -len(".xlsx")]
+    return re.compile(re.escape(stem) + r"--(\d{20})-[0-9a-f]{8}\.xlsx")
+
+
+def _versions(file_name: str, folder: Path) -> list[Path]:
+    """Every build of `file_name` in `folder`, oldest first."""
+    pattern = _version_pattern(file_name)
+    try:
+        names = [p.name for p in folder.iterdir()]
+    except OSError:
+        return []
+    return [folder / n for n in sorted(n for n in names if pattern.fullmatch(n))]
+
+
 def save_workbook(wb: Workbook, file_name: str, folder: Path = FILES_DIR) -> Path:
-    """Writes to a temp file, then renames, so a download never sees a half-written workbook."""
+    """Saves one build under its own name, `<stem>--<time_ns>-<random>.xlsx`, and returns its path.
+
+    The name the contract gives (`cindia-close-2026-09.xlsx`) is resolved to the newest build by
+    `resolve_file`. A fixed target name failed on Windows: renaming onto a file another process has
+    open (the API on :8000 serving it, or a test reading it) raises PermissionError. A fresh name is
+    never open, so a build can't collide with a download. The temp file plus rename means a download
+    never sees a half-written workbook. Older builds beyond the newest KEEP are removed when nobody
+    holds them open; one that's open is left for the next build to remove.
+    """
     folder.mkdir(parents=True, exist_ok=True)
-    target = folder / file_name
+    stem = file_name[: -len(".xlsx")]
+    target = folder / f"{stem}--{time.time_ns():020d}-{secrets.token_hex(4)}.xlsx"
     with _write_lock:
         fd, tmp = tempfile.mkstemp(suffix=".xlsx.tmp", dir=folder)
         os.close(fd)
@@ -379,7 +408,21 @@ def save_workbook(wb: Workbook, file_name: str, folder: Path = FILES_DIR) -> Pat
         finally:
             if os.path.exists(tmp):
                 os.remove(tmp)
+        for old in [p for p in _versions(file_name, folder) if p != target][: -(KEEP - 1) or None]:
+            try:
+                old.unlink()
+            except OSError:
+                pass
     return target
+
+
+def resolve_file(file_name: str, folder: Path = FILES_DIR) -> Optional[Path]:
+    """The newest build of `file_name`, else a file saved under exactly that name, else None."""
+    builds = [p for p in _versions(file_name, folder) if p.is_file()]
+    if builds:
+        return builds[-1]
+    exact = folder / file_name
+    return exact if exact.is_file() else None
 
 
 @router.post("/workbook")
@@ -406,7 +449,11 @@ def make_workbook(body: WorkbookRequest) -> dict:
 def get_file(fileName: str):
     if "/" in fileName or "\\" in fileName or ".." in fileName or not SAFE_NAME.match(fileName):
         raise ApiError("not_found", "There is no workbook with that name.")
-    path = FILES_DIR / fileName
-    if not path.is_file():
+    path = resolve_file(fileName)
+    if path is None:
         raise ApiError("not_found", "There is no workbook with that name.")
-    return FileResponse(path, media_type=XLSX_TYPE, filename=fileName)
+    try:
+        stat = os.stat(path)
+    except OSError:
+        raise ApiError("not_found", "There is no workbook with that name.")
+    return FileResponse(path, media_type=XLSX_TYPE, filename=fileName, stat_result=stat)

@@ -113,7 +113,7 @@ def test_response_shape(built):
     assert re.fullmatch(r"evt_live_\d+", ev["id"])
     assert ev["at"] == month["trigger"]["at"]
     assert ev["payload"] == {"monthId": "2026-09", "fileName": FILE_NAME, "sheets": SHEETS}
-    assert (FILES_DIR / FILE_NAME).is_file()
+    assert any(FILES_DIR.glob("cindia-close-2026-09*.xlsx"))
 
 
 def test_ids_are_unique_and_at_is_zero_without_trigger(client):
@@ -239,6 +239,33 @@ def test_no_key_needed(client, monkeypatch):
     monkeypatch.delenv("NESSIE_KEY", raising=False)
     res = client.post("/api/b06/workbook", json=body_for(load_month()))
     assert res.status_code == 200
+
+
+def test_build_succeeds_while_the_served_file_is_open(client):
+    # On Windows a rename onto a file another handle has open fails with PermissionError. The API
+    # on :8000 may be serving the workbook while this process builds it, so a build must not care.
+    month = load_month()
+    first = client.post("/api/b06/workbook", json=body_for(month))
+    assert first.status_code == 200, first.text
+    with client.stream("GET", f"/api/b06/files/{FILE_NAME}") as held:
+        assert held.status_code == 200
+        open_files = [open(p, "rb") for p in FILES_DIR.glob("cindia-close-2026-09*.xlsx")]
+        try:
+            res = client.post("/api/b06/workbook", json=body_for(month))
+            assert res.status_code == 200, res.text
+            assert res.json()["events"][0]["payload"]["fileName"] == FILE_NAME
+            got = client.get(f"/api/b06/files/{FILE_NAME}")
+            assert got.status_code == 200
+            assert got.content[:2] == b"PK"
+            assert load_workbook(io.BytesIO(got.content)).sheetnames == SHEETS
+        finally:
+            for f in open_files:
+                f.close()
+
+
+def test_download_keeps_the_contract_name(built):
+    _month, _body, got, _wb = built
+    assert FILE_NAME in got.headers["content-disposition"]
 
 
 def test_listed_in_health(client):

@@ -115,25 +115,31 @@ Returns one `proof.scored` with `caught`, `total` and one result per planted err
 
 Needs `NESSIE_KEY`. The server keeps the Nessie customer and account IDs in memory once found or created.
 
-**`GET /api/b04/status`** · returns `{ "seeded": boolean, "accountId": string | null, "balanceCents": number | null }` (this is not an events response, the adapter's `health()` reads it).
+**`GET /api/b04/status`** · returns `{ "seeded": boolean, "accountId": string | null, "balanceCents": number | null }` (this is not an events response, the adapter's `health()` reads it). `seeded` is true once the opening-balance deposit has landed on the account. The seed posts it last, so it marks a finished seed.
 
 **`POST /api/b04/seed`** · up to 30 seconds, called once by the adapter's `health()` in live mode, never during the demo's 8-second window
 
-Request: `{ "trigger": null, "studio": {}, "history": { "deposits": [], "withdrawals": [] } }`, where `history` is September's bank transactions from `src/mock`, except the buyer's sale (`pay_001`) and the maker payouts.
+Request: `{ "trigger": null, "studio": { "id": "std_gu", "name": "...", "openingBalanceCents": 0 }, "history": { "deposits": [], "withdrawals": [] } }`, where `history` is September's bank transactions from `src/mock`, except the buyer's sale (`pay_001`) and the maker payouts. Each history line is `{ "id", "date", "amountCents", "memo", "refId" }`. `studio.openingBalanceCents` (a non-negative integer, default 0) is posted as one deposit dated 2026-08-31, so Nessie's balance reproduces `src/mock`'s `balanceAsOf()`.
 
-Idempotent. When an account nicknamed "Gu studio operating" already has deposits, it does nothing. Otherwise it creates the customer (a fictional US mailing address), a Checking account, and one deposit or withdrawal per history line. Returns `{ "events": [account.synced] }`.
+Idempotent. Each line carries a unique description, and a line already on the account isn't posted again. When the opening deposit is already there, it does nothing; a seed cut short finishes on the next call. Otherwise it finds or creates the customer (a fictional US mailing address) and a Checking account nicknamed "Gu studio operating", then posts one deposit or withdrawal per history line and the opening deposit last. Returns `{ "events": [account.synced] }`.
+
+When live mode is switched on, the adapter's `health()` starts the seed in the background: about 30 POSTs to Nessie, up to 30 seconds. `health()` answers false until the seed is done, so `b04-bank` stays scripted until then.
 
 **`POST /api/b04/sale`** · under 4 seconds
 
-Request: `{ "trigger": { "...": "the scripted order.placed or money.moved for the sale" }, "orderId": "ord_001", "payoutId": "pay_001", "netCents": 15648, "date": "2026-09-01", "description": "Cindia sale ord_001, Peony fan, net of fees" }`
+Request: `{ "trigger": { "...": "the scripted order.placed or money.moved for the sale" }, "orderId": "ord_001", "payoutId": "pay_001", "netCents": 15648, "date": "2026-09-01", "description": "Cindia sale ord_001, Peony fan, net of fees", "pieceId": "...", "channelId": "...", "buyerId": "...", "grossCents": 18000, "moveId": "mv_0003" }`
 
-Creates one deposit of `netCents`, reads the deposits back, then the account. Returns the `order.placed` and the settlement `money.moved` (same `moveId` as the scripted one), and an `account.synced` with Nessie's balance.
+`pieceId`, `channelId`, `buyerId`, `grossCents` and `moveId` are optional. They let the server build the `order.placed` and the settlement's `moveId` when the trigger is the other of the two sale events. Without them, `order.placed` comes from an `order.placed` trigger, and `moveId` from a `money.moved` trigger or `mv_0003`.
+
+Creates one deposit of `netCents` (or reuses the one with the same description), reads the deposits back, then the account. Returns the `order.placed` (when it can be built) and the settlement `money.moved` (same `moveId` as the scripted one), and an `account.synced` with Nessie's balance as of `date`.
 
 **`POST /api/b04/payouts`** · under 6 seconds
 
-Request: `{ "trigger": { "...": "a scripted payout.sent" }, "makerPayouts": [ { "makerPayoutId": "mpo_01", "makerId": "mkr_01", "amountCents": 0, "date": "2026-10-02" } ] }`
+Request: `{ "trigger": { "...": "a scripted payout.sent" }, "makerPayouts": [ { "makerPayoutId": "mpo_01", "makerId": "mkr_01", "amountCents": 0, "date": "2026-10-02", "moveId": "mv_0004" } ] }`
 
-Creates one withdrawal per maker payout, described "Maker payout mpo_01", then reads the account. Returns a `payout.sent` and a `maker_pay` `money.moved` per payout, and one `account.synced`.
+`moveId` is optional on each line. Without it, the Nth line gets `mv_0004` onward.
+
+Creates one withdrawal per maker payout, described "Maker payout mpo_01" (or reuses it), then reads the account. Returns a `payout.sent` and a `maker_pay` `money.moved` per payout, and one `account.synced`.
 
 **Fallback:** the scripted money events and balances. Without the key, `health()` is false and the money map stays scripted with its `Simulated` badge.
 

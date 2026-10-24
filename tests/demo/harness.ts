@@ -8,7 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { expect, test, type ConsoleMessage, type Page } from "@playwright/test";
 import { waitForHooks, waitForSlots } from "../smoke/lib";
-import { ALLOWED_EMPTY_FALLBACKS, BEATS, CAMERA_FRAMES, CAMERA_VIEW, FRAME_IDS, NATIVE_WIDTH, SHOWN_MATCH_KINDS, cutFeatures, type Beat, type FrameId } from "./beats";
+import { ALLOWED_EMPTY_FALLBACKS, BEATS, CAMERA_FRAMES, CAMERA_VIEW, FRAME_IDS, NATIVE_WIDTH, REQUIRED_KEYS, SHOWN_MATCH_KINDS, cutFeatures, type Beat, type FrameId } from "./beats";
 
 export const ARTIFACTS_DEMO = path.join(process.env.CINDIA_ROOT ?? process.cwd(), "artifacts", "demo");
 
@@ -21,7 +21,10 @@ export const DEMO_UPGRADE: string | null = process.env.CINDIA_DEMO_UPGRADE?.trim
 /** How far a beat.started may land from its time in demo-script.md, in ms. */
 export const BEAT_TOLERANCE_MS = 100;
 
-/** How long openStage waits in live mode for every adapter whose router is loaded to report healthy. */
+/**
+ * The longest openStage waits in live mode for the adapters that can turn healthy (router loaded
+ * and its key present) to report healthy. The wait ends as soon as they all do.
+ */
 const HEALTH_WAIT_MS = 15000;
 
 /** Live-mode source health at the start of a run, as openStage found it. */
@@ -30,7 +33,11 @@ export interface SourceHealthAtStart {
   routers: string[];
   /** Source keys with an adapter file in src/sources/live/. */
   adapters: string[];
-  /** Adapters whose router is loaded: these should turn healthy. */
+  /** /api/health's `keys`: which server keys are set. Null when the server didn't say. */
+  keys: Record<string, boolean> | null;
+  /** Adapters whose router is loaded but whose key (REQUIRED_KEYS in beats.ts) is missing: not waited for. */
+  noKey: string[];
+  /** Adapters whose router is loaded and whose key, if any, is set: these should turn healthy. */
   expected: string[];
   /** Keys whose demo-mode-toggle dot showed healthy when the run started (the registry's own health()). */
   healthy: string[];
@@ -56,35 +63,49 @@ async function healthyDots(page: Page): Promise<string[]> {
 }
 
 /**
- * In live mode: asks /api/health which routers are loaded, waits for each adapter with a loaded
- * router to report healthy, and keeps what it found for playDemo. G5's upgrade must be healthy.
+ * In live mode: asks /api/health which routers are loaded and which keys are set, waits until each
+ * adapter with a loaded router and its key (REQUIRED_KEYS) reports healthy, and keeps what it found
+ * for playDemo. Adapters missing their key are skipped. G5's upgrade must have its key and be healthy.
  */
 async function captureSourceHealth(page: Page): Promise<SourceHealthAtStart> {
-  const routers = await page.evaluate(async () => {
+  const { routers, keys } = await page.evaluate(async () => {
     try {
       const r = await fetch("/api/health");
-      if (!r.ok) return [] as string[];
-      const body = (await r.json()) as { routers?: unknown };
-      return Array.isArray(body.routers) ? body.routers.filter((x): x is string => typeof x === "string") : [];
+      if (!r.ok) return { routers: [] as string[], keys: null };
+      const body = (await r.json()) as { routers?: unknown; keys?: unknown };
+      const listed = Array.isArray(body.routers) ? body.routers.filter((x): x is string => typeof x === "string") : [];
+      const set =
+        body.keys && typeof body.keys === "object"
+          ? Object.fromEntries(Object.entries(body.keys as Record<string, unknown>).map(([k, v]) => [k, v === true]))
+          : null;
+      return { routers: listed, keys: set };
     } catch {
-      return [] as string[];
+      return { routers: [] as string[], keys: null };
     }
   });
   const adapters = liveAdapterKeys();
-  const expected = adapters.filter((k) => routers.includes(k.slice(0, 3)));
+  const loaded = adapters.filter((k) => routers.includes(k.slice(0, 3)));
+  // When /api/health doesn't report keys, assume they're set and wait as before.
+  const hasKey = (k: string) => !REQUIRED_KEYS[k] || keys === null || keys[REQUIRED_KEYS[k]] === true;
+  const noKey = loaded.filter((k) => !hasKey(k));
+  const expected = loaded.filter(hasKey);
+  if (DEMO_UPGRADE) {
+    expect(adapters, `G5 upgrade ${DEMO_UPGRADE}: an adapter file src/sources/live/${DEMO_UPGRADE}.ts`).toContain(DEMO_UPGRADE);
+    expect(routers, `G5 upgrade ${DEMO_UPGRADE}: /api/health lists its router`).toContain(DEMO_UPGRADE.slice(0, 3));
+    expect(noKey, `G5 upgrade ${DEMO_UPGRADE}: /api/health reports the ${REQUIRED_KEYS[DEMO_UPGRADE] ?? ""} key it needs`).not.toContain(DEMO_UPGRADE);
+  }
+  // Ends as soon as every adapter that can turn healthy has.
   await expect
     .poll(async () => {
       const h = await healthyDots(page);
       return expected.every((k) => h.includes(k));
-    }, { timeout: HEALTH_WAIT_MS })
+    }, { timeout: HEALTH_WAIT_MS, intervals: [100] })
     .toBe(true)
     .catch(() => undefined);
   const healthy = await healthyDots(page);
-  const found: SourceHealthAtStart = { routers, adapters, expected, healthy };
+  const found: SourceHealthAtStart = { routers, adapters, keys, noKey, expected, healthy };
   healthAtStart.set(page, found);
   if (DEMO_UPGRADE) {
-    expect(adapters, `G5 upgrade ${DEMO_UPGRADE}: an adapter file src/sources/live/${DEMO_UPGRADE}.ts`).toContain(DEMO_UPGRADE);
-    expect(routers, `G5 upgrade ${DEMO_UPGRADE}: /api/health lists its router`).toContain(DEMO_UPGRADE.slice(0, 3));
     expect(healthy, `G5 upgrade ${DEMO_UPGRADE}: its adapter's health() is true at the start of the run`).toContain(DEMO_UPGRADE);
   }
   return found;
