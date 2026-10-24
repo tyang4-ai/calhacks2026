@@ -13,7 +13,7 @@ const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'cindia-hooktest-'));
 
 // ---------------------------------------------------------------- fixtures
 
-function mkProject(name, { lock = 'off', stop = 'on', pkg = null } = {}) {
+function mkProject(name, { lock = 'off', stop = 'on', guards = 'on', pkg = null } = {}) {
   const dir = path.join(tmp, name);
   fs.mkdirSync(path.join(dir, 'docs', 'harness'), { recursive: true });
   fs.writeFileSync(
@@ -23,6 +23,7 @@ function mkProject(name, { lock = 'off', stop = 'on', pkg = null } = {}) {
       'NEXT: R5',
       `SHARED_LOCK: ${lock}`,
       `STOP_CHECK: ${stop}`,
+      `GUARDS: ${guards}`,
       'UPDATED: test',
       '',
       '# Status board',
@@ -53,6 +54,16 @@ const projStopOff = mkProject('proj-stopoff', { stop: 'off', pkg: { scripts: { '
 const projFail = mkProject('proj-fail', { pkg: { scripts: { 'check:scope': 'node -e "console.log(\'bad file\');process.exit(1)"' } } });
 const projPass = mkProject('proj-pass', { pkg: { scripts: { 'check:scope': 'node -e "process.exit(0)"' } } });
 const projNoScript = mkProject('proj-noscript', { pkg: { scripts: {} } });
+const projGuardsOff = mkProject('proj-guardsoff', { guards: 'off', pkg: { scripts: { 'check:scope': 'node -e "process.exit(1)"' } } });
+const projLockedPkg = mkProject('proj-locked-pkg', { lock: 'on' });
+
+// Files the recursive-search rules look at: a key file at the root, a folder without one,
+// and a folder that holds one.
+fs.writeFileSync(path.join(proj, '.env'), 'ANTHROPIC_API_KEY=not-a-real-key\n');
+fs.mkdirSync(path.join(proj, 'src'), { recursive: true });
+fs.writeFileSync(path.join(proj, 'src', 'a.ts'), 'export const a = 1;\n');
+fs.mkdirSync(path.join(proj, 'config'), { recursive: true });
+fs.writeFileSync(path.join(proj, 'config', '.env.local'), 'NESSIE_KEY=not-a-real-key\n');
 const scratch = path.join(tmp, 'scratch');
 fs.mkdirSync(scratch, { recursive: true });
 const outside = path.join(tmp, 'elsewhere');
@@ -84,6 +95,10 @@ const T = {
   b7: agentTranscript('b7', header('src/features/proof/P.tsx'), path.join(subagents, 'nested')),
   lead1: agentTranscript('lead1', header('src/features/buyer/, tests/features/buyer*', 'feature-lead')),
   be1: agentTranscript('be1', header('server/routers/b04_live_concierge.py, src/sources/live/b04-live-concierge.ts, tests/server/', 'backend-builder')),
+  b8: agentTranscript('b8', header('src/features/close/H.tsx')),
+  b9: agentTranscript('b9', header('src/features/close/J.tsx')),
+  bl: agentTranscript('bl', 'ROLE: builder\nPLAN: docs/plans/F-buyer.md\nTASK: T2\nSCOPE:\n- src/features/buyer/L.tsx\n- tests/features/buyer-l.spec.ts\n\nBuild the task.'),
+  bp: agentTranscript('bp', 'ROLE: builder\nPLAN: docs/plans/F-buyer.md\nTASK: T3\nSCOPE:\nBuild the task in src/core/x.ts.'),
 };
 
 // ---------------------------------------------------------------- runner
@@ -377,7 +392,7 @@ check('builder: cmd /c del /s', C, sh('builder', 'b1', 'cmd /c "del /s /q src"')
     const j = JSON.parse(res.stdout);
     const text = j.hookSpecificOutput.additionalContext;
     ok = ok && j.hookSpecificOutput.hookEventName === 'SessionStart';
-    for (const needle of ['Build state from docs/harness/status.md', 'Time now:', 'STAGE: W1', 'SHARED_LOCK: off', '## Now', 'Testing the hooks.', '## Needs Gordon', 'G1 passed']) {
+    for (const needle of ['Build state from docs/harness/status.md', 'Time now:', 'STAGE: W1', 'SHARED_LOCK: off', 'GUARDS: on', '## Now', 'Testing the hooks.', '## Needs Gordon', 'G1 passed']) {
       if (!text.includes(needle)) {
         ok = false;
         detail += `missing "${needle}". `;
@@ -433,6 +448,152 @@ if (npm.status === 0) {
   record('stop check: no count file after a pass', !fs.existsSync(countFile));
 } else {
   record('stop check: npm cases skipped (npm not found)', true);
+}
+
+
+// ---------------------------------------------------------------- review fixes
+
+// GUARDS: off turns both guards off.
+check('guards off: builder writes src/core', E, edit('builder', 'b1', P(projGuardsOff, 'src/core/x.ts')), 'allow', { root: projGuardsOff });
+check('guards off: main writes .env', E, edit(null, null, P(projGuardsOff, '.env')), 'allow', { root: projGuardsOff });
+check('guards off: builder git commit', C, sh('builder', 'b1', 'git commit -m x', { root: projGuardsOff }), 'allow', { root: projGuardsOff });
+check('guards off: main cat .env', C, sh(null, null, 'cat .env', { root: projGuardsOff }), 'allow', { root: projGuardsOff });
+
+// Recursive searches that could print .env, for everyone.
+check('search: grep -rn .', C, sh(null, null, 'grep -rn sk-ant .'), 'deny');
+check('search: grep -r with no path', C, sh(null, null, 'grep -r ANTHROPIC'), 'deny');
+check('search: grep -Rni ./', C, sh(null, null, 'grep -Rni key ./'), 'deny');
+check('search: grep --recursive', C, sh(null, null, 'grep --recursive key .'), 'deny');
+check('search: egrep -r', C, sh(null, null, 'egrep -r "sk-ant|key" .'), 'deny');
+check('search: fgrep -rl', C, sh(null, null, 'fgrep -rl key'), 'deny');
+check('search: grep -r --exclude=.env*', C, sh(null, null, 'grep -rn key --exclude=.env* .'), 'allow');
+check('search: grep -r --exclude=".env"', C, sh(null, null, 'grep -rn key --exclude=".env" .'), 'allow');
+check('search: grep -r --include=*.ts', C, sh(null, null, 'grep -rn key --include=*.ts .'), 'allow');
+check('search: grep -r --include "*.ts"', C, sh(null, null, 'grep -rn key --include "*.ts" .'), 'allow');
+check('search: grep -r folder without .env', C, sh(null, null, 'grep -rn key src/'), 'allow');
+check('search: grep -r folder with .env.local', C, sh(null, null, 'grep -rn key config/'), 'deny');
+check('search: cd into folder with .env then grep -r', C, sh(null, null, 'cd config && grep -rn key .'), 'deny');
+check('search: bash -c grep -r', C, sh(null, null, 'bash -c "grep -r key ."'), 'deny');
+check('search: verifier grep -rn .', C, sh('verifier', 'v1', 'grep -rn sk-ant .'), 'deny');
+check('search: findstr /s *', C, sh(null, null, 'findstr /s key *', { tool: 'PowerShell' }), 'deny');
+check('search: findstr /s /c: *.*', C, sh(null, null, 'findstr /s /c:"sk-ant" *.*', { tool: 'PowerShell' }), 'deny');
+check('search: findstr /s *.ts', C, sh(null, null, 'findstr /s /i key *.ts', { tool: 'PowerShell' }), 'allow');
+check('search: gci -Recurse | Select-String', C, sh(null, null, 'Get-ChildItem -Recurse | Select-String key', { tool: 'PowerShell' }), 'deny');
+check('search: gci -r | sls', C, sh(null, null, 'gci -r | sls key', { tool: 'PowerShell' }), 'deny');
+check('search: gci -Recurse -Exclude .env*', C, sh(null, null, 'Get-ChildItem -Recurse -Exclude .env* | Select-String key', { tool: 'PowerShell' }), 'allow');
+check('search: gci src -Recurse', C, sh(null, null, 'Get-ChildItem src -Recurse | Select-String key', { tool: 'PowerShell' }), 'allow');
+check('search: gci -Recurse -Include *.ts', C, sh(null, null, 'Get-ChildItem -Recurse -Include *.ts | Select-String key', { tool: 'PowerShell' }), 'allow');
+check('search: gci -Recurse -Filter *.md', C, sh(null, null, 'Get-ChildItem -Recurse -Filter *.md | Select-String key', { tool: 'PowerShell' }), 'allow');
+check('search: rg --no-ignore', C, sh(null, null, 'rg --no-ignore key'), 'deny');
+check('search: rg -u .', C, sh(null, null, 'rg -u key .'), 'deny');
+check('search: rg -uu', C, sh(null, null, 'rg -uu key'), 'deny');
+check('search: rg -uuu', C, sh(null, null, 'rg -uuu key'), 'deny');
+check('search: rg --hidden', C, sh(null, null, 'rg --hidden key'), 'deny');
+check("search: rg --hidden -g '!.env*'", C, sh(null, null, "rg --hidden key -g '!.env*'"), 'allow');
+check('search: rg --no-ignore --glob=!.env*', C, sh(null, null, 'rg --no-ignore key --glob=!.env*'), 'allow');
+check('search: rg -uu -t ts', C, sh(null, null, 'rg -uu key -t ts'), 'allow');
+check('search: ag -u', C, sh(null, null, 'ag -u key'), 'deny');
+check('search: ag --hidden', C, sh(null, null, 'ag --hidden key'), 'deny');
+check('search: plain rg', C, sh(null, null, 'rg key'), 'allow');
+check('search: plain rg .', C, sh(null, null, 'rg -n key .'), 'allow');
+check('search: git grep', C, sh(null, null, 'git grep -n key'), 'allow');
+check('search: builder git grep', C, sh('builder', 'b1', 'git grep -n key'), 'allow');
+check('search: git grep --no-index', C, sh(null, null, 'git grep --no-index key'), 'deny');
+check("search: git grep --no-index -- ':!.env*'", C, sh(null, null, "git grep --no-index key -- ':!.env*'"), 'allow');
+check('search: find -exec grep', C, sh(null, null, 'find . -type f -exec grep key {} +'), 'deny');
+check('search: find | xargs grep', C, sh(null, null, 'find . | xargs grep key'), 'deny');
+check('search: find -print0 | xargs -0 grep', C, sh(null, null, 'find . -type f -print0 | xargs -0 grep -l key'), 'deny');
+check("search: find -name '*.ts' -exec grep", C, sh(null, null, "find . -name '*.ts' -exec grep key {} +"), 'allow');
+check('search: find src -exec grep', C, sh(null, null, 'find src -exec grep -l key {} \;'), 'allow');
+check("search: find -not -name '.env*' -exec grep", C, sh(null, null, "find . -not -name '.env*' -exec grep key {} +"), 'allow');
+check('secrets scan: main', C, sh(null, null, 'node scripts/secrets-scan.mjs'), 'allow');
+check('secrets scan: verifier', C, sh('verifier', 'v1', 'node scripts/secrets-scan.mjs'), 'allow');
+check('secrets scan: PowerShell', C, sh(null, null, 'node scripts/secrets-scan.mjs', { tool: 'PowerShell' }), 'allow');
+
+// Git Bash drive paths on Windows.
+const winSh = (command) => ({ ...base(winRoot), tool_name: 'Bash', tool_input: { command }, agent_type: 'builder', agent_id: 'b1' });
+check('git bash: cd /c/... then write own file', C, winSh('cd /c/dev/calhacks2026 && echo x > src/features/buyer/A.tsx'), 'allow', { root: winRoot });
+check('git bash: cd /c/... then write src/core', C, winSh('cd /c/dev/calhacks2026 && echo x > src/core/x.ts'), 'deny', { root: winRoot });
+check('git bash: absolute /c/... own file', C, winSh('echo x > /c/dev/calhacks2026/src/features/buyer/A.tsx'), 'allow', { root: winRoot });
+check('git bash: /tmp stays outside', C, winSh('echo x > /tmp/x.ts'), 'deny', { root: winRoot });
+check('git bash: edit guard /c/... own file', E, winInput('/c/dev/calhacks2026/src/features/buyer/A.tsx'), 'allow', { root: winRoot });
+check('git bash: edit guard /c/... sibling', E, winInput('/c/dev/calhacks2026/src/features/buyer/B.tsx'), 'deny', { root: winRoot });
+
+// SCOPE parsing.
+check('scope list: own file', E, edit('builder', 'bl', P(proj, 'src/features/buyer/L.tsx')), 'allow');
+check('scope list: own test', E, edit('builder', 'bl', P(proj, 'tests/features/buyer-l.spec.ts')), 'allow');
+check('scope list: sibling', E, edit('builder', 'bl', P(proj, 'src/features/buyer/M.tsx')), 'deny');
+check('scope line does not swallow the next line: area fallback', E, edit('builder', 'bp', P(proj, 'src/features/any/x.ts')), 'allow');
+check('scope line does not swallow the next line: src/core', E, edit('builder', 'bp', P(proj, 'src/core/x.ts')), 'deny');
+
+// Worktrees.
+check('worktree: builder own file', E, edit('builder', 'b1', P(proj, '.claude/worktrees/wt1/src/features/buyer/A.tsx')), 'allow');
+check('worktree: builder src/core', E, edit('builder', 'b1', P(proj, '.claude/worktrees/wt1/src/core/x.ts')), 'deny');
+check('worktree: builder artifacts', E, edit('builder', 'b1', P(proj, '.claude/worktrees/wt1/artifacts/x.md')), 'allow');
+check('worktree: builder .claude inside the worktree', E, edit('builder', 'b1', P(proj, '.claude/worktrees/wt1/.claude/settings.json')), 'deny');
+check('worktree: main .env', E, edit(null, null, P(proj, '.claude/worktrees/wt1/.env')), 'deny');
+check('worktree: builder echo into own file', C, sh('builder', 'b1', 'echo x > .claude/worktrees/wt1/src/features/buyer/A.tsx'), 'allow');
+
+// npx and Playwright browsers.
+check('npx oxlint', C, sh('builder', 'b1', 'npx oxlint src'), 'allow');
+check('npx playwright install chromium: scaffolder', C, sh('scaffolder', 's1', 'npx playwright install chromium'), 'allow');
+check('npx playwright install: integrator', C, sh('integrator', 'i1', 'npx playwright install'), 'allow');
+check('npx playwright install chromium: main', C, sh(null, null, 'npx playwright install chromium'), 'allow');
+check('npx playwright install chromium: builder', C, sh('builder', 'b1', 'npx playwright install chromium'), 'deny');
+check('npm exec playwright install: builder', C, sh('builder', 'b1', 'npm exec playwright install'), 'deny');
+check('npx playwright install --with-deps: scaffolder', C, sh('scaffolder', 's1', 'npx playwright install --with-deps chromium'), 'deny');
+check('npx playwright install --with-deps: main', C, sh(null, null, 'npx playwright install --with-deps'), 'deny');
+check('npx playwright install-deps: main', C, sh(null, null, 'npx playwright install-deps'), 'deny');
+
+// Server skeleton.
+check('skeleton: scaffolder server/main.py', E, edit('scaffolder', 's1', P(proj, 'server/main.py')), 'allow');
+check('skeleton: scaffolder server/requirements.txt', E, edit('scaffolder', 's1', P(proj, 'server/requirements.txt')), 'allow');
+check('skeleton: scaffolder routers/__init__.py', E, edit('scaffolder', 's1', P(proj, 'server/routers/__init__.py')), 'allow');
+check('skeleton: scaffolder tests/server/conftest.py', E, edit('scaffolder', 's1', P(proj, 'tests/server/conftest.py')), 'allow');
+check('skeleton: scaffolder an upgrade router', E, edit('scaffolder', 's1', P(proj, 'server/routers/b04_x.py')), 'deny');
+check('skeleton: scaffolder lock on', E, edit('scaffolder', 's1', P(projLockedPkg, 'server/main.py')), 'deny', { root: projLockedPkg });
+check('skeleton: integrator lock on main.py', E, edit('integrator', 'i1', P(projLockedPkg, 'server/main.py')), 'allow', { root: projLockedPkg });
+check('skeleton: integrator lock on conftest', E, edit('integrator', 'i1', P(projLockedPkg, 'tests/server/conftest.py')), 'allow', { root: projLockedPkg });
+check('skeleton: integrator an upgrade router', E, edit('integrator', 'i1', P(projLockedPkg, 'server/routers/b04_x.py')), 'deny', { root: projLockedPkg });
+check('skeleton: builder lock on main.py', E, edit('builder', 'b4-missing', P(projLockedPkg, 'server/main.py')), 'deny', { root: projLockedPkg });
+check('skeleton: builder lock on upgrade router', E, edit('builder', 'b4-missing', P(projLockedPkg, 'server/routers/b04_x.py')), 'allow', { root: projLockedPkg });
+check('skeleton: backend-builder lock on conftest', E, edit('backend-builder', 'be1', P(projLockedPkg, 'tests/server/conftest.py')), 'deny', { root: projLockedPkg });
+check('skeleton: backend-builder lock on own test', E, edit('backend-builder', 'be1', P(projLockedPkg, 'tests/server/test_b04.py')), 'allow', { root: projLockedPkg });
+check('skeleton: backend-builder lock off conftest', E, edit('backend-builder', 'be1', P(proj, 'tests/server/conftest.py')), 'allow');
+
+// Stop check before SubagentHandback, sharing the round counter with SubagentStop.
+function handbackInput(root, id, role = 'builder') {
+  return {
+    session_id: 'sess1',
+    transcript_path: mainTranscript,
+    cwd: root,
+    hook_event_name: 'PreToolUse',
+    tool_name: 'SubagentHandback',
+    tool_input: { message: 'REPORT' },
+    agent_id: id,
+    agent_type: role,
+  };
+}
+check('handback: no check:scope script', S, handbackInput(projNoScript, 'b8'), 'allow', { root: projNoScript });
+check('handback: STOP_CHECK off', S, handbackInput(projStopOff, 'b8'), 'allow', { root: projStopOff });
+check('handback: GUARDS off', S, handbackInput(projGuardsOff, 'b8'), 'allow', { root: projGuardsOff });
+check('stop check: GUARDS off', S, { ...stopInput(projGuardsOff, 'b8'), agent_transcript_path: T.b8 }, 'allow', { root: projGuardsOff });
+check('handback: not a builder', S, handbackInput(projFail, 'b8', 'verifier'), 'allow', { root: projFail });
+check('handback: another tool', S, { ...handbackInput(projFail, 'b8'), tool_name: 'Bash' }, 'allow', { root: projFail });
+if (npm.status === 0) {
+  const h1 = check('handback: failing check, round 1', S, handbackInput(projFail, 'b8'), 'deny', { root: projFail });
+  record('handback: output passed back', (h1.stdout || '').includes('bad file'), (h1.stdout || '').slice(0, 160));
+  check('handback then stop: shared counter, round 2', S, { ...stopInput(projFail, 'b8'), agent_transcript_path: T.b8 }, 'block', { root: projFail });
+  check('handback: gives up after 2 rounds in total', S, handbackInput(projFail, 'b8'), 'allow', { root: projFail });
+  check('handback: passing check', S, handbackInput(projPass, 'b9'), 'allow', { root: projPass });
+  const passFile = path.join(projPass, 'artifacts', 'hooks', 'stop-check', 'b9.pass');
+  record('handback: pass recorded', fs.existsSync(passFile));
+  check('stop after a passed handback', S, { ...stopInput(projPass, 'b9'), agent_transcript_path: T.b9 }, 'allow', { root: projPass });
+  const passLog = path.join(projPass, 'artifacts', 'hooks', 'guard.log');
+  const logText = fs.existsSync(passLog) ? fs.readFileSync(passLog, 'utf8') : '';
+  record('stop after a passed handback: not run twice', !fs.existsSync(passFile) && logText.includes('already passed at handback'));
+} else {
+  record('handback: npm cases skipped (npm not found)', true);
 }
 
 // ---------------------------------------------------------------- logs

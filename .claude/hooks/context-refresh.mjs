@@ -47,7 +47,7 @@ await runHook('context-refresh', async (input) => {
   if (!fs.existsSync(file)) return null;
   const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
 
-  const markers = lines.slice(0, 40).filter((l) => /^(STAGE|NEXT|SHARED_LOCK|STOP_CHECK|UPDATED):/.test(l));
+  const markers = lines.slice(0, 40).filter((l) => /^(STAGE|NEXT|SHARED_LOCK|STOP_CHECK|GUARDS|UPDATED):/.test(l));
   const now = trimBlank(section(lines, 'Now'));
   const needs = trimBlank(section(lines, 'Needs Gordon'));
   const log = trimBlank(section(lines, 'Log'));

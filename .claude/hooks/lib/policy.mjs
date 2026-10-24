@@ -90,11 +90,22 @@ export function normPath(input) {
   return body;
 }
 
+// Git Bash spells C:\dev as /c/dev. When the reference path has a drive letter, map the
+// Git Bash form back to the drive form, so both spellings land on the same repo path.
+// "/tmp/..." and other multi-letter first segments stay as they are (outside the repo).
+export function fromGitBash(p, ref) {
+  if (typeof p !== 'string' || !hasDrive(normPath(expandHome(ref || '')))) return p;
+  const m = p.replace(/\\/g, '/').match(/^\/([a-zA-Z])(\/.*)?$/);
+  if (!m) return p;
+  return `${m[1].toLowerCase()}:${m[2] || '/'}`;
+}
+
 // Resolve a possibly relative path against a base, both normalized.
 export function toAbs(p, base) {
-  const n = normPath(expandHome(p));
+  const b = normPath(expandHome(base));
+  const n = normPath(fromGitBash(expandHome(p), b));
   if (isAbsNorm(n)) return n;
-  return normPath(`${normPath(expandHome(base))}/${n}`);
+  return normPath(`${b}/${n}`);
 }
 
 export function caseInsensitive(...paths) {
@@ -177,9 +188,18 @@ export const ROOT_CONFIG = [
 ];
 const LIVE = 'src/sources/live/**';
 
+// The backend skeleton S1 creates. Shared code once SHARED_LOCK is on.
+export const SERVER_SKELETON = [
+  'server/*.py',
+  'server/requirements.txt',
+  'server/routers/__init__.py',
+  'tests/server/conftest.py',
+  'tests/server/__init__.py',
+];
+
 export const ROLES = {
   scaffolder: {
-    include: [...SHARED_CODE, ...ROOT_CONFIG, 'scripts/**', 'tests/smoke/**', 'tests/demo/**', 'tests/offline/**', 'public/**'],
+    include: [...SHARED_CODE, ...ROOT_CONFIG, ...SERVER_SKELETON, 'scripts/**', 'tests/smoke/**', 'tests/demo/**', 'tests/offline/**', 'public/**'],
     exclude: [LIVE],
     lockable: true,
   },
@@ -188,7 +208,7 @@ export const ROLES = {
   builder: { include: ['src/features/**', 'tests/features/**', 'server/**', LIVE, 'tests/server/**'] },
   verifier: { include: [] },
   integrator: {
-    include: [...SHARED_CODE, ...ROOT_CONFIG, 'docs/common/**', 'scripts/**', 'tests/smoke/**', 'tests/demo/**', 'tests/offline/**', 'public/**'],
+    include: [...SHARED_CODE, ...ROOT_CONFIG, ...SERVER_SKELETON, 'docs/common/**', 'scripts/**', 'tests/smoke/**', 'tests/demo/**', 'tests/offline/**', 'public/**'],
     exclude: [LIVE],
   },
   'backend-builder': { include: ['server/**', LIVE, 'tests/server/**'] },
@@ -235,15 +255,15 @@ export function isEnvFileName(name) {
 // ---------------------------------------------------------------- status
 
 export function readStatus(rootRaw) {
-  const status = { STAGE: '', NEXT: '', SHARED_LOCK: 'off', STOP_CHECK: 'on', UPDATED: '', found: false };
+  const status = { STAGE: '', NEXT: '', SHARED_LOCK: 'off', STOP_CHECK: 'on', GUARDS: 'on', UPDATED: '', found: false };
   try {
     const file = path.join(rootRaw, 'docs', 'harness', 'status.md');
     if (!fs.existsSync(file)) return status;
     const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/).slice(0, 40);
     for (const line of lines) {
-      const m = line.match(/^(STAGE|NEXT|SHARED_LOCK|STOP_CHECK|UPDATED):\s*(.*?)\s*$/);
+      const m = line.match(/^(STAGE|NEXT|SHARED_LOCK|STOP_CHECK|GUARDS|UPDATED):\s*(.*?)\s*$/);
       if (m) {
-        status[m[1]] = m[1] === 'SHARED_LOCK' || m[1] === 'STOP_CHECK' ? m[2].toLowerCase() : m[2];
+        status[m[1]] = ['SHARED_LOCK', 'STOP_CHECK', 'GUARDS'].includes(m[1]) ? m[2].toLowerCase() : m[2];
         status.found = true;
       }
     }
@@ -251,6 +271,12 @@ export function readStatus(rootRaw) {
     // defaults stand
   }
   return status;
+}
+
+// GUARDS: off in status.md turns the edit guard, the command guard and the stop check off.
+// It replaces disableAllHooks, which would also turn off /goal.
+export function guardsOff(ctx) {
+  return ctx.status.GUARDS === 'off';
 }
 
 // ---------------------------------------------------------------- scope
@@ -344,14 +370,26 @@ export function readDelegation(file) {
   return null;
 }
 
+function cleanEntry(s) {
+  return s.trim().replace(/^[`'"]+|[`'"]+$/g, '').replace(/\\/g, '/').replace(/^\.\//, '');
+}
+
+// The SCOPE line never reaches past its own line break. A bare "SCOPE:" may be followed by a
+// "- path" list instead, which is read until the first line that isn't a list item.
 export function parseScope(text) {
   if (!text) return null;
-  const m = text.match(/^\s*SCOPE:\s*(.+)$/m);
-  if (!m) return null;
-  return m[1]
-    .split(',')
-    .map((s) => s.trim().replace(/^[`'"]+|[`'"]+$/g, '').replace(/\\/g, '/').replace(/^\.\//, ''))
-    .filter(Boolean);
+  const one = text.match(/^[ \t]*SCOPE:[ \t]*(\S.*)$/m);
+  if (one) return one[1].split(',').map(cleanEntry).filter(Boolean);
+  const lines = text.split(/\r?\n/);
+  const idx = lines.findIndex((l) => /^[ \t]*SCOPE:[ \t]*$/.test(l));
+  if (idx < 0) return null;
+  const out = [];
+  for (let i = idx + 1; i < lines.length; i += 1) {
+    const m = lines[i].match(/^[ \t]*[-*][ \t]+(.+)$/);
+    if (!m) break;
+    out.push(...m[1].split(',').map(cleanEntry).filter(Boolean));
+  }
+  return out.length ? out : null;
 }
 
 // A SCOPE entry becomes a glob. "dir/" covers the folder.
@@ -389,8 +427,8 @@ export function makeContext(input) {
   const root = normPath(rootRaw);
   const isMain = !input.agent_type && !input.agent_id;
   const role = isMain ? 'main' : String(input.agent_type || 'unknown').toLowerCase();
-  const cwd = input.cwd ? normPath(expandHome(input.cwd)) : root;
-  const scratch = input.scratchpad_dir ? normPath(expandHome(input.scratchpad_dir)) : null;
+  const cwd = input.cwd ? normPath(fromGitBash(expandHome(input.cwd), root)) : root;
+  const scratch = input.scratchpad_dir ? normPath(fromGitBash(expandHome(input.scratchpad_dir), root)) : null;
   const ci = caseInsensitive(root, cwd);
   const status = readStatus(rootRaw);
   const spec = ROLES[role] || null;
@@ -409,10 +447,26 @@ function denyText(ctx, what) {
   return `${what} Role: ${ctx.role}. Scope: ${scopeText(ctx)}. Put the change you need under needs: in your report.`;
 }
 
+// A path inside an isolated worktree (.claude/worktrees/<name>/...) is judged as the
+// repo path after that prefix, so the worktree fallback gets the same rules as the main checkout.
+const WORKTREE_RE = /^\.claude\/worktrees\/[^/]+(?:\/(.*))?$/i;
+
+export function worktreeRel(rel) {
+  if (rel === null || rel === undefined) return rel;
+  const m = String(rel).match(WORKTREE_RE);
+  if (!m) return rel;
+  return m[1] || '';
+}
+
+// Repo-relative path of abs, with worktree paths mapped. null when outside the repo.
+export function repoRel(ctx, abs) {
+  return worktreeRel(relTo(ctx.root, abs));
+}
+
 // The one write policy. target may be relative to baseDir (default: the repo root).
 export function checkWrite(ctx, target, baseDir) {
   const abs = toAbs(target, baseDir || ctx.root);
-  const rel = relTo(ctx.root, abs);
+  const rel = repoRel(ctx, abs);
   const shown = rel === null ? abs : rel || '.';
 
   if (ctx.isMain) {
@@ -442,6 +496,13 @@ export function checkWrite(ctx, target, baseDir) {
       allow: false,
       rel,
       reason: denyText(ctx, `${rel} is locked: SHARED_LOCK is on after G1, so only the integrator changes shared code now.`),
+    };
+  }
+  if (ctx.status.SHARED_LOCK === 'on' && ctx.role !== 'integrator' && matchAny(SERVER_SKELETON, rel, ctx.ci)) {
+    return {
+      allow: false,
+      rel,
+      reason: denyText(ctx, `${rel} is part of the shared server skeleton, locked after G1. Only the integrator changes it now.`),
     };
   }
   if (!inArea(spec, rel, ctx.ci)) {

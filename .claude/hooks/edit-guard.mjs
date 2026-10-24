@@ -2,7 +2,7 @@
 // PreToolUse on Edit, Write, NotebookEdit and MultiEdit.
 // Denies writes outside the agent's role area and SCOPE. See docs/harness/hooks-spec.md.
 
-import { runHook, makeContext, checkWrite, denyOutput, logDecision } from './lib/policy.mjs';
+import { runHook, makeContext, checkWrite, denyOutput, logDecision, guardsOff } from './lib/policy.mjs';
 
 await runHook('edit-guard', async (input) => {
   const toolInput = input.tool_input || {};
@@ -10,6 +10,10 @@ await runHook('edit-guard', async (input) => {
   if (!target) return null;
 
   const ctx = makeContext(input);
+  if (guardsOff(ctx)) {
+    logDecision(ctx, { hook: 'edit-guard', tool: input.tool_name || null, decision: 'allow', reason: 'guards off' });
+    return null;
+  }
   const verdict = checkWrite(ctx, target, ctx.cwd);
 
   logDecision(ctx, {

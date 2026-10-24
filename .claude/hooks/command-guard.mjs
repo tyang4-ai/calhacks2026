@@ -18,6 +18,9 @@ import {
   isUnder,
   isEnvFileName,
   INSTALLERS,
+  guardsOff,
+  repoRel,
+  worktreeRel,
 } from './lib/policy.mjs';
 
 const REASONS = {
@@ -27,7 +30,9 @@ const REASONS = {
   force: 'Force-pushing or deleting remote branches is never allowed. main must keep its history.',
   install: 'Only the orchestrator, the scaffolder and the integrator add packages. Put the package you need under needs: in your report.',
   global: 'Never install globally or with a system package manager. Put what you need under needs: in your report.',
-  npx: 'npx may run only playwright, tsc, eslint, vitest, vite, prettier and tsx from the repo, and never fetch a package (-y, --yes, -p, --package).',
+  npx: 'npx may run only playwright, tsc, eslint, oxlint, vitest, vite, prettier and tsx from the repo, and never fetch a package (-y, --yes, -p, --package).',
+  sysdeps: 'Never install system dependencies (playwright install --with-deps or install-deps). Plain "npx playwright install chromium" is enough on Windows.',
+  search: 'Recursive searches can print .env. Use git grep, rg without --no-ignore, or the Grep tool.',
   server: 'Never start a server. The orchestrator runs the dev server on 5173 and the API on 8000.',
   kill: 'Never stop processes. The orchestrator owns the dev server and the API.',
   encoded: 'Encoded commands can not be checked. Run the command in plain text.',
@@ -72,7 +77,7 @@ const PKG_INSTALL = {
 };
 const PKG_EXEC = { npm: ['exec', 'x'], pnpm: ['dlx', 'exec'], yarn: ['dlx', 'exec'], bun: ['x'] };
 const SERVER_SCRIPTS = new Set(['dev', 'preview', 'server', 'start', 'serve', 'restart', 'stop']);
-const NPX_OK = new Set(['playwright', 'tsc', 'eslint', 'vitest', 'vite', 'prettier', 'tsx']);
+const NPX_OK = new Set(['playwright', 'tsc', 'eslint', 'oxlint', 'vitest', 'vite', 'prettier', 'tsx']);
 
 const SAFE_DELETE_ROOTS = ['artifacts', 'test-results', 'playwright-report', 'dist', 'node_modules/.vite'];
 const DEV_NULLS = new Set(['/dev/null', '/dev/stdout', '/dev/stderr', '/dev/tty', 'nul', '$null', 'con']);
@@ -707,7 +712,32 @@ function viteIsServer(rest) {
   return ['dev', 'serve', 'preview'].includes(String(rest[0]).toLowerCase());
 }
 
-function npxCheck(args) {
+// The npx target and its arguments, or null.
+function npxTarget(args) {
+  let i = 0;
+  while (i < args.length && isFlag(args[i])) {
+    if (args[i] === '--') break;
+    i += 1;
+  }
+  if (args[i] === '--') i += 1;
+  const pkg = args[i];
+  if (!pkg) return null;
+  let bin = String(pkg);
+  if (bin.startsWith('@')) bin = bin.split('/')[1] || bin;
+  bin = bin.replace(/@.*$/, '').toLowerCase();
+  return { bin, rest: args.slice(i + 1) };
+}
+
+// playwright install: browsers only, never system packages.
+function playwrightInstall(rest) {
+  const sub = String(rest[0] || '').toLowerCase();
+  if (sub === 'install-deps') return 'sysdeps';
+  if (sub !== 'install') return null;
+  if (rest.some((a) => a === '--with-deps')) return 'sysdeps';
+  return 'install';
+}
+
+function npxCheck(args, installer = false) {
   let i = 0;
   while (i < args.length && isFlag(args[i])) {
     const a = args[i];
@@ -728,6 +758,11 @@ function npxCheck(args) {
   const rest = args.slice(i + 1);
   if (bin === 'vite' && viteIsServer(rest)) return REASONS.server;
   if (bin === 'playwright' && String(rest[0] || '').toLowerCase() === 'show-report') return REASONS.server;
+  if (bin === 'playwright') {
+    const pi = playwrightInstall(rest);
+    if (pi === 'sysdeps') return REASONS.sysdeps;
+    if (pi === 'install' && !installer) return REASONS.install;
+  }
   return null;
 }
 
@@ -743,6 +778,462 @@ function firstSub(args, valueFlags) {
   return { sub: '', rest: [] };
 }
 
+// ---------------------------------------------------------------- recursive searches
+// A content search that walks a folder holding .env prints the key line into the conversation.
+// Denied for everyone unless .env is excluded or the search is limited to other file names.
+// Plain rg and git grep skip gitignored and untracked files, so they stay allowed.
+
+const ENV_PROBES = ['.env', '.env.local'];
+const GLOB_CHARS = /[*?[{]/;
+const CONTENT_READERS = new Set([
+  'grep', 'egrep', 'fgrep', 'rg', 'ag', 'ack', 'findstr', 'select-string', 'sls',
+  'cat', 'tac', 'head', 'tail', 'less', 'more', 'nl', 'strings', 'xxd', 'od', 'hexdump',
+  'sed', 'awk', 'bat', 'base64', 'get-content', 'gc', 'type', 'cp', 'copy', 'copy-item',
+]);
+
+// A file-name glob (*, ?, [..], {a,b}) tested against a bare name. Globs with a slash are
+// tested against "x/<name>" too, so "**/.env*" counts.
+function nameGlobMatches(glob, name) {
+  const g = String(glob || '').trim().replace(/^['"]|['"]$/g, '').replace(/\\/g, '/');
+  if (!g) return false;
+  const brace = g.match(/^(.*?)\{([^{}]*)\}(.*)$/);
+  if (brace) return brace[2].split(',').some((alt) => nameGlobMatches(`${brace[1]}${alt}${brace[3]}`, name));
+  let re = '';
+  for (let i = 0; i < g.length; i += 1) {
+    const c = g[i];
+    if (c === '*') re += '.*';
+    else if (c === '?') re += '.';
+    else if (c === '[') {
+      const end = g.indexOf(']', i + 1);
+      if (end > i) {
+        re += `[${g.slice(i + 1, end).replace(/^!/, '^').replace(/\\/g, '\\\\')}]`;
+        i = end;
+      } else re += '\\[';
+    } else if ('\\^$+.()|]'.includes(c)) re += `\\${c}`;
+    else re += c;
+  }
+  const rx = new RegExp(`^${re}$`, 'i');
+  return rx.test(name) || (g.includes('/') && (rx.test(`x/${name}`) || rx.test(`./${name}`)));
+}
+
+function envMatched(glob) {
+  return ENV_PROBES.some((n) => nameGlobMatches(glob, n));
+}
+
+// Split a search root into the folder to walk and an optional file-name filter.
+function splitRoot(token) {
+  const t = String(token).replace(/\\/g, '/');
+  if (!GLOB_CHARS.test(t)) return { dir: t, filter: null };
+  const segs = t.split('/');
+  const first = segs.findIndex((x) => GLOB_CHARS.test(x));
+  const dir = segs.slice(0, first).join('/') || (t.startsWith('/') ? '/' : '.');
+  return { dir, filter: segs[segs.length - 1] };
+}
+
+// 'yes', 'no' or 'unknown': is there a .env or .env.<x> file at or under abs?
+function walkFindsEnv(abs) {
+  let st;
+  try {
+    st = fs.statSync(abs);
+  } catch {
+    return 'no';
+  }
+  if (!st.isDirectory()) return isEnvFileName(abs) ? 'yes' : 'no';
+  const queue = [[abs, 0]];
+  let dirs = 0;
+  while (queue.length) {
+    const [dir, depth] = queue.shift();
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    dirs += 1;
+    if (dirs > 4000) return 'unknown';
+    for (const e of entries) {
+      if (e.isDirectory()) {
+        if (e.name !== 'node_modules' && e.name !== '.git' && depth < 8) queue.push([`${dir}/${e.name}`, depth + 1]);
+      } else if (isEnvFileName(e.name)) {
+        return 'yes';
+      }
+    }
+  }
+  return 'no';
+}
+
+// The repo root, its worktrees, its parents, a drive root and the home folder always count.
+function rootHoldsEnv(ctx, abs) {
+  const rel = relTo(ctx.root, abs);
+  if (rel !== null && worktreeRel(rel) === '') return 'yes';
+  if (rel === null && relTo(abs, ctx.root) !== null) return 'yes';
+  if (abs === '/' || /^[a-z]:\/?$/.test(abs) || abs === normPath(os.homedir())) return 'yes';
+  return walkFindsEnv(abs);
+}
+
+// info: { roots: [tokens], positive: [globs], negative: [globs], typeFilter }
+function searchVerdict(ctx, info, base) {
+  const positive = (info.positive || []).filter(Boolean);
+  const negative = (info.negative || []).filter(Boolean);
+  if (negative.some(envMatched)) return null;
+  if (info.typeFilter) return null;
+  if (positive.length && !positive.some(envMatched)) return null;
+  const roots = info.roots && info.roots.length ? info.roots : ['.'];
+  for (const r of roots) {
+    const raw = String(r);
+    if (raw.includes('$') || raw.includes('%')) return REASONS.search;
+    const { dir, filter } = splitRoot(raw);
+    if (filter && !envMatched(filter)) continue;
+    const abs = toAbs(dir || '.', base);
+    if (rootHoldsEnv(ctx, abs) !== 'no') return REASONS.search;
+  }
+  return null;
+}
+
+const GREP_VALUE_LONG = new Set([
+  '--regexp', '--file', '--max-count', '--after-context', '--before-context', '--context', '--directories',
+  '--devices', '--include', '--exclude', '--exclude-dir', '--exclude-from', '--label', '--binary-files', '--group-separator',
+]);
+
+function parseGrep(args) {
+  const info = { recursive: false, roots: [], positive: [], negative: [] };
+  let patternGiven = false;
+  const pos = [];
+  for (let i = 0; i < args.length; i += 1) {
+    const a = String(args[i]);
+    if (a === '--') {
+      pos.push(...args.slice(i + 1));
+      break;
+    }
+    if (a.startsWith('--')) {
+      const eq = a.indexOf('=');
+      const k = eq > 0 ? a.slice(0, eq) : a;
+      let v = eq > 0 ? a.slice(eq + 1) : undefined;
+      if (v === undefined && GREP_VALUE_LONG.has(k)) {
+        v = args[i + 1];
+        i += 1;
+      }
+      if (k === '--recursive' || k === '--dereference-recursive') info.recursive = true;
+      else if (k === '--directories' && v === 'recurse') info.recursive = true;
+      else if (k === '--include') info.positive.push(v);
+      else if (k === '--exclude') info.negative.push(v);
+      else if (k === '--regexp' || k === '--file') patternGiven = true;
+      continue;
+    }
+    if (/^-[a-zA-Z0-9]+$/.test(a)) {
+      const letters = a.slice(1);
+      for (let j = 0; j < letters.length; j += 1) {
+        const L = letters[j];
+        if (L === 'r' || L === 'R') info.recursive = true;
+        if ('efmABCdD'.includes(L)) {
+          const v = letters.slice(j + 1) || args[(i += 1)];
+          if (L === 'e' || L === 'f') patternGiven = true;
+          if (L === 'd' && v === 'recurse') info.recursive = true;
+          break;
+        }
+      }
+      continue;
+    }
+    pos.push(a);
+  }
+  info.roots = patternGiven ? pos : pos.slice(1);
+  return info;
+}
+
+function parseFindstr(args) {
+  const info = { recursive: false, roots: [], positive: [], negative: [] };
+  let stringGiven = false;
+  const dirs = [];
+  const pats = [];
+  for (const raw of args) {
+    const a = String(raw);
+    const m = a.match(/^\/([a-z]+)(?::(.*))?$/i);
+    if (m) {
+      const letters = m[1].toLowerCase();
+      if (m[2] === undefined && letters.includes('s')) info.recursive = true;
+      if ((letters === 'c' || letters === 'g') && m[2] !== undefined) stringGiven = true;
+      if (letters === 'd' && m[2]) dirs.push(...m[2].split(/[;,]/).filter(Boolean));
+      continue;
+    }
+    pats.push(a);
+  }
+  const files = stringGiven ? pats : pats.slice(1);
+  const bases = dirs.length ? dirs : ['.'];
+  for (const f of files.length ? files : ['*']) {
+    const t = f.replace(/\\/g, '/');
+    const segs = t.split('/');
+    const name = segs.pop();
+    const dir = segs.join('/');
+    for (const b of bases) info.roots.push(`${b}/${dir ? `${dir}/` : ''}${name}`);
+  }
+  return info;
+}
+
+const RG_VALUE = new Set([
+  '-e', '--regexp', '-f', '--file', '-g', '--glob', '--iglob', '-t', '--type', '-T', '--type-not', '-m', '--max-count',
+  '-A', '-B', '-C', '--context', '--after-context', '--before-context', '-M', '--max-columns', '-j', '--threads',
+  '--max-depth', '-d', '--maxdepth', '--type-add', '--colors', '-E', '--encoding', '--sort', '--sortr', '-r', '--replace',
+  '--ignore-file', '--pre', '--pre-glob', '--engine', '--max-filesize', '--ignore', '-G', '--file-search-regex', '--path-to-ignore',
+]);
+
+function parseRgAg(name, args) {
+  const info = { unrestricted: false, roots: [], positive: [], negative: [], typeFilter: false };
+  let patternGiven = false;
+  const pos = [];
+  const glob = (v) => {
+    const g = String(v || '');
+    if (g.startsWith('!')) info.negative.push(g.slice(1));
+    else info.positive.push(g);
+  };
+  for (let i = 0; i < args.length; i += 1) {
+    const a = String(args[i]);
+    if (a === '--') {
+      pos.push(...args.slice(i + 1));
+      break;
+    }
+    if (a.startsWith('--')) {
+      const eq = a.indexOf('=');
+      const k = eq > 0 ? a.slice(0, eq) : a;
+      let v = eq > 0 ? a.slice(eq + 1) : undefined;
+      if (v === undefined && RG_VALUE.has(k)) {
+        v = args[i + 1];
+        i += 1;
+      }
+      if (/^--no-ignore/.test(k) || k === '--unrestricted' || k === '--hidden' || k === '--skip-vcs-ignores' || k === '--all-text') info.unrestricted = true;
+      else if (k === '--glob' || k === '--iglob') glob(v);
+      else if (k === '--ignore' && name === 'ag') info.negative.push(v);
+      else if (k === '--type' && v && !/^(all|env)$/i.test(v)) info.typeFilter = true;
+      else if (k === '--regexp' || k === '--file') patternGiven = true;
+      continue;
+    }
+    if (a === '-.') {
+      info.unrestricted = true;
+      continue;
+    }
+    if (/^-[a-zA-Z0-9]+$/.test(a)) {
+      const letters = a.slice(1);
+      for (let j = 0; j < letters.length; j += 1) {
+        const L = letters[j];
+        if (L === 'u' || (name === 'ag' && (L === 'U' || L === 'a'))) info.unrestricted = true;
+        if (RG_VALUE.has(`-${L}`)) {
+          const v = letters.slice(j + 1) || args[(i += 1)];
+          if (L === 'g') glob(v);
+          if (L === 't' && v && !/^(all|env)$/i.test(v)) info.typeFilter = true;
+          if (L === 'e' || L === 'f') patternGiven = true;
+          break;
+        }
+      }
+      continue;
+    }
+    pos.push(a);
+  }
+  info.roots = patternGiven ? pos : pos.slice(1);
+  return info;
+}
+
+function parseGitGrep(gargs) {
+  const info = { unsafe: false, roots: [], positive: [], negative: [] };
+  const noIndex = gargs.includes('--no-index');
+  const untrackedAll = gargs.includes('--untracked') && gargs.includes('--no-exclude-standard');
+  info.unsafe = noIndex || untrackedAll;
+  const dd = gargs.indexOf('--');
+  const specs = dd >= 0 ? gargs.slice(dd + 1) : [];
+  for (const sp of specs) {
+    const v = String(sp);
+    const ex = v.match(/^:(?:!|\^|\(exclude\))(.*)$/);
+    if (ex) info.negative.push(ex[1]);
+    else if (GLOB_CHARS.test(v)) info.positive.push(v.split('/').pop());
+    else info.roots.push(v);
+  }
+  return info;
+}
+
+// find's start points, name filters and whether it hands files to a content reader.
+function parseFind(args) {
+  const info = { roots: [], positive: [], negative: [], execReads: false };
+  let i = 0;
+  while (i < args.length && !/^[-(!]/.test(String(args[i])) && args[i] !== '\\(') {
+    info.roots.push(args[i]);
+    i += 1;
+  }
+  let negate = false;
+  for (; i < args.length; i += 1) {
+    const a = String(args[i]);
+    if (a === '!' || a === '-not') {
+      negate = true;
+      continue;
+    }
+    if (['-name', '-iname', '-path', '-ipath', '-wholename', '-iwholename'].includes(a)) {
+      const v = args[i + 1];
+      i += 1;
+      const pat = a.includes('path') || a.includes('wholename') ? String(v || '').split('/').pop() : v;
+      (negate ? info.negative : info.positive).push(pat);
+      negate = false;
+      continue;
+    }
+    if (['-exec', '-execdir', '-ok', '-okdir'].includes(a)) {
+      const end = args.findIndex((x, k) => k > i && (x === ';' || x === '\;' || x === '+'));
+      const cmd = args.slice(i + 1, end > 0 ? end : args.length);
+      const nm = cmdName(cmd[0]);
+      if (CONTENT_READERS.has(nm)) {
+        info.execReads = true;
+        if (['grep', 'egrep', 'fgrep'].includes(nm)) {
+          const g = parseGrep(cmd.slice(1));
+          info.positive.push(...g.positive);
+          info.negative.push(...g.negative);
+        }
+      }
+      i = end > 0 ? end : args.length;
+      negate = false;
+      continue;
+    }
+    negate = false;
+  }
+  return info;
+}
+
+// One simple command: is it a recursive content search that can reach .env?
+function searchCheckSimple(ctx, name, words, args, base) {
+  if (['grep', 'egrep', 'fgrep'].includes(name)) {
+    const info = parseGrep(args);
+    if (info.recursive) return searchVerdict(ctx, info, base);
+    return null;
+  }
+  if (name === 'findstr') {
+    const info = parseFindstr(args);
+    if (info.recursive) return searchVerdict(ctx, info, base);
+    return null;
+  }
+  if (name === 'rg' || name === 'ag') {
+    const info = parseRgAg(name, args);
+    if (info.unrestricted) return searchVerdict(ctx, info, base);
+    return null;
+  }
+  if (name === 'git') {
+    const { sub, args: gargs } = gitParse(words);
+    if (sub !== 'grep') return null;
+    const info = parseGitGrep(gargs);
+    if (info.unsafe) return searchVerdict(ctx, info, base);
+    return null;
+  }
+  if (name === 'find') {
+    const info = parseFind(args);
+    if (info.execReads) return searchVerdict(ctx, info, base);
+    return null;
+  }
+  return null;
+}
+
+// Statements of a line (split on ; new lines && ||), each split into pipeline segments.
+function pipelines(line) {
+  const out = [];
+  let stmt = [];
+  let cur = '';
+  let q = null;
+  const endSeg = () => {
+    if (cur.trim()) stmt.push(cur.trim());
+    cur = '';
+  };
+  const endStmt = () => {
+    endSeg();
+    if (stmt.length) out.push(stmt);
+    stmt = [];
+  };
+  for (let i = 0; i < line.length; i += 1) {
+    const c = line[i];
+    const n = line[i + 1];
+    if (q) {
+      cur += c;
+      if (c === q) q = null;
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      q = c;
+      cur += c;
+      continue;
+    }
+    if (c === ';' || c === '\n' || c === '\r') {
+      endStmt();
+      continue;
+    }
+    if ((c === '&' && n === '&') || (c === '|' && n === '|')) {
+      endStmt();
+      i += 1;
+      continue;
+    }
+    if (c === '|') {
+      endSeg();
+      continue;
+    }
+    cur += c;
+  }
+  endStmt();
+  return out;
+}
+
+const PS_LISTERS = new Set(['get-childitem', 'gci', 'ls', 'dir']);
+const PIPE_READERS = new Set(['select-string', 'sls', 'get-content', 'gc', 'cat', 'type']);
+
+function psList(v) {
+  return String(v || '').split(',').map((x) => x.trim()).filter(Boolean);
+}
+
+// Pipelines that walk folders and read every file: gci -Recurse | Select-String, find | xargs grep.
+function searchCheckPipelines(ctx, line, dialect, base0) {
+  let base = base0;
+  for (const segs of pipelines(line)) {
+    const parsed = segs.map((seg) => {
+      const raw = analyze(seg, dialect).words;
+      const words = cmdName(raw[0]) === 'xargs' ? raw : stripWrappers(raw);
+      return { name: cmdName(words[0]), words, args: words.slice(1) };
+    });
+    if (parsed.length === 1 && ['cd', 'pushd', 'chdir', 'set-location', 'sl'].includes(parsed[0].name)) {
+      const t = psValue(parsed[0].args, ['path', 'literalpath']) ?? parsed[0].args.find((a) => !isFlag(a));
+      if (t && t !== '-' && !t.includes('$') && !t.includes('%')) base = toAbs(t, base);
+      continue;
+    }
+    for (let k = 0; k < parsed.length - 1; k += 1) {
+      const p = parsed[k];
+      const later = parsed.slice(k + 1);
+      if (PS_LISTERS.has(p.name) && p.args.some((a) => psParam(a, 'recurse'))) {
+        if (!later.some((x) => PIPE_READERS.has(x.name))) continue;
+        const pathVal = psValue(p.args, ['path', 'literalpath', 'lp']);
+        const pos = psPositionals(p.args);
+        const roots = pathVal !== undefined ? psList(pathVal) : pos.length ? psList(pos[0]) : ['.'];
+        const info = {
+          roots,
+          positive: [...psList(psValue(p.args, ['include'])), ...psList(psValue(p.args, ['filter']))],
+          negative: psList(psValue(p.args, ['exclude'])),
+        };
+        const v = searchVerdict(ctx, info, base);
+        if (v) return v;
+      }
+      if (p.name === 'find') {
+        const xa = later.find((x) => x.name === 'xargs');
+        let reader = null;
+        if (xa) {
+          let j = 0;
+          while (j < xa.args.length && isFlag(xa.args[j])) {
+            if (['-I', '-L', '-n', '-P', '-d', '-E', '-s', '--delimiter', '--max-args', '--max-procs'].includes(xa.args[j])) j += 1;
+            j += 1;
+          }
+          reader = { name: cmdName(xa.args[j]), args: xa.args.slice(j + 1) };
+        }
+        if (!reader || !CONTENT_READERS.has(reader.name)) continue;
+        const info = parseFind(p.args);
+        if (['grep', 'egrep', 'fgrep'].includes(reader.name)) {
+          const g = parseGrep(reader.args);
+          info.positive.push(...g.positive);
+          info.negative.push(...g.negative);
+        }
+        const v = searchVerdict(ctx, info, base);
+        if (v) return v;
+      }
+    }
+  }
+  return null;
+}
+
 // ---------------------------------------------------------------- the rules
 
 function criticalDeleteTarget(ctx, target, base) {
@@ -752,7 +1243,7 @@ function criticalDeleteTarget(ctx, target, base) {
   const abs = toAbs(raw, base);
   if (abs === '/' || /^[a-z]:\/?$/.test(abs)) return true;
   if (abs === normPath(os.homedir())) return true;
-  const rel = relTo(ctx.root, abs);
+  const rel = repoRel(ctx, abs);
   if (rel === '') return true;
   if (rel === null && relTo(abs, ctx.root) !== null) return true; // a parent of the repo
   if (rel !== null && (rel === '.git' || rel.startsWith('.git/'))) return true;
@@ -765,7 +1256,7 @@ function safeDeleteTarget(ctx, target, base) {
   if (raw.includes('$') || raw.includes('%')) return false;
   const abs = toAbs(raw, base);
   if (ctx.scratch && isUnder(abs, ctx.scratch)) return true;
-  const rel = relTo(ctx.root, abs);
+  const rel = repoRel(ctx, abs);
   if (rel === null || rel === '') return false;
   const r = ctx.ci ? rel.toLowerCase() : rel;
   return SAFE_DELETE_ROOTS.some((root) => r === root || r.startsWith(`${root}/`));
@@ -818,6 +1309,19 @@ function checkSimple(ctx, sub, dialect, state, depth) {
   if (name === 'git') {
     const { sub: gsub, args: gargs } = gitParse(words);
     if (gsub === 'push' && pushIsForce(gargs)) return REASONS.force;
+  }
+
+  const searchReason = searchCheckSimple(ctx, name, words, args, state.base);
+  if (searchReason) return searchReason;
+
+  {
+    let pw = null;
+    if (['npx', 'bunx', 'pnpx'].includes(name)) pw = npxTarget(args);
+    else if (['npm', 'pnpm', 'yarn', 'bun'].includes(name)) {
+      const { sub: psub, rest } = firstSub(args, ['--prefix', '-C', '--dir', '--workspace', '-w', '--cwd']);
+      if ((PKG_EXEC[name] || []).includes(psub)) pw = npxTarget(rest);
+    } else if (name === 'playwright') pw = { bin: 'playwright', rest: args };
+    if (pw && pw.bin === 'playwright' && playwrightInstall(pw.rest) === 'sysdeps') return REASONS.sysdeps;
   }
 
   const del = deleteInfo(name, args, dialect);
@@ -875,11 +1379,11 @@ function checkSimple(ctx, sub, dialect, state, depth) {
     const { sub: psub, rest } = firstSub(args, ['--prefix', '-C', '--dir', '--workspace', '-w', '--cwd']);
     if (name === 'yarn' && !psub) return installer ? null : REASONS.install;
     if (PKG_INSTALL[name].includes(psub)) {
-      if (name === 'bun' && psub === 'x') return npxCheck(rest);
+      if (name === 'bun' && psub === 'x') return npxCheck(rest, installer);
       return installer ? null : REASONS.install;
     }
     if (PKG_EXEC[name].includes(psub)) {
-      const r = npxCheck(rest);
+      const r = npxCheck(rest, installer);
       if (r) return r;
     }
     if (['run', 'run-script', 'rum', 'urn'].includes(psub)) {
@@ -890,7 +1394,7 @@ function checkSimple(ctx, sub, dialect, state, depth) {
     }
   }
   if (name === 'npx' || name === 'bunx' || name === 'pnpx') {
-    const r = npxCheck(args);
+    const r = npxCheck(args, installer);
     if (r) return r;
   }
   if (/^pip(3(\.\d+)?)?$/.test(name)) {
@@ -943,6 +1447,7 @@ function checkSimple(ctx, sub, dialect, state, depth) {
   }
   if (name === 'wrangler' && args.some((a) => String(a).toLowerCase() === 'dev')) return REASONS.server;
   if (name === 'playwright' && String(args[0] || '').toLowerCase() === 'show-report') return REASONS.server;
+  if (name === 'playwright' && playwrightInstall(args) === 'install' && !installer) return REASONS.install;
   if (name === 'php' && args.includes('-S')) return REASONS.server;
 
   // Process kills
@@ -991,6 +1496,8 @@ function checkTarget(ctx, target, base) {
 function checkLine(ctx, line, dialect, depth = 0, local = { base: ctx.cwd }) {
   if (depth > 4) return null;
   for (const re of KEY_RE) if (re.test(line)) return REASONS.secret;
+  const piped = searchCheckPipelines(ctx, line, dialect, local.base);
+  if (piped) return piped;
   const lineState = { base: local.base };
   for (const sub of splitCommands(line, dialect)) {
     const r = checkSimple(ctx, sub, dialect, lineState, depth);
@@ -1012,6 +1519,10 @@ await runHook('command-guard', async (input) => {
   if (typeof command !== 'string' || !command.trim()) return null;
   const dialect = String(input.tool_name || '').toLowerCase() === 'powershell' ? 'powershell' : 'bash';
   const ctx = makeContext(input);
+  if (guardsOff(ctx)) {
+    logDecision(ctx, { hook: 'command-guard', tool: input.tool_name || null, command: redact(command), decision: 'allow', reason: 'guards off' });
+    return null;
+  }
   const reason = checkLine(ctx, command, dialect);
   logDecision(ctx, {
     hook: 'command-guard',
