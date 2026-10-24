@@ -3,7 +3,7 @@ NEXT: R4
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 03:25 PT
+UPDATED: 2026-10-24 03:28 PT
 
 # Status board
 
@@ -41,7 +41,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 | F-close | W1 | green | feature-lead | w1-close | G3 3/3, verifier PASS |
 | F-proof | W1 | green | feature-lead | w1-proof | G3 3/3, verifier PASS |
 | F-ask-cindy | W1 | green | feature-lead | w1-ask-cindy | G3 3/3, verifier PASS |
-| F-impact | W1 | running | feature-lead | | |
+| F-impact | W1 | green | feature-lead | w1-impact | G3 3/3, verifier PASS; mid-count check made unconditional |
 
 States: `todo`, `running`, `green`, `failed`, `CUT`.
 
@@ -124,3 +124,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 03:24 PT · F-impact lead done (verifier PASS); sent back once to make the mid-count check unconditional · artifacts/verify/F-impact-G3-1025.md
 - 2026-10-24 03:25 PT · G3 close PASS 3/3, verifier PASS, tag w1-close · artifacts/gates/G3-0324.md, artifacts/verify/F-close-G3-0326.md
 - 2026-10-24 03:25 PT · pending for the integrator at I1: add `player.epoch()` and `player.getTimeline()` to the Player interface in events.md · F-close report
+- 2026-10-24 03:28 PT · G3 impact PASS 3/3 (feature 10/10 on 3 runs), verifier PASS, tag w1-impact · artifacts/gates/G3-0326.md, artifacts/verify/F-impact-G3-1025.md
