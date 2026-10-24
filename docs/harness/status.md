@@ -1,9 +1,9 @@
-STAGE: S0
-NEXT: R1
+STAGE: S1
+NEXT: R2
 SHARED_LOCK: off
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 02:01 PT
+UPDATED: 2026-10-24 02:04 PT
 
 # Status board
 
@@ -12,13 +12,14 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 ## Now
 
 - Kickoff passed (Oct 24, 2:01 AM): 25 plan files and 9 contracts present, hooks 292/292, preflight 0 blockers.
-- Next: R1 (record G0), then R2 (S1 scaffold).
+- Heartbeat cron f57ce95e every 15 min (session-only).
+- Now: R2, S1 scaffold. Scaffolder running.
 
 ## Gates
 
 | Gate | Result | When | Report | Tag |
 |---|---|---|---|---|
-| G0 | | | | |
+| G0 | PASS | Oct 24 2:01 AM | `artifacts/preflight.md` (0 blockers, 1 warning: no `.env`) | none |
 | G1 | | | | |
 | G2 | | | | |
 | G3 (W1) | | | | |
@@ -87,3 +88,5 @@ Everything that ends up cut or still on scripted events, for the README and Devp
 Newest last. One line per event: time, what happened, evidence path.
 
 - 2026-10-24 02:01 PT · kickoff passed · `artifacts/preflight.md`
+- 2026-10-24 02:04 PT · heartbeat created (cron f57ce95e, */15) · CronList
+- 2026-10-24 02:04 PT · G0 recorded, stage S1, scaffolder spawned · `artifacts/preflight.md`
