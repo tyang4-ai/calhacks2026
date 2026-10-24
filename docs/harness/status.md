@@ -3,7 +3,7 @@ NEXT: R4
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 03:21 PT
+UPDATED: 2026-10-24 03:25 PT
 
 # Status board
 
@@ -15,7 +15,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - Heartbeat cron f57ce95e every 15 min (session-only).
 - G1 passed 2:35 AM (5/5, verifier PASS). Shared lock on.
 - G2 passed 2:58 AM (2/2, verifier PASS; smoke 22/22 after the integrator fix).
-- Now: R4, W1. Seven features green; leads running for close, impact. Dev server on 5173.
+- Now: R4, W1. Eight features green; impact lead on a test fix round. Dev server on 5173.
 
 ## Gates
 
@@ -38,7 +38,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 | F-reconcile | W1 | green | feature-lead | w1-reconcile | G3 3/3, verifier PASS |
 | F-approvals | W1 | green | feature-lead | w1-approvals | G3 3/3, verifier PASS |
 | F-maker-statement | W1 | green | feature-lead | w1-maker-statement | G3 3/3, verifier PASS |
-| F-close | W1 | running | feature-lead | | |
+| F-close | W1 | green | feature-lead | w1-close | G3 3/3, verifier PASS |
 | F-proof | W1 | green | feature-lead | w1-proof | G3 3/3, verifier PASS |
 | F-ask-cindy | W1 | green | feature-lead | w1-ask-cindy | G3 3/3, verifier PASS |
 | F-impact | W1 | running | feature-lead | | |
@@ -121,3 +121,6 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 03:22 PT · pending for the integrator at I1: add `money-map-balance-nessie` to ui-contract.md; add `setSpeed` to the `window.__cindia.player` type in tests/smoke/lib.ts · reports of F-money-map and F-proof
 - 2026-10-24 03:21 PT · G3 ask-cindy PASS 3/3, verifier PASS, tag w1-ask-cindy · artifacts/gates/G3-0320.md, artifacts/verify/F-ask-cindy-G3-1020.md
 - 2026-10-24 03:21 PT · pending for the integrator at I1: add `ask-cindy-refs` to ui-contract.md · F-ask-cindy report
+- 2026-10-24 03:24 PT · F-impact lead done (verifier PASS); sent back once to make the mid-count check unconditional · artifacts/verify/F-impact-G3-1025.md
+- 2026-10-24 03:25 PT · G3 close PASS 3/3, verifier PASS, tag w1-close · artifacts/gates/G3-0324.md, artifacts/verify/F-close-G3-0326.md
+- 2026-10-24 03:25 PT · pending for the integrator at I1: add `player.epoch()` and `player.getTimeline()` to the Player interface in events.md · F-close report

@@ -37,3 +37,6 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - all: Gate reports are named `<gate>-<HHMM>.md`, so two gates in the same minute overwrite each other; the evidence lines in `status.md` and `artifacts/gates/logs/` keep each result.
 - F-maker-statement: `statement.issued` has no `monthId`, so the month label comes from `getById<MakerStatement>(id).monthId` with `state.month.monthId` as fallback; Money's tone class sets the color, so pass `style.color` to keep a held amount seal red.
 - F-ask-cindy: The scripted answer to a person's `ask.asked` runs on a 1.2 s wall-clock timer that drops itself when the player epoch changes, so tests must seek before sending a question, never after.
+- F-impact: The kit's `formatBps` drops trailing zeros (7400 becomes "74%"), so a feature that needs one decimal place keeps its own formatter.
+- all: Builder hand-backs sometimes don't reach the lead; leads check files on disk and rerun the checks themselves.
+- F-close: The store doesn't keep `workbook.ready`'s `at`, so the drop-in motion notes the player time when the payload first appears and renders finished after a seek (epoch changed) or while paused; the P&L sheet follows the ledger's contract commission, so its fees never equal `month.closed` `feesCents`.
