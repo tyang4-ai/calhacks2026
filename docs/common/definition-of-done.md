@@ -142,6 +142,8 @@ Each gate runs through the gate skill: `npm run gate -- <gate> [<slug>]` when th
 
 **Passes when** the live path works and the scripted fallback still passes G4.
 
+The live-mode runs must show the upgrade's key as live: its adapter is healthy at the start, the store's `sources[<key>]` is `"live"` after the run with no scripted fallback, and `artifacts/demo/report.json` records each key's source. The gate passes the slug to the harness as `CINDIA_DEMO_UPGRADE`, and every other key whose adapter is healthy and has keyed events in the timeline must play live too.
+
 G4, G5 and G6 all build `dist/` and use port 4173, so only one of them runs at a time.
 
 **Then:** tag `demo-ok-bNN`, for example `demo-ok-b04`.

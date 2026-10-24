@@ -58,3 +58,6 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - G5: A screenshot can't prove a live source played, because the scripted fallback renders the same pixels; the live-mode demo run must assert the store's `sources` for the upgrade's key.
 - B01-match: Read JSON fixtures with `encoding="utf-8"`; Windows' default cp1252 can't decode the dataset's Chinese text.
 - B06-workbook: openpyxl doesn't calculate formulas, so server tests evaluate their few formula shapes themselves; to dump `src/mock` to JSON, bundle `src/mock/index.ts` with `node_modules/rolldown` into the scratchpad.
+- B08-approvals: Long-poll with a threading.Condition in sync routes so TestClient can test a wait woken from a second thread; reset the in-memory store in an autouse fixture.
+- B10-derived: `makerPayouts` in src/mock have no date, so the receipt's `paidDate` comes from the `payout.sent` payload or the `maker_pay` ledger entry.
+- G5: Every healthy upgrade with timeline events must play live in each G5 run, so a broken built-but-ungated adapter fails later G5s; `b05-scenario` and `b07-ask` have no timeline events, so their live proof comes from feature tests.

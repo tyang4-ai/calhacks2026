@@ -93,8 +93,12 @@ function playwrightSeconds(out, fallback) {
   return v * perUnit[m[2]];
 }
 
-function g4(mode) {
-  const env = mode === 'live' ? { CINDIA_DEMO_MODE: 'live' } : {};
+/**
+ * G4's demo runs. In live mode the harness asserts that every source key with a healthy adapter
+ * played live, and `upgrade` (G5's slug, a source key like b01-match) must be one of them.
+ */
+function g4(mode, upgrade) {
+  const env = mode === 'live' ? { CINDIA_DEMO_MODE: 'live', ...(upgrade ? { CINDIA_DEMO_UPGRADE: upgrade } : {}) } : {};
   const suffix = mode === 'live' ? ' (live mode)' : '';
   const b = runNpm('build', [], {}, suffix);
   if (!b.ok) return false;
@@ -188,7 +192,7 @@ switch (gate) {
       });
     }
     g4('scripted');
-    g4('live');
+    g4('live', slug.toLowerCase());
     break;
   }
   case 'G6': {

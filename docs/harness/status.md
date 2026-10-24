@@ -3,7 +3,7 @@ NEXT: R6
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 04:42 PT
+UPDATED: 2026-10-24 04:54 PT
 
 # Status board
 
@@ -29,7 +29,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 | G2 | PASS | Oct 24 2:58 AM | `artifacts/gates/G2-0252.md`, `artifacts/gates/G2-verifier.md` | g2-data |
 | G3 (W1) | PASS | Oct 24 3:27 AM | `artifacts/gates/G3-0327.md` (wave: check, smoke 22/22, build); 9/9 features green | w1 |
 | G4 | PASS | Oct 24 4:15 AM | `artifacts/gates/G4-0415.md` 5/5 (60 s runs, strict demo test), `artifacts/gates/G4-verifier-r2.md` PASS (round 1 FAIL: `G4-verifier.md`) | demo-ok-1 |
-| G5 | | | | |
+| G5 | B01 PASS | Oct 24 4:43 AM | `artifacts/gates/G5-0443.md`, `artifacts/gates/G5-b01-verifier.md` (FAIL fixed by the live-source check) | demo-ok-b01 |
 | G6 | | | | |
 
 ## Features
@@ -55,16 +55,16 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
-| B01-match | running | gate 13/13 | | G5 verifier FAIL: no proof the live source played; integrator adding a live-source assertion |
+| B01-match | green | yes, live at 20.5 s, no fallback | demo-ok-b01 | G5 13/13 (round 1 added the live-source check) |
 | B02-explain | blocked | | | needs ANTHROPIC_API_KEY |
 | B03-proof | running | | | built, unit 13 passed; G5 waits for B01 (it calls B01's matcher) |
 | B04-bank | blocked | | | needs NESSIE_KEY |
 | B05-scenario | todo | | |  |
 | B06-workbook | running | | | built, server 42 passed; API restarted, health lists b06; G5 after B01 |
 | B07-ask | blocked | | | needs ANTHROPIC_API_KEY |
-| B08-approvals | running | | |  |
+| B08-approvals | running | | | built, server 87 passed; API restart pending (after the integrator's G5 run) |
 | B09-concierge | blocked | | | needs ANTHROPIC_API_KEY |
-| B10-derived | running | | |  |
+| B10-derived | running | | | built, server 87 passed; API restart pending |
 
 ## Environment
 
@@ -157,3 +157,6 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 04:42 PT · G3 dashboard PASS 3/3, verifier PASS, tag w2-dashboard · artifacts/gates/G3-0438.md, artifacts/verify/F-dashboard-G3-0432.md
 - 2026-10-24 04:42 PT · G3 scenario PASS 3/3, verifier PASS, tag w2-scenario · artifacts/gates/G3-0438.md, artifacts/verify/F-scenario-G3-0436.md
 - 2026-10-24 04:43 PT · W2 all green (audit, dashboard, scenario); B01 G5 13/13 but verifier FAIL (no live-source proof); integrator adding a store sources assertion to the live demo run; B08 and B10 started; API restarted with b06 · artifacts/gates/G5-b01-verifier.md
+- 2026-10-24 04:45 PT · B08 built; API restart deferred until the integrator's live G5 run ends · status.md
+- 2026-10-24 04:50 PT · B10 built (figures match to the cent); B03, B06, B08, B10 wait for the integrator's live-source assertion, then API restart and G5 one at a time · status.md
+- 2026-10-24 04:54 PT · G5 b01-match PASS 13/13, report.json shows b01-match live at 20.5 s with no fallback, tag demo-ok-b01 · artifacts/gates/G5-0443.md

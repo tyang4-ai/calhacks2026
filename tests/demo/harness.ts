@@ -6,7 +6,7 @@
 // covered out of its frame's visible area at that moment. demo.spec.ts and offline.spec.ts both run it.
 import fs from "node:fs";
 import path from "node:path";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type ConsoleMessage, type Page } from "@playwright/test";
 import { waitForHooks, waitForSlots } from "../smoke/lib";
 import { BEATS, CAMERA_FRAMES, CAMERA_VIEW, FRAME_IDS, NATIVE_WIDTH, SHOWN_MATCH_KINDS, cutFeatures, type Beat, type FrameId } from "./beats";
 
@@ -15,8 +15,80 @@ export const ARTIFACTS_DEMO = path.join(process.env.CINDIA_ROOT ?? process.cwd()
 /** Live mode for G5, set by the gate through CINDIA_DEMO_MODE=live. */
 export const DEMO_MODE: "scripted" | "live" = process.env.CINDIA_DEMO_MODE === "live" ? "live" : "scripted";
 
+/** The upgrade under test in G5 (a source key like b01-match), set by the gate through CINDIA_DEMO_UPGRADE. */
+export const DEMO_UPGRADE: string | null = process.env.CINDIA_DEMO_UPGRADE?.trim() || null;
+
 /** How far a beat.started may land from its time in demo-script.md, in ms. */
 export const BEAT_TOLERANCE_MS = 100;
+
+/** How long openStage waits in live mode for every adapter whose router is loaded to report healthy. */
+const HEALTH_WAIT_MS = 15000;
+
+/** Live-mode source health at the start of a run, as openStage found it. */
+export interface SourceHealthAtStart {
+  /** Upgrade prefixes /api/health listed, like "b01". */
+  routers: string[];
+  /** Source keys with an adapter file in src/sources/live/. */
+  adapters: string[];
+  /** Adapters whose router is loaded: these should turn healthy. */
+  expected: string[];
+  /** Keys whose demo-mode-toggle dot showed healthy when the run started (the registry's own health()). */
+  healthy: string[];
+}
+
+const healthAtStart = new WeakMap<Page, SourceHealthAtStart>();
+
+/** Source keys with a live adapter file, from the file names src/sources/live/bNN-<slug>.ts. */
+function liveAdapterKeys(): string[] {
+  const dir = path.join(process.env.CINDIA_ROOT ?? process.cwd(), "src", "sources", "live");
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((f) => /^b\d\d-[a-z0-9-]+\.ts$/.test(f) && !f.endsWith(".test.ts"))
+    .map((f) => f.slice(0, -3));
+}
+
+/** Reads the registry's health from the mode toggle's dots, one per source key. */
+async function healthyDots(page: Page): Promise<string[]> {
+  return page.evaluate(() =>
+    [...document.querySelectorAll('[data-testid="demo-mode-toggle"] [data-source-key][data-healthy="true"]')].map((d) => d.getAttribute("data-source-key")!),
+  );
+}
+
+/**
+ * In live mode: asks /api/health which routers are loaded, waits for each adapter with a loaded
+ * router to report healthy, and keeps what it found for playDemo. G5's upgrade must be healthy.
+ */
+async function captureSourceHealth(page: Page): Promise<SourceHealthAtStart> {
+  const routers = await page.evaluate(async () => {
+    try {
+      const r = await fetch("/api/health");
+      if (!r.ok) return [] as string[];
+      const body = (await r.json()) as { routers?: unknown };
+      return Array.isArray(body.routers) ? body.routers.filter((x): x is string => typeof x === "string") : [];
+    } catch {
+      return [] as string[];
+    }
+  });
+  const adapters = liveAdapterKeys();
+  const expected = adapters.filter((k) => routers.includes(k.slice(0, 3)));
+  await expect
+    .poll(async () => {
+      const h = await healthyDots(page);
+      return expected.every((k) => h.includes(k));
+    }, { timeout: HEALTH_WAIT_MS })
+    .toBe(true)
+    .catch(() => undefined);
+  const healthy = await healthyDots(page);
+  const found: SourceHealthAtStart = { routers, adapters, expected, healthy };
+  healthAtStart.set(page, found);
+  if (DEMO_UPGRADE) {
+    expect(adapters, `G5 upgrade ${DEMO_UPGRADE}: an adapter file src/sources/live/${DEMO_UPGRADE}.ts`).toContain(DEMO_UPGRADE);
+    expect(routers, `G5 upgrade ${DEMO_UPGRADE}: /api/health lists its router`).toContain(DEMO_UPGRADE.slice(0, 3));
+    expect(healthy, `G5 upgrade ${DEMO_UPGRADE}: its adapter's health() is true at the start of the run`).toContain(DEMO_UPGRADE);
+  }
+  return found;
+}
 
 export async function screenshot(page: Page, name: string, dir = ARTIFACTS_DEMO) {
   fs.mkdirSync(dir, { recursive: true });
@@ -35,6 +107,7 @@ export async function openStage(page: Page, url = "/demo") {
     if (DEMO_MODE === "live") {
       await page.getByTestId("demo-mode-toggle").click();
       await expect(page.getByTestId("demo-mode-toggle")).toHaveText(/Live/);
+      await captureSourceHealth(page);
     }
   }
   await page.evaluate(() => document.fonts.ready.then(() => true));
@@ -211,9 +284,17 @@ async function startRecorder(page: Page, idsByBeat: Record<string, string[]>) {
       beats: [] as { beatId: string; clock: number; wall: number }[],
       seen: {} as Record<string, Record<string, boolean>>,
       lastBeat: null as string | null,
+      /** Every change of the store's sources map during the run, with the player clock. */
+      sourceChanges: [] as { key: string; to: string; clock: number }[],
     };
     w.cindiaDemoRun = run;
     const hooks = window.__cindia!;
+    let lastSources = { ...(hooks.store.getState() as unknown as { sources: Record<string, string> }).sources };
+    hooks.store.subscribe(() => {
+      const now = (hooks.store.getState() as unknown as { sources: Record<string, string> }).sources;
+      for (const [key, to] of Object.entries(now)) if (lastSources[key] !== to) run.sourceChanges.push({ key, to, clock: hooks.player.now() });
+      lastSources = { ...now };
+    });
     hooks.player.subscribe(() => {
       const p = hooks.player;
       if (run.startWall === null && p.isPlaying()) run.startWall = performance.now();
@@ -270,6 +351,24 @@ export interface BeatResult {
   frameProblems: string[];
 }
 
+/** One source key in report.json. */
+export interface SourceResult {
+  /** The store's sources[key] after the run. */
+  final: string;
+  /** Its adapter's health() was true when the run started (live mode only). */
+  healthyAtStart: boolean;
+  /** The demo timeline has events with this key. */
+  inTimeline: boolean;
+  /** Live mode, healthy and in the timeline: the run must deliver it live. */
+  asserted: boolean;
+  /** Player clock when the key first turned live, or null. */
+  firstLiveAtClock: number | null;
+  /** How many times it went from live back to scripted during the run. */
+  backToScripted: number;
+  /** The registry's warnings each time the adapter failed or returned nothing and the scripted event played. */
+  fallbacks: string[];
+}
+
 interface ExpectedIds {
   /** Every ID the beat checks. */
   all: string[];
@@ -323,6 +422,14 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
   for (const b of BEATS) expected[b.id] = expectedIds(b, cut, matches);
   const recorded: Record<string, string[]> = {};
   for (const b of BEATS) recorded[b.id] = expected[b.id].all;
+
+  // The registry warns each time a live adapter fails or returns nothing and the scripted event plays.
+  const fallbacks: Record<string, string[]> = {};
+  const onConsole = (msg: ConsoleMessage) => {
+    const m = /^\[cindia sources\] (b\d\d-[a-z0-9-]+) (failed for|returned nothing for|start\(\) failed)/.exec(msg.text());
+    if (m) (fallbacks[m[1]] ??= []).push(msg.text());
+  };
+  page.on("console", onConsole);
 
   // Start from a clean reset at 1x.
   await page.getByTestId("demo-reset").click();
@@ -449,8 +556,53 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
   // In order, each beat once.
   expect(run.beats.map((x) => x.beatId)).toEqual(BEATS.map((b) => b.id));
 
+  // Which source delivered each key: the store's sources map after the run, its changes during the
+  // run, and the registry's fallback warnings.
+  page.off("console", onConsole);
+  const end = await page.evaluate(() => {
+    const s = window.__cindia!.store.getState() as unknown as { sources: Record<string, string>; mode: string };
+    const events = (window.__cindia!.player.getTimeline()?.events ?? []) as unknown as { key?: string }[];
+    const keys = [...new Set(events.map((e) => e.key).filter((k): k is string => typeof k === "string" && k.length > 0))];
+    const changes = (window as unknown as { cindiaDemoRun: { sourceChanges: { key: string; to: string; clock: number }[] } }).cindiaDemoRun.sourceChanges;
+    return { sources: s.sources, mode: s.mode, timelineKeys: keys as string[], changes };
+  });
+  const health = DEMO_MODE === "live" ? healthAtStart.get(page) ?? null : null;
+  const sources: Record<string, SourceResult> = {};
+  for (const [key, final] of Object.entries(end.sources)) {
+    const changes = end.changes.filter((c) => c.key === key);
+    const healthy = health?.healthy.includes(key) ?? false;
+    const inTimeline = end.timelineKeys.includes(key);
+    let lastLive = false;
+    let backToScripted = 0;
+    for (const c of changes) {
+      if (c.to === "live") lastLive = true;
+      else if (lastLive) {
+        backToScripted++;
+        lastLive = false;
+      }
+    }
+    sources[key] = {
+      final,
+      healthyAtStart: healthy,
+      inTimeline,
+      asserted: DEMO_MODE === "live" && healthy && inTimeline,
+      firstLiveAtClock: changes.find((c) => c.to === "live")?.clock ?? null,
+      backToScripted,
+      fallbacks: fallbacks[key] ?? [],
+    };
+  }
+
   fs.mkdirSync(dir, { recursive: true });
-  const report = { mode: DEMO_MODE, cut: [...cut], endedAtWallMs: Math.round(run.endWall - run.startWall!), beats: results };
+  const report = {
+    mode: DEMO_MODE,
+    storeMode: end.mode,
+    upgrade: DEMO_UPGRADE,
+    health,
+    sources,
+    cut: [...cut],
+    endedAtWallMs: Math.round(run.endWall - run.startWall!),
+    beats: results,
+  };
   fs.writeFileSync(path.join(dir, "report.json"), JSON.stringify(report, null, 2));
   const notes = results.flatMap((r) => [
     ...r.offFrameNotes.map((id) => `${r.beat}: ${id} is rendered but scrolled or clipped outside its frame (allowed)`),
@@ -461,6 +613,25 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
 
   // The run ended by 60.5 s of real time.
   expect(run.endWall - run.startWall!, "the run ends by 60.5 s").toBeLessThanOrEqual(60500);
+
+  // Live mode: every key with a healthy adapter and keyed events in the timeline played live, with
+  // no scripted fallback. G5's upgrade must be one of them.
+  if (DEMO_MODE === "live") {
+    expect(end.mode, "the store is in live mode after the run").toBe("live");
+    if (DEMO_UPGRADE) {
+      expect(sources[DEMO_UPGRADE], `G5 upgrade ${DEMO_UPGRADE} is a source key`).toBeTruthy();
+      if (!sources[DEMO_UPGRADE].inTimeline)
+        test.info().annotations.push({ type: "note", description: `${DEMO_UPGRADE} has no keyed events in the demo timeline, so the demo cannot show it live` });
+    }
+    const sourceProblems = Object.entries(sources)
+      .filter(([, s]) => s.asserted)
+      .flatMap(([key, s]) => [
+        ...(s.final === "live" ? [] : [`${key}: healthy at the start, but the store's sources says ${s.final} after the run`]),
+        ...(s.backToScripted ? [`${key}: went back to scripted ${s.backToScripted} time(s) during the run`] : []),
+        ...s.fallbacks.map((f) => `${key}: ${f}`),
+      ]);
+    expect(sourceProblems, "healthy live sources that fell back to scripted").toEqual([]);
+  }
   // Collect every beat's problems first, so one run reports them all.
   const problems = results.flatMap((r) => [
     ...r.missing.map((x) => `${r.beat}: missing ${x}`),
