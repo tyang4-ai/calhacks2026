@@ -42,7 +42,7 @@ The scaffolder does these in order. Each task's files belong to it alone.
 | T5 | App shell: routes, surfaces, slots, feature loader, demo controls | `src/main.tsx`, `src/app/**`, `public/**` | T2, T3, T4 | opus |
 | T6 | Scripts and npm scripts | `scripts/*.mjs`, `scripts/lib/**`, `scripts/server_selftest.py` (not `preflight.mjs` or `secrets-scan.mjs`) | T1 | opus |
 | T7 | Playwright config and test harnesses | `playwright.config.ts`, `tests/smoke/**`, `tests/demo/**`, `tests/offline/**` | T5, T6 | opus |
-| T8 | Server skeleton | `server/__init__.py`, `server/main.py`, `server/config.py`, `server/routers/__init__.py`, `server/requirements.txt`, `tests/server/__init__.py`, `tests/server/conftest.py` | T1 | opus |
+| T8 | Server skeleton | `server/__init__.py`, `server/main.py`, `server/config.py`, `server/routers/__init__.py`, `server/requirements.txt`, `tests/server/conftest.py` (no `tests/server/__init__.py`, see lessons) | T1 | opus |
 
 ### T1 · Project files and installs
 
@@ -88,7 +88,7 @@ The scaffolder does these in order. Each task's files belong to it alone.
 - `src/ui/tokens.css`: every color, space, corner and motion token in `design-system.md` as `--c-<group>-<name>`.
 - `src/index.css`: `@import "tailwindcss";`, then the tokens and the font imports. Tailwind's theme maps to the tokens, so features can use either.
 - `src/ui/fonts.ts`: imports only the weights `design-system.md` lists, from the Fontsource packages. Nothing loads from the network.
-- One file per kit component in `design-system.md`: `Panel`, `Button`, `Money`, `Thread`, `Seal`, `MakerMark`, `Badge` (with the `Simulated` variant reading "Simulated 模拟"), `Flag`, `EvidenceCard`, `ShareBar`, `LedgerTable`, `Toast`, `PhoneFrame`, `ConsoleFrame`, `LangToggle`, plus `chartTheme.ts`, `money.ts` (`formatCents()`, the only money formatter), `formatDate.ts` (`formatDate(iso, lang)` as `design-system.md` gives it: "Oct 2, 2026" or "2026年10月2日", in UTC, never from the wall clock), and `motion.ts` (helpers that take the player's time).
+- One file per kit component in `design-system.md`: `Panel`, `Button`, `Money`, `Thread`, `Seal`, `MakerMark`, `Badge` (with the `Simulated` variant reading "Simulated 模拟"), `Flag`, `EvidenceCard`, `ShareBar`, `LedgerTable`, `Toast`, `PhoneFrame`, `ConsoleFrame`, `LangToggle`, plus `chartTheme.ts`, `formatCents.ts` (`formatCents()`, the only money formatter), `formatDate.ts` (`formatDate(iso, lang)` as `design-system.md` gives it: "Oct 2, 2026" or "2026年10月2日", in UTC, never from the wall clock), and `motion.ts` (helpers that take the player's time).
 - Every component takes a `testId` prop and puts it on its root element as `data-testid`.
 - `Panel` takes the source keys its content renders. It shows the `Simulated` badge (test ID `simulated-badge`) while any of those keys is `"scripted"` in the store's `sources`.
 - `prefers-reduced-motion` is honored as `design-system.md` says.

@@ -48,12 +48,12 @@ Rules for npm scripts, because they run in `cmd.exe` on Windows:
 | `src/sources/live/` | backend-builder | One adapter file per upgrade |
 | `src/mock/` | data-smith | Dataset, answer key, scripted timelines |
 | `src/features/<id>/` | that feature's lead and its builders | |
-| Server skeleton: `server/*.py` (files directly in `server/`), `server/routers/__init__.py`, `server/requirements.txt`, `tests/server/__init__.py`, `tests/server/conftest.py` | scaffolder in S1, then integrator | Shared, frozen after G1. `main.py` loads every router it finds |
+| Server skeleton: `server/*.py` (files directly in `server/`), `server/routers/__init__.py`, `server/requirements.txt`, `tests/server/conftest.py` | scaffolder in S1, then integrator | Shared, frozen after G1. `main.py` loads every router it finds. There's no `tests/server/__init__.py`, because with one pytest imports the folder as package `server` and hides the real one |
 | `server/routers/`, other files under `server/` | backend-builder | One router per upgrade, plus files its plan names with its own `bNN` prefix |
 | `tests/smoke/`, `tests/demo/`, `tests/offline/` | scaffolder in S1, then integrator | |
 | `tests/data/` | data-smith | |
 | `tests/features/` | feature leads and builders | Files named `<feature-slug>-<what>.spec.ts` |
-| `tests/server/` | backend-builder | |
+| `tests/server/` | backend-builder | Upgrade tests import shared helpers with `from conftest import needs_key` |
 | `scripts/` | scaffolder in S1, then integrator | Check, gate and test scripts in Node |
 | Root config: `package.json`, `package-lock.json`, `vite.config.ts`, `vitest.config.ts`, `tsconfig*.json`, `.oxlintrc.json` or `eslint.config.js` (the S1 plan picks one), `.prettierrc*`, `playwright.config.ts`, `index.html` | scaffolder in S1, then integrator | Frozen after G1 |
 | `artifacts/` | anyone | Gate reports, screenshots, hook logs. Not committed |

@@ -92,3 +92,5 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 02:04 PT · heartbeat created (cron f57ce95e, */15) · CronList
 - 2026-10-24 02:04 PT · G0 recorded, stage S1, scaffolder spawned · `artifacts/preflight.md`
 - 2026-10-24 02:35 PT · G1 passed 5/5, verifier PASS, shared lock on, tag g1-scaffold · `artifacts/gates/G1-0233.md`
+- 2026-10-24 02:38 PT · dev server started on 5173 (200); data-smith spawned for S2; integrator spawned for the conventions.md and glossary.md fixes from S1 · status.md
+- 2026-10-24 02:45 PT · integrator fixed conventions.md and glossary.md (check PASS, smoke 22/22) · decisions.md

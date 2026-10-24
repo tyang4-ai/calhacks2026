@@ -41,6 +41,8 @@ Filled in during planning, one row per word: the word, its code name, the Englis
 | receipt | `receipt.updated` | Receipt | 收据 | The buyer's record of the sale, which later shows the maker got paid |
 | paid to the maker | `status: "paid_to_maker"` | Paid to the maker | 已付给匠人 | The receipt status once the maker's payout has gone out |
 | money map | `money-map` | Money map | 资金流向图 | The picture of money moving between the buyer, Cindia, the studio and the makers |
+| month view | studio view `month` | Month | 本月 | The studio view with the month's records, matches and flags |
+| dashboard | studio view `dashboard` | Dashboard | 仪表盘 | The studio view with the month's numbers at a glance |
 | thread | kit `Thread` | Money flow | 资金线 | One movement of money, drawn as a running stitch |
 | balance | `account.synced` | Balance | 账户余额 | What's in the studio's bank account |
 | payout | `ChannelPayout` | Payout | 结款 | Money a sales channel sends to the studio |
