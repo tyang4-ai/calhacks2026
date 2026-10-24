@@ -45,6 +45,9 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 | F-proof | W1 | green | feature-lead | w1-proof | G3 3/3, verifier PASS |
 | F-ask-cindy | W1 | green | feature-lead | w1-ask-cindy | G3 3/3, verifier PASS |
 | F-impact | W1 | green | feature-lead | w1-impact | G3 3/3, verifier PASS; mid-count check made unconditional |
+| F-audit | W2 | running | feature-lead | | |
+| F-dashboard | W2 | running | feature-lead | | |
+| F-scenario | W2 | todo |  | | |
 
 States: `todo`, `running`, `green`, `failed`, `CUT`.
 
@@ -52,6 +55,16 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
+| B01-match | running | | |  |
+| B02-explain | blocked | | | needs ANTHROPIC_API_KEY |
+| B03-proof | running | | |  |
+| B04-bank | blocked | | | needs NESSIE_KEY |
+| B05-scenario | todo | | |  |
+| B06-workbook | todo | | |  |
+| B07-ask | blocked | | | needs ANTHROPIC_API_KEY |
+| B08-approvals | todo | | |  |
+| B09-concierge | blocked | | | needs ANTHROPIC_API_KEY |
+| B10-derived | todo | | |  |
 
 ## Environment
 
@@ -137,3 +150,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 04:10 PT · reconcile round 2 in (special-match IDs on the strip rows; feature 12/12, smoke 22/22) · F-reconcile report
 - 2026-10-24 04:17 PT · approvals round 2 in (decided card compact; feature 19/19, smoke 22/22); G4 rerun checks 5/5, strict demo test, 60 s runs; verifier round 2 running · artifacts/gates/G4-0415.md
 - 2026-10-24 04:21 PT · G4 PASS 5/5, verifier round 2 PASS, tag demo-ok-1; stage W2+P2 · artifacts/gates/G4-verifier-r2.md
+- 2026-10-24 04:24 PT · R6 started: audit and dashboard leads, B01 and B03 backend-builders; API server started on 8000; B02, B04, B07, B09 blocked on keys; push sent to Gordon · status.md
