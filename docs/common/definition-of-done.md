@@ -142,7 +142,7 @@ Each gate runs through the gate skill: `npm run gate -- <gate> [<slug>]` when th
 
 **Passes when** the live path works and the scripted fallback still passes G4.
 
-The live-mode runs must show the upgrade's key as live: its adapter is healthy at the start, the store's `sources[<key>]` is `"live"` after the run with no scripted fallback, and `artifacts/demo/report.json` records each key's source. The gate passes the slug to the harness as `CINDIA_DEMO_UPGRADE`, and every other key whose adapter is healthy and has keyed events in the timeline must play live too.
+The live-mode runs must show the upgrade's key as live: its adapter is healthy at the start, the store's `sources[<key>]` is `"live"` after the run with no scripted fallback, and `artifacts/demo/report.json` records each key's source. The gate passes the slug to the harness as `CINDIA_DEMO_UPGRADE`, and every other key whose adapter is healthy and has keyed events in the timeline must play live too. A key may list event types it's allowed to return nothing for in the demo (`ALLOWED_EMPTY_FALLBACKS` in `tests/demo/beats.ts`, so far only `b08-approvals` for `approval.granted` and `approval.declined`, per its plan), and then it counts as live when it went live at least once and its only fallbacks were those, which `report.json` records. A throw, a timeout or nothing returned for any other type still fails.
 
 G4, G5 and G6 all build `dist/` and use port 4173, so only one of them runs at a time.
 

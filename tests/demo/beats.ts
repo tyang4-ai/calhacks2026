@@ -209,7 +209,20 @@ export const CAMERA_VIEW: Record<CameraId, string | null> = {
   receipt: null,
 };
 
-export const FRAME_IDS: FrameId[] = ["frame-buyer", "frame-studio", "frame-owner", "frame-maker"];
+/**
+ * Event types a live source may return nothing for during the demo, so the scripted event plays,
+ * by source key, with why. In live mode a key listed here passes when it went live at least once
+ * and its only fallbacks were "returned nothing" for these types. A throw, a timeout, nothing
+ * returned for any other type, or going back to scripted for any other reason still fails.
+ */
+export const ALLOWED_EMPTY_FALLBACKS: Record<string, { types: readonly string[]; why: string }> = {
+  "b08-approvals": {
+    types: ["approval.granted", "approval.declined"],
+    why: "docs/plans/B08-approvals.md: with no owner screen connected the adapter returns [] for the scripted decision, so it plays on time",
+  },
+};
+
+export const FRAME_IDS: FrameId[] =["frame-buyer", "frame-studio", "frame-owner", "frame-maker"];
 export const NATIVE_WIDTH: Record<FrameId, number> = { "frame-buyer": 390, "frame-studio": 1280, "frame-owner": 390, "frame-maker": 390 };
 
 /** Feature slugs whose state is CUT in the Features table of docs/harness/status.md. */

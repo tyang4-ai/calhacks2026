@@ -3,7 +3,7 @@ NEXT: R6
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 04:54 PT
+UPDATED: 2026-10-24 05:58 PT
 
 # Status board
 
@@ -57,9 +57,9 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 |---|---|---|---|---|
 | B01-match | green | yes, live at 20.5 s, no fallback | demo-ok-b01 | G5 13/13 (round 1 added the live-source check) |
 | B02-explain | blocked | | | needs ANTHROPIC_API_KEY |
-| B03-proof | running | | | built, unit 13 passed; G5 waits for B01 (it calls B01's matcher) |
+| B03-proof | green | live at 59.0 s | demo-ok-b03 | G5 13/13, verifier PASS |
 | B04-bank | blocked | | | needs NESSIE_KEY |
-| B05-scenario | todo | | |  |
+| B05-scenario | running | | | built, server 117 passed; live proof in TestClient tests (no timeline events); API restarted with b05 |
 | B06-workbook | running | | | built, server 42 passed; API restarted, health lists b06; G5 after B01 |
 | B07-ask | blocked | | | needs ANTHROPIC_API_KEY |
 | B08-approvals | running | | | built, server 87 passed; API restart pending (after the integrator's G5 run) |
@@ -160,3 +160,6 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 04:45 PT · B08 built; API restart deferred until the integrator's live G5 run ends · status.md
 - 2026-10-24 04:50 PT · B10 built (figures match to the cent); B03, B06, B08, B10 wait for the integrator's live-source assertion, then API restart and G5 one at a time · status.md
 - 2026-10-24 04:54 PT · G5 b01-match PASS 13/13, report.json shows b01-match live at 20.5 s with no fallback, tag demo-ok-b01 · artifacts/gates/G5-0443.md
+- 2026-10-24 05:05 PT · G5 b03 FAIL 9/13: b01, b03, b06, b10 live; b08 fell back on approval.granted by design (no owner screen, plan line 42); integrator adding an allowed-fallback rule and fixing B05 contract mismatches; B05 built; API restarted with b05 · artifacts/gates/G5-0454.md
+- 2026-10-24 05:12 PT · G5 b03 PASS 13/13 (b01, b03, b06, b10 live; b08 live with allowed grant fallbacks); G5 for b06, b08, b10, b05 running in sequence; batch verifier running · artifacts/gates/G5-0506.md
+- 2026-10-24 05:58 PT · G5 B03-proof PASS 13/13, verifier PASS, tag demo-ok-b03 · artifacts/gates/G5-0506.md, artifacts/gates/G5-batch-verifier.md

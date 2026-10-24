@@ -8,7 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { expect, test, type ConsoleMessage, type Page } from "@playwright/test";
 import { waitForHooks, waitForSlots } from "../smoke/lib";
-import { BEATS, CAMERA_FRAMES, CAMERA_VIEW, FRAME_IDS, NATIVE_WIDTH, SHOWN_MATCH_KINDS, cutFeatures, type Beat, type FrameId } from "./beats";
+import { ALLOWED_EMPTY_FALLBACKS, BEATS, CAMERA_FRAMES, CAMERA_VIEW, FRAME_IDS, NATIVE_WIDTH, SHOWN_MATCH_KINDS, cutFeatures, type Beat, type FrameId } from "./beats";
 
 export const ARTIFACTS_DEMO = path.join(process.env.CINDIA_ROOT ?? process.cwd(), "artifacts", "demo");
 
@@ -285,14 +285,33 @@ async function startRecorder(page: Page, idsByBeat: Record<string, string[]>) {
       seen: {} as Record<string, Record<string, boolean>>,
       lastBeat: null as string | null,
       /** Every change of the store's sources map during the run, with the player clock. */
-      sourceChanges: [] as { key: string; to: string; clock: number }[],
+      // `cause` is the registry warning logged just before the change in the same task (the registry
+      // logs, then emits the scripted event synchronously), or null when no warning explains it.
+      sourceChanges: [] as { key: string; to: string; clock: number; cause: string | null }[],
     };
     w.cindiaDemoRun = run;
     const hooks = window.__cindia!;
+    const pendingWarn: Record<string, string> = {};
+    const origWarn = console.warn.bind(console);
+    console.warn = (...args: unknown[]) => {
+      const m = typeof args[0] === "string" ? /^\[cindia sources\] (b\d\d-[a-z0-9-]+) (?:failed for|returned nothing for) /.exec(args[0]) : null;
+      if (m) {
+        const key = m[1];
+        pendingWarn[key] = args[0] as string;
+        queueMicrotask(() => {
+          if (pendingWarn[key] === args[0]) delete pendingWarn[key];
+        });
+      }
+      origWarn(...args);
+    };
     let lastSources = { ...(hooks.store.getState() as unknown as { sources: Record<string, string> }).sources };
     hooks.store.subscribe(() => {
       const now = (hooks.store.getState() as unknown as { sources: Record<string, string> }).sources;
-      for (const [key, to] of Object.entries(now)) if (lastSources[key] !== to) run.sourceChanges.push({ key, to, clock: hooks.player.now() });
+      for (const [key, to] of Object.entries(now))
+        if (lastSources[key] !== to) {
+          run.sourceChanges.push({ key, to, clock: hooks.player.now(), cause: pendingWarn[key] ?? null });
+          delete pendingWarn[key];
+        }
       lastSources = { ...now };
     });
     hooks.player.subscribe(() => {
@@ -367,6 +386,16 @@ export interface SourceResult {
   backToScripted: number;
   /** The registry's warnings each time the adapter failed or returned nothing and the scripted event played. */
   fallbacks: string[];
+  /** Event types this key may return nothing for in the demo (ALLOWED_EMPTY_FALLBACKS in beats.ts). */
+  allowedEmptyTypes: string[];
+  /** The fallbacks that are allowed: "returned nothing" for one of allowedEmptyTypes. */
+  allowedFallbacks: string[];
+  /** Every other fallback: a throw, a timeout, or nothing returned for another type. */
+  disallowedFallbacks: string[];
+  /** Times it went from live back to scripted without an allowed fallback just before. */
+  unexplainedBackToScripted: number;
+  /** Went live at least once, every return to scripted came from an allowed fallback, and no other fallback. */
+  liveOk: boolean;
 }
 
 interface ExpectedIds {
@@ -563,7 +592,7 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
     const s = window.__cindia!.store.getState() as unknown as { sources: Record<string, string>; mode: string };
     const events = (window.__cindia!.player.getTimeline()?.events ?? []) as unknown as { key?: string }[];
     const keys = [...new Set(events.map((e) => e.key).filter((k): k is string => typeof k === "string" && k.length > 0))];
-    const changes = (window as unknown as { cindiaDemoRun: { sourceChanges: { key: string; to: string; clock: number }[] } }).cindiaDemoRun.sourceChanges;
+    const changes = (window as unknown as { cindiaDemoRun: { sourceChanges: { key: string; to: string; clock: number; cause: string | null }[] } }).cindiaDemoRun.sourceChanges;
     return { sources: s.sources, mode: s.mode, timelineKeys: keys as string[], changes };
   });
   const health = DEMO_MODE === "live" ? healthAtStart.get(page) ?? null : null;
@@ -572,23 +601,43 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
     const changes = end.changes.filter((c) => c.key === key);
     const healthy = health?.healthy.includes(key) ?? false;
     const inTimeline = end.timelineKeys.includes(key);
+    const allowedEmptyTypes = [...(ALLOWED_EMPTY_FALLBACKS[key]?.types ?? [])];
+    const isAllowed = (w: string | null) => w !== null && allowedEmptyTypes.some((t) => w.startsWith(`[cindia sources] ${key} returned nothing for ${t}, `));
+    const keyFallbacks = fallbacks[key] ?? [];
+    const allowedFallbacks = keyFallbacks.filter((w) => isAllowed(w));
+    const disallowedFallbacks = keyFallbacks.filter((w) => !isAllowed(w));
     let lastLive = false;
     let backToScripted = 0;
+    let unexplainedBackToScripted = 0;
     for (const c of changes) {
       if (c.to === "live") lastLive = true;
       else if (lastLive) {
         backToScripted++;
+        if (!isAllowed(c.cause)) unexplainedBackToScripted++;
         lastLive = false;
       }
     }
+    const firstLiveAtClock = changes.find((c) => c.to === "live")?.clock ?? null;
+    // Every return to scripted is explained by an allowed fallback, so a key may end on scripted
+    // only when its last change was one of those.
+    const liveOk =
+      firstLiveAtClock !== null &&
+      disallowedFallbacks.length === 0 &&
+      unexplainedBackToScripted === 0 &&
+      (final === "live" || allowedFallbacks.length > 0);
     sources[key] = {
       final,
       healthyAtStart: healthy,
       inTimeline,
       asserted: DEMO_MODE === "live" && healthy && inTimeline,
-      firstLiveAtClock: changes.find((c) => c.to === "live")?.clock ?? null,
+      firstLiveAtClock,
       backToScripted,
-      fallbacks: fallbacks[key] ?? [],
+      fallbacks: keyFallbacks,
+      allowedEmptyTypes,
+      allowedFallbacks,
+      disallowedFallbacks,
+      unexplainedBackToScripted,
+      liveOk,
     };
   }
 
@@ -598,6 +647,7 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
     storeMode: end.mode,
     upgrade: DEMO_UPGRADE,
     health,
+    allowedEmptyFallbacks: ALLOWED_EMPTY_FALLBACKS,
     sources,
     cut: [...cut],
     endedAtWallMs: Math.round(run.endWall - run.startWall!),
@@ -615,7 +665,8 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
   expect(run.endWall - run.startWall!, "the run ends by 60.5 s").toBeLessThanOrEqual(60500);
 
   // Live mode: every key with a healthy adapter and keyed events in the timeline played live, with
-  // no scripted fallback. G5's upgrade must be one of them.
+  // no scripted fallback, except "returned nothing" for the types ALLOWED_EMPTY_FALLBACKS lists for
+  // its key (such a key must still go live at least once). G5's upgrade must be one of them.
   if (DEMO_MODE === "live") {
     expect(end.mode, "the store is in live mode after the run").toBe("live");
     if (DEMO_UPGRADE) {
@@ -626,9 +677,14 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
     const sourceProblems = Object.entries(sources)
       .filter(([, s]) => s.asserted)
       .flatMap(([key, s]) => [
-        ...(s.final === "live" ? [] : [`${key}: healthy at the start, but the store's sources says ${s.final} after the run`]),
-        ...(s.backToScripted ? [`${key}: went back to scripted ${s.backToScripted} time(s) during the run`] : []),
-        ...s.fallbacks.map((f) => `${key}: ${f}`),
+        ...(s.firstLiveAtClock === null ? [`${key}: healthy at the start, but never went live during the run`] : []),
+        ...(s.final === "live" || (s.firstLiveAtClock !== null && s.allowedFallbacks.length > 0 && s.unexplainedBackToScripted === 0)
+          ? []
+          : [`${key}: healthy at the start, but the store's sources says ${s.final} after the run`]),
+        ...(s.unexplainedBackToScripted
+          ? [`${key}: went back to scripted ${s.unexplainedBackToScripted} time(s) during the run without an allowed fallback`]
+          : []),
+        ...s.disallowedFallbacks.map((f) => `${key}: ${f}`),
       ]);
     expect(sourceProblems, "healthy live sources that fell back to scripted").toEqual([]);
   }

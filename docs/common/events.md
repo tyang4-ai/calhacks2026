@@ -17,7 +17,7 @@ interface CindiaEvent<T extends EventType = EventType> {
 }
 ```
 
-- An event's `key` names the source that produced it. The Key column in the tables below is the source whose live adapter replaces the scripted event of that type in the timeline. A live event carries the key of the adapter that made it, so the matches B05 returns for a judge's file carry `b05-scenario`.
+- An event's `key` names the source that produced it. The Key column in the tables below is the source whose live adapter replaces the scripted event of that type in the timeline. A live event carries the key of the adapter that made it, so every live event B05 returns or adds (`scenario.loaded`, `record.arrived`, `match.made`, `flag.raised`) carries `b05-scenario`, even though this table keys `match.made` and `flag.raised` to `b01-match`.
 - IDs inside payloads point at the entities in `data-model.md`. Components look the entity up with `getById()` from `src/mock`. Payloads don't copy entity data.
 - The exception is numbers a live adapter recomputes: `split.shown`, `receipt.updated`, `statement.issued`, `impact.updated` and `followup.drafted` carry their figures and text in the payload, and the screens render them from the event, never from the entity. The scripted events carry the same figures as `src/mock/`.
 - `Text` is `{ en: string; zh: string }`. Amounts are integer cents.

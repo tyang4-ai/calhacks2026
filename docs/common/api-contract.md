@@ -9,7 +9,7 @@ Read by every backend-builder, by the integrator, and by the scaffolder for the 
 - **One prefix per upgrade:** every route of upgrade NN lives under `/api/bNN/` and is defined in `server/routers/bNN_<slug>.py` as `router = APIRouter(prefix="/api/bNN")`. `server/main.py` includes the `router` of every module in `server/routers/` that defines one, so an upgrade never edits it. A helper module with the upgrade's prefix and no `router`, such as `server/routers/b04_nessie.py`, is skipped.
 - **Requests** are JSON with `Content-Type: application/json`, except the B05 upload. Every POST body has a `trigger` field: the scripted event the adapter is replacing, the person's request event when the registry passes one on (see Requests from people in `events.md`), or `null` when nothing in the store started the call. The adapter sends the records the server needs in the body, taken from `src/mock`, because the server can't read the TypeScript dataset.
 - **A success** is status 200 with the body `{ "events": CindiaEvent[] }`. Every returned event follows the envelope in `events.md`, with:
-  - `source: "live"` and `key` set to the upgrade's key (`b01-match` and so on).
+  - `source: "live"` and `key` set to the upgrade's key (`b01-match` and so on), even when `events.md` keys that event type to another upgrade. B05's `match.made` and `flag.raised` carry `b05-scenario`, not `b01-match`.
   - `id` as `evt_live_` plus a number, unique within the server process.
   - `at` copied from the trigger, or `0` when there is none.
   - IDs inside payloads that already exist in the dataset kept as they are. The live result replaces the scripted event for the same `matchId`, `flagId` or `approvalId`, so the screens line up.
@@ -143,7 +143,11 @@ Creates one withdrawal per maker payout, described "Maker payout mpo_01", then r
 
 Form fields: `trigger` (the event as a JSON string), `file` (a CSV or a JSON statement, at most 1 MB), `monthId`, and `records` (the month's records as a JSON string, same shape as B01). `python-multipart` comes with `fastapi[standard]`.
 
-The CSV columns are `date,orderId,pieceId,saleCents,commissionBps,netCents`, one statement line per row. A JSON file is a Statement object from `data-model.md`. The server parses the file into a statement with the ID `scn_` plus a number, runs B01's matcher over the month's records plus that statement, and returns a `scenario.loaded`, then every `match.made` and `flag.raised` that involves the new statement.
+The CSV columns are `date,orderId,pieceId,saleCents,commissionBps,netCents`, one statement line per row. A JSON file is a Statement object from `data-model.md`. The server parses the file into a statement, runs B01's matcher over the month's records plus that statement, and returns a `scenario.loaded`, then every `match.made` and `flag.raised` that involves the new statement. Every one of them carries `key: "b05-scenario"`, including the `match.made` and `flag.raised` that `events.md` keys to `b01-match`.
+
+IDs: a person's own file gets the statement ID `stm_scn_` plus a number, with `scn_mat_live_N` matches and `scn_flg_live_N` flags. The held-back sample (a trigger carrying its `scn_stm_` statement ID and no `content`) keeps its scripted IDs, `scn_stm_01`, `scn_mat_01` and `scn_flg_01`, so the screens line up with the scripted answer. Every ID contains `scn_`, the marker the scenario panel filters on.
+
+The endpoint returns no `record.arrived` events. The adapter (`src/sources/live/b05-scenario.ts`) adds one `record.arrived` per `scn_` record the answer involves (the statement's orders, the statement, the bank record), keyed `b05-scenario`, with dates from `src/mock` or from the file it sent, as the scripted answer does.
 
 A file that doesn't parse returns `bad_request` with a sentence naming the first bad row.
 
