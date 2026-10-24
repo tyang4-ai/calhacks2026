@@ -78,7 +78,7 @@ The build hasn't started. Plans and contracts are still being written. Don't bui
 
 ## R5 · I1 demo stage (STAGE: I1)
 
-1. Spawn the integrator with `PLAN: docs/plans/I1-demo-stage.md`, `TASK: all`, and the integrator's area as `SCOPE` (shared code, `docs/common/`, `tests/demo/`, `tests/offline/`).
+1. Spawn the integrator with `PLAN: docs/plans/I1-demo-stage.md`, `TASK: all`, and the `SCOPE` line the plan gives (`src/app/demo/, src/app/controls/DemoControls.tsx, src/app/routes.tsx, tests/demo/, tests/offline/`).
 2. Run G4 with the gate skill: `npm run test:demo` three times in a row on the production build, `npm run test:offline`, and a verifier reviewing each beat's screenshot against `demo-script.md`.
 3. On a pass the gate skill tags `demo-ok-1` and pushes. This is the build Gordon demos if everything after it fails. Never deploy it from the session. Gordon can put a phone preview online himself.
 4. Set `STAGE: W2+P2`, `NEXT: R6`.

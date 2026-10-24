@@ -134,7 +134,7 @@ Several agents run checks at the same time, so the S1 scaffold sets these up:
 - Vite's dev and preview servers use `strictPort: true`, so a stale process makes them fail loudly instead of moving to another port.
 - `npm run server` runs uvicorn with `--reload`, so a new router loads without a restart.
 - G4, G5 and G6 build `dist/` and use port 4173, so only one of them runs at a time.
-- Tests reach the dev server, they never start one. Only gate scripts start the preview on 4173.
+- Smoke and feature tests reach the dev server on 5173 when it answers. Only the test wrapper (`scripts/run-playwright.mjs`) and gate scripts start the preview on 4173. Agents never start a server themselves.
 
 ## Windows
 

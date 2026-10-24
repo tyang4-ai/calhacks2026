@@ -126,7 +126,7 @@ interface Player {
 - `emit(event)` adds an event. The player, live adapters and user actions all go through it.
 - `useCindia(selector)` reads state in components, built on `useSyncExternalStore`. No other state library.
 - Every reducer is idempotent per entity ID, so replaying or duplicating an event never double-counts.
-- The state holds IDs and statuses only, under these keys: `clock`, `mode` (`"scripted" \| "live"`), `lang` (`"en" \| "zh"`), `buyer`, `money`, `month`, `agent`, `approvals`, `close`, `proof`, `ask`, `impact`, `demo`, `scenario`, and `sources` (`Record<SourceKey, "scripted" \| "live">`, the last source that delivered each key).
+- The state holds IDs and statuses only, under these keys: `clock`, `mode` (`"scripted" \| "live"`), `lang` (`"auto" \| "en" \| "zh"`, starting at `auto`, see `ui-contract.md`), `buyer`, `money`, `month`, `agent`, `approvals`, `close`, `proof`, `ask`, `impact`, `demo`, `scenario`, and `sources` (`Record<SourceKey, "scripted" \| "live">`, the last source that delivered each key).
 - The scaffolder writes a reducer for every event type in this file in S1, with unit tests. Features add none.
 
 ## Sources and live replacement (`src/sources/`)
@@ -146,6 +146,20 @@ interface LiveAdapter {
 - **Scripted mode:** every event comes from the player as written.
 - **Live mode:** when the player reaches an event whose `key` has a healthy adapter, the registry calls `produce()` with an 8-second timeout. On success it emits the returned events with `source: "live"`. On an error, a timeout or an empty result, it emits the scripted event instead and logs why. The demo never stalls on a network call.
 - A panel shows the `Simulated` badge while `sources[key]` for any key it renders is `"scripted"`.
+
+## Requests from people
+
+Some events start from a person, not the timeline: the buyer typing their own request, the owner asking Cindy, a judge dropping in a file. The feature emits the request with `source: "user"`, and the sources registry answers it.
+
+| Request | Key | Scripted answer | Live answer |
+|---|---|---|---|
+| `concierge.asked` | `b09-concierge` | `concierge.answered` with the curated set from `src/mock/` (`pc_01`, `pc_07`, `pc_11` for any request) | the B09 adapter |
+| `ask.asked` | `b07-ask` | `ask.answered` from `src/mock/ask.ts`: the canned answer whose question matches, or else one saying scripted mode answers the three demo questions | the B07 adapter |
+| `scenario.loaded` | `b05-scenario` | the held-back statement's `record.arrived`, `match.made` and `flag.raised` events from `src/mock/scenario.ts` | the B05 adapter |
+
+- The scripted answer arrives 1.2 seconds later on the player clock, so it reads as Cindy working.
+- In live mode the registry tries the adapter first, with the same 8-second timeout and the scripted answer as the fallback.
+- The demo timeline's own `concierge.asked` and `ask.asked` events carry `source: "scripted"` and their answers are already in the timeline, so the registry doesn't answer those.
 - Live adapters call only `/api/...` on localhost. Keys stay on the server.
 
 ## Validation
