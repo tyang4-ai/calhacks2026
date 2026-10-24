@@ -3,7 +3,7 @@ NEXT: R4
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 03:20 PT
+UPDATED: 2026-10-24 03:21 PT
 
 # Status board
 
@@ -15,7 +15,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - Heartbeat cron f57ce95e every 15 min (session-only).
 - G1 passed 2:35 AM (5/5, verifier PASS). Shared lock on.
 - G2 passed 2:58 AM (2/2, verifier PASS; smoke 22/22 after the integrator fix).
-- Now: R4, W1. Leads running for buyer, money-map, reconcile, approvals. Dev server on 5173.
+- Now: R4, W1. Six features green; leads running for close, ask-cindy, impact. Dev server on 5173.
 
 ## Gates
 
@@ -33,13 +33,13 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 
 | Plan | Wave | State | Lead | Last green tag | Notes |
 |---|---|---|---|---|---|
-| F-buyer | W1 | running | feature-lead | | lead done, verifier PASS with caveats, 30 specs pass directly; G3 waits on integrator fix |
-| F-money-map | W1 | running | feature-lead | | lead blocked: feature clean, 9/9 specs pass directly; verifier FAIL only on shared smoke and test:feature bugs |
-| F-reconcile | W1 | running | feature-lead | | lead done, verifier PASS; G3 waits on integrator test-runner fix; 1 lint warning MatchRow.tsx:84 |
-| F-approvals | W1 | running | feature-lead | | lead done, verifier PASS; G3 waits on integrator test-runner fix |
-| F-maker-statement | W1 | running | feature-lead | | |
+| F-buyer | W1 | green | feature-lead | w1-buyer | G3 3/3, verifier PASS |
+| F-money-map | W1 | green | feature-lead | w1-money-map | G3 3/3, verifier PASS |
+| F-reconcile | W1 | green | feature-lead | w1-reconcile | G3 3/3, verifier PASS |
+| F-approvals | W1 | green | feature-lead | w1-approvals | G3 3/3, verifier PASS |
+| F-maker-statement | W1 | green | feature-lead | w1-maker-statement | G3 3/3, verifier PASS |
 | F-close | W1 | running | feature-lead | | |
-| F-proof | W1 | running | feature-lead | | |
+| F-proof | W1 | green | feature-lead | w1-proof | G3 3/3, verifier PASS |
 | F-ask-cindy | W1 | running | feature-lead | | |
 | F-impact | W1 | todo |  | | |
 
@@ -117,3 +117,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 03:20 PT · G3 buyer PASS 3/3, verifier PASS, tag w1-buyer · artifacts/gates/G3-0317.md · artifacts/verify/F-buyer-G3-0312.md
 - 2026-10-24 03:20 PT · G3 maker-statement PASS 3/3, verifier PASS, tag w1-maker-statement · artifacts/gates/G3-0318.md · artifacts/verify/F-maker-statement-G3-0316.md
 - 2026-10-24 03:20 PT · G3 proof PASS 3/3, verifier PASS, tag w1-proof · artifacts/gates/G3-0318.md · artifacts/verify/F-proof-G3-0319.md
+- 2026-10-24 03:21 PT · G3 money-map PASS 3/3 (gate output 03:18, report file overwritten by the maker-statement run), verifier rerun PASS, tag w1-money-map · artifacts/verify/F-money-map-G3-rerun.md
