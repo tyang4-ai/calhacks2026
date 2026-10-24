@@ -118,9 +118,9 @@ From the Claude Code docs on cloud sessions and cloud environments (https://code
   - Only public tables are visible to anonymous SQL and subscriptions. Mark all four tables `public: true`.
   - `t.u64()` columns are `bigint` in a TypeScript module. Insert `0n` to trigger auto-increment. Over HTTP JSON they are plain numbers.
   - Auto-increment values are not promised to be gap-free. Transactions run one at a time today, so polling for `seq` above the last one works now. The docs reserve the right to run them concurrently later.
-  - The docs show `spacetime dev` publishing to Maincloud, and `spacetime init` needs `--local` for a local deployment. Publish with `spacetime publish -s local cindia`, or run `spacetime server set-default local` first.
+  - Don't rely on the CLI's default server. The `spacetime dev` page says the database "will be available at https://maincloud.spacetimedb.com", and `spacetime init` has a `--local` flag to "Use local deployment instead of Maincloud". Publish with `spacetime publish -s local cindia`, or run `spacetime server set-default local` first.
   - `spacetime start` runs in the foreground, so start it in the background. It speaks plain HTTP: the docs say "SSL is not supported in standalone mode".
-  - There is no official Python SDK. From Python, poll the SQL endpoint, open the `v1.json.spacetimedb` WebSocket on `/v1/database/cindia/subscribe` yourself, or run `spacetime subscribe` (marked unstable) as a subprocess. The docs call the HTTP endpoints "not optimized for performance" next to the WebSocket API, which is fine for four polls a second on localhost.
+  - There is no official Python SDK. From Python, poll the SQL endpoint, open the `v1.json.spacetimedb` WebSocket on `/v1/database/cindia/subscribe` yourself, or run `spacetime subscribe` (marked unstable) as a subprocess. The docs say the HTTP endpoints "have not been optimized for performance to the same extent as the WebSocket API", which is fine for four polls a second on localhost.
 
 ## Apify
 
@@ -134,7 +134,7 @@ From the Claude Code docs on cloud sessions and cloud environments (https://code
   - The sync call waits at most 300 seconds, then answers 408.
   - Rate limits: 250,000 requests a minute per user overall, 60 a second per resource, 400 a second for run endpoints. A 429 means back off and retry.
   - The free plan allows 25 concurrent runs and 16 GB of memory across running jobs.
-  - The Google scraper costs from $1.80 per 1,000 result pages, so a three-query scan costs well under a cent.
+  - The Google scraper costs from $1.80 per 1,000 result pages, so a three-query scan of one page each costs about half a cent.
 - **Docs:** `docs/tech/apify/` (auth and limits, run-sync-get-dataset-items, the Google search scraper).
 - **Gotchas:**
   - The path is `POST https://api.apify.com/v2/actors/apify~google-search-scraper/run-sync-get-dataset-items`. A tilde replaces the slash in the Actor name. `/v2/acts/` is the deprecated alias.
