@@ -40,3 +40,15 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - F-impact: The kit's `formatBps` drops trailing zeros (7400 becomes "74%"), so a feature that needs one decimal place keeps its own formatter.
 - all: Builder hand-backs sometimes don't reach the lead; leads check files on disk and rerun the checks themselves.
 - F-close: The store doesn't keep `workbook.ready`'s `at`, so the drop-in motion notes the player time when the payload first appears and renders finished after a seek (epoch changed) or while paused; the P&L sheet follows the ledger's contract commission, so its fees never equal `month.closed` `feesCents`.
+- I1-demo-stage: `player.seek(ms)` replays events at exactly `ms`, so stopping "at 20.0" already shows d06's camera; stop at 19.999.
+- I1-demo-stage: A module that seeks or resets the player itself must ignore its own epoch change, or it cancels itself (`startAtCatch.ts` and `videoMode.ts` set an `acting` flag).
+- I1-demo-stage: Hidden demo frames stay mounted at opacity 0 and inert, so tests judge them by opacity, not `toBeVisible()`; the stage loads every feature module on mount so a camera move never waits on a lazy chunk.
+- all: Playwright prints "(1.0m)" for runs over 60 s, which `scripts/gate.mjs` `playwrightSeconds()` doesn't parse, so G4 falls back to wall time.
+- G4: `report.json` offFrame listed IDs outside the frame but the demo test didn't fail on them, so a green test:demo didn't mean every beat's figures were visible.
+- F-maker-statement: The kit `Toast` sits at the bottom of its containing block with no placement prop, so on a phone it covers the last thing in the view; time a toast against the beat's screenshot (300 ms before the beat ends).
+- all: The command guard reads paths out of Bash heredoc bodies, so edit in-scope files with Edit or Write.
+- F-approvals: The owner phone clips the inbox's scroll list, so its clientHeight is taller than what shows; measure the visible part through clipping ancestors (divide out the demo stage's scale) before scrolling.
+- F-reconcile: Feature tests that play the timeline in real time time out when 8 workers share the machine with other agents' runs; step through with seeks, or give real-time waits 45 s or more.
+- I1-demo-stage: Put test IDs on the element that is actually on screen; the demo test checks the ID's box against every clipping ancestor and samples it for covering elements.
+- all: A finished subagent may not be resumable by SendMessage ("No transcript found"); spawn a fresh agent with the full brief instead.
+- F-approvals: In the owner phone the visible inbox list is about 697 px tall once margins come off; measure card heights with a scratch spec before choosing a layout.

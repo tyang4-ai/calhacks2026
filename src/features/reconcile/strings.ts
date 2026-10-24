@@ -52,6 +52,7 @@ export const UI = {
   timelineTitle: { en: "Records as they arrive", zh: "陆续到达的记录" },
   waiting: { en: "Waiting for the month to start", zh: "等待本月开始" },
   noRecordsYet: { en: "No records yet", zh: "暂无记录" },
+  handledTitle: { en: "Cindy handled", zh: "Cindy已处理" },
   // LedgerTable columns.
   colDate: { en: "Date", zh: "日期" },
   colType: { en: "Record", zh: "记录" },

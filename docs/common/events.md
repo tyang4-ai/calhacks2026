@@ -118,6 +118,8 @@ interface Player {
   setSpeed(x: 1 | 2 | 4 | 8): void;
   now(): number;                    // the player clock, the only clock motion may use
   isPlaying(): boolean;
+  epoch(): number;                  // counts loads, resets and seeks; a pending answer or a motion that started before a change drops itself
+  getTimeline(): Timeline | null;   // the loaded timeline, events sorted by `at`
 }
 ```
 

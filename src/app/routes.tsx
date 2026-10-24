@@ -2,7 +2,7 @@
 import type { ReactNode } from "react";
 import { Navigate, Route, Routes, useNavigate, useParams, useSearchParams } from "react-router";
 import { STUDIO_VIEWS, type StudioView } from "../core/featureTypes";
-import { DemoPlaceholder } from "./DemoPlaceholder";
+import { DemoStage } from "./demo/DemoStage";
 import { BuyerSurface, MakerSurface, OwnerSurface, StudioSurface } from "./surfaces";
 import { useDrawerParams, withoutDrawer } from "./useDrawer";
 
@@ -59,7 +59,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/demo" replace />} />
-      <Route path="/demo" element={<DemoPlaceholder />} />
+      <Route path="/demo" element={<DemoStage />} />
       <Route
         path="/buyer"
         element={

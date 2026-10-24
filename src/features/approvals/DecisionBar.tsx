@@ -1,4 +1,4 @@
-// The bottom of each approval card: approve and decline while the approval is pending, the owner's
+// Each approval card's decision: approve and decline while the approval is pending, the owner's
 // seal once it's granted (by the owner's tap or the timeline), and the reason once it's declined.
 // Everything renders from the store. The reducer keeps the first decision, so a second grant is a no-op.
 import { useState, type FormEvent } from "react";
@@ -7,13 +7,20 @@ import { player } from "../../core/player";
 import { emit, useCindia } from "../../core/store";
 import type { Approval, Person, Studio } from "../../core/types";
 import { getById } from "../../mock";
-import { Button, Seal, formatDate } from "../../ui";
+import { Button, Seal } from "../../ui";
 import { GLOSSARY, UI, t, type Lang } from "./strings";
 
 export interface DecisionBarProps {
   approvalId: string;
   lang: Lang;
+  /** On a compact card: the seal at its smaller size, and nothing for a declined card. */
+  compact?: boolean;
 }
+
+/** The seal's size on a compact card: room for the surname and the date, no more. */
+const COMPACT_SEAL = 48;
+/** The seal's size in a full card's header. */
+const FULL_SEAL = 64;
 
 const studio = getById<Studio>("std_gu");
 /** The payload type fixes the owner to "own_01". The value itself comes from the studio. */
@@ -30,26 +37,23 @@ const rowStyle = {
   borderTop: "1px solid var(--c-color-line)",
 } as const;
 
-function SealedRow({ approvalId, lang, date, decidedAt, byUser }: { approvalId: string; lang: Lang; date?: string; decidedAt?: number; byUser: boolean }) {
+/**
+ * The owner's seal once the approval is granted. The card puts it in its header, next to the title,
+ * so the seal stays in view with the card's figures and costs no row of its own. The seal carries
+ * the grant's date, and the card's status badge reads approved.
+ */
+function SealedMark({ approvalId, lang, date, decidedAt, byUser, size }: { approvalId: string; lang: Lang; date?: string; decidedAt?: number; byUser: boolean; size: number }) {
   // The seal lands on the player clock from the grant's time. A tap made while the player is paused
   // would wait on a frozen clock forever, so that seal shows already landed (no wall clock).
   const [startAt] = useState(() => (byUser && !player.isPlaying() ? undefined : decidedAt));
   return (
-    <div style={rowStyle}>
-      <Seal testId={`approvals-seal-${approvalId}`} char={owner?.surnameChar ?? ""} date={date} lang={lang} startAt={startAt} />
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-4)" }}>
-        <span style={{ color: "var(--c-color-seal)", fontWeight: 600, fontSize: "var(--c-text-16)" }}>{t(GLOSSARY.approved, lang)}</span>
-        {date && (
-          <span style={{ color: "var(--c-color-ink-soft)", fontSize: "var(--c-text-14)" }}>
-            {t(UI.decidedOn, lang)} {formatDate(date, lang)}
-          </span>
-        )}
-      </div>
-    </div>
+    <span style={{ flexShrink: 0, display: "inline-flex" }}>
+      <Seal testId={`approvals-seal-${approvalId}`} char={owner?.surnameChar ?? ""} date={date} lang={lang} startAt={startAt} size={size} />
+    </span>
   );
 }
 
-export function DecisionBar({ approvalId, lang }: DecisionBarProps) {
+export function DecisionBar({ approvalId, lang, compact = false }: DecisionBarProps) {
   const item = useCindia((s) => s.approvals.items[approvalId]);
   const [declining, setDeclining] = useState(false);
   const [reason, setReason] = useState("");
@@ -57,10 +61,12 @@ export function DecisionBar({ approvalId, lang }: DecisionBarProps) {
   if (!item) return null;
 
   if (item.status === "granted") {
-    return <SealedRow approvalId={approvalId} lang={lang} date={item.date} decidedAt={item.decidedAt} byUser={item.source === "user"} />;
+    return <SealedMark approvalId={approvalId} lang={lang} date={item.date} decidedAt={item.decidedAt} byUser={item.source === "user"} size={compact ? COMPACT_SEAL : FULL_SEAL} />;
   }
 
   if (item.status === "declined") {
+    // A compact card shows its Declined badge itself, so the bar has nothing to add.
+    if (compact) return null;
     return (
       <div style={{ ...rowStyle, flexDirection: "column", alignItems: "flex-start", gap: "var(--c-space-4)" }}>
         <span style={{ color: "var(--c-color-ink)", fontWeight: 600, fontSize: "var(--c-text-16)" }}>{t(GLOSSARY.declined, lang)}</span>

@@ -119,6 +119,10 @@ The stage, test ID `demo-stage`, is a 1600 by 900 canvas scaled to fit the windo
 
 `demo-beat-label` is a quiet caption at the top left of the stage with the current beat's short title, hidden in video mode.
 
+- All four frames stay mounted on `/demo` for the whole run. A frame its camera doesn't show sits at opacity 0, `inert`, so features keep their state and tests can still find its test IDs. Tests judge whether a frame shows by its opacity, not by Playwright's `toBeVisible()`.
+- Before the first `beat.started`, and after a reset, the camera is `buyer`. `demo-stage` carries the current camera in `data-camera`.
+- `studio-catch` zooms to the box around `reconcile-flag`, its evidence cards and `reconcile-explanation`, or to the studio's center while the flag isn't there.
+
 ## Language
 
 - The store's `lang` starts as `auto`. With `auto`, each surface uses its own starting language from the Surfaces table.
@@ -177,6 +181,7 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 | `buyer-receipt-status` | buyer | The receipt's status line, "Received" or "Paid to the maker" |
 | `money-map-canvas` | money-map | The map of parties and threads |
 | `money-map-balance` | money-map | The studio account's balance |
+| `money-map-balance-nessie` | money-map | Internal: the label under the balance once `b04-bank` is live, naming Nessie as its source |
 | `money-map-thread-<moveId>` | money-map | One money thread, per `money.moved` |
 | `reconcile-timeline` | reconcile | The month's records arriving in date order |
 | `reconcile-match-<matchId>` | reconcile | One match, per `match.made` |
@@ -200,6 +205,7 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 | `ask-cindy-input` | ask-cindy | The question box |
 | `ask-cindy-answer` | ask-cindy | The latest answer |
 | `ask-cindy-chart` | ask-cindy | The answer's chart, when it has one |
+| `ask-cindy-refs` | ask-cindy | Internal: the records the latest answer names (its `refIds`), one list item each |
 | `impact-maker-share` | impact | Maker share of each sale |
 | `impact-days-to-payout` | impact | Days from close to payout, before and after |
 | `impact-hours-saved` | impact | Bookkeeping hours saved, marked as an estimate |

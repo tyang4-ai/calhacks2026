@@ -1,12 +1,13 @@
-// The 60-second demo on the production build. S1 version: the stage, play and reset, one screenshot.
-// I1 replaces this with the beat-by-beat run from demo-script.md.
+// The 60-second demo on the production build, at 1x: every beat on time, its camera's frames in
+// place, its On screen test IDs visible and its figures shown. Saves artifacts/demo/<beat ID>.png
+// 300 ms before each beat ends, and artifacts/demo/report.json.
 import { test } from "@playwright/test";
 import { watchPage } from "../smoke/lib";
-import { openStage, playAndReset } from "./harness";
+import { openStage, playDemo } from "./harness";
 
-test("the demo stage plays and resets", async ({ page }) => {
+test("the 60-second demo plays every beat on time", async ({ page }) => {
   const watch = watchPage(page);
   await openStage(page);
-  await playAndReset(page);
+  await playDemo(page);
   watch.expectClean();
 });

@@ -136,6 +136,9 @@ declare global {
         now(): number;
         isPlaying(): boolean;
         getSpeed(): number;
+        setSpeed(x: 1 | 2 | 4 | 8): void;
+        epoch(): number;
+        subscribe(listener: () => void): () => void;
         seek(ms: number): void;
         play(): void;
         pause(): void;

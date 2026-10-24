@@ -37,7 +37,7 @@ export function PayoutLines({ approvalId, lang }: PayoutLinesProps) {
                 display: "flex",
                 alignItems: "center",
                 gap: "var(--c-space-12)",
-                padding: "var(--c-space-8) 0",
+                padding: "var(--c-space-4) 0",
                 borderBottom: "1px solid var(--c-color-line)",
               }}
             >
@@ -69,7 +69,7 @@ export function PayoutLines({ approvalId, lang }: PayoutLinesProps) {
         })}
       </ul>
       {heldTotal > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-4)" }}>
+        <div data-part="held-total" style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-4)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--c-space-8)" }}>
             <span style={{ fontWeight: 600 }}>{t(UI.heldTotal, lang)}</span>
             <Money cents={heldTotal} tone="pending" />

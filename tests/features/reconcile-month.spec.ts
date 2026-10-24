@@ -30,8 +30,15 @@ async function monthState(page: Page): Promise<MonthSnapshot> {
   });
 }
 
+// The streaming table's rows: unmatched records, one-to-one matches (reconcile-match-<id>) and the
+// special matches, whose table rows carry reconcile-row-<id> while the pinned strip holds their
+// reconcile-match-<id>.
 const rowsIn = (page: Page) =>
-  page.getByTestId("reconcile-timeline").locator('[data-testid^="reconcile-record-"], [data-testid^="reconcile-match-"]');
+  page
+    .getByTestId("reconcile-list")
+    .locator('[data-testid^="reconcile-record-"], [data-testid^="reconcile-match-"], [data-testid^="reconcile-row-"]');
+
+const matchIdOf = (tid: string) => tid.replace(/^reconcile-(match|row)-/, "");
 
 async function rowTestIds(page: Page): Promise<string[]> {
   return rowsIn(page).evaluateAll((els) => els.map((e) => e.getAttribute("data-testid") ?? ""));
@@ -45,7 +52,9 @@ async function expectRowsMatchStore(page: Page) {
       const ids = new Set(await rowTestIds(page));
       return m.recordIds.every((rid) => {
         if (ids.has(`reconcile-record-${rid}`)) return true;
-        return m.matchIds.some((mid) => ids.has(`reconcile-match-${mid}`) && m.matches[mid]!.recordIds.includes(rid));
+        return m.matchIds.some(
+          (mid) => (ids.has(`reconcile-match-${mid}`) || ids.has(`reconcile-row-${mid}`)) && m.matches[mid]!.recordIds.includes(rid),
+        );
       });
     })
     .toBe(true);
@@ -87,7 +96,7 @@ test("at 25 s the timeline shows the month's records in date order, counters ris
   expect(ids.length).toBeGreaterThan(0);
   const dates = ids.map((tid) => {
     if (tid.startsWith("reconcile-record-")) return m.records[tid.slice("reconcile-record-".length)]!.date;
-    const match = m.matches[tid.slice("reconcile-match-".length)]!;
+    const match = m.matches[matchIdOf(tid)]!;
     return m.records[match.recordIds[0]!]!.date;
   });
   for (let i = 1; i < dates.length; i++) expect(dates[i]! >= dates[i - 1]!, `row ${i} (${ids[i]}) is not before row ${i - 1}`).toBe(true);

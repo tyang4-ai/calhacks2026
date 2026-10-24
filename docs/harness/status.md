@@ -1,9 +1,9 @@
-STAGE: I1
-NEXT: R5
+STAGE: W2+P2
+NEXT: R6
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 03:29 PT
+UPDATED: 2026-10-24 04:21 PT
 
 # Status board
 
@@ -16,7 +16,9 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - G1 passed 2:35 AM (5/5, verifier PASS). Shared lock on.
 - G2 passed 2:58 AM (2/2, verifier PASS; smoke 22/22 after the integrator fix).
 - W1 done 3:27 AM: all 9 P0 features green, wave gate PASS, tag w1.
-- Now: R5, I1 demo stage. Integrator running. Dev server on 5173.
+- G4 passed 4:15 AM after two fix rounds (d08 approvals compact card, d10 toast, d06 handled strip, d07 label). Tag demo-ok-1: the build to demo if everything after fails.
+- Now: R6, W2 features (audit, dashboard, scenario) and P2 upgrades (no-key ones first). Dev server on 5173.
+- G4 polish, not blocking: d00 caption covers the end of the explanation; d06 handled strip rows wrap unevenly; d08 Month panel cut at its bottom; d07 and d00 catch camera crops the top bar and rail; d01 request input text cut off.
 
 ## Gates
 
@@ -26,7 +28,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 | G1 | PASS | Oct 24 2:33 AM | `artifacts/gates/G1-0233.md`, `artifacts/gates/G1-verifier.md` | g1-scaffold |
 | G2 | PASS | Oct 24 2:58 AM | `artifacts/gates/G2-0252.md`, `artifacts/gates/G2-verifier.md` | g2-data |
 | G3 (W1) | PASS | Oct 24 3:27 AM | `artifacts/gates/G3-0327.md` (wave: check, smoke 22/22, build); 9/9 features green | w1 |
-| G4 | | | | |
+| G4 | PASS | Oct 24 4:15 AM | `artifacts/gates/G4-0415.md` 5/5 (60 s runs, strict demo test), `artifacts/gates/G4-verifier-r2.md` PASS (round 1 FAIL: `G4-verifier.md`) | demo-ok-1 |
 | G5 | | | | |
 | G6 | | | | |
 
@@ -89,7 +91,7 @@ Each item names the default already in use, so the build never waits.
 
 | Since | Question | Default in use |
 |---|---|---|
-| Oct 24 2:01 AM | `.env` is missing, so there's no `ANTHROPIC_API_KEY` or `NESSIE_KEY`. Copy `C:\dev\secrets\cindia.env` to `.env` | The upgrades that need these keys stay scripted |
+| Oct 24 2:01 AM | `.env` is missing, so there's no `ANTHROPIC_API_KEY` or `NESSIE_KEY`. Copy `C:\dev\secrets\cindia.env` to `.env` | The upgrades that need these keys stay scripted: B02, B07, B09 (Anthropic) and B04 (Nessie) are blocked; B01, B03, B05, B06, B08, B10 run without keys |
 
 ## Cut and simulated
 
@@ -127,3 +129,11 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 03:25 PT · pending for the integrator at I1: add `player.epoch()` and `player.getTimeline()` to the Player interface in events.md · F-close report
 - 2026-10-24 03:28 PT · G3 impact PASS 3/3 (feature 10/10 on 3 runs), verifier PASS, tag w1-impact · artifacts/gates/G3-0326.md, artifacts/verify/F-impact-G3-1025.md
 - 2026-10-24 03:29 PT · W1 wave gate PASS 3/3, tag w1; stage I1; integrator spawned for I1 · artifacts/gates/G3-0327.md
+- 2026-10-24 03:59 PT · I1 built; G4 checks 5/5 (63 s runs) but verifier FAIL: d08 apr_02 seal and payouts below the owner frame, d10 toast covers the held note; fix round 1: approvals, maker-statement, reconcile leads and integrator · artifacts/gates/G4-verifier.md
+- 2026-10-24 04:02 PT · maker-statement fix in (toast at top, 1800 ms, overlap test; feature 14/14, smoke 22/22) · decisions.md
+- 2026-10-24 04:05 PT · approvals d08 fix in (scroll target card into the visible phone area; feature 19/19, smoke 22/22, verifier PASS) · artifacts/gates/F-approvals-G4fix-verifier.md
+- 2026-10-24 04:10 PT · reconcile d06 fix in (Cindy handled strip pins the 3 special matches; feature 12/12 x3, smoke 22/22, verifier PASS round 2) · artifacts/gates/G3-reconcile-g4fix2-verifier.md
+- 2026-10-24 04:08 PT · round 1 done; strict demo test now fails d06 (mat_009, mat_017 IDs on scrolled rows) and d08 (apr_01 scrolled off); round 2: fresh approvals and reconcile leads; pending for integrator: ui-contract.md line 120 beat label top right in studio-catch · decisions.md
+- 2026-10-24 04:10 PT · reconcile round 2 in (special-match IDs on the strip rows; feature 12/12, smoke 22/22) · F-reconcile report
+- 2026-10-24 04:17 PT · approvals round 2 in (decided card compact; feature 19/19, smoke 22/22); G4 rerun checks 5/5, strict demo test, 60 s runs; verifier round 2 running · artifacts/gates/G4-0415.md
+- 2026-10-24 04:21 PT · G4 PASS 5/5, verifier round 2 PASS, tag demo-ok-1; stage W2+P2 · artifacts/gates/G4-verifier-r2.md

@@ -5,7 +5,8 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { useSearchParams } from "react-router";
 import { SOURCE_KEYS } from "../../core/events";
 import { player, type Speed } from "../../core/player";
-import { cycleSpeed, isTextInput, resetDemo, startAtCatch, togglePlay } from "./playback";
+import { cycleSpeed, isTextInput, resetDemo, togglePlay } from "./playback";
+import { startAtCatch } from "../demo/startAtCatch";
 import { cycleLang, useCindia } from "../../core/store";
 import { toggleMode, useSourceHealth } from "../../sources/mode";
 import "./controls.css";
@@ -49,7 +50,8 @@ export function DemoControls() {
   const [open, setOpen] = useState(false);
   const startedRef = useRef(false);
 
-  // ?start=catch does the same as the button, once, when a timeline with that beat is loaded.
+  // ?start=catch does the same as the button (seek to 30.0, play to 60.0, rewind, play the buyer
+  // to 20.0 and pause), once, when a timeline with that beat is loaded.
   useEffect(() => {
     if (startParam !== "catch" || startedRef.current) return;
     if (startAtCatch()) startedRef.current = true;

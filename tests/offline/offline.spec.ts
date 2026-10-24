@@ -1,6 +1,8 @@
-// The demo with every request whose host isn't localhost or 127.0.0.1 blocked, failing on any attempt.
+// The same 60-second run as the demo test, with every request whose host isn't localhost aborted.
+// It fails if any such request is attempted. Screenshots go to artifacts/demo/offline/.
+import path from "node:path";
 import { expect, test } from "@playwright/test";
-import { openStage, playAndReset } from "../demo/harness";
+import { ARTIFACTS_DEMO, openStage, playDemo } from "../demo/harness";
 import { isLocal, watchPage } from "../smoke/lib";
 
 test("the demo runs with every request beyond localhost blocked", async ({ page, context }) => {
@@ -13,7 +15,7 @@ test("the demo runs with every request beyond localhost blocked", async ({ page,
   });
   const watch = watchPage(page);
   await openStage(page);
-  await playAndReset(page);
+  await playDemo(page, path.join(ARTIFACTS_DEMO, "offline"));
   expect(attempts, "requests beyond localhost").toEqual([]);
   watch.expectClean();
 });

@@ -9,6 +9,7 @@ import type { MakerStatement, Person } from "../../core/types";
 import { getById } from "../../mock";
 import { MakerMark, Money, Toast, formatDate, formatMonth, usePlayerTime } from "../../ui";
 import { GLOSSARY, UI, t, type Lang } from "./strings";
+import "./statementToast.css";
 
 export interface StatementHeaderProps {
   makerId: string;
@@ -16,8 +17,12 @@ export interface StatementHeaderProps {
   statement: Payloads["statement.issued"];
 }
 
-/** How long the paid toast stays up, in player time. */
-const TOAST_MS = 3000;
+/**
+ * How long the paid toast stays up, in player time. statement.issued lands at 47.4 s in d10-statement,
+ * so the toast shows for a moment and is gone well before the beat ends at 50.0 s, when the held note
+ * is the point of the frame.
+ */
+const TOAST_MS = 1800;
 
 const whoStyle: CSSProperties = {
   display: "flex",
@@ -84,7 +89,12 @@ export function StatementHeader({ makerId, lang, statement }: StatementHeaderPro
         )}
       </div>
 
-      {showToast ? <Toast tone="jade">{t(UI.paidToast, lang)}</Toast> : null}
+      {showToast ? (
+        // display: contents keeps the kit toast's containing block, and the class moves it to the top.
+        <div className="maker-statement-toast" style={{ display: "contents" }}>
+          <Toast tone="jade">{t(UI.paidToast, lang)}</Toast>
+        </div>
+      ) : null}
     </header>
   );
 }

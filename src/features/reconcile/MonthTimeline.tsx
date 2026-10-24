@@ -7,6 +7,7 @@ import { LayoutGroup, motion } from "motion/react";
 import { useCindia } from "../../core/store";
 import { LedgerTable, UI_MS, useReducedMotion, type LedgerColumn, type LedgerRow } from "../../ui";
 import { CELL_KEYS, buildTimelineRows, countByType, payoutProgress, type Lang, type MonthSlice } from "./recordRows";
+import { HandledStrip } from "./HandledStrip";
 import { RECORD_TYPE_LABELS, RECORD_TYPE_ORDER, UI, payoutsMatched, t } from "./strings";
 
 export interface MonthTimelineProps {
@@ -91,7 +92,8 @@ export function MonthTimeline({ lang, maxHeight = 360 }: MonthTimelineProps) {
           </li>
         ))}
       </ul>
-      <div ref={scrollRef} className="overflow-y-auto [&_th]:sticky [&_th]:top-0 [&_th]:z-10" style={{ maxHeight }}>
+      <HandledStrip month={month} lang={lang} />
+      <div ref={scrollRef} data-testid="reconcile-list" className="overflow-y-auto [&_th]:sticky [&_th]:top-0 [&_th]:z-10" style={{ maxHeight }}>
         {rows.length === 0 ? (
           <p className="py-4 text-sm" style={{ color: "var(--c-color-ink-soft)" }}>
             {t(UI.noRecordsYet, lang)}

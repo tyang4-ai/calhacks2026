@@ -124,6 +124,16 @@ export function matchTestId(matchId: string): string {
   return `reconcile-match-${matchId}`;
 }
 
+/** Internal ID for a special match's table row: its reconcile-match ID sits on the pinned strip row. */
+export function matchRowTestId(matchId: string): string {
+  return `reconcile-row-${matchId}`;
+}
+
+/** The special kinds the "Cindy handled" strip pins. Every other match keeps its ID on its table row. */
+export function isSpecialMatch(match: Pick<MatchState, "kind">): boolean {
+  return match.kind !== "one_to_one";
+}
+
 /** The month's rows in date order: unmatched records alone, matched ones folded into their match. */
 export function buildTimelineRows(month: MonthSlice, lang: Lang): LedgerRow[] {
   const matched = matchedRecordIds(month);
@@ -147,7 +157,7 @@ export function buildTimelineRows(month: MonthSlice, lang: Lang): LedgerRow[] {
   for (const mid of month.matchIds) {
     const m = month.matches[mid];
     if (!m) continue;
-    items.push({ key: matchSortKey(m, month.records), row: { id: mid, cells: matchCells(m, lang), state: "matched", testId: matchTestId(mid) } });
+    items.push({ key: matchSortKey(m, month.records), row: { id: mid, cells: matchCells(m, lang), state: "matched", testId: isSpecialMatch(m) ? matchRowTestId(mid) : matchTestId(mid) } });
   }
   items.sort((a, b) => compareKeys(a.key, b.key));
   return items.map((i) => i.row);

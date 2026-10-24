@@ -85,10 +85,12 @@ function runNpm(script, scriptArgs = [], env = {}, labelSuffix = '') {
 
 /** The Playwright-reported duration of a run, in seconds, or the wall time. */
 function playwrightSeconds(out, fallback) {
-  const m = [...plain(out).matchAll(/\d+ passed \(([\d.]+)(m?s)\)/g)].pop();
+  // Playwright prints the run time as "(850ms)", "(58.2s)", "(1.0m)" or "(1.1h)".
+  const m = [...plain(out).matchAll(/\d+ passed \(([\d.]+)(ms|s|m|h)\)/g)].pop();
   if (!m) return fallback;
   const v = Number(m[1]);
-  return m[2] === 'ms' ? v / 1000 : v;
+  const perUnit = { ms: 0.001, s: 1, m: 60, h: 3600 };
+  return v * perUnit[m[2]];
 }
 
 function g4(mode) {

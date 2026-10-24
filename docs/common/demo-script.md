@@ -57,7 +57,7 @@ The demo controls and the beat label are hidden in video mode, so the recording 
 
 1. `demo-start-at-catch` or `/demo?start=catch` seeks to 30.0 and plays `d07-catch` to `d11-receipt`.
 2. At 60.0 the stage shows "Rewind to the buyer" for 1 second, seeks to 0.0, and plays `d01-ask` to `d05-money`.
-3. It pauses at 20.0, so Gordon can talk.
+3. It pauses at 19.999 s, the end of `d05-money`, so Gordon can talk. Not at 20.0, because `seek(20000)` already fires `d06-month`'s `beat.started` and moves the camera to `studio-month`.
 
 ## After the 60 seconds (during questions)
 
@@ -70,4 +70,4 @@ Gordon drives these by hand.
 
 ## Screenshots for G4
 
-`npm run test:demo` saves `artifacts/demo/<beat ID>.png` 300 ms before each beat ends. The verifier checks each one against its row above: the camera's frames are where `ui-contract.md` puts them, every test ID in the On screen column is visible, and the figures match. If a feature was cut, its beat still plays and shows the slot placeholder. The verifier checks that beat against the Cut and simulated list in `status.md` instead.
+`npm run test:demo` saves `artifacts/demo/<beat ID>.png` 300 ms before each beat ends. The verifier checks each one against its row above: the camera's frames are where `ui-contract.md` puts them, every test ID in the On screen column is visible, and the figures match. The test fails a beat when one of its On screen IDs or figures is rendered but scrolled, clipped or covered out of its frame's visible area at the screenshot. Two exceptions: `buyer-pay-button` only has to show during `d04-pay`, and in `d06-month` only the bundled, refund-netted and carried-over match rows must be in frame (one-to-one rows may scroll out). If a feature was cut, its beat still plays and shows the slot placeholder. The verifier checks that beat against the Cut and simulated list in `status.md` instead.

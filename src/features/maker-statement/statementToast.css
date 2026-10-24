@@ -1,0 +1,6 @@
+/* F-maker-statement: the paid toast sits at the top of the maker's phone, so it never covers the
+   statement's lines or the held note at the bottom. Overrides only the kit toast's placement. */
+.maker-statement-toast > .c-toast {
+  top: var(--c-space-8);
+  bottom: auto;
+}

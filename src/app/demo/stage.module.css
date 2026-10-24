@@ -1,0 +1,143 @@
+/* The /demo stage: a 1600 by 900 canvas scaled to fit the window, letterboxed on the paper ground.
+   Frames sit at the canvas's top left and the camera places them with a transform. */
+.ground {
+  position: fixed;
+  inset: 0;
+  background: var(--c-color-paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.stage {
+  width: 1600px;
+  height: 900px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+  background: var(--c-color-paper);
+}
+
+.frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
+.frame[data-shown="false"] {
+  pointer-events: none;
+}
+
+.beatLabel {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 20;
+  padding: 4px 10px;
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: 999px;
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+.beatLabel[data-place="right"] {
+  left: auto;
+  right: 12px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 72px;
+  pointer-events: none;
+}
+
+.line {
+  max-width: 1100px;
+  background: var(--c-color-ink);
+  color: var(--c-color-paper);
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-36);
+  line-height: 1.25;
+  padding: 20px 32px;
+  border-radius: 4px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgb(28 26 23 / 0.25);
+}
+
+.rewind {
+  composes: line;
+  font-size: var(--c-text-24);
+}
+
+.endCard {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-color-paper);
+}
+
+.endInner {
+  width: 980px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: var(--c-font-body);
+  color: var(--c-color-ink);
+}
+
+.endTitle {
+  margin: 0;
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-48);
+  font-weight: 600;
+}
+
+.endScore {
+  font-size: var(--c-text-24);
+}
+
+.endColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.endHeading {
+  margin: 0 0 8px;
+  font-size: var(--c-text-16);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-color-ink-soft);
+}
+
+.endList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--c-text-16);
+}
+
+.endUrl {
+  font-size: var(--c-text-21);
+  font-weight: 600;
+}

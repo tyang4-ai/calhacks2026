@@ -31,6 +31,8 @@ test("scripted mode: the reconcile panel shows the Simulated badge", async ({ pa
 });
 
 test("d06-month plays into d07-catch: matches build up, then the flag, evidence and explanation land", async ({ page }) => {
+  // Real-time playback: under an 8-worker load requestAnimationFrame can stall, so allow time.
+  test.setTimeout(120000);
   const watch = watchPage(page);
   await open(page);
   await page.evaluate(() => {
@@ -42,7 +44,7 @@ test("d06-month plays into d07-catch: matches build up, then the flag, evidence 
   });
 
   // Inside d06: matches appear, no flag yet.
-  await page.waitForFunction(() => window.__cindia!.player.now() >= 29000, null, { timeout: 15000 });
+  await page.waitForFunction(() => window.__cindia!.player.now() >= 29000, null, { timeout: 45000 });
   await page.evaluate(() => window.__cindia!.player.pause());
   expect(await now(page)).toBeLessThan(30300);
   const mid = await month(page);
@@ -52,7 +54,7 @@ test("d06-month plays into d07-catch: matches build up, then the flag, evidence 
 
   // Through d07: the catch lands on top of the timeline.
   await page.evaluate(() => window.__cindia!.player.play());
-  await page.waitForFunction(() => window.__cindia!.player.now() >= 37000, null, { timeout: 15000 });
+  await page.waitForFunction(() => window.__cindia!.player.now() >= 37000, null, { timeout: 45000 });
   await page.evaluate(() => window.__cindia!.player.pause());
   await expect(page.getByTestId("reconcile-flag")).toBeVisible();
   await expect(page.getByTestId("reconcile-flag")).toContainText("$340.00");
