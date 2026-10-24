@@ -81,17 +81,19 @@ type Policy = PolicyTopic[]
 
 **Events (`events.ts`):**
 - every new event type and payload in contracts sections 3 and 11, named here where this plan relies on them:
-  - `question.forwarded` and `question.answered` (the "ask the maker" loop, C-13), with the payloads section 3 gives,
+  - `question.forwarded` `{ questionId, threadId, makerId, pieceId, text, lang }` and `question.answered` `{ questionId, answerId, makerId, text, lang }`, the "ask the maker" loop (C-13),
+  - two status events, because features never fetch: `data.synced` keyed `b13-live`, `{ tables: { table, rows, newest: { id, label }[] }[], screens, processes: { processId, status }[] }`, and `index.synced` keyed `b12-search`, `{ indexed, drafts, elastic, agentBuilder }`,
+  - `watch.scanned` gains `results: { title, url, snippet, similarity, verdict }[]`, with `verdict` one of `"possible_copy"`, `"claim_only"` and `"neither"`, so the watch lists every checked result and not only the hits,
   - `storefront.requested` `{ storefrontId }` (D1-6),
   - `card.tokenized` gains `pieceId` (B1-34),
   - `approval.requested` gains `approval?: InlineApproval`, where `InlineApproval` is `{ kind, subjectIds, amountCents?, overLimit, proposedBy: "cindy", summary: Text, decisionDate }`. `decisionDate` is there because the v1 `Approval` record has one (B1-15),
   - `search.mapped` gains `approx?: boolean`,
   - `beat.started` gains `process?: ProcessId` and `drawer?: "support" | "ask" | "audit"`. I2-core owns both fields and `demo.drawer`. I2-tour T2 only checks them (B1-38),
-- any other type section 3 adds (the `data` view's, if it gets one) gets its type, schema and reducer here too,
+- any other type section 3 adds gets its type, schema and reducer here too,
 - `SourceKey` with `b11-embed` to `b15-watch` and every other key section 3 lists, and `SOURCE_KEYS` with all of them,
 - `ProcessId` with `data` (11 processes) and `PROCESS_IDS`, in the order of section 4's process table,
 - `MoneyMoveKind` with `project_fund` and `milestone`, and `Party.kind` with `community_fund`,
-- `REQUEST_KEYS` for every request row in sections 3 and 11 (D1-6): `search.queried` and `surprise.asked` on `b12-search`, `support.asked`, `listing.requested` and `storefront.requested` on `b14-swarm`, `watch.started` on `b15-watch`, `piece.opened` on `b10-derived`, `wip.milestone_reached` on `b08-approvals`, and `question.answered` on the key section 3 gives it. `checkout.started` stays keyless. T2 adds them all, so the second spawn never edits `events.ts`. Until T5 and T8 land, each of these answers with nothing, which is what v1 does for an unknown request.
+- `REQUEST_KEYS` for every request row in sections 3 and 11 (D1-6): `search.queried` and `surprise.asked` on `b12-search`, `support.asked`, `listing.requested` and `storefront.requested` on `b14-swarm`, `watch.started` on `b15-watch`, `piece.opened` on `b10-derived`, `wip.milestone_reached` on `b08-approvals`, and `question.answered` on `b14-swarm`, because the Writer relays the maker's answer. `checkout.started` stays keyless. T2 adds them all, so the second spawn never edits `events.ts`. Until T5 and T8 land, each of these answers with nothing, which is what v1 does for an unknown request.
 
 **Feature types (`featureTypes.ts`):**
 - `SurfaceId` adds `"store"`.
@@ -118,15 +120,16 @@ Every record is keyed by its entity ID, and every entry also keeps `at`, the pla
 |---|---|
 | `search` | `queries`, `answers`, `maps` (each by `queryId`), `latestQueryId` |
 | `surprise` | `asks`, `draws` (by `surpriseId`), `latestSurpriseId` |
-| `support` | `threads` by `threadId`: `{ side, lang, contextIds, messages }`. A message is `{ kind: "asked" \| "answered" \| "escalated", eventId, at, ... }`, with the fields of its event. Plus `threadIds`, `latestThreadId`, and `questions` by the question's ID: `{ forwarded, answered }`, each its event's payload with `at`, or `null` |
+| `support` | `threads` by `threadId`: `{ side, lang, contextIds, messages }`. A message is `{ kind: "asked" \| "answered" \| "escalated", eventId, at, ... }`, with the fields of its event. Plus `threadIds`, `latestThreadId`, and `questions` by `questionId`: `{ forwarded, answered }`, each its event's payload with `at`, or `null`. The maker page and the buyer's support thread both read `questions` |
 | `swarm` | `runs` by `runId`: `{ threadId, stepIds, done, firstAt, lastAt }`. `steps` by `stepId`. `runIds`, `latestRunId` |
 | `listings` | `requests`, `drafts`, `indexed` (by `listingId`), `latestListingId` |
 | `storefront` | `requests`, `drafts` (the blocks) and `published` (the slug), each by `storefrontId` |
 | `projects` | `contributions` by `contributionId`, and `addedCents` by `projectId` (raised in this run, added to the entity's `raisedCents` on screen). `addedCents` is always the sum of that project's `contributions`, never a running increment, so a repeated `project.funded` counts once (B1-44) |
 | `wip` | `milestones` by `milestoneId`: `{ wipId, status: "reached" \| "paid", date, amountCents? }` |
 | `model` | `trained` and `scored`, each the payload or `null` |
-| `watch` | `scans` by `scanId`: `{ makerId, queries, engine?, candidates?, startedAt, scannedAt? }`. `hits` by `cftId`, `hitIds`, `latestScanId` |
-| `log` | `entries`: one `{ id, type, at, source, key }` per event, newest last, one entry per event `id`, keeping the newest 400 (B1-15, D1-2). The process views and block counts read it |
+| `watch` | `scans` by `scanId`: `{ makerId, queries, engine?, candidates?, results?, startedAt, scannedAt? }`, with `results` as `watch.scanned` carries them. `hits` by `cftId`, `hitIds`, `latestScanId` |
+| `sync` | `data` and `index`: the newest `data.synced` and the newest `index.synced`, each its payload with `at`, or `null` |
+| `log` | `entries`: one `{ id, type, at, source, key }` per event, newest last, one entry per event `id`, keeping the newest 400 (B1-15, D1-2). The process views and block counts read it. A status event (`data.synced`, `index.synced`) replaces the log's earlier entry of its own type instead of adding one, so live polling never pushes the tour's events out |
 | `demo` | gains `process: ProcessId \| null` and `drawer: "support" \| "ask" \| "audit" \| null`, both from `beat.started` |
 | `buyer` | gains `checkouts` and `cards` by `pieceId` (B1-34). `card.tokenized` is filed under its `pieceId`, or under the latest `checkout.started`'s piece when the event has none. `checkout` and `card` stay as the latest of each, for v1's readers, until M-buyer moves off them |
 | `approvals` | each `ApprovalState` gains `approval?`, the inline object from `approval.requested`, stored as it arrives (D1-16). M-approvals, F-watch and F-seller-hub read it when `getById()` finds nothing |
@@ -143,6 +146,7 @@ Every record is keyed by its entity ID, and every entry also keeps `at`, the pla
   - `pageTag()`: a 6-character tag of lowercase letters and digits, made on the first call from `crypto.getRandomValues` and the same for the page's whole life. Only live adapters call it, so scripted mode never uses a random value.
   - `answerId(prefix)`: the next ID for a scripted answer to a person, `<prefix>_user_<n>`. Numbers are reserved per prefix the moment an answer is planned, so two answers pending at once never share one. They start over at 1 when the player's epoch changes, which is when a reset or seek drops the store's person-made records.
   - `liveIdStart(prefix, count)`: reserves `count` numbers for a live run and returns the first. Live IDs are `<prefix>_user_<pageTag()>_<n>`. These numbers never start over within a page, so SpacetimeDB rows from an earlier epoch never collide with new ones.
+- **Arrival time for streamed events** (B2-14): the registry re-stamps the `at` of every event an adapter hands to `start(emit)` with `player.now()` as it arrives, so live swarm steps and status events light up when they land. This happens in one place, `src/sources/registry.ts`. The responder already does the same for answers to people.
 
 **From T5 and T8 (second spawn):**
 - `keywords.ts`: `extractKeywords(text)` returns `{ keywords: string[], filters: { maxPriceCents?: number } }`, building its vocabulary with `keywordVocab()`. Exported from `src/sources/index.ts`.
@@ -240,8 +244,8 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
 |---|---|---|---|---|
 | T1 | Merge `docs/v2/contracts.md`, all twelve sections, into `docs/common/` (details below). Mark nothing as "new" in the merged text: write it as the contract, in the same voice as v1 | docs/common/conventions.md, docs/common/glossary.md, docs/common/data-model.md, docs/common/events.md, docs/common/ui-contract.md, docs/common/api-contract.md, docs/common/design-system.md, docs/common/demo-script.md, docs/common/definition-of-done.md | none | opus |
 | T2 | Types: entities, shared shapes, events, `REQUEST_KEYS`, feature types, cameras, `nav.ts` with its unit test. Fix the type fallout in `src/app/` with placeholder entries only (details below) | src/core/types.ts, src/core/events.ts, src/core/featureTypes.ts, src/core/nav.ts, src/core/nav.test.ts, src/core/index.ts, src/app/strings.ts, src/app/lang.ts, src/app/featureLoader.ts, src/app/surfaces/views.ts, src/app/demo/cameras.ts, src/app/demo/cameras.test.ts, src/app/demo/DemoStage.tsx, src/app/demo/EndCard.tsx | T1 | opus |
-| T3 | State and reducers, idempotent per entity ID, with unit tests applying every new type once and twice, a duplicate `project.funded` counted once, and the demo timeline replayed twice into the same `log` | src/core/state.ts, src/core/reducers/index.ts, src/core/reducers/search.ts, src/core/reducers/support.ts, src/core/reducers/listings.ts, src/core/reducers/projects.ts, src/core/reducers/model.ts, src/core/reducers/watch.ts, src/core/reducers/storefront.ts, src/core/reducers/log.ts, src/core/reducers/approvals.ts, src/core/reducers/buyer.ts, src/core/reducers/small.ts, src/core/reducers.test.ts, src/core/testFixtures.ts | T2 | opus |
-| T4 | Validation for every new payload and every section 11 field, the per-key timeouts in the registry and the responder, `ids.ts`, and their tests | src/core/validate.ts, src/core/validate.test.ts, src/sources/types.ts, src/sources/registry.ts, src/sources/registry.test.ts, src/sources/requests.ts, src/sources/index.ts, src/sources/ids.ts, src/sources/ids.test.ts | T2 | sonnet |
+| T3 | State and reducers, idempotent per entity ID, with unit tests applying every new type once and twice, a duplicate `project.funded` counted once, and the demo timeline replayed twice into the same `log`. `small.ts` takes `surprise`, `wip`, `demo` and `sync` | src/core/state.ts, src/core/reducers/index.ts, src/core/reducers/search.ts, src/core/reducers/support.ts, src/core/reducers/listings.ts, src/core/reducers/projects.ts, src/core/reducers/model.ts, src/core/reducers/watch.ts, src/core/reducers/storefront.ts, src/core/reducers/log.ts, src/core/reducers/approvals.ts, src/core/reducers/buyer.ts, src/core/reducers/small.ts, src/core/reducers.test.ts, src/core/testFixtures.ts | T2 | opus |
+| T4 | Validation for every new payload and every section 11 field, the per-key timeouts in the registry and the responder, the registry's arrival re-stamp for `start(emit)` events, `ids.ts`, and their tests | src/core/validate.ts, src/core/validate.test.ts, src/sources/types.ts, src/sources/registry.ts, src/sources/registry.test.ts, src/sources/requests.ts, src/sources/index.ts, src/sources/ids.ts, src/sources/ids.test.ts | T2 | sonnet |
 | T6 | Server config, services, health, logging, requirements, conftest, the self-test and the server script. Create or refresh `.venv` and install the requirements with `.venv`'s Python. On Linux, use `python3 -m venv .venv`. After the install, `torch.__version__` must end in `+cpu`, or the CUDA build came from PyPI and the install is redone | server/config.py, server/services.py, server/main.py, server/requirements.txt, tests/server/conftest.py, scripts/server_selftest.py, scripts/server.mjs | none | sonnet |
 | T7 | `scripts/export-mock.mjs` and the `export:mock` script, the gates, `test-feature.mjs`, the secrets scan, the Vite watcher and the harness's `durationMs` field | scripts/export-mock.mjs, scripts/gate.mjs, scripts/test-feature.mjs, scripts/secrets-scan.mjs, scripts/lib/common.mjs, tests/demo/harness.ts, vite.config.ts, package.json, package-lock.json | none | sonnet |
 | FO1 | Fallout step, feature-lead: placeholder entries for the widened unions in four v1 feature files (details below) | src/features/proof/strings.ts, src/features/money-map/strings.ts, src/features/money-map/partyLayout.ts, src/features/approvals/approvalSummary.ts | T2 | sonnet |
@@ -268,9 +272,9 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
 T1's report ends with a coverage list: every heading, bullet group and table of contracts sections 1 to 12, each with the `docs/common/` file it went to. A part with no home is a `needs:` line, never a silent drop (D1-9).
 
 **The ID scheme** that `data-model.md` gains, as section 11 states it (D1-47):
-- **The tour and the scripted data:** `qry_01`, `srp_01`, `thr_00` (the fallback runs' placeholder thread), `thr_01` onward, `wsc_01`, `run_01` onward (one per scripted run, section 11's list), `stp_0001` onward, `chk_01` onward, `ctb_01` onward. `lst_` and `run_` are also record prefixes in `src/mock/`.
-- **A person's requests** (made by features, counting what's in the store): `qry_user_<n>`, `srp_user_<n>`, `thr_user_<n>`, `wsc_user_<n>`, `lst_user_<n>`, `ctb_user_<n>`, `ord_user_<n>`.
-- **Scripted answers to a person** (from `answerId()`): `run_user_<n>`, `stp_user_<n>`, `chk_user_<n>`, `pc_user_<n>`, `cft_user_<n>`, `fup_user_<n>`, `apr_user_<n>`, `mv_user_<n>`, plus v1's `evt_reply_<n>` and `act_reply_<n>`.
+- **The tour and the scripted data:** `qry_01`, `srp_01`, `thr_00` (the fallback runs' placeholder thread), `thr_01` onward, `wsc_01`, `run_01` onward (one per scripted run, section 11's list), `stp_0001` onward, `chk_01` onward, `ctb_01` onward, `qst_01` onward (questions forwarded to a maker). `lst_` and `run_` are also record prefixes in `src/mock/`.
+- **A person's requests** (made by features, counting what's in the store): `qry_user_<n>`, `srp_user_<n>`, `thr_user_<n>`, `wsc_user_<n>`, `lst_user_<n>`, `ctb_user_<n>`, `ord_user_<n>`, and `ans_user_<n>` for a maker's answer on her page.
+- **Scripted answers to a person** (from `answerId()`): `run_user_<n>`, `stp_user_<n>`, `chk_user_<n>`, `pc_user_<n>`, `cft_user_<n>`, `fup_user_<n>`, `apr_user_<n>`, `mv_user_<n>`, `qst_user_<n>`, plus v1's `evt_reply_<n>` and `act_reply_<n>`.
 - **Live answers to a person:** the same prefixes with the page tag, `<prefix>_user_<tag>_<n>` (fix-plan 1.9).
 
 ### T2 · Details
@@ -343,7 +347,7 @@ SCOPE: src/mock/catalog.ts
 - The person's run ends with its own `apr_user_<n>`, whose `approval` object is a `listing_publish` for the person's listing. It never re-emits `apr_04`.
 
 **`watch.started`** (T5), from `scriptedScan`:
-- `watch.scanned` (engine `scripted`, `candidates` as the count, plus any per-result fields section 3 gives it, from `counterfeitCandidates`) at offset 0,
+- `watch.scanned` at offset 0: engine `scripted`, `candidates` as the count, and `results` with every checked candidate from `counterfeitCandidates` (title, URL, snippet, similarity and its `verdict`), hits and non-hits alike,
 - one `counterfeit.flagged` per `cftIds` entry, 300 ms apart, with the request's `scanId`, re-keyed to `cft_user_<n>`,
 - then `followup.drafted` for `followUpId`, re-keyed to `fup_user_<n>`, when it's set,
 - then `approval.requested` for `approvalId`, re-keyed to `apr_user_<n>` with its `approval` object naming the person's hits, when it's set.
@@ -378,6 +382,9 @@ The output order is moods, then facet words (object, materials, techniques, moti
 - Given every event type in `docs/common/events.md`, when `reducers.test.ts` applies each once and then twice, then the state is the same after the second time.
 - Given the demo timeline played twice, then the `log` holds the same entries in the same order, at most 400.
 - Given two `project.funded` events with one `contributionId`, then `addedCents` counts it once.
+- Given two `data.synced` events, then `sync.data` holds the newer. The same holds for `index.synced` and `sync.index`.
+- Given a fake adapter whose `start(emit)` hands over an event with `at: 0`, then the store holds it with the player's time at arrival.
+- Given `question.forwarded` and then `question.answered` for one `questionId`, then `support.questions` holds both under that ID.
 - Given a person's `checkout.started` on `pc_13` after the tour's checkout of `pc_01`, then `buyer.cards` holds both pieces' cards and the `pc_01` card is unchanged.
 - Given an invalid payload for each new type and each section 11 field, when `validateEvent()` checks it, then it returns at least one problem. Given a valid one, it returns none.
 - Given a fake adapter for `b14-swarm` that answers in 15 seconds, when its request plays in live mode, then its events are used. Given one for `b01-match` that answers in 9 seconds, then the scripted event plays. Both are tested with fake timers, for the registry and for a person's request through the responder.
@@ -427,7 +434,8 @@ The output order is moods, then facet words (object, materials, techniques, moti
 - **Views and cameras:** `SellView` and `SELL_VIEWS`, `TourCameraId` (with `pitch` and `shop-legacy`), `LegacyCameraId`, `LEGACY_CAMERA_IDS`, `TOUR_CAMERA_IDS`, `CAMERA_IDS`, `LEGACY_CAMERA_TO_TOUR` and `toTourCamera()`.
 - **Navigation and slot props:** `registerNavigator(impl)` beside section 11's `nav.ts` exports, and `SlotProps.publicSite?`, which I2-shell asks for.
 - **Sources:** `timeoutFor()`, `pageTag()`, `answerId()`, `liveIdStart()`, `scoreKeywords()`, `drawSurprise()`, `planRun()` and `mulberry32()`, with the rules above.
-- **Store:** the shapes in "The store keys", `support.questions`, `buyer.checkouts` and `buyer.cards`, and `approval?` on each approval.
+- **Store:** the shapes in "The store keys", `support.questions`, `sync`, `buyer.checkouts` and `buyer.cards`, and `approval?` on each approval.
+- **IDs:** `qst_01` onward, `qst_user_<n>` and `ans_user_<n>`, following the prefixes FX7 settled.
 - **Server:** `ALLOWED_MODELS`, `CLAUDE_BASE_URL`, `elastic_headers()`, `apify_headers()`, `spacetime_headers()`, `spacetime_reachable()`, `model_present()`, `needs_service()` and the autouse fake-key fixture.
 - **Scripts:** the shape of `artifacts/mock/mock.json`, the extra paths on `secrets-scan.mjs`, several slugs on `test:feature` and G3, and live specs after the slug on G5 for `b11` to `b16`.
 - **The gate's time rule:** `endedAtWallMs` at most `durationMs` plus 15 seconds, read from `report.json`.

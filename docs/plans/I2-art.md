@@ -105,7 +105,7 @@ The integrator does every task itself, in order.
 - Given T0, when `npm run art -- --placeholders` runs, then `public/images/` holds `pc_01.svg` to `pc_54.svg`, each passes `--check`, and a second run changes no file.
 - Given T0, when `npm run test:smoke` runs, then `images.spec.ts` passes for all 54.
 - Given G2b, when `npm run art -- --check` runs, then it exits 0.
-- Given `npm run export:mock` then `npm run art`, then `public/images/` holds the 54 drawings, and a second run changes no file.
+- Given `npm run export:mock` then `npm run art`, then `public/images/` holds the 54 drawings, and a second run changes no file there.
 - Given `npm run art -- --check` after T3, then it exits 0. Every file is under 30 KB, valid, 800 by 800, with no text, images, scripts or outside references, and the pattern list holds only the allowed names.
 - Given `artifacts/art/contact-sheet.png`, when the verifier reviews it against this plan's style rules, then:
   - every piece is recognizably its object kind,

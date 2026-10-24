@@ -33,7 +33,7 @@ Old links redirect. `/demo` keeps playing the v1 story, with R0's names, on full
 **Reads:**
 - `store.lang`, `store.agent` (Cindy's latest line for the Sell header), `store.demo` (`beatId`, `camera`, `process`, `drawer`), and `store.log` (the ID of the newest `beat.started`, for the stage override),
 - `store.buyer.openPieceId` and `store.search.latestQueryId`, to give the stage's Shop frame its page,
-- the studio's name and each maker's `lang` from `src/mock/` through `import.meta.glob`, as `studioInfo.ts` already does,
+- the studio's name (`std_dine`, which R0 put in place of `std_gu` in `studioInfo.ts`) and each maker's `lang` from `src/mock/` through `import.meta.glob`, as `studioInfo.ts` already does,
 - `import.meta.env.VITE_PUBLIC_SITE`, read in one place, `src/app/site.ts`.
 
 **Emits:** nothing. On routes, navigation, drawers and the process overlay live in the URL. On `/demo` they live in the stage.
@@ -137,7 +137,7 @@ Routes never use these boxes, so the V2 migrations build and test at full deskto
 
 **The stage, Phase A:**
 - The stage is the kit's `PAGE_WIDTH` by `PAGE_HEIGHT` (1440 by 900), scaled to fit and letterboxed on paper.
-- All four frames stay mounted. Each `TourCameraId` shows exactly one frame at scale 1, and the others sit at opacity 0 and `inert`. The one exception is `sell-catch`, which zooms 1.35 to the box around `reconcile-flag` and its evidence, as v1's `studio-catch` did.
+- All four frames stay mounted. Each `TourCameraId` but `pitch` shows exactly one frame at scale 1, and the others sit at opacity 0 and `inert`. The one exception is `sell-catch`, which zooms 1.35 to the box around `reconcile-flag` and its evidence, as v1's `studio-catch` did.
 - The stage reads `store.demo.camera` and maps it through I2-core's `toTourCamera()`, which sends `buyer` and `receipt` to `shop-legacy` (B1-3). The stage keeps no mapping of its own, and the v1 timeline keeps its own camera IDs.
 - The stage passes each frame its page:
   - `shop-legacy` sets the legacy page,

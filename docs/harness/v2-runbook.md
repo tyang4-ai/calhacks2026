@@ -104,15 +104,21 @@ The order below follows the architecture review (B1-1, B1-19, B1-20). Commit eac
 
 ## V2 · Features, upgrades and the public site
 
-**Features,** after G1b and G2b, in this order, as v1's R4: `F-search`, `M-buyer`, `F-support`, `F-process`, `F-communities`, `M-approvals`, `M-desktop`, `F-seller-hub`, `F-watch`, `F-storefront`, `M-maker-statement`.
-- `M-desktop` is P0 and runs right after `M-approvals`, before the tour, because `d06` to `d10` are the moment for the finance tracks (C-11).
+**Features,** after G1b and G2b, in this order, as v1's R4:
+- P0: `F-search`, `M-buyer`, `F-support`, `F-process`, `F-communities`, `M-approvals`, `M-desktop`, `F-seller-hub`.
+- Then P1: `F-watch`, `F-storefront`, `M-maker-statement`.
+
+Notes on the queue:
+- `M-desktop` is P0 and runs right after `M-approvals`, before the tour, because `d06` to `d10` are the moment for the finance tracks (C-11). Its lead starts with T2 and T3 (the money map, then the month and the catch at desktop size), before its other tasks.
+- `F-seller-hub` is P0, because its `d15-listing` beat is in the tour's spine.
+- B13's task for B08's owner route (`docs/plans/B13-live.md`) must land before `M-approvals`' G3. If M-approvals reports first, its G3 waits for that task, and the B13 backend-builder runs it next.
 - Each gets a feature-lead with `PLAN: docs/plans/<plan>.md`, `TASK: all`, and the SCOPE line its plan gives. A migration plan may own more than one feature folder.
 - G3 on each. A migration plan's G3 takes every slug it owns, for example `npm run gate -- G3 money-map reconcile scenario close impact proof dashboard ask-cindy audit` for `M-desktop`. Tags `v2-<slug>`, where an `M-` plan's slug is its ID without `M-` (`v2-desktop`).
 - After each green feature, rerun `npm run test:demo` once and `npm run test:offline` (the Phase A demo, later the tour) when no other Playwright gate is running.
 
 **Upgrades,** as v1's R6, each with a backend-builder and the SCOPE its plan lists, then G5. Tags `demo-ok-b11` to `demo-ok-b16`.
 1. `B11-embed` first.
-2. Then `B13-live` and `B12-search`.
+2. Then `B13-live` and `B12-search`. Start B13 as early as the cap allows (V1 step 8 lets it start once I2-core is in), because its B08 owner-route task gates M-approvals' G3.
 3. Then `B16-bank-books`, once B13 is green or cut. It needs `NESSIE_KEY`.
 4. Then `B14-swarm`.
 5. Then `B15-watch`. It crawls the sandbox market once the public site is up (D-deploy), and plays on its fixture until then.
@@ -126,6 +132,7 @@ Your own steps around the upgrades (builders can't install, publish or run serve
 - **An upgrade whose service isn't reachable or whose key isn't set:** finish it against mocks, mark it `blocked` with the reason under Needs Gordon, and move on. The scripted source keeps the demo whole.
 
 **The public site (`docs/plans/D-deploy.md`),** an integrator plan, as soon as G1b and G2b are green, within the cap.
+- Its `package.json` edit (T2) never runs beside another integrator task that edits `package.json`, such as I2-art's `art` script. Queue one behind the other.
 - When its gate is green, put the upload under Needs Gordon: "Upload the public build to Cloudflare Pages, the steps in `docs/plans/D-deploy.md`, about 5 minutes."
 - When Gordon sends the site's URL, write it on the Public site line of `status.md`, and restart `npm run server` with `PUBLIC_SITE_URL=<url>` set for that process. A variable added to the cloud environment reaches this session only after its VM is rebuilt, so ask him to add it there too, for later rebuilds.
 - The laptop script and its checklist (D-deploy) are for Gordon to run on the demo laptop Saturday night, on a good network.
