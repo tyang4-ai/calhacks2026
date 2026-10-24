@@ -60,7 +60,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B03-proof | green | live at 59.0 s | demo-ok-b03 | G5 13/13, verifier PASS |
 | B04-bank | blocked | | | needs NESSIE_KEY |
 | B05-scenario | running | | | built, server 117 passed; live proof in TestClient tests (no timeline events); API restarted with b05 |
-| B06-workbook | running | | | built, server 42 passed; API restarted, health lists b06; G5 after B01 |
+| B06-workbook | green | live at 44.6 s | demo-ok-b06 | G5 13/13, verifier PASS |
 | B07-ask | blocked | | | needs ANTHROPIC_API_KEY |
 | B08-approvals | running | | | built, server 87 passed; API restart pending (after the integrator's G5 run) |
 | B09-concierge | blocked | | | needs ANTHROPIC_API_KEY |
@@ -163,3 +163,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 05:05 PT · G5 b03 FAIL 9/13: b01, b03, b06, b10 live; b08 fell back on approval.granted by design (no owner screen, plan line 42); integrator adding an allowed-fallback rule and fixing B05 contract mismatches; B05 built; API restarted with b05 · artifacts/gates/G5-0454.md
 - 2026-10-24 05:12 PT · G5 b03 PASS 13/13 (b01, b03, b06, b10 live; b08 live with allowed grant fallbacks); G5 for b06, b08, b10, b05 running in sequence; batch verifier running · artifacts/gates/G5-0506.md
 - 2026-10-24 05:58 PT · G5 B03-proof PASS 13/13, verifier PASS, tag demo-ok-b03 · artifacts/gates/G5-0506.md, artifacts/gates/G5-batch-verifier.md
+- 2026-10-24 05:58 PT · G5 B06-workbook PASS 13/13, verifier PASS, tag demo-ok-b06 · artifacts/gates/G5-0516.md, artifacts/gates/G5-batch-verifier.md
