@@ -1,6 +1,6 @@
 # Runbook · orchestrator
 
-You are the main session. This is your procedure from kickoff to freeze. Read `docs/harness/status.md` first, find the step named in `NEXT`, and continue from there. After a compaction or a restart, the context hook puts the top of `status.md` in front of you. Re-read the file and this runbook before you act.
+You are the main session. This is your procedure from kickoff to freeze. **v2:** once v1 is green (`demo-ok-4`) and the build has moved to the cloud session, continue with `docs/harness/v2-runbook.md` instead. Read `docs/harness/status.md` first, find the step named in `NEXT`, and continue from there. After a compaction or a restart, the context hook puts the top of `status.md` in front of you. Re-read the file and this runbook before you act.
 
 ## Standing rules
 

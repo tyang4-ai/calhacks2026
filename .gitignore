@@ -4,6 +4,7 @@
 !.env.example
 
 # Dependencies and builds
+models/
 node_modules/
 dist/
 .vite/
