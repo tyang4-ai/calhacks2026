@@ -17,7 +17,8 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - G2 passed 2:58 AM (2/2, verifier PASS; smoke 22/22 after the integrator fix).
 - W1 done 3:27 AM: all 9 P0 features green, wave gate PASS, tag w1.
 - G4 passed 4:15 AM after two fix rounds (d08 approvals compact card, d10 toast, d06 handled strip, d07 label). Tag demo-ok-1: the build to demo if everything after fails.
-- Now: R6, W2 features (audit, dashboard, scenario) and P2 upgrades (no-key ones first). Dev server on 5173.
+- W2 green (3/3); P2: six no-key upgrades green (B01, B03, B05, B06, B08, B10); B02, B04, B07, B09 wait on .env.
+- Now: R6 polish. Integrator (stage: cold-open caption, catch crop, d08 back panel), reconcile (handled strip layout), buyer (request input cut off). Then G3 for each and G4. Dev server 5173, API 8000.
 - G4 polish, not blocking: d00 caption covers the end of the explanation; d06 handled strip rows wrap unevenly; d08 Month panel cut at its bottom; d07 and d00 catch camera crops the top bar and rail; d01 request input text cut off.
 
 ## Gates
@@ -167,3 +168,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 05:58 PT · G5 B08-approvals PASS 13/13, verifier PASS, tag demo-ok-b08 · artifacts/gates/G5-0525.md, artifacts/gates/G5-batch-verifier.md
 - 2026-10-24 05:58 PT · G5 B10-derived PASS 13/13, verifier PASS, tag demo-ok-b10 · artifacts/gates/G5-0534.md, artifacts/gates/G5-batch-verifier.md
 - 2026-10-24 05:58 PT · G5 B05-scenario PASS 13/13, verifier PASS, tag demo-ok-b05 · artifacts/gates/G5-0543.md, artifacts/gates/G5-batch-verifier.md
+- 2026-10-24 05:58 PT · six no-key upgrades green; staying in R6 for polish (decisions.md); integrator, reconcile and buyer polish started · artifacts/gates/G4-verifier-r2.md
