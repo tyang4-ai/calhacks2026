@@ -79,7 +79,8 @@ The accounts, keys, hosts and gotchas for every service are in `docs/v2/apis-and
 |---|---|
 | `api-authentication-and-limits.md` | API v2 basics: the token as `Authorization: Bearer` (or `?token=`), the `/v2/actors/` prefix, the response and error shapes, rate limits with retry advice, scoped tokens, and the plan limits |
 | `run-sync-get-dataset-items.md` | `POST /v2/actors/{actorId}/run-sync-get-dataset-items`: every query parameter, the 300-second limit and its 408, status codes, the tutorial's synchronous flow, and a Python example for the Google scraper |
-| `google-search-scraper.md` | The `apify/google-search-scraper` Actor: input keys (`queries`, `maxPagesPerQuery`, `countryCode`, `languageCode`), output items and `organicResults` fields, price, and Apify's own LangChain call as verbatim code |
+| `cheerio-scraper.md` | The `apify/cheerio-scraper` Actor that B15 uses on the sandbox market: input keys (`startUrls`, `pageFunction`, `respectRobotsTxtFile` and the rest) with types and defaults, the output shape, a JSON input example and the compute-unit price |
+| `google-search-scraper.md` | No longer used. B15 crawls our own sandbox market instead of searching the real web (`docs/v2/fix-plan.md` section 1.6). Kept for reference: the `apify/google-search-scraper` Actor's input keys, output fields and price |
 
 ## sentence-transformers/
 

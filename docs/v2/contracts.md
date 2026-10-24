@@ -47,9 +47,9 @@ Four fictional Native American communities. The Diné co-op is the named communi
 | ID | Kind | People and place | Craft | Lead | Makers | Pieces | Storefront | Project |
 |---|---|---|---|---|---|---|---|---|
 | `com_dine` | native_american | Diné Weaving and Silver Co-op (the studio `std_dine`), Navajo Nation, Arizona, USA | Wool weavings, silver and turquoise jewelry | `own_01` | `mkr_01` to `mkr_03` | `pc_01` to `pc_12` | `sto_01`, `dine-weavers` | `prj_01` |
-| `com_ojibwe` | native_american | An Ojibwe beadwork co-op, Minnesota, USA | Floral beadwork: earrings, pouches, barrettes | `own_02` | `mkr_04` to `mkr_08` | `pc_13` to `pc_26` | `sto_02`, `ojibwe-beadwork` | `prj_02` |
+| `com_ojibwe` | native_american | An Ojibwe beadwork co-op, Minnesota, USA | Floral beadwork: earrings, pouches and necklaces | `own_02` | `mkr_04` to `mkr_08` | `pc_13` to `pc_26` | `sto_02`, `ojibwe-beadwork` | `prj_02` |
 | `com_acoma` | native_american | An Acoma pottery studio, New Mexico, USA | Coil-built, hand-painted pottery | `own_03` | `mkr_09` to `mkr_13` | `pc_27` to `pc_40` | `sto_03`, `acoma-pottery` | `prj_03` |
-| `com_seminole` | native_american | A Seminole patchwork co-op, Florida, USA | Patchwork skirts, jackets and bags | `own_04` | `mkr_14` to `mkr_17` | `pc_41` to `pc_54` | `sto_04`, `seminole-patchwork` | `prj_04` |
+| `com_seminole` | native_american | A Seminole patchwork co-op, Florida, USA | Patchwork skirts and jackets | `own_04` | `mkr_14` to `mkr_17` | `pc_41` to `pc_54` | `sto_04`, `seminole-patchwork` | `prj_04` |
 
 - Every community, person, piece, story, storefront, approval and statement is fictional demo data in `src/mock/`. Craft descriptions use only the sourced safe craft lines in `S3-catalog.md`, one per craft, and write nothing beyond them.
 - **Words.** "Native American", and nation names "Diné (Navajo)", "Ojibwe", "Acoma Pueblo" and "Seminole". In Chinese: 美洲原住民, and 纳瓦霍（Diné）, 奥吉布瓦（Ojibwe）, 阿科马（Acoma）, 塞米诺尔（Seminole）. Never "Indian American", which means Americans of South Asian descent, and never a nation's name as a product word ("Navajo rug").
@@ -70,7 +70,7 @@ Four fictional Native American communities. The Diné co-op is the named communi
 | ListingDraft | `lst_01` (the demo listing) | `makerId`, `notes: string` (the maker's own words, in English), `lang` |
 | AgentSpec | the agent IDs in section 6 | `agentId`, `name: Text`, `job: Text`, `kind: "claude" \| "code"`, `model?: "claude-haiku-5-5" \| "claude-sonnet-5-5"`, `tools: string[]`, `never: Text` |
 | SearchQuery (eval) | `sq_001` to `sq_050` | `text`, `lang: "en" \| "zh"`, `grades: Record<pieceId, 1 \| 2>` (2 is a perfect match, 1 a good one), `author: "data_agent" \| "gordon"`. Held-out test queries, written separately by our data agent and never used for training. The pieces they grade are in training, and only the queries are held out. A query Gordon writes or edits carries `author: "gordon"`, and the report scores those as their own row |
-| CounterfeitCandidate | `cft_01` to `cft_04` | `url` (its sandbox market page, `/market/<cftId>.html`, or a page on `example.com` or `example.org`), `title`, `snippet`, `pieceId` (the co-op's piece it resembles), `similarity` (normalized, 0 to 1), `claim: Text`, `verdict: "possible_copy" \| "claim_only" \| "neither"` |
+| CounterfeitCandidate | `cft_01` to `cft_04` | `url` (its sandbox market page, `/market/<cftId>.html`, or a page on `example.com` or `example.org`), `title`, `snippet`, `pieceId` (the co-op's piece it resembles), `similarity` (normalized, 0 to 1), `claim: Text`, `verdict: "possible_copy" \| "claim_only" \| "neither"`, `seller?: string` (an invented seller name), `priceCents?: number`. D-deploy's market pages print the seller and the price |
 | ScriptedRun | `run_01` onward | `runId`, `side`, `threadId`, `trigger`, `steps` (`swarm.step` payloads without `threadId`), `final` (an ordered list of events). The fields are I2-core's `ScriptedRun` type (section 11) |
 
 Approval gains kinds: `"follow_up" | "maker_payouts" | "listing_publish" | "storefront_publish" | "report_listing" | "milestone_release" | "support_action"`. Demo approvals added: `apr_03` (report `cft_01`), `apr_04` (publish `lst_01`), `apr_05` (release `wip_01`'s second milestone). Party gains kind `"community_fund"`, with `id` the project ID.
@@ -94,8 +94,8 @@ passage: {facets.object.en} | craft: {community.craft.en}, {community.people.en}
 
 G2b checks every one of these as well as the ten from v1, which keep their numbers through R0. Figure 2 (the concierge's curated set) is checked on `curatedSet` and on the scripted concierge answer, because the v2 tour has no concierge beat.
 
-11. **The vibe query** in `d01-vibe`: [FIGURE11]
-12. **Surprise me** in `d02-surprise`: [FIGURE12]
+11. **The vibe query** in `d01-vibe` is exactly `a warm, bold gift for my mom. she loves red wool. under $200`. Its keywords are exactly `warm`, `bold`, `red`, `wool`, `gift for mom`, `under $200`, in that order (moods, then facet words, then the recipient through the alias `mom`, then the price). The scripted results are six pieces, all priced at 20000 or less, in this order: `pc_01` (Grace N.'s small grey, red and black wool weaving, matching all five word chips), `pc_07` (Lena T.'s red and grey wool mini weaving, four) and `pc_11` (Lena T.'s red and white wool weaving, four), then `pc_14` (red and green floral beaded earrings, Ojibwe, three), `pc_30` (a small black and orange seed pot, Acoma, three) and `pc_43` (a red, yellow and black patchwork skirt, Seminole, three). Each result's `matched` lists exactly the chips that piece carries. Every other piece at 20000 or less carries at most two of the five word chips.
+12. **Surprise me** in `d02-surprise` uses keyword `geometric`, method `fair_random` and seed 7, and draws `pc_27`, an Acoma seed pot by Helen A. (`mkr_09`), who sold nothing this month. `geometric` is carried only by Acoma and Seminole pieces, twelve at most, so every one of them is a candidate and the candidates come from two communities. `pc_27` is the first candidate in score-then-`pieceId` order, its `salesThisMonth` is 0, so its weight is the largest, and its maker has the fewest sales this month among the candidates' makers. mulberry32 seeded with 7 returns 0.0117 first, so seed 7 draws the first candidate.
 13. **The project add-on:** with `ord_001` the buyer adds 500 to `prj_01`, the Diné co-op's project, as `project.funded` `ctb_01`. `ord_001`'s own figures don't change. Cindia passes the full 500 to the fund: `mv_0101` buyer to Cindia and `mv_0102` Cindia to `community_fund` `prj_01`, both with `refId` `ctb_01` and date `2026-09-01`. The add-on starts off, and the switch reads on once a `project.funded` for this checkout is in the store, so the tour shows it on in `d05-pay`. `src/mock/` exports the records as `demoContribution` and `demoFundMoves`, and the tour builds its events from them.
 14. **The counterfeit hit:** `cft_01` copies `pc_01`. Its title names the co-op and Grace N., its snippet repeats `pc_01`'s first story sentence, and its claim says Grace N. of the co-op made it, though she never listed it there. Its scripted text match is 0.91 (L19), its verdict `possible_copy`, and `apr_03` proposes reporting it. `cft_02` is the claim-only listing ("Authentic Native American made", no maker named): verdict `claim_only`, shown with L22 and no report button. `cft_04` covers a low score. Every candidate URL is on the sandbox market, `example.com` or `example.org`.
 15. **The search proof** is never invented. `src/mock/model.ts` holds `report: null` until B11's first real training run, then the orchestrator has the data-smith copy that report in. The data tests assert that `report` is null or equals `server/b11_embed/report.json` exactly. Panels with no report say "Not trained yet".
@@ -108,18 +108,19 @@ G2b checks every one of these as well as the ten from v1, which keep their numbe
 | `communities.ts` | The four communities |
 | `people.ts` (changed) | Adds `own_02` to `own_04` and `mkr_04` to `mkr_17`, and the exports `leads` and `allMakers` |
 | `catalog.ts` (changed) | Adds `pc_13` to `pc_54` and the new fields on all 54 |
-| `searchIndex.ts` | The 54 IndexEntry records and `keywordAliases` |
+| `searchIndex.ts` | The 54 IndexEntry records, `keywordAliases` and `vibeVocabulary` (the closed vibe list) |
 | `search.ts` | The scripted vibe-search answer for `d01-vibe` and the demo's surprise draw |
 | `searchEval.ts` | The 50 held-out eval queries |
 | `projects.ts` | Projects, works in progress and their milestones, `apr_05`, `demoContribution` and `demoFundMoves` |
 | `storefronts.ts` | The four storefronts |
 | `agents.ts` | The agent roster from section 6 |
-| `swarm.ts` | The scripted swarm runs (section 11's run list) and `demoQuestions` |
+| `swarm.ts` | The scripted swarm runs (section 11's run list), `demoQuestions` and `makerQuestions` (`qst_01` and its scripted answer `ans_01`) |
 | `listings.ts` | `lst_01`, its scripted draft and `apr_04` |
 | `watch.ts` | The counterfeit candidates, `scriptedScan`, `fup_02` and `apr_03` |
 | `model.ts` | `modelId: "cindia-embed-v1"` and `report` (null until the first real run) |
 | `policy.ts` | Shipping, returns and care topics, which the Clerk reads |
-| `splits.ts` | `splits`, one `split.shown` payload per piece under the `ch_cindia` rules, with its gallery comparison |
+| `splits.ts` | `splits`, one `split.shown` payload per piece under the `ch_cindia` rules, with the gallery comparison on the co-op's twelve, and `gallerySplits`, the same comparison by `pieceId` |
+| `database.ts` | `demoDataSync`, the scripted `data.synced` payload for `d15-listing` |
 | `contentRules.ts` | `contentRules`, the one list the data tests, B11, B14 and B15 check text against (section 11) |
 | `timelines/demo.ts` (changed in I2-tour) | The tour from section 8 |
 
@@ -148,7 +149,7 @@ The envelope, the store and the player stay. These change:
 | `search.mapped` | `queryId`, `modelId`, `points: { pieceId; x; y }[]` (all pieces), `query: { x; y }`, `method: "pca"`, `approx?` | `b11-embed` |
 | `surprise.asked` | `surpriseId`, `keyword?`, `method: "keyword_random" \| "pure_random" \| "fair_random"`, `seed` | |
 | `surprise.drawn` | `surpriseId`, `pieceId`, `method`, `seed`, `candidates: { pieceId; weight }[]` (weights sum to 1, section 11) | `b12-search` |
-| `support.asked` | `threadId`, `side: "buyer" \| "seller"`, `text`, `lang`, `contextIds: string[]` (piece, order or listing IDs on screen) | |
+| `support.asked` | `threadId`, `side: "buyer" \| "seller"`, `text`, `lang`, `contextIds: string[]` (the records on screen: a piece, an order or a listing, a store page's community, or a maker page's maker) | |
 | `swarm.step` | `runId`, `threadId`, `stepId` (`stp_0001` onward), `agentId`, `kind: "route" \| "call" \| "tool" \| "result" \| "check" \| "handoff" \| "reply"`, `summary: Text`, `toolName?`, `ms`, `model?` | `b14-swarm` |
 | `support.answered` | `threadId`, `runId`, `agentId` (the agent whose words these are, usually `writer`), `reply: Text`, `refIds: string[]`, `approvalIds?: string[]` | `b14-swarm` |
 | `support.escalated` | `threadId`, `runId`, `reason: Text`, `approvalId` | `b14-swarm` |
@@ -159,7 +160,7 @@ The envelope, the store and the player stay. These change:
 | `listing.indexed` | `listingId`, `pieceId`, `modelId`, `embedText`, `index: "cindia-drafts" \| "cindia-pieces"`, `point?: { x; y }` (the new vector's dot on the map), `approx?` | `b14-swarm` for the Indexer's draft. B12's publish sends it keyed `b12-search` |
 | `storefront.requested` | `storefrontId` | |
 | `storefront.drafted` | `storefrontId`, `blocks` (as on Storefront) | `b14-swarm` |
-| `storefront.published` | `storefrontId`, `slug` | |
+| `storefront.published` | `storefrontId`, `slug`, `blocks` (as on Storefront: the owner's working copy at publish) | |
 | `project.funded` | `contributionId` (`ctb_01` onward), `projectId`, `amountCents`, `buyerId`, `orderId?` | |
 | `wip.milestone_reached` | `wipId`, `milestoneId`, `date` | |
 | `wip.milestone_paid` | `wipId`, `milestoneId`, `amountCents`, `date` | |
@@ -352,7 +353,8 @@ Shell: `shell-topnav`, `shell-side-shop`, `shell-side-sell` (the Shop and Sell s
 | `support-reply` | support | The latest reply |
 | `support-agent` | support | The name of the agent whose words the latest reply is |
 | `support-handoff` | support | The notice that a person is taking over |
-| `support-maker-answer` | support | The maker's own words, shown in the buyer's thread with her name |
+| `support-forwarded-<questionId>` | support | The notice in the buyer's thread that the question went to the maker |
+| `support-maker-answer-<questionId>` | support | The maker's own words, shown in the buyer's thread with her name |
 | `buyer-verification` | buyer | The verification line on the piece page |
 | `buyer-split-compare` | buyer | The gallery comparison under the split (figure 16) |
 | `buyer-project-addon` | buyer | The project contribution at checkout |
@@ -476,9 +478,9 @@ SpacetimeDB is the platform's system of record. Elastic is the search index buil
 
 ### B15 · the copy watch (`b15-watch`)
 
-- **`POST /api/b15/watch`** · `APIFY_TOKEN` or `APIFY_AUTH=proxy`, and `PUBLIC_SITE_URL` · answers at once · `{ "trigger", "scanId", "makerId", "queries", "pieces", "entries" }` → `{ "events": [] }`. It starts the scan in a server thread, or joins the one already running for the same scan ID and queries. Scans are cached for 30 minutes. A maker outside `com_dine` gets 400 `bad_request`.
-- **`GET /api/b15/watch/{scanId}`** · no key · under 300 ms · `{ "events": CindiaEvent[], "done": boolean }`. The adapter polls it every second until `done`, inside its 59.5-second abort.
-- **`GET /api/b15/status`** · no key · under 300 ms · `{ "apify": boolean, "market": boolean }` (not an events response): the token or the proxy flag is set, and `PUBLIC_SITE_URL` is set. The adapter's `health()` needs both.
+- **`POST /api/b15/watch`** · `APIFY_TOKEN` or `APIFY_AUTH=proxy`, and `PUBLIC_SITE_URL` · answers at once · `{ "trigger", "runId", "idTag", "idStart", "scanId", "makerId", "queries" }` → status 202 with `{ "scanId", "status": "running" }` (not an events response). It starts the scan in a server thread, or joins the one already running for the same scan ID and queries, single flight and cached by scan. A maker outside `com_dine` gets 400 `bad_request`, and without `PUBLIC_SITE_URL` it answers 503 `upstream_error`.
+- **`GET /api/b15/watch/{scanId}`** · no key · under 200 ms · `{ "status": "running" | "done" | "failed", "events": CindiaEvent[], "error": { "code", "message" } | null }`. `events` is empty until `done`. The adapter's `produce()` polls it every second until `done` or `failed`, inside its 59.5-second abort, and a failed scan throws, so the scripted scan plays.
+- **`GET /api/b15/status`** · no key · under 200 ms · `{ "market": boolean, "threshold": number, "measured": boolean, "model": boolean }` (not an events response). `market` is true when `PUBLIC_SITE_URL` is set. The adapter's `health()` needs `/api/health` to list `b15` with `keys.apify` true, then `market`. It doesn't wait on B11.
 - **The scan:**
   - Scout runs Apify's Cheerio Scraper (`apify/cheerio-scraper`, called as `apify~cheerio-scraper` through `run-sync-get-dataset-items` with `clean=true`) over the sandbox market at `<PUBLIC_SITE_URL>/market/`, with a 45-second budget. Its start URL is the market's index, and it follows only links inside `/market/`. It never fetches any other site, and it never contacts anyone. `docs/tech/apify/cheerio-scraper.md` has the input and output.
   - Comparer scores each result's title and snippet against the co-op's pieces as a normalized similarity, `(c - b) / (1 - b)`, with the B11 model, or the base model or B11's BM25 when B11 has no model. B15 measures the threshold on a fixture of look-alike and unrelated titles and writes it, with its precision, into its report.
@@ -490,7 +492,17 @@ SpacetimeDB is the platform's system of record. Elastic is the search index buil
 
 ### B16 · the bank books (`b16-bank-books`)
 
-[B16SECTION]
+In live mode B16 checks the books against Nessie: B01's matcher finds the $340 catch against Nessie's own bank records, the community fund move posts as a Nessie deposit, and a milestone release posts as a Nessie withdrawal. It uses B04's Nessie module and the co-op's operating account, and adds two accounts on the same fictional customer: a community fund account, and `Commissions held by Cindia`, where Cindia holds a commission's money until each milestone is approved. It never writes B04's operating account and never emits `account.synced`, so the money map's balance stays the operating account's.
+
+- **`GET /api/b16/status`** · `NESSIE_KEY` · under 300 ms, from a cache a background thread refreshes every 30 seconds in live mode · `{ "operating": boolean, "seeded": boolean, "fundAccountId": string | null, "heldAccountId": string | null, "fundBalanceCents": number | null, "heldBalanceCents": number | null }` (not an events response).
+- **`POST /api/b16/seed`** · `NESSIE_KEY` · up to 20 seconds, called once by the adapter's `health()` in live mode, after B04's seed, single flight · `{ "trigger": null, "commission": { "wipId": "wip_01", "priceCents": 0 } }` → `{ "events": [] }`. Finds or creates the two accounts and posts the held account's opening deposit once. Without B04's account, 404 `not_found`.
+- **`POST /api/b16/reconcile`** · `NESSIE_KEY` · under 5 seconds · B01's body (`records.bankTxns` is ignored) → every `flag.raised` the matcher finds against Nessie's bank side, keyed `b16-bank-books`, each with `nessieId`. A flag of the trigger's kind on the trigger's statement keeps the trigger's `flagId`.
+- **`POST /api/b16/moves`** · `NESSIE_KEY` · under 6 seconds · `{ "trigger": { "...": "the money.moved to post" } }` → the trigger's `money.moved` with the same payload plus `nessieId`, keyed `b16-bank-books`. A `project_fund` move to a `community_fund` posts as a deposit on the fund account, and a `milestone` move as a withdrawal from the held account, whose `from` stays Cindia. Any other move is 400 `bad_request`.
+- One request at a time writes to Nessie. When the bank's answer disagrees with the event, the endpoint returns `{ "events": [] }`, so the scripted figure and its Simulated badge stay.
+- **Events:** `flag.raised` adds `nessieId?: string`, set only by B16. `money.moved`'s `nessieId?` is set by B04 and by B16. B16 sends only these live twins.
+- **B16's keyed tour events: none.** No timeline event and no Requests row is keyed `b16-bank-books`, so it needs no `ALLOWED_EMPTY_FALLBACKS` entry.
+- **The adapter** (`src/sources/live/b16-bank-books.ts`): `health()` needs `/api/health` to list `b16` with `keys.nessie` true, then `/api/b16/status` with `operating` true, and starts the seed in the background while `seeded` is false. `start(emit)` posts the month's `short_payment` flag to `/api/b16/reconcile` once per `flagId`, and each fund or milestone move to `/api/b16/moves` once per `moveId`. `REQUIRED_KEYS` has `b16-bank-books: nessie`.
+- **Fallback:** the scripted flag and moves, with their Simulated badge.
 
 ### B08 in v2
 
@@ -596,7 +608,7 @@ Rules:
 | verification | `verification` | How makers would be verified | 匠人认证方式 | Who would attest that the maker belongs to the nation, and how |
 | protocols | `protocols` | Kept out of this demo | 本演示未收录 | What Cindia's demo leaves out. In a real launch the community sets these rules |
 | vibe search | `search` | Vibe search | 按感觉搜索 | Search by describing a feeling |
-| keyword | chip | Keyword | 关键词 | A word pulled from the request, editable |
+| keyword | chip | Keyword | 关键词 | A word Cindia's rule-based extractor picked out of the request, editable |
 | why it matched | `reason` | Why it matched | 匹配原因 | The facets a result shares with the request |
 | surprise me | `surprise` | Surprise me | 给我惊喜 | A random pick, in one of three ways |
 | fair random | `fair_random` | Fair random | 公平随机 | A random pick that leans toward makers with fewer sales |
@@ -677,7 +689,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - `questions`, by `questionId`: the forwarded question and, once it arrives, the maker's answer.
   - `sync`: `sync.data`, the newest `data.synced`, and `sync.index`, the newest `index.synced`.
 - **New types in `src/core/types.ts`:** `ScriptedRun` (`runId`, `side`, `threadId`, `trigger`, `steps`, `final`), `PlannedEvent`, `ModelReport`, `DemoSearch`, `DemoSurprise`, `ScriptedScan`, `PolicyTopic`, `Policy` and `InlineApproval`, with the fields `I2-core.md` gives them:
-  - `ScriptedRun.trigger` is `{ kind: "support"; matches: string[]; pieceId? }`, `{ kind: "listing"; listingId; notes }`, `{ kind: "storefront"; storefrontId }` or `{ kind: "question"; questionId }`. `final` is an ordered list of events, approvals and follow-ups included.
+  - `ScriptedRun.trigger` is `{ kind: "support"; matches: string[]; pieceId?; makerId? }` (a run with `pieceId` or `makerId` answers only when the request's `contextIds` include it), `{ kind: "listing"; listingId; notes }`, `{ kind: "storefront"; storefrontId }` or `{ kind: "question"; questionId }`. `final` is an ordered list of events, approvals and follow-ups included.
   - `ScriptedScan` is `{ scanId, makerId, queries, cftIds, followUpId?, approvalId? }`.
   - `DemoSearch.query` has no `queryId`. The tour adds `qry_01`.
 - **Views and cameras:** `SellView` and `SELL_VIEWS`, with `StudioView` staying the v1 five until `I2-tour`. `TourCameraId` (with `pitch`, and `shop-legacy` until `I2-tour`), `LegacyCameraId`, `LEGACY_CAMERA_TO_TOUR` and `toTourCamera()`. `CameraId` covers both until `I2-tour`.
@@ -687,7 +699,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
 
 | Who makes it | IDs |
 |---|---|
-| The tour and the scripted data | `qry_01`, `srp_01`, `thr_01` (the d04 question), `thr_02` (the seller's payout question), `thr_00` (the fallback runs' placeholder thread), `wsc_01` (the tour's scan), `run_01` onward, `stp_0001` onward, `chk_01` onward (listing checks), `ctb_01` onward, `qst_01` onward (questions put to a maker), `ans_01` onward (a maker's scripted answers), `blk_01` onward, `mls_01` onward, `pol_01` onward |
+| The tour and the scripted data | `qry_01`, `srp_01`, `thr_00` to `thr_05` (`thr_00` is the fallback runs' placeholder thread), `wsc_01` (the tour's scan), `run_01` to `run_10`, `pc_55` (the piece `lst_01` drafts in the tour, event-only until `apr_04` is granted), `stp_0001` onward, `chk_01` onward (listing checks), `ctb_01` onward, `qst_01` onward (questions put to a maker), `ans_01` onward (a maker's scripted answers), `blk_01` onward, `mls_01` onward, `pol_01` onward |
 | A person, through `userEvent()` payloads | `qry_user_<n>`, `srp_user_<n>`, `thr_user_<n>`, `wsc_user_<n>`, `lst_user_<n>`, `ctb_user_<n>`, `ord_user_<n>`, `ans_user_<n>` (a maker's answer on her page) |
 | A scripted answer to a person | `run_user_<n>`, `stp_user_<n>`, `chk_user_<n>`, `pc_user_<n>`, `cft_user_<n>`, `fup_user_<n>`, `apr_user_<n>`, `mv_user_<n>`, `qst_user_<n>`, `blk_user_<n>`, and `act_reply_<n>` for its `agent.acted` lines |
 | A live answer to a person | the same prefixes with the page tag: `<prefix>_user_<tag>_<n>`, for example `stp_user_k3x9qa_1` |
@@ -701,7 +713,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
 
 - **Listing runs** use the `listingId` as `threadId`. Notes equal to `lst_01.notes` (normalized) get `lst_01`'s run, re-keyed to the person's IDs. The tour's run ends with `listing.drafted`, `listing.indexed` and `approval.requested` `apr_04`. A person's run ends with its own `apr_user_<n>`, whose inline approval is a `listing_publish` for the person's listing, and never re-emits `apr_04`.
 - **The watch run:** the tour's carries `followup.drafted` `fup_02` (the Reporter's draft), then `approval.requested` `apr_03`. A person's scripted scan re-keys its hits to `cft_user_<n>`, its draft to `fup_user_<n>` and its approval to `apr_user_<n>`, so the tour's `cft_01` and `apr_03` stay as they were.
-- **The "ask the maker" run:** the buyer's meaning question gets the L14 reply and a `question.forwarded` to the piece's maker. Her `question.answered` on the maker page is a request, and its answer is the Writer's `support.answered` on the original thread, quoting her words exactly.
+- **The "ask the maker" run:** the buyer's meaning question gets the L14 reply and a `question.forwarded` to the piece's maker. Her `question.answered` on the maker page is a request, and its answer is the Writer's `support.answered` on the original thread, quoting her words exactly. `planRun` puts a person's own answer text where `run_09`'s scripted reply quotes `ans_01`. If the chapter 2 beat `d17-ask-maker` ships, it carries `drawer: "support"`, and its On screen IDs are `support-forwarded-<questionId>` and `support-maker-answer-<questionId>`.
 - **New Requests rows:**
 
 | Request | Key | Scripted answer |
@@ -732,7 +744,9 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - `counterfeitCandidates`, `scriptedScan` (`watch.ts`)
   - `modelId`, `report` (`model.ts`)
   - `policy` (`policy.ts`)
-  - `splits` (`splits.ts`), a `Record<pieceId, split.shown payload>`
+  - `splits` and `gallerySplits` (`splits.ts`): `splits` is a `Record<pieceId, split.shown payload>`, and `gallerySplits` a record by `pieceId` with `makerShareCents` under `ctr_gallery_01`'s 40% (`pc_01` is 8600). `buyer-split-compare` reads `gallerySplits`
+  - `receiptNotes` (`people.ts`), a record by `makerId` of each maker's `receiptNote`
+  - `makerQuestions` (`swarm.ts`), `vibeVocabulary` (`searchIndex.ts`), `demoDataSync` (`database.ts`)
   - `contentRules` (`contentRules.ts`)
 - **`getById()`** also finds `com_`, `prj_`, `wip_`, `mls_`, `sto_`, `lst_`, `cft_`, `pol_`, `qst_`, `apr_03` to `apr_05`, `fup_02` and the new people. Agents have no prefix: features use `getAgent()`. A person's `ord_user_<n>` lives only in the store (`buyer.orders`).
 - **`contentRules`** is `{ bannedObjects, stereotypeWords, meaningWords, accusingWords, peopleNames, allowedHosts }`:
@@ -744,7 +758,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - `allowedHosts`: `example.com` and `example.org`, with `/market/` paths allowed as relative URLs.
   
   The data tests scan every v2 `Text` against it, except `communities[].protocols`. A test scans `src/mock/`, the server fixtures, `pairs.jsonl` and the model card for URLs outside `allowedHosts` and for a nation's name used as a product word.
-- **`demoQuestions`** is `{ side: "buyer" | "seller"; text: Text }[]`, and every entry has its own scripted run. The buyer's first is the d04 question, the second a meaning question that ends in the "ask the maker" run, and the third a find question that goes through Agent Builder. The seller's first is the payout question (`run_04`).
+- **`demoQuestions`** is `{ side: "buyer" | "seller"; text: Text }[]`, and every entry has its own scripted run. The buyer's first is the d04 question, the second a meaning question that ends in the "ask the maker" run, and the third a find question that goes through Agent Builder. The seller's are the payout question (`run_04`) and "Why is part of my September pay held?" (`run_10`).
 - **Approval subjects:**
   - `apr_03.subjectIds` is `["cft_01"]`,
   - `apr_04.subjectIds` is `["lst_01"]`,
@@ -821,7 +835,20 @@ The plan writers found these gaps. Each one is settled here, and where two plans
 
 ### From the data and backend plans (Oct 24, 3:00 PM)
 
-- **The scripted runs** (`src/mock/swarm.ts`): [RUNLIST]
+- **The scripted runs** (`src/mock/swarm.ts`): the list below, from `S3-catalog.md`. Every run has the fields of I2-core's `ScriptedRun`.
+
+| Run | Thread | Side | Trigger | What it is | Final events, in order |
+|---|---|---|---|---|---|
+| `run_01` | `thr_01` | buyer | support, `pieceId` `pc_01` | The d04 question | `support.answered` |
+| `run_02` | `lst_01` | seller | listing `lst_01`, its notes | The d15 listing | `listing.drafted`, `listing.indexed`, `approval.requested` `apr_04` |
+| `run_03` | `sto_01` | seller | storefront `sto_01` | The Designer drafts the co-op's storefront | `storefront.drafted` |
+| `run_04` | `thr_02` | seller | support | "When do I get paid for September?" | `support.answered` |
+| `run_05` | `thr_00` | buyer | none (fallback) | `fallbackSupportRun`, L16 | `support.answered` |
+| `run_06` | `thr_00` | seller | none (fallback) | `fallbackListingRun`, a draft labeled as a sample | `listing.drafted` |
+| `run_07` | `thr_03` | buyer | support, `pieceId` `pc_01` | The meaning question that goes to the maker | `support.answered` (L14), `question.forwarded` `qst_01` |
+| `run_08` | `thr_04` | buyer | support, `pieceId` `pc_01` | The find question through Elastic Agent Builder | `support.answered` |
+| `run_09` | `thr_03` | buyer | question `qst_01` | The "ask the maker" relay of Grace N.'s answer | `support.answered` quoting her words |
+| `run_10` | `thr_05` | seller | support | "Why is part of my September pay held?" | `support.answered` |
 - **Where the new approvals live:** `apr_03` and `fup_02` in `watch.ts`, `apr_04` in `listings.ts`, `apr_05` in `projects.ts`. `getById()` finds them, and the approvals feature reads them the same way as `apr_01` and `apr_02`.
 - **`Policy`** is a list of topics (`pol_01` onward), each with `title: Text`, `body: Text` and an optional `data` record. `pol_01` (shipping) holds `{ transitDaysMin: 6, transitDaysMax: 10 }`.
 - **B14 requests** carry `runId` and `idStart`, and the listing request adds `vibeVocabulary` and an optional `image`.

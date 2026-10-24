@@ -15,7 +15,7 @@ Why: Cindia is a platform for underrepresented makers, starting with Native Amer
 - **Every number stays.** If a check fails on a number, the re-skin is wrong. Fix the words, never the number.
 - **Mock data only.** Everyone here is fictional. The craft lines below are the only statements about a real craft, and each comes from the source named beside it. Write nothing about Diné weaving or silverwork beyond them.
 - **The maker's statement is in English, and the owner's and maker's pages open in English.** Chinese stays as the second interface language, through the language toggle. Every `Text` keeps both languages.
-- **Expected strings in tests change with the data.** That's a planned update, not a weakening: the same assertions run, on the new words. The orchestrator logs it in `docs/harness/decisions.md` (one line: "R0: v1 tests' expected names, titles and default languages follow the re-skinned data; no assertion removed"). A spec that read the owner's or maker's page in Chinese by default now reads it in English with the same checks, and each of those spec files keeps at least one check that the toggle still shows the Chinese text.
+- **Expected strings in tests change with the data.** That's a planned update, not a weakening: the same assertions run, on the new words. The orchestrator logs it in `docs/harness/decisions.md` (one line: "R0: v1 tests' expected names, titles and default languages follow the re-skinned data. No assertion removed"). A spec that read the owner's or maker's page in Chinese by default now reads it in English with the same checks, and each of those spec files keeps at least one check that the toggle still shows the Chinese text.
 - **Words, not code names.** In text people read (strings, mock `Text`, server prompts, narration), "studio" for this seller becomes "co-op" and 工作室 becomes 合作社. Code names stay: the `Studio` type, the `studio` export, `studioId`, `Party.kind: "studio"`, `acct_studio`, the `studio-*` cameras and views, `frame-studio`, `studioInfo.ts` and every test ID.
 - **Nation names.** English "Diné (Navajo)" on first use and "Diné" after, Chinese 纳瓦霍（Diné）. Never "Navajo" or "Diné" as a product word ("Navajo rug"), never "tribal", "Indian American" or "authentic" in a title or story (A2 R10, R18).
 - **Craft words are plain.** Titles name the object and its colors or pattern (A2 R10). Motifs are plain shapes: diamond, stripe, zigzag, chevron, dot, line. Never a named form or design (naja, squash blossom, Yei, sandpainting, whirling log), never what a pattern means, and no "symbolizes", "represents", 象征 or 寓意 anywhere (A2 R14).
@@ -36,7 +36,7 @@ Why: Cindia is a platform for underrepresented makers, starting with Native Amer
 |---|---|
 | `std_gu` | `std_dine` (every file, code and data) |
 | Gu Embroidery Studio / 顾绣工作室 | Diné Weaving and Silver Co-op / 纳瓦霍（Diné）编织与银饰合作社 |
-| craft: Gu embroidery / 顾绣 | Diné weaving and silverwork / 纳瓦霍（Diné）编织与银饰 |
+| craft: Gu embroidery / 顾绣 | Wool weavings, silver and turquoise jewelry / 羊毛编织与绿松石银饰 (contracts section 2) |
 | city: Shanghai / 上海 | Navajo Nation, Arizona / 亚利桑那州纳瓦霍保留区 (Gordon checks the Chinese) |
 | `own_01` Shen Ruolan / 沈若兰, `surnameChar` 沈, `lang: "zh"` | Ruth B. / Ruth B., `surnameChar` "B", `lang: "en"` |
 | `mkr_01` Lu Yun / 陆芸, 陆, `zh` | Grace N. / Grace N., "N", `en` |
@@ -72,7 +72,7 @@ People's Chinese names are the same romanized names, as v1 already does for buye
 
 ### The twelve pieces
 
-Same IDs, `makerId`, `kind`, `hours`, `materialsCents`, `priceCents` and `image` as v1. Seven weavings and five silver pieces, each an object type the sources name (weavings and rugs, and silver earrings, necklaces, bracelets and buttons). The four gallery pieces (`pc_03` to `pc_06`) are the larger weavings. Every maker works in both crafts, as a co-op member can. Stories follow A2 R11: what the piece is, its materials, one plain detail about colors or size, no lineage, hardship or meaning, and never a real person. The data-smith writes each story's Chinese in natural Simplified Chinese, and Gordon checks it.
+Same IDs, `makerId`, `kind`, `hours`, `materialsCents`, `priceCents` and `image` as v1. Seven weavings and five silver pieces, each an object a source names and I2-art draws: wall weaving, rug, earrings, ring, pendant necklace and cuff bracelet (S3 T5 writes them as `facets.object`). The four gallery pieces (`pc_03` to `pc_06`) are the larger weavings. Every maker works in both crafts, as a co-op member can. Stories follow A2 R11: what the piece is, its materials, one plain detail about colors or size, no lineage, hardship or meaning, and never a real person. The data-smith writes each story's Chinese in natural Simplified Chinese, and Gordon checks it.
 
 | ID | Maker | Kind | Price | Hours | Materials | Title (en / zh) | Story (en) | Process steps (hours) |
 |---|---|---|---|---|---|---|---|---|
@@ -83,11 +83,11 @@ Same IDs, `makerId`, `kind`, `hours`, `materialsCents`, `priceCents` and `image`
 | `pc_05` | Lena T. | featured | 80000 | 110 | 7000 | Indigo and white striped wool weaving / 靛蓝白条纹羊毛编织 | Wide and narrow stripes in indigo blue and natural white. About 60 by 90 cm, for a wall or across a bench. | spin 20, dye 12, warp 8, weave 64, finish 6 |
 | `pc_06` | Mae K. | featured | 45000 | 60 | 4500 | Grey and white zigzag wool weaving / 灰白锯齿纹羊毛编织 | Grey and white bands that bend into zigzags across the weaving. About 45 by 60 cm. | yarn 4, warp 5, weave 47, finish 4 |
 | `pc_07` | Lena T. | series | 4800 | 6 | 600 | Red and grey wool mini weaving / 红灰双色迷你羊毛编织 | A palm-sized weaving in red and grey, about 15 by 15 cm, for a shelf or a desk. | yarn 1, warp 1, weave 3, finish 1 |
-| `pc_08` | Mae K. | series | 3800 | 4 | 500 | Stamped silver buttons, set of two / 压花银纽扣（两枚） | Two round silver buttons, each stamped with small chevrons, to sew onto a jacket or a bag. | cut 1, stamp 1.5, solder 0.5, file 1 |
+| `pc_08` | Mae K. | series | 3800 | 4 | 500 | Thin silver ring with stamped chevrons / 压印人字纹细银戒 | A narrow silver band stamped all the way around with small chevrons. | cut 1, stamp 1.5, solder 0.5, file 1 |
 | `pc_09` | Grace N. | series | 12000 | 14 | 1200 | Silver and turquoise pendant necklace / 绿松石银吊坠项链 | One small oval of turquoise set in silver with a stamped border, on a silver chain. | cut 3, stamp 3, set 4, file 4 |
 | `pc_10` | Mae K. | series | 8500 | 10 | 900 | Silver and turquoise drop earrings / 绿松石银坠耳环 | Each earring is a small turquoise stone in a plain silver setting, hanging from a short wire. | cut 2, set 4, wires 1, file 3 |
 | `pc_11` | Lena T. | featured | 17500 | 24 | 2100 | Red and white wool weaving / 红白双色羊毛编织 | Red and white stripes with a band of red diamonds through the middle. About 30 by 40 cm. | yarn 2, dye 3, warp 3, weave 14, finish 2 |
-| `pc_12` | Grace N. | series | 9500 | 11 | 1000 | Narrow stamped silver bangle / 压花细银手镯 | A narrow silver bangle stamped with small dots and lines, to wear alone or stacked. | cut 3, stamp 4, solder 1, file 3 |
+| `pc_12` | Grace N. | series | 9500 | 11 | 1000 | Narrow stamped silver cuff bracelet / 压花细银手镯 | A narrow silver cuff stamped with small dots and lines, to wear alone or with others. | cut 3, stamp 4, solder 1, file 3 |
 
 **Process step labels** (`S` in `catalog.ts`, replacing the embroidery steps):
 
@@ -111,7 +111,7 @@ Same IDs, `makerId`, `kind`, `hours`, `materialsCents`, `priceCents` and `image`
 | Craft | en | zh | Source |
 |---|---|---|---|
 | Weaving (`pc_01`, `03` to `07`, `11`) | Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s. | 纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。 | CU Museum of Natural History, Navajo weaving |
-| Silver (`pc_02`, `08`, `09`, `10`, `12`) | Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880. | 纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。 | Heard Museum, Southwest silverwork 1850 to 1940 |
+| Silver (`pc_02`, `08`, `09`, `10`, `12`) | Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880. | 纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。 | Heard Museum, Southwest silverwork 1850 to 1940. Rings: Penn Museum, Navajo ring NA10808 |
 
 The verification line (A2 R6) isn't a v1 field. S3 T2 writes it on `com_dine`.
 
@@ -189,7 +189,7 @@ All four start at once. The integrator's and feature-lead's checks read the data
 
 **SCOPE:** `src/app/studioInfo.ts, src/app/strings.ts, src/app/lang.ts, src/app/demo/EndCard.tsx, src/core/types.ts, src/core/testFixtures.ts, src/core/reducers.test.ts, src/sources/requests.test.ts, docs/common/data-model.md, docs/common/demo-script.md, docs/common/glossary.md, docs/common/api-contract.md, docs/common/ui-contract.md, docs/common/design-system.md, tests/demo/beats.ts, tests/smoke/shell.spec.ts, public/images/pc_01.svg, public/images/pc_02.svg, public/images/pc_03.svg, public/images/pc_04.svg, public/images/pc_05.svg, public/images/pc_06.svg, public/images/pc_07.svg, public/images/pc_08.svg, public/images/pc_09.svg, public/images/pc_10.svg, public/images/pc_11.svg, public/images/pc_12.svg`
 
-- `studioInfo.ts`: look up `std_dine`. `strings.ts`: `studio` reads Co-op / 合作社, and `studio.map.main` says "the co-op". `lang.ts`: the Language defaults table. `EndCard.tsx`: the new title. `types.ts`: the comment.
+- `studioInfo.ts`: `std_dine` in place of `std_gu` on lines 9, 20 and 21. `strings.ts`: `studio` reads Co-op / 合作社, and `studio.map.main` says "the co-op". `lang.ts`: the Language defaults table. `EndCard.tsx`: the new title. `types.ts`: the comment.
 - `testFixtures.ts`, `reducers.test.ts`, `requests.test.ts`: the test texts in "Text that follows the pieces".
 - `docs/common/`:
   - `data-model.md`: the Studio row (`std_dine`, the new craft and place), the catalog table's titles (numbers unchanged), figure 2's query, the files table (`std_dine`), and in the `ask.ts` row the first question named in English, "Which piece earned the most this month?".
@@ -199,7 +199,7 @@ All four start at once. The integrator's and feature-lead's checks read the data
   - `ui-contract.md`: the Surfaces rows.
   - `design-system.md` line 7: "Cindia's screens use a paper ground, ink lettering, a red seal and the thread that holds it all together." The theme keeps its name.
 - `tests/demo/beats.ts`: d02 figure "Grace N.", d10 figure "This month's income". `tests/smoke/shell.spec.ts`: the language test.
-- `public/images/pc_01.svg` to `pc_12.svg`: the same placeholders with "Illustration coming" in place of "Photo coming", since no real photo of a fictional piece will ever come. `I2-art` draws the real illustrations.
+- `public/images/pc_01.svg` to `pc_12.svg`: v1's "Photo coming" squares are replaced, not kept. Each becomes a plain placeholder reading "Illustration coming" and the piece ID, since no photo of a fictional piece will ever come. `I2-art` replaces all twelve with its drawings.
 - **Checks:** `npm run check:scope -- src/app/ src/core/ src/sources/ tests/demo/ tests/smoke/`, then `npm run test:smoke`.
 
 ### T3 · feature-lead
@@ -230,7 +230,7 @@ One lead, no builders: the change is mechanical.
 
 ## Acceptance
 
-- Given all four tasks, when the orchestrator runs `npm run check`, `npm run check:data`, `npm run test:smoke`, `npm run build`, `npm run test:demo` (the Phase A demo: v1's 60 seconds on the new names), `npm run test:offline` and `npm run test:server`, then every one exits 0.
+- Given all four tasks, when the orchestrator runs contracts section 10's R0 checks, then every one passes: `npm run check`, `npm run check:data`, `npm run test:smoke`, `npm run build`, `npm run test:demo` three times (v1's 60-second demo on the new names), `npm run test:offline`, `npm run test:server`, the verifier's screenshot review and the old-names search below. `npm run gate -- G2` runs `check:data` and `check`, and `npm run gate -- G4` runs the build, the three demo runs and `test:offline`. The time rule comes from `artifacts/demo/report.json`: `endedAtWallMs` at most 75 seconds, which the orchestrator reads itself, because `scripts/gate.mjs` learns that rule only in I2-core.
 - Given the Phase A demo, when its screenshots are read, then d02 shows Grace N., 26 hours and the new `pc_01` title, d03 shows $134.48, $22.00, $18.00 and $5.52, d07 shows $340.00, 40%, 50% and $1,700.00, and d10 shows "This month's income", $134.48 and $95.00 held, in English.
 - Given the repo, when it's searched with
   `grep -rIn -E "std_gu|Gu Embroidery|Gu embroidery|Gu studio|顾绣|顾氏|Shen Ruolan|沈若兰|Lu Yun|陆芸|Han Jing|韩静|Zhou Mei|周梅|Shanghai|上海|Songjiang|松江|Suzhou|苏州|晨丝坊|[Pp]eon(y|ies)|牡丹|Plum blossom|梅花|[Kk]oi|锦鲤|Lotus|晨荷|Orchid scroll|兰花轴|Sparrow on bamboo|竹雀|[Ss]achet|香囊|Silk coasters|丝绣|Crane brooch|仙鹤|Cloud pouch|祥云|[Cc]hrysanthemum|菊花|[Pp]hoenix|凤凰|团扇|osmanthus|桂花|Ming dynasty|明代|宋画|刺绣|绢|非遗|主理人|工作室" src tests server docs/common public index.html scripts`,
@@ -241,7 +241,7 @@ One lead, no builders: the change is mechanical.
 
 ## Out of scope
 
-- v2's fields on the twelve pieces (`communityId`, `facets`, `vibe`, `imageAlt`). The I2-core fallout step adds minimal ones and S3 T5 the full ones.
+- v2's fields on the twelve pieces (`communityId`, `facets`, `vibe`, `imageAlt`). R0 adds none. I2-core's fallout step FO2 adds placeholders once the new types exist, and S3 T5 replaces them.
 - The real illustrations (`I2-art`), the verification line (S3 T2), the other three communities (S3).
 - Any number, ID, route, test ID, event or type.
 

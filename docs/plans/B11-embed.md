@@ -46,7 +46,7 @@ Everything it learns from is fictional demo data from `src/mock/` (fix-plan 1.6)
   - Seeded (`--seed 13`) in Python, NumPy and torch.
   - Settings: freeze `embeddings.word_embeddings`, so about 22M of the 118M weights train. `max_seq_length` is the longest passage in tokens rounded up to a multiple of 8, at most 128. Batch 32 with `BatchSamplers.NO_DUPLICATES`, 3 epochs, learning rate 2e-5, 10% warmup, `fp16=False`, `bf16=False`, `dataloader_num_workers=0`, `torch.set_num_threads(2)`, `push_to_hub=False`. If the probe shows a peak over 4 GB or more than 30 seconds a step, use batch 16 and say so in `notes`.
   - Checkpoints: one model-only checkpoint per epoch (`save_strategy="epoch"`, `save_only_model=True`, `save_total_limit=1`) under `models/checkpoints/`, never under `server/`. A killed run resumes from the newest one.
-  - It logs one line every 10 steps and one per epoch to `artifacts/b11/train.log`, and never prints data.
+  - It logs one line every 10 steps and one per epoch to `artifacts/b11/train.log`, and never prints data. It sets the `httpx` and `httpx2` loggers to WARNING and never calls `logging.basicConfig` at INFO, so no request URL reaches a log (B2-34).
   - It uses a GPU when torch finds one (`--device auto`), which is the Akbari path. CPU is the default and needs nothing.
 - **Outputs:**
   - `CINDIA_MODEL_DIR` (default `models/cindia-embed-v1/`, not committed) holds the fine-tuned model.
@@ -122,7 +122,8 @@ The cloud session can't reach the Akbari lab machine, and `models/` isn't commit
   - the data: synthetic queries that Claude wrote about 54 fictional listings, some attributed to fictional members of real Native American nations (Diné, Ojibwe, Acoma Pueblo, Seminole). No real community's, maker's or buyer's data,
   - the evaluation: 50 agent-written, held-out queries over the same 54 pieces that are in training, one model family, the numbers from `report.json` with their intervals, and "a small test, not a benchmark",
   - limits: one small catalog, one run, queries and pieces from the same authoring pipeline,
-  - not for: classifying, ranking or verifying real makers or their work, judging authenticity or identity, or any decision about a real person.
+  - not for: classifying, ranking or verifying real makers or their work, judging authenticity or identity, or any decision about a real person,
+  - and L30's words: every community, maker and story here is fictional, the crafts are real traditions, we haven't worked with these communities yet, and a real launch starts with them (A2-19).
 
   A test checks that the card holds each of those lines, no URL outside `huggingface.co`, `example.com` and `example.org`, and no nation's name used as a product word (`contentRules`).
 
