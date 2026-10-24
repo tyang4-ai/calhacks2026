@@ -16,23 +16,23 @@ Figma track, Cal Hacks 13.0. Four stages, 200 words at most per stage. Times are
 
 ## 2 · Prototyping
 
-14:59 to 15:42 so far, in progress · rating 4 of 5 · items 1 to 3 of the ten kept screens exported
+14:59 to 16:17, 78 minutes so far · rating 4 of 5 · the ten kept screens done, prototype links not wired yet
 
-**Tools.** Figma Design through `use_figma`, one script per screen or component batch, with every color bound to a variable and every text to a style. Grayscale wireframes of the ten kept screens came first, 14 frames. Components were then built as each screen needed them: the beam and process blocks, buttons, chips, badges, icons, the seal, PieceCard, ShareBar, ChatBubble and the rest. The eight piece illustrations are thread SVGs drawn in Python, imported behind a hash check, so each Figma component matches its file byte for byte.
+**Tools.** Figma Design through `use_figma`, one script per screen or component batch, with every color bound to a variable and every text to a style. Grayscale wireframes of the ten screens came first. Then 23 components and sets, 16 icons and 8 illustrations were built as each screen needed them. The illustrations are thread SVGs drawn in Python and imported behind a hash check, so each component matches its file byte for byte. Every screen was screenshotted, fixed and exported: 17 PNGs.
 
-**Friction.** The first import took shortcuts that didn't match the files, and the hash check caught it. Three scripts were refused and rolled back cleanly. Hidden layers inside instances are skipped unless `skipInvisibleInstanceChildren` is off, `combineAsVariants` needs its nodes on the target page, and a layer nested in an instance can't be moved. Review screenshots caught keyword chips without their remove mark and a crowded search column.
+**Friction.** Six scripts failed. Three hit Plugin API rules: hidden layers in instances are skipped unless `skipInvisibleInstanceChildren` is off, `combineAsVariants` wants its nodes on the target page, and a layer inside an instance can't be moved. Three were my own slips. Each was fixed in the next call. Review screenshots caught chips without a remove mark, labels colliding on the map and the graph, a seal covering a figure, names set in mono, and attention blocks without a mark.
 
-**Into the build.** Each finished screen goes straight into `design/screens/`, named by route and state.
+**Into the build.** `components.md`, `changes.md` and `flows.md`, with the screens, for I3-redesign.
 
 ## 3 · Handoff
 
-14:28 to 14:52, 24 minutes so far · rating 4 of 5 · drop 1 done, drop 2 to come
+14:28 to 14:52 and 16:12 to 16:17, 29 minutes so far · rating 4 of 5 · drop 1 done, drop 2 partial
 
-**Tools.** Files came first, so the build never waits on Figma. A Python generator writes tokens.json and tokens.md from one list of 113 tokens, and fails the run if any of 80 contrast pairs drops below 4.5:1 for text or 3:1 for marks. It caught two chart colors at 2.7:1 and 2.9:1 on the page ground before they shipped. The chart palette came from the dataviz skill's validator, searching orderings until every check passed. Then Figma Design through `use_figma`: 79 variables with `var(--c-…)` code syntax and scopes, 17 text styles, an overlay shadow and a style-tile page bound to them.
+**Tools.** Files came first, so the build never waits on Figma. A Python generator writes tokens.json and tokens.md from one list of 113 tokens, and fails the run if any of 80 contrast pairs drops below 4.5:1 for text or 3:1 for marks. It caught two chart colors at 2.7:1 and 2.9:1 before they shipped. The chart palette came from the dataviz skill's validator. Then Figma Design through `use_figma`: 79 variables with `var(--c-…)` code syntax and scopes, text styles, an overlay shadow and style tiles bound to them. Drop 2's docs were written from the Figma nodes and the mock data.
 
-**Friction.** Edu verification lifted the 20-call cap for the new file. Three tiles came out clipped, because `resize()` fixes an auto-layout frame's height, and the icons lost their strokes, because Figma's SVG import ignores attributes on the root element. Two fix calls. Measuring the labels showed ten equal process blocks fit with 8 px padding.
+**Friction.** Edu verification lifted the 20-call cap for the new file. Three tiles came out clipped, because `resize()` fixes an auto-layout frame's height, and the icons lost their strokes, because Figma's SVG import ignores attributes on the root element. Two fix calls.
 
-**Into the build.** I3-redesign pastes the `css` block into `src/ui/tokens.css` and makes the eleven kit changes listed in tokens.md.
+**Into the build.** I3-redesign pastes the `css` block into `src/ui/tokens.css`, makes the eleven kit changes in tokens.md, then restyles the kit from components.md.
 
 ## 4 · Code generation
 
@@ -40,7 +40,7 @@ Not started. The integrator restyles the kit from the drops in `I3-redesign`, an
 
 ---
 
-## Evidence for stage 1
+## Evidence
 
 This section backs up the entries above and is not part of their word count.
 
@@ -50,7 +50,7 @@ This section backs up the entries above and is not part of their word count.
 |---|---|---|
 | Cindia · 01 Research (FigJam) | https://www.figma.com/board/T3lxV76Wc6petCKoRE0TNu | What Cindia is, why it matters (World Bank, FDIC, ICT News), the buyer, the maker (陆芸 Lu Yun), the studio owner (沈若兰 Shen Ruolan), the judge at a table, the community as a stakeholder, the Visa, Hyphenate and Figma criteria, the judge's one-minute story, 15 references (described and linked, never copied), 8 principles, the screen rules, 4 open questions with defaults |
 | Cindia · 02 Moodboards (FigJam) | https://www.figma.com/board/KAOXGbhwnS0A0tJ8j5ABj7 | How the directions were checked, A · Museum label, B · Warp and weft, C · Daylight market (idea, palette, type, texture and imagery, the product vignette), a side-by-side table and the recommendation, with a sticky for Gordon's pick |
-| Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 17 text styles, the overlay shadow, and the Style tiles page (`design/style-tiles.png`) |
+| Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 18 text styles, the overlay shadow, and four pages: Style tiles (`design/style-tiles.png`), Wireframes, Components and Screens (`design/screens/`) |
 
 All three files sit in Gordon's drafts on his Figma team, which moved from the Starter tier to the student tier after his Edu verification. None is shared yet: "Anyone with the link" has to be set in Figma by Gordon, because the MCP server has no sharing tool.
 
@@ -91,13 +91,24 @@ All three files sit in Gordon's drafts on his Figma team, which moved from the S
 | 15:38 | Search script refused on a nested position. Rerun at 15:39 built results and the home hero | use_figma |
 | 15:40 | Review: the remove mark added to keyword chips, Sample tags aligned, the search column restacked | get_screenshot, use_figma |
 | 15:41 | `shop-search--results.png`, `shop-home--hero.png` and both receipt states exported | get_screenshot |
+| 15:44 | Support drawer and the AgentStep strip, in two states. The scrim needed its 40% on the layer, not the paint | use_figma, get_screenshot |
+| 15:47 | SellHeader and SellNav. The first script asked for a Chinese font weight that doesn't exist. The money map built at 15:48, and its labels were re-laid at 15:49 | use_figma, get_screenshot |
+| 15:51 | EvidenceCard, RecordRow and the catch. Review moved names and dates out of mono | use_figma, get_screenshot |
+| 15:54 | Approvals, waiting and sealed. Review gave each card a seal slot, so the seal never covers a figure | use_figma, get_screenshot |
+| 15:57 | Close with the impact panel. Review pulled a badge back inside its panel | use_figma, get_screenshot |
+| 16:00 | The maker page in Chinese | use_figma, get_screenshot |
+| 16:02 | ScoreBar and the process bar states sheet. Review added the missing "!" to attention blocks | use_figma, get_screenshot |
+| 16:04 | The swarm view. Review moved the graph to the diagonals so the labels clear the edges | use_figma, get_screenshot |
+| 16:07 | The search view. Review re-placed the labels and fixed score bars that ignored their values | use_figma, get_screenshot |
+| 16:08 | Block statuses set to the F-process count rules on every screen, then all 14 earlier screens re-exported | use_figma, get_screenshot |
+| 16:12 | Node IDs collected. `components.md`, `changes.md`, `flows.md` and `HANDOFF.md` written | use_figma, Write |
 
 ### Figma MCP calls
 
-| Tool | Stage 1 calls | Stage 3 calls | Stage 2 calls, to 15:42 | Counts toward the limit |
+| Tool | Stage 1 calls | Stage 3 calls | Stage 2 calls, to 16:17 | Counts toward the limit |
 |---|---|---|---|---|
-| use_figma | 12 | 7 | 15, three of them refused and rolled back | yes |
-| get_screenshot | 8 | 3 | 10 | yes |
+| use_figma | 12 | 7 | 41, six of them failed and were redone | yes |
+| get_screenshot | 8 | 3 | 45 | yes |
 | create_new_file | 2 | 1 | 0 | no, exempt |
 | create_session | 1 | 0 | 0 | no |
 | whoami | 2 | 1 | 0 | no, exempt |
@@ -123,4 +134,5 @@ The limit for a View or Collab seat is up to 20 calls a month. An Education plan
 ### What's next
 
 - Gordon picked B at 14:28, and drop 1 is done.
-- Stage 2 and drop 2 need roughly 150 to 200 more calls (flows, components, about 40 screens, the prototype, Slides, PNG exports), within the Education plan's 200 a day and 10 a minute.
+- Drop 2's ten kept screens are done at 16:17: 17 PNGs, with `components.md`, `changes.md`, `flows.md` and the assets.
+- Still to do in Figma: the held screens when the coordinator says, the prototype links, the FigJam flows board and the Slides deck. With 86 stage 2 calls so far, that fits in the Education plan's 200 a day and 10 a minute.
