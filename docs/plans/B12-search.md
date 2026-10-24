@@ -14,7 +14,8 @@ Search by feeling, for real. A buyer's words become a query vector from Cindia's
   - section 1 (`ELASTIC_URL`, `KIBANA_URL`, `ELASTIC_API_KEY`, `ELASTIC_AUTH=proxy`, the hosts),
   - section 2 (IndexEntry, figures 11 and 12),
   - section 3 (`search.queried`, `search.answered`, `surprise.asked`, `surprise.drawn`, `listing.indexed`, the Requests rows),
-  - section 5 (B12).
+  - section 5 (B12),
+  - section 11 (`config.elastic_headers()`, the surprise rule, `keywordAliases`, `mock.json`).
   
   After I2-core: `docs/common/api-contract.md` B12 and `events.md`.
 - `docs/plans/B11-embed.md`: `model.py`, `bm25.py`, `metrics.py` (RRF) and `vectors.json`, which you import and read
@@ -28,7 +29,7 @@ Search by feeling, for real. A buyer's words become a query vector from Cindia's
 - **Elastic access** (`server/b12_search/elastic.py`):
   - httpx REST calls, no new client library.
   - The base URL is `ELASTIC_URL`.
-  - Auth is `Authorization: ApiKey <key>` when `ELASTIC_API_KEY` is set. When `ELASTIC_AUTH=proxy`, send no auth header, because the cloud environment's network secret adds it.
+  - Every request takes its auth from `config.elastic_headers()` (`contracts.md` section 11): `Authorization: ApiKey <key>` when `ELASTIC_API_KEY` is set, and nothing when `ELASTIC_AUTH=proxy`, because the cloud environment's network secret adds it. B12 never builds an auth header itself.
   - Timeouts: 3 seconds per call, 20 seconds for the bulk seed.
   - Never log a header, a key or a response body.
 - **The index:** `cindia-pieces-v1` behind alias `cindia-pieces`. Mapping:
@@ -54,14 +55,14 @@ Search by feeling, for real. A buyer's words become a query vector from Cindia's
   5. **Results:**
      - At most 12, best first.
      - `score` is the fused score scaled to 0 to 1 within this answer, where the best is 1.
-     - `matched` is the query's keywords found in that piece's facets or vibe.
+     - `matched` is the query's keywords found in that piece's facets or vibe, after `keywordAliases` from `mock.json` (so the chip `gift for mom` matches the recipients phrase).
      - `reason` comes from `reasons.py` with no model call. In English: "Matches peony, soft and gift for mom: a round silk fan." When nothing matched word for word: "Close in feel: gentle and hopeful." In Chinese, the matched words and the piece's Chinese title.
      - `modelId` is B11's.
-- **Surprise** (`surprise.py`):
-  - `keyword_random` and `fair_random` draw from the keyword's top 12 by the same hybrid ranking. `pure_random` draws from all active pieces.
+- **Surprise** (`surprise.py`), the same rule as the scripted draw in `contracts.md` section 11, so only the ranking differs:
+  - `keyword_random` and `fair_random` draw from the keyword's top 12 by the hybrid ranking, sorted by score and then `pieceId`. `pure_random` draws from all active pieces, sorted by `pieceId`.
   - Weights are equal for `keyword_random` and `pure_random`, and `1 / (1 + salesThisMonth)` for `fair_random`, normalized to sum to 1.
-  - The draw is Python's `random.Random(seed).random()` against the cumulative weights, in candidate order, so a seed always gives the same piece.
-  - The browser's scripted draw uses its own seeded generator, so B12's piece for seed 7 may differ from the scripted `pc_46`. The tour doesn't depend on which piece it is.
+  - The draw takes the first number from mulberry32 seeded with `seed`, ported to Python bit for bit, and walks the cumulative weights in candidate order. A test checks the port against the first five numbers the browser's `src/sources/surprise.ts` gives for seeds 1 and 7.
+  - Because B12 ranks with our model and the scripted draw with keywords, B12's piece for seed 7 may differ from the scripted `pc_46`. The tour doesn't depend on which piece it is.
 - **Agent Builder** (`agent.py`):
   - `ensure_agent()` creates or updates agent `cindia-finder` in Kibana, at `KIBANA_URL` with the same auth plus `kbn-xsrf: true` on writes.
   - Its tool is a search over `cindia-pieces`, an index search tool or an ES|QL tool with price and community parameters, whichever the current API offers.
@@ -92,8 +93,8 @@ One backend-builder does these in order. Each task adds its own tests to `tests/
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
 | T1 | `local.py` and `reasons.py`: the local hybrid with filters, chip-to-filter parsing, the status filter, score scaling and reasons. Tests on a 6-piece fixture with hand-checked rankings | `server/b12_search/__init__.py`, `server/b12_search/local.py`, `server/b12_search/reasons.py`, `tests/server/b12_fixture.json` | B11 green | opus |
-| T2 | `surprise.py`: the three methods and the seeded draw. Tests: the same seed gives the same piece, weights sum to 1, `fair_random` favors the fewest sales, and `pure_random` covers all active pieces | `server/b12_search/surprise.py` | T1 | sonnet |
-| T3 | `elastic.py`: auth (key and proxy modes), the mapping, the seed with bulk, the retrievers query, the client-side fusion fallback, the status. Tests check the request bodies and that the proxy mode sends no auth header | `server/b12_search/elastic.py` | T1 | opus |
+| T2 | `surprise.py`: the three methods, the candidate order and the mulberry32 port. Tests: the port matches the browser's numbers, the same seed gives the same piece, weights sum to 1, `fair_random` favors the fewest sales, and `pure_random` covers all active pieces | `server/b12_search/surprise.py` | T1 | sonnet |
+| T3 | `elastic.py`: headers from `config.elastic_headers()`, the mapping, the seed with bulk, the retrievers query, the client-side fusion fallback, the status. Tests check the request bodies and that the proxy mode sends no auth header | `server/b12_search/elastic.py` | T1 | opus |
 | T4 | `agent.py`: `ensure_agent()` and `converse()`. Tests check the requests and that unknown piece IDs are dropped | `server/b12_search/agent.py` | T3 | opus |
 | T5 | The four endpoints, choosing the Elastic or the local path, the error shapes and the event envelope. Tests: every response validates against the contract, a bad body is 400, an Elastic timeout falls back to `local_hybrid` with status 200, a seed without vectors is 400. One `live` test (skipped unless `ELASTIC_API_KEY` or the proxy flag is set) seeds and runs the tour's query once | `server/routers/b12_search.py` | T2, T3, T4 | opus |
 | T6 | The live adapter, with the background seed and the `pc_01` rule | `src/sources/live/b12-search.ts` | T5 | sonnet |
@@ -121,3 +122,4 @@ One backend-builder does these in order. Each task adds its own tests to `tests/
 - `POST /api/b12/seed` gains `communities` in its body (for `craft` and `people`), and answers 400 `bad_request` before B11 has vectors.
 - `listing.indexed` stays keyed to `b12-search`, but in v2 B14's response carries it, and B12's adapter returns `[]` for it.
 - The Python module functions `search`, `surprise`, `converse` and `index_one`, which B14 imports.
+- `src/sources/surprise.ts` (I2-core) exports its mulberry32 generator, so B12's test can compare the port against it, or a fixture of its first numbers for seeds 1 and 7 is written into the test.

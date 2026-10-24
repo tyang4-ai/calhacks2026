@@ -212,7 +212,7 @@ export const ROLES = {
     exclude: [LIVE],
   },
   'backend-builder': { include: ['server/**', LIVE, 'tests/server/**'] },
-  scribe: { include: ['README.md', 'docs/devpost/**'] },
+  scribe: { include: ['README.md', 'docs/devpost/**', 'sponsors/**'] },
 };
 
 export const ROLE_NAMES = Object.keys(ROLES);

@@ -25,7 +25,7 @@ A sentence-embedding model fine-tuned on Cindia's catalog, so "something soft an
 
 ## Interfaces
 
-- **Input data:** `artifacts/mock/mock.json`, written by `npm run export:mock` (I2-core) from `src/mock/`. B11 reads `pieces`, `communities`, `searchIndex` and `searchEval` from it. Run the export before training. `data.py` fails with one clear line if the file is missing or stale (its `searchIndex` count isn't 54).
+- **Input data:** `artifacts/mock/mock.json`, written by `npm run export:mock` (I2-core) from `src/mock/`, with one key per non-function export and `_generatedAt`. B11 reads `pieces`, `communities`, `searchIndex` and `searchEval` from it. Run the export before training. `data.py` fails with one clear line if the file is missing or incomplete (its `searchIndex` count isn't 54), and logs `_generatedAt`.
 - **Base model:** `intfloat/multilingual-e5-small`, 384 dimensions, downloaded from `huggingface.co`. If the download is blocked, the report says `blocked: base model download` and the upgrade is `blocked` under Needs Gordon (the network setting). A replacement model is allowed only if it also trains on CPU, and the report says why.
 - **Text in:** passages are the IndexEntry's `embedText` as it is (it already starts `passage: `). Queries are `query: ` followed by the person's words and the chips joined with commas (the contracts rule). Every vector is L2-normalized, so cosine is a dot product.
 - **Training script:** `python server/b11_embed/train.py`, run as task T5. The steps:
@@ -61,7 +61,7 @@ A sentence-embedding model fine-tuned on Cindia's catalog, so "something soft an
 - **Endpoints** (`server/routers/b11_embed.py`, `router = APIRouter(prefix="/api/b11")`, no key needed):
   - `GET /api/b11/model` returns `{ "trained", "modelId", "baseModel", "dims" }`, read from `report.json` and the model directory. `trained` is true only when both exist. This isn't an events response.
   - `POST /api/b11/report` `{ "trigger" }` returns `model.trained` and `proof.search_scored` built from `report.json`, under 1 second, or `[]` when there's no report.
-  - `POST /api/b11/map` `{ "trigger", "queryId", "text", "keywords" }` embeds the query with the fine-tuned model, projects it with the stored PCA (never refitted per request), and returns one `search.mapped`: every piece's point, the query's point, `method: "pca"`. Under 2 seconds once the model is warm. It returns `[]` when there's no trained model.
+  - `POST /api/b11/map` `{ "trigger", "queryId", "text", "keywords" }` embeds the query with the fine-tuned model, projects it with the stored PCA (never refitted per request), and returns one `search.mapped`: every piece's point, the query's point, `method: "pca"`, and `approx` left unset because the points are real. Under 2 seconds once the model is warm. It returns `[]` when there's no trained model.
 - **Events:** `source: "live"`, `key: "b11-embed"`, IDs `evt_live_` from a counter starting at 1100001, `at` copied from the trigger or 0.
 - **Python module for other upgrades** (`server/b11_embed/model.py`): `is_trained()`, `encode_queries(texts) -> list[list[float]]`, `encode_passages(texts)`, `piece_vectors() -> dict[pieceId, list[float]]`, `project(vector) -> (x, y)`. Lazy-loaded once per process, thread-safe. B12 and B15 import these. `server/b11_embed/bm25.py` (a small BM25 with English lowercasing and per-character CJK tokens) is shared the same way.
 - **Adapter** (`src/sources/live/b11-embed.ts`, default export a `LiveAdapter`):
@@ -71,7 +71,10 @@ A sentence-embedding model fine-tuned on Cindia's catalog, so "something soft an
     - On a keyed `search.mapped` (the tour's `d01-vibe`): post `/api/b11/map` with the `queryId` from the trigger, and the text and keywords of that query's `search.queried` in the store.
     - Anything else: `[]`.
     - Every fetch aborts at 7.5 seconds.
-- **Python dependencies:** inference needs `sentence-transformers`, `torch` (CPU wheel) and `numpy` in `server/requirements.txt` (I2-core). Training adds `datasets` and `accelerate`, pinned in `server/b11_embed/requirements-train.txt`, which the orchestrator installs into `.venv`. On the cloud VM, install torch from the CPU index (`--index-url https://download.pytorch.org/whl/cpu`) to avoid gigabytes of GPU libraries. On Windows, PyPI's default torch is fine.
+- **Python dependencies:**
+  - Inference needs `sentence-transformers`, `torch` and `numpy` in `server/requirements.txt`. I2-core maintains that file with `--extra-index-url https://download.pytorch.org/whl/cpu`, so torch comes as the CPU wheel and not gigabytes of GPU libraries.
+  - Training adds `datasets` and `accelerate`, pinned in `server/b11_embed/requirements-train.txt`, which the orchestrator installs into `.venv`.
+- **Live tests** use `needs_service("model")` and `needs_key(...)` from `tests/server/conftest.py`.
 
 ## Tasks
 
@@ -134,6 +137,5 @@ Run it once the S3-catalog data is green. It's one agent for the concurrency cap
 
 ## Contract additions needed
 
-- `server/requirements.txt` gains `sentence-transformers`, `torch` (CPU) and `numpy` (I2-core).
-- `mock.json`'s top-level keys `pieces`, `communities`, `searchIndex` and `searchEval`, as `npm run export:mock` writes them (I2-core).
-- `report.json`'s fields `seed`, `pairSource` and `notes`, and `vectors.json`'s shape above, which S3-catalog T9 copies from.
+- `server/requirements.txt` lists `sentence-transformers`, `torch` and `numpy` (I2-core, beside the CPU index line section 11 already gives it).
+- `ModelReport` in `src/core/types.ts` (I2-core) holds what `model.trained` and `proof.search_scored` carry, plus the PCA points, because S3-catalog T9 copies `report.json` and `vectors.json` into it. `report.json`'s extra fields (`seed`, `pairSource`, `notes`) stay server-side.

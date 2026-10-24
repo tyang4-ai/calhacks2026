@@ -13,11 +13,12 @@ Customer service for buyers and sellers, run by a swarm of narrow agents on Clau
 - `docs/v2/contracts.md`:
   - section 3 (`support.asked`, `swarm.step`, `support.answered`, `support.escalated`, `listing.requested`, `listing.drafted`, `listing.indexed`, `storefront.drafted`, the 20-second key timeout),
   - section 5 (B14),
-  - section 6 (the roster: agent IDs, kinds, models, tools).
+  - section 6 (the roster: agent IDs, kinds, models, tools),
+  - section 11 (the ID scheme, `storefront.requested`, the listing and Designer runs' threads, the mock exports).
   
   After I2-core: `docs/common/api-contract.md` B14 and `events.md`.
 - `docs/v2/brief.md`, "The agent swarm: one small job each" (the "Never does" column)
-- `docs/plans/S3-catalog.md`: the scripted runs (`run_01` to `run_05`) your live runs replace, the policy topics, the roster in `src/mock/agents.ts`
+- `docs/plans/S3-catalog.md`: the scripted runs your live runs replace (`swarmRuns`, `run_01` to `run_04`, and the two fallbacks), `policy`, and the roster in `agents`
 - `docs/plans/B12-search.md` (the `search`, `converse` and `index_one` functions), `docs/plans/B13-live.md` (the bridge), `docs/plans/B11-embed.md` (`compose.py`, `encode_passages`)
 - `docs/plans/B02-explain.md` and `server/routers/b02_explain.py`: how v1 calls Claude with `messages.parse()` and checks the answer
 - In the vault docs folder: `docs/anthropic-sdk-python/` (`README.md`, `MIGRATION.md`, `api.md`) and `docs/claude-api/structured-outputs.md`. The SDK changed major versions, so read before writing calls.
@@ -46,7 +47,13 @@ Customer service for buyers and sellers, run by a swarm of narrow agents on Clau
 - **The step recorder** (`steps.py`):
   - `RunRecorder(runId, threadId, side)` times each step and builds its `swarm.step` payload: `agentId`, `kind`, a short `summary` in English and Chinese written by code from the step's typed result (never the model's raw text), `toolName`, `ms`, and `model` (none for code agents).
   - It calls the B13 bridge (`start_run`, `add_step`, `finish_run`) when it's importable and available, and collects every step for the response.
-  - Live IDs: `run_live_N`, `stp_live_N`.
+  - **IDs follow `contracts.md` section 11, because only the browser can count the store.** Every request carries `runId` and `idStart`, the next free number per prefix, and the server numbers from there:
+    - steps are `stp_user_<n>`,
+    - checks `chk_user_<n>`,
+    - approvals `apr_user_<n>`,
+    - a draft's index document `pc_user_<n>`.
+    
+    For a person's request the adapter sends `run_user_<n>`. For a live replacement of one of the tour's runs, it sends that run's own ID (`run_01`, `run_02` or `run_03`), so the swarm view keeps it on the same thread.
 - **The agents** (`server/b14_swarm/agents/`), one file each, holding its input model, its output model, its prompt, its model ID and its tools from the roster. Each prompt is short, in plain words, and says: answer only from what you're given, and if it doesn't say, answer `unknown` with the reason.
 
 | File | Output (Pydantic) | Server check after the call |
@@ -62,7 +69,7 @@ Customer service for buyers and sellers, run by a swarm of narrow agents on Clau
 | `lister.py` | title and summary in both languages, and `facets` (object, materials, techniques, motifs, colors, `hoursFromNotes?`) | every number it states appears in the notes |
 | `describer.py` | what's visible in the picture: object, colors, motifs, a note in both languages | runs only when the request carries an image. Vision input, never a claim about meaning |
 | `tagger.py` | `vibe` (2 to 4 moods, 1 to 3 occasions, 1 to 3 recipients, lowercase English) | the words come from the catalog's existing vibe vocabulary, sent in the request, plus at most two new ones |
-| `checker.py` | exactly one check each of `protocol`, `facts` and `price`, each with `ok` and a note in both languages | checks carry IDs `chk_live_N` |
+| `checker.py` | exactly one check each of `protocol`, `facts` and `price`, each with `ok` and a note in both languages | checks carry IDs `chk_user_<n>` from `idStart` |
 | `indexer.py` (code) | the draft IndexEntry, its passage and vector, written with `index_write` | runs only after the Checker |
 | `designer.py` | 4 to 6 storefront blocks (`kind` and `props`, text props as `_en` and `_zh`) | every piece ID in a block belongs to that community, and props are only strings, numbers and string arrays |
 
@@ -73,8 +80,8 @@ Customer service for buyers and sellers, run by a swarm of narrow agents on Clau
     3. the specialists (side by side where Cindy marks them parallel, through a thread pool),
     4. `writer`.
     
-    It ends in `support.answered` (`agentId: "writer"`). When Intake says `needsPerson`, or a specialist can't answer something that matters (a damaged piece, a refund, a complaint), it ends in `support.escalated` plus an `approval.requested` of kind `support_action` (`apr_live_N`), and the Writer says a person will follow up.
-  - **Listing:**
+    It ends in `support.answered` (`agentId: "writer"`). When Intake says `needsPerson`, or a specialist can't answer something that matters (a damaged piece, a refund, a complaint), it ends in `support.escalated` plus an `approval.requested` of kind `support_action` (`apr_user_<n>`), and the Writer says a person will follow up.
+  - **Listing,** with the `listingId` as its `threadId`:
     1. `cindy`,
     2. `lister`,
     3. `describer` (with an image only),
@@ -83,19 +90,21 @@ Customer service for buyers and sellers, run by a swarm of narrow agents on Clau
     6. `indexer`.
     
     It ends in `listing.drafted`, then `listing.indexed` when B12 wrote the draft, then an `approval.requested` of kind `listing_publish`.
-  - **Storefront:** `cindy`, then `designer`. It ends in `storefront.drafted`.
+  - **Storefront,** with the storefront ID as its `threadId`: `cindy`, then `designer`. It ends in `storefront.drafted`.
+  - **A live replacement of a tour run** (`run_01` to `run_03`) creates no approval of its own. The tour's own `approval.requested` (`apr_04` after the listing run), keyed `b08-approvals`, follows as scripted, so one listing never gets two approvals.
   - **No run ever emits** `approval.granted`, `approval.declined`, `followup.sent`, `payout.sent` or `money.moved`.
 - **Endpoints** (`server/routers/b14_swarm.py`, `router = APIRouter(prefix="/api/b14")`, `ANTHROPIC` key required, 503 `key_missing` without it):
-  - `POST /api/b14/support` `{ "trigger", "threadId", "side", "text", "lang", "contextIds", "records" }`
-  - `POST /api/b14/listing` `{ "trigger", "listingId", "makerId", "notes", "lang", "community", "maker", "vibeVocabulary", "image?" }`
-  - `POST /api/b14/storefront` `{ "trigger", "storefrontId", "community", "pieces" }`
+  - `POST /api/b14/support` `{ "trigger", "runId", "idStart", "threadId", "side", "text", "lang", "contextIds", "records" }`
+  - `POST /api/b14/listing` `{ "trigger", "runId", "idStart", "listingId", "makerId", "notes", "lang", "community", "maker", "vibeVocabulary", "image?" }`
+  - `POST /api/b14/storefront` `{ "trigger", "runId", "idStart", "storefrontId", "community", "pieces" }`
   
-  Each returns every `swarm.step` event in order, then the run's final events, in under 19 seconds. Envelope: `source: "live"`, `key: "b14-swarm"`, IDs `evt_live_` from a counter starting at 1400001, `at` copied from the trigger or 0. A support request's `records` holds `pieces`, `communities`, `people`, `orders`, `payouts`, `makerPayouts`, `makerStatements`, `policyTopics` and `searchIndex` from `src/mock`.
+  Each returns every `swarm.step` event in order, then the run's final events, in under 19 seconds. Envelope: `source: "live"`, `key: "b14-swarm"`, IDs `evt_live_` from a counter starting at 1400001, `at` copied from the trigger or 0. A support request's `records` holds `pieces`, `communities`, `people`, `orders`, `payouts`, `makerPayouts`, `makerStatements`, `policy`, `searchIndex` and `agents` from `src/mock`.
 - **Adapter** (`src/sources/live/b14-swarm.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b14` and `keys.anthropic` is true.
   - `produce(event, state)`:
-    - **A person's `support.asked`:** post `/api/b14/support` with the records above and return the events.
+    - **A person's `support.asked`:** post `/api/b14/support` with the records above, `runId: run_user_<n>` and `idStart` from the store, and return the events.
     - **A person's `listing.requested`:** post `/api/b14/listing` with the listing, the maker, the community and the vibe vocabulary from `src/mock`.
+    - **A person's `storefront.requested`:** post `/api/b14/storefront` with that storefront's community and pieces.
     - **A keyed event of a scripted run in the tour** (`swarm.step`, `support.answered`, `listing.drafted` or `storefront.drafted` with `run_01`, `run_02` or `run_03`):
       - The first such event of a run starts one live call for that run, with the question or the listing from the store, and caches its promise by `runId`.
       - Every keyed event of that run awaits the same promise and returns the whole live list. The store's reducers drop the repeats by ID, and none of the scripted steps of that run play.
@@ -144,8 +153,8 @@ One backend-builder does these in order. Each task adds its own tests to `tests/
 
 ## Contract additions needed
 
-- `approval.requested` gains an optional `approval` object (`kind`, `subjectIds`, `amountCents?`, `overLimit`, `proposedBy: "cindy"`, `summary: Text`) for approvals created live, whose `apr_live_N` IDs `getById()` can't find.
-- Live ID formats: `run_live_N`, `stp_live_N`, `apr_live_N`, `chk_live_N`, and `pc_live_N` for a draft listing's index entry.
+- `approval.requested` gains an optional `approval` object (`kind`, `subjectIds`, `amountCents?`, `overLimit`, `proposedBy: "cindy"`, `summary: Text`) for approvals created live, whose `apr_user_<n>` IDs `getById()` can't find.
+- Section 11's `*_user_<n>` scheme, extended to what a live run makes: `chk_user_<n>`, `apr_user_<n>` and `pc_user_<n>`. Also the request fields `runId` and `idStart` (the next free number per prefix), and a live replacement of a tour run keeping that run's own ID.
 - The shipping policy topic (`pol_01`) carries `data: { transitDaysMin, transitDaysMax }` for `arrival_window`. S3-catalog T7 writes it.
 - The listing request's `vibeVocabulary` field, and `image` (base64 PNG or JPEG, optional).
 - `tests/demo/beats.ts`: no allowed-empty entries are needed for `b14-swarm` if the 9-second target holds. If it doesn't, the integrator may list `swarm.step` there.

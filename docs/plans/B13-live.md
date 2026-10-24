@@ -13,7 +13,8 @@ Every agent step the swarm takes is written to SpacetimeDB as it happens, and ev
 - `docs/v2/contracts.md`:
   - section 1 (port 3000, `SPACETIME_URL`, `SPACETIME_DB`, the hosts),
   - section 3 (`swarm.step`, the B13 key rule),
-  - section 5 (B13).
+  - section 5 (B13),
+  - section 11 (`services.spacetime_reachable()`, `needs_service()`, the ID scheme the steps carry).
   
   After I2-core: `docs/common/api-contract.md` B13.
 - `docs/plans/B14-swarm.md`: the step recorder that calls your bridge
@@ -51,7 +52,7 @@ Every agent step the swarm takes is written to SpacetimeDB as it happens, and ev
     - It uses the WebSocket subscription when that works from Python. Otherwise it polls the SQL endpoint every 250 ms for rows with `seq` above the last one sent.
     - Every 10 seconds it sends a comment line as a heartbeat and refreshes `join_screen`.
     - When SpacetimeDB drops, the stream stays open, keeps the heartbeat and retries every 2 seconds.
-  - `GET /api/b13/status` returns `{ "spacetime", "db", "screens" }`. `spacetime` is true when a SQL ping answers. `screens` counts rows seen in the last 30 seconds. This isn't an events response.
+  - `GET /api/b13/status` returns `{ "spacetime", "db", "screens" }`. `spacetime` comes from `services.spacetime_reachable()` in the server skeleton (`contracts.md` section 11), so health and status agree. `screens` counts rows seen in the last 30 seconds. This isn't an events response.
 - **Adapter** (`src/sources/live/b13-live.ts`, default export a `LiveAdapter`):
   - `health()`: `GET /api/health` lists `b13` and `services.spacetime` is true, then `GET /api/b13/status` says `spacetime`.
   - `start(emit)`:
@@ -70,7 +71,7 @@ One backend-builder does these in order. Each task adds its own tests to `tests/
 | T1 | The module: tables, reducers, its package or crate files, and the README with the commands. A test builds it with the CLI, skipped when `spacetime` isn't on the path | `server/b13_spacetime/module/`, `server/b13_spacetime/README.md` | the CLI installed (V0) | opus |
 | T2 | `bridge.py`: the reducer calls, the token, the no-op and back-off. Tests with httpx `MockTransport`: the request path and argument order per reducer, no-op on a refused connection, back-off for 30 seconds, no log line with a token | `server/b13_spacetime/__init__.py`, `server/b13_spacetime/bridge.py` | T1 | opus |
 | T3 | `feed.py`: the poller (and the subscription if workable) turning rows into `swarm.step` events. Tests with a fake row source: field mapping, empty `tool_name` and `model` left out, the order by `seq`, no event sent twice | `server/b13_spacetime/feed.py` | T2 | opus |
-| T4 | The two endpoints. Tests with TestClient streaming: `data:` lines that parse and validate, `join_screen` on connect and `leave_screen` on close, the heartbeat, the status shape | `server/routers/b13_live.py` | T3 | opus |
+| T4 | The two endpoints. Tests with TestClient streaming: `data:` lines that parse and validate, `join_screen` on connect and `leave_screen` on close, the heartbeat, the status shape. One `live` test, under `needs_service("spacetime")`, writes three steps through the bridge and reads them back from the stream | `server/routers/b13_live.py` | T3 | opus |
 | T5 | The live adapter | `src/sources/live/b13-live.ts` | T4 | sonnet |
 
 ### Orchestrator steps (not the builder's)

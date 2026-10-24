@@ -250,6 +250,7 @@ check('backend-builder: other router', E, edit('backend-builder', 'be1', P(proj,
 check('scribe: README', E, edit('scribe', 'sc1', P(proj, 'README.md')), 'allow');
 check('scribe: devpost', E, edit('scribe', 'sc1', P(proj, 'docs/devpost/draft.md')), 'allow');
 check('scribe: src', E, edit('scribe', 'sc1', P(proj, 'src/app/App.tsx')), 'deny');
+check('scribe: sponsors', E, edit('scribe', 'sc1', P(proj, 'sponsors/visa/README.md')), 'allow');
 
 check('general-purpose: src', E, edit('general-purpose', 'gp1', P(proj, 'src/app/App.tsx')), 'deny');
 check('unknown type: src', E, edit('mystery-agent', 'm1', P(proj, 'src/app/App.tsx')), 'deny');

@@ -131,7 +131,7 @@ The envelope, the store and the player stay. These change:
 | `support.escalated` | `threadId`, `runId`, `reason: Text`, `approvalId` | `b14-swarm` |
 | `listing.requested` | `listingId`, `makerId`, `notes`, `lang` | |
 | `listing.drafted` | `listingId`, `makerId`, `title: Text`, `summary: Text`, `facets`, `vibe` (shapes as on Piece), `checks: { checkId; kind: "protocol" \| "facts" \| "price"; ok: boolean; note: Text }[]` | `b14-swarm` |
-| `listing.indexed` | `listingId`, `pieceId`, `modelId`, `embedText` | `b12-search` |
+| `listing.indexed` | `listingId`, `pieceId`, `modelId`, `embedText` | `b14-swarm` |
 | `storefront.drafted` | `storefrontId`, `blocks` (as on Storefront) | `b14-swarm` |
 | `storefront.published` | `storefrontId`, `slug` | |
 | `project.funded` | `contributionId` (`ctb_01` onward), `projectId`, `amountCents`, `buyerId`, `orderId?` | |
@@ -628,3 +628,38 @@ Numbering starts at 1 for each prefix and counts what's already in the store, so
 | Word | Code name | English label | Chinese label | Meaning |
 |---|---|---|---|---|
 | community fund | `Party.kind: "community_fund"` | Community fund | 社区基金 | Where project contributions go, in full |
+
+### From the data and backend plans (Oct 24, 3:00 PM)
+
+- **People and runs:**
+  - `people.ts` adds the exports `leads` and `allMakers`.
+  - The scripted runs are:
+    - `run_01`: the d04 support run, `thr_01`,
+    - `run_02`: the d15 listing run, thread `lst_01`,
+    - `run_03`: the Designer run, thread `sto_01`,
+    - `run_04`: the seller's payout question, `thr_02`,
+    - `run_05`: `fallbackSupportRun`, placeholder thread `thr_00`,
+    - `run_06`: `fallbackListingRun`, placeholder thread `thr_00`.
+- **Where the new approvals live:** `apr_03` and `fup_02` in `watch.ts`, `apr_04` in `listings.ts`, `apr_05` in `projects.ts`. `getById()` finds them, and the approvals feature reads them the same way as `apr_01` and `apr_02`.
+- **`Policy`** is a list of topics (`pol_01` onward), each with `title: Text`, `body: Text` and an optional `data` record. `pol_01` (shipping) holds `{ transitDaysMin: 6, transitDaysMax: 10 }`.
+- **`approval.requested`** gains an optional `approval` object, `{ kind, subjectIds, amountCents?, overLimit, proposedBy: "cindy", summary: Text }`. A live run uses it for an approval that isn't in `src/mock/` (IDs `apr_user_<n>`). The approvals reducer stores it and the approvals feature renders it.
+- **B14 IDs and fields:**
+  - More person-scoped IDs: `chk_user_<n>`, `pc_user_<n>` (a drafted listing's piece), `cft_user_<n>`, `fup_user_<n>`.
+  - B14 requests carry `runId` and `idStart`.
+  - A live replacement of a tour run keeps `run_01` to `run_03` and creates no approval of its own.
+  - The listing request adds `vibeVocabulary` and an optional `image`.
+- **`listing.indexed`** is keyed `b14-swarm`, because the listing run's Indexer produces it. B12's adapter answers it with `[]`.
+- **`POST /api/b12/seed`** also takes `communities`, and answers 400 `bad_request` until vectors exist. B12's module functions are `search`, `surprise`, `converse` and `index_one`.
+- **`src/sources/surprise.ts`** exports `mulberry32(seed)`, so the Python side can be tested against it.
+- **B13:**
+  - The table columns and reducer arguments are as `docs/plans/B13-live.md` writes them.
+  - `/api/b13/stream` takes a `role` query parameter.
+  - A Rust module needs the hosts `static.rust-lang.org` and `sh.rustup.rs`.
+- **B15:**
+  - `ALLOWED_EMPTY_FALLBACKS` adds `b15-watch` for `watch.scanned`, `counterfeit.flagged` and `followup.drafted`.
+  - The tour's `followup.drafted` `fup_02` is keyed `b15-watch` (`I2-tour`'s timeline task).
+  - A scan's `threadId` is its `scanId`.
+  - The request carries `tourIds { cftId, followUpId }`. A live hit in the tour takes `cft_01` and `fup_02`, so the scripted `apr_03` still fits.
+  - The similarity is calibrated, `(c - b) / (1 - b)`. The 0.75 threshold applies to the calibrated number.
+- **`nativeName`** stays unset for everyone in v2. No Indigenous-language text appears beyond standard craft terms.
+- **Ownership:** `sponsors/` is the scribe's, and the edit guard allows it. `design/` is the orchestrator's: the design lead writes it from the planning session, and agents never do.

@@ -1,10 +1,10 @@
 # v2 runbook · cloud orchestrator
 
-You are the main session, running as a Claude Code cloud session on the GitHub repo. v1 is done and green (`demo-ok-4`). This runbook takes the build through v2: Indigenous and heritage makers, vibe search on our own embedding model, the agent swarm, the process blocks, desktop only. Read these first, in order: `docs/v2/brief.md` (what and why), `docs/v2/contracts.md` (every new name), `docs/v2/README.md` (the plan list and its order). The standing rules of `docs/harness/runbook.md` still apply (you coordinate and agents build, delegation headers, evidence, commits, never wait on Gordon) except where this file changes them.
+You are the main session, running as a Claude Code cloud session opened on the GitHub repo itself, so the repo's hooks, agents and skills load. A second cloud session, the planning session, wrote the v2 plans, runs the Figma design lead, and helps Gordon with the pitch. It pushes only `design/`, `docs/tech/` and `docs/v2/`, and never touches `status.md`, plans or code. Pull with `git pull --rebase origin main` before every push, because both sessions push to `main`. v1 is done and green (`demo-ok-4`). This runbook takes the build through v2: Indigenous and heritage makers, vibe search on our own embedding model, the agent swarm, the process blocks, desktop only. Read these first, in order: `docs/v2/brief.md` (what and why), `docs/v2/contracts.md` (every new name), `docs/v2/README.md` (the plan list and its order). The standing rules of `docs/harness/runbook.md` still apply (you coordinate and agents build, delegation headers, evidence, commits, never wait on Gordon) except where this file changes them.
 
 ## What changes from the v1 runbook
 
-- **The machine is the cloud session.** The Windows desktop is only a demo and live-run machine now. Never run two orchestrators: V0 checks that the desktop handed off.
+- **The machine is this cloud session.** The Windows desktop is only a demo and live-run machine now. Never run two orchestrators: V0 checks that the desktop handed off. The planning session is not an orchestrator.
 - **Concurrency:** at most 3 agents writing code at once (leads, backend-builders and integrators together), because the cloud VM is small. A lead runs at most 2 builders. A training run counts as one agent. Only one Playwright-heavy gate at a time.
 - **Heartbeat:** a cloud session pauses when it's idle, and a session cron doesn't fire while it's paused. So the heartbeat is a `send_later` message to this session every 20 minutes, prompt `/heartbeat`, if that tool exists. Each heartbeat schedules the next one. If `send_later` isn't available, use CronCreate (`*/15 * * * *`, prompt `/heartbeat`). Never keep two.
 - **Cutoffs:** no 4:30 AM rule. Start any item that can pass its gate before 6:00 AM. From 5:00 AM only finish what's running, fix and polish. The freeze is still at 6:00 AM Sunday (R7 of the v1 runbook, unchanged), because Gordon records the video and submits by 9:00 AM.
@@ -35,16 +35,16 @@ You are the main session, running as a Claude Code cloud session on the GitHub r
 
 ## V1 · Shared code and data
 
-1. Spawn the integrator for `I2-core` (`docs/plans/I2-core.md`, the SCOPE line its plan gives). It merges `docs/v2/contracts.md` into `docs/common/` and writes the types, reducers, validation, sources, server config and `export:mock`. When it reports, run `npm run check` and `npm run test:smoke`, commit `I2-core: v2 contracts and core`, push. Tell nothing else to start before this lands.
-2. Then start in parallel, within the cap of 3:
-   - the integrator for `I2-kit` task T1 (the frame components), then T2,
-   - the data-smith for `S3-catalog`,
+1. Spawn the integrator for `I2-core` (`docs/plans/I2-core.md`, the SCOPE line its plan gives), every task except T5. It merges `docs/v2/contracts.md` (sections 1 to 11) into `docs/common/` and writes the types, reducers, validation, sources, server config and `export:mock`. When it reports, run `npm run check` and `npm run test:smoke`, commit `I2-core: v2 contracts and core`, push. Nothing else starts before this lands.
+2. Spawn the data-smith for `S3-catalog` task T1 only (the typed stub files). Commit it as soon as `npm run check` passes. Then spawn the integrator for `I2-core` task T5 (the responders, which import those stubs), and the data-smith again for the rest of `S3-catalog`.
+3. In parallel with step 2, within the cap of 3:
+   - the integrator for `I2-kit` task T1 (the frame components), then the rest,
    - once I2-kit's T1 is in, the integrator for `I2-shell`.
    
    Two integrators may run at once only with SCOPE lines that don't overlap. The plans give them.
-3. When `I2-shell` and `I2-kit` are done, run **G1b** with the gate skill. Tag `v2-shell`, push.
-4. When `S3-catalog` is done, run **G2b**. Tag `v2-data`, push. Then spawn the integrator for `I2-art` (the piece illustrations).
-5. `B11-embed` and `B13-live` may start as soon as `I2-core` is in. They live in `server/` and their own adapters. B11's training run needs `S3-catalog` and `npm run export:mock`.
+4. When `I2-shell` and `I2-kit` are done, run **G1b** with the gate skill. Tag `v2-shell`, push.
+5. When `S3-catalog` is done, run **G2b**. Tag `v2-data`, push. Then spawn the integrator for `I2-art` (the piece illustrations).
+6. `B11-embed` and `B13-live` may start as soon as `I2-core` is in. They live in `server/` and their own adapters. B11's training run needs `S3-catalog` and `npm run export:mock`.
 
 ## V2 · Features and upgrades
 
@@ -71,14 +71,14 @@ When `F-search`, `M-buyer`, `F-support`, `F-process`, `M-approvals`, `F-seller-h
 
 ## V4 · The design drops
 
-Gordon's design session pushes `design/` to branch `design`.
-1. On every heartbeat, run `git fetch origin design` and read `design/HANDOFF.md` on that branch for the drop number.
-2. For a new drop, copy the folder onto `main` with `git checkout origin/design -- design/`, commit `design: drop N`, push.
-3. Spawn the integrator for `I3-redesign` with that drop.
+The planning session runs the design lead through the Figma connector and pushes each drop to `main` under `design/`, with a commit named `design: drop N`. If Gordon runs a design session on his laptop instead, it pushes to branch `design`, and you copy the folder over with `git checkout origin/design -- design/`.
+1. On every heartbeat, pull and read `design/HANDOFF.md` for the drop number.
+2. Never edit `design/` yourself.
+3. For a new drop, spawn the integrator for `I3-redesign` with that drop.
 4. Rerun G4v2 and tag `demo-ok-v2-dN`.
 5. If drop 2 lists layout changes in `design/changes.md`, give each affected feature's lead one polish round: G3, then a G4v2 rerun.
 
-If the Figma connector is enabled in this session, you may also read Figma context yourself and save it under `design/` for the integrator. Agents other than you have no MCP tools.
+Agents in this session have no Figma tools. The integrator works from the files in `design/`.
 
 ## Scribe
 
