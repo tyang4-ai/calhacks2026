@@ -81,8 +81,8 @@ Support messages are keyed by the event's own `id`, so a seek that replays the t
 
 **Exports added to `src/sources/` (T4 and T5):**
 - `timeoutFor(key)`: 8000 ms by default, 20000 for `b14-swarm`, 60000 for `b15-watch`. The registry and the responder use it for `produce()`. `health()` keeps the 8-second default.
+- `keywords.ts` (T5): `extractKeywords(text)` returns `{ keywords: string[]; filters: { maxPriceCents?: number } }`, building its vocabulary with `keywordVocab()`. Exported from `src/sources/index.ts`.
 - `keywordSearch.ts` (T5):
-  - `extractKeywords(text, vocab)` returns `{ keywords, filters }`.
   - `scoreKeywords(keywords, filters, index, pieces)` returns at most 12 results with `score` from 0 to 1, `matched` and a `reason` as `Text`.
   - `keywordVocab(index, aliases)` builds the vocabulary from every facet and vibe word in the index, plus `keywordAliases`.
 - `surprise.ts` (T5): `drawSurprise({ keyword?, method, seed }, index, pieces)` returns the `surprise.drawn` payload without `surpriseId`. The rules:
@@ -96,7 +96,7 @@ Support messages are keyed by the event's own `id`, so a seek that replays the t
   - the final event 300 ms after the last step,
   - `threadId` from the request.
   
-  A person's runs get IDs from `run_51` onward and their steps from `stp_5001` onward, so a second ask never collides with the timeline's `run_01` or `stp_0001`.
+  A person's runs get IDs `run_user_<n>` and their steps `stp_user_<n>` (`docs/v2/contracts.md` section 11), so a second ask never collides with the timeline's `run_01` or `stp_0001`.
 
 **The mock exports the responders read** (S3-catalog writes them):
 
@@ -161,22 +161,14 @@ Support messages are keyed by the event's own `id`, so a seek that replays the t
 | `glossary.md` | Section 9, appended to Domain words |
 | `data-model.md` | Section 2: communities, the new and changed entities, the approval kinds and `community_fund`, the embedded passage rule, figures 11 to 15, the new `src/mock/` files, and the event-only ID prefixes below |
 | `events.md` | Section 3, plus the store shapes in this plan's Interfaces |
-| `ui-contract.md` | Section 4: routes, surfaces and frames, the transition rule, slots, `SlotProps`, the process bar and views, camera states with the Phase A mapping, test IDs. `frame-owner` and `PhoneFrame` are retired. `/dev/kit` and `?drawer=support` on Shop routes are added |
+| `ui-contract.md` | Section 4: routes, surfaces and frames, the Phase A legacy page `/shop/legacy` (contracts section 11), slots, `SlotProps`, the process bar and views, camera states with the Phase A mapping, test IDs. `frame-owner` and `PhoneFrame` are retired. `/dev/kit` and `?drawer=support` on Shop routes are added |
 | `api-contract.md` | Sections 5 and 6 |
 | `design-system.md` | Section 7, and desktop sizes: `PageFrame` 1440 by 900, the 56 px top bar, the 64 px process bar, the 440 px drawer. Phone frames are retired |
 | `demo-script.md` | Only the Phase A mapping: a "Desktop camera (Phase A)" column next to the v1 camera column, plus one paragraph saying the timeline keeps the v1 camera IDs and the shell maps them until I2-tour. Nothing else changes |
 | `definition-of-done.md` | Section 10's gates and tags |
 
 **Event-only ID prefixes** that `data-model.md` gains:
-- `qry_01` (the demo query) and `qry_51` onward (people's queries),
-- `srp_01` and `srp_51` onward (surprise),
-- `thr_01` and `thr_51` onward (support threads),
-- `run_01` onward (scripted runs) and `run_51` onward (people's runs),
-- `stp_0001` onward (scripted steps) and `stp_5001` onward (people's steps),
-- `wsc_01` and `wsc_51` onward (watch scans),
-- `lst_51` onward (people's listing requests),
-- `chk_01` onward (listing checks),
-- `ctb_01` onward (contributions).
+the scheme in `docs/v2/contracts.md` section 11: `qry_01`, `srp_01`, `thr_01`, `wsc_01`, `run_01` to `run_03`, `stp_0001` onward, `chk_01` onward and `ctb_01` onward for the tour and the scripted data. People's own IDs are `qry_user_<n>`, `srp_user_<n>`, `thr_user_<n>`, `wsc_user_<n>`, `lst_user_<n>`, `ctb_user_<n>` and `ord_user_<n>`. Answers to people are `run_user_<n>` and `stp_user_<n>`.
 
 ### T5 · The responders in detail
 
@@ -217,7 +209,7 @@ Support messages are keyed by the event's own `id`, so a seek that replays the t
 - Given `ELASTIC_URL` set and `ELASTIC_AUTH=proxy` with no key, then `keys.elastic` is `true` and `elastic_headers()` returns `{}`.
 - Given `npm run export:mock`, then `artifacts/mock/mock.json` exists, has `pieces` and `_generatedAt`, and the script exits 0 on Windows and Linux.
 - Given T5, when a person's `search.queried` with figure 11's text plays in scripted mode, then 1.2 seconds later `search.answered` carries `demoSearch.answer`'s results with the request's `queryId`.
-- Given T5, when a person asks a support question that matches no scripted run, then steps arrive 300 ms apart and the final `support.answered` comes from `fallbackSupportRun`, with a run ID from `run_51` and step IDs from `stp_5001`.
+- Given T5, when a person asks a support question that matches no scripted run, then steps arrive 300 ms apart and the final `support.answered` comes from `fallbackSupportRun`, with a run ID `run_user_1` and step IDs from `stp_user_1`.
 - Given T5, when `drawSurprise` runs twice with the same seed and inputs, then it returns the same piece.
 - Given `npm run check:scope -- src/core/ src/sources/`, then it exits 0.
 
@@ -249,7 +241,7 @@ Support messages are keyed by the event's own `id`, so a seek that replays the t
 - **The keyword chip order rule** in T5. For figure 11 to come out in its stated order, `garden` and `peony` must be motif words and `gift for mom` must be a recipients phrase that `mom` aliases to.
 - **The store shapes** for the new keys, and `demo.process`.
 - **`search.mapped` gains `approx?: boolean`**, true when the query's point is estimated from its results instead of embedded.
-- **The event-only ID prefixes** in T1 (`qry_`, `srp_`, `thr_`, `run_`, `stp_`, `wsc_`, `lst_51`, `chk_`, `ctb_`), with the people's ranges starting at 51 or 5001.
+- **The event-only ID prefixes** in T1 (`qry_`, `srp_`, `thr_`, `run_`, `stp_`, `wsc_`, `lst_`, `chk_`, `ctb_`), with people's IDs in the `_user_<n>` form. Settled in contracts section 11.
 - **The shape of `artifacts/mock/mock.json`:** one top-level key per non-function export of `src/mock/index.ts`, plus `_generatedAt`.
 - **`server/config.py`:** `elastic_headers()`, `apify_headers()` and `MODEL_TOP`. Upgrades call these instead of reading keys.
 - **`server/services.py`:** `spacetime_reachable()` and `model_present()`.

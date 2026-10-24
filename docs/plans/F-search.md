@@ -122,8 +122,8 @@ Specs open the route named and check by test ID only. Until `I2-tour` adds the t
 
 ## Contract additions needed
 - `SlotProps.searchParams?: { q?: string; k: string[] }`, filled by the shell on `/shop/search` (I2-core, I2-shell).
-- `extractKeywords(text: string): string[]` in `src/sources/keywords.ts`, exported from `src/sources/index.ts`. It's deterministic and returns exactly figure 11's keywords for the tour's query (I2-core).
+- `extractKeywords(text)` in `src/sources/keywords.ts`, exported from `src/sources/index.ts`, returning `{ keywords: string[]; filters: { maxPriceCents?: number } }`. It's deterministic and returns exactly figure 11's keywords for the tour's query (I2-core, settled in contracts section 11).
 - The scripted keyword scorer applies `search.queried`'s `filters` (max price, communities), the same as B12 (I2-core).
-- `src/core/nav.ts` with typed route builders and `go(route)`. On `/demo` the shell decides what `go()` does (I2-core, I2-shell).
+- `src/core/nav.ts` with typed route builders and `navigate(path)`. On `/demo` the shell decides what `navigate()` does (I2-core, I2-shell, settled in contracts section 11).
 - ID prefixes for a person's requests: `qry_user_<n>` for queries and `srp_user_<n>` for surprises. The tour uses `qry_01` and `srp_01`.
 - The `src/mock` exports this plan reads: `communities`, `searchIndex`, and `report` from `model.ts`, plus `getById()` for `com_` IDs (S3-catalog).

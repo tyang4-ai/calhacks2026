@@ -12,7 +12,7 @@ A judge opens a piece on the desktop Shop and takes it in at a glance: who made 
 - `docs/v2/contracts.md`, which `docs/common/` holds once I2-core is green:
   - section 2: Community (`verification`, `projectIds`), Project (`addOnCents`), figure 13
   - section 3: `project.funded`, the Requests table
-  - section 4: routes `/shop/piece/:pieceId` and `/shop/receipt/:orderId`, slots `shop.piece.main` and `shop.receipt.main`, `SlotProps.pieceId` and `orderId`, the transition rule, test IDs `buyer-verification` and `buyer-project-addon`
+  - section 4: routes `/shop/piece/:pieceId` and `/shop/receipt/:orderId`, slots `shop.piece.main` and `shop.receipt.main`, `SlotProps.pieceId` and `orderId`, the Phase A legacy page `/shop/legacy` (contracts section 11), test IDs `buyer-verification` and `buyer-project-addon`
   - section 8: beats `d03-piece`, `d05-pay`, `d12-receipt`
 - `docs/plans/F-buyer.md`: what each v1 component does and its acceptance
 - `docs/common/design-system.md` and contracts section 7: `PageFrame`, `VerificationLine`, `ShareBar`, `Money`, `MakerMark`, `Button`, `Badge`

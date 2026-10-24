@@ -487,3 +487,144 @@ About 100 seconds at 1x. Every beat starts with `beat.started` (beat ID, camera,
 | G4v2 | `I2-tour` | `npm run build`, `npm run test:demo` 3 times on the tour (each run under 130 seconds), `npm run test:offline`, the verifier's screenshot review against section 8 | `demo-ok-v2` |
 | G5 | each of B11 to B15 | as v1 | `demo-ok-b11` to `demo-ok-b15` |
 | G6 | the freeze | as v1 | `final` |
+
+## 11. Additions from the plans (Oct 24, 2:40 PM)
+
+The plan writers found these gaps. Each one is settled here, and where two plans proposed different names, this section picks one. Where it disagrees with sections 1 to 10, it wins.
+
+### Navigation and slot props (`I2-core`, `I2-shell`)
+
+- `src/core/nav.ts` exports:
+  - route builders: `shopRoute()`, `searchRoute({ q, k })`, `pieceRoute(pieceId)`, `communityRoute(communityId)`, `projectsRoute(id?)`, `receiptRoute(orderId)`, `storeRoute(slug)`, `sellRoute(view, { drawer?, ref? })`, `makerRoute(makerId)`,
+  - `navigate(path)`, `setProcess(processId | null)`, `openDrawer("ask" | "audit" | "support", ref?)`.
+  
+  Features never touch `window.location`. On `/demo` the shell decides what each call does.
+- The kit adds `Link` with a `to` prop, built on `navigate`.
+- `SlotProps` adds:
+  - `searchParams?: { q?: string; k: string[] }` on `/shop/search`,
+  - `processId?` (both `process.bar` and `process.view`),
+  - `pieceId?` (the piece page, and the Shop support drawer while a piece page is open),
+  - `communityId?`, `projectId?`, `slug?`, `side?`,
+  - `orderId?` (the receipt page),
+  - `refId?` (the audit drawer and `owner.main`).
+- `/sell/approvals?ref=<approvalId>` selects that approval. `?drawer=support` works on Shop routes too.
+- `owner.main` adds keys `b14-swarm` and `b15-watch` to its Simulated rule.
+
+### Store and types (`I2-core`)
+
+- **New store keys:**
+  - `log`: one `{ id, type, at, source, key }` per event, idempotent by `id`, keeping the newest 400. The process views and block counts read it.
+  - `demo.process` and `demo.drawer`.
+- **New types in `src/core/types.ts`:** `ScriptedRun`, `ModelReport`, `DemoSearch`, `DemoSurprise`, `ScriptedScan`, `Policy`.
+- **Views and cameras:** `SellView` and `SELL_VIEWS`, with `StudioView` staying the v1 five until `I2-tour`. `TourCameraId`, `LegacyCameraId`, `LEGACY_CAMERA_TO_TOUR` and `toTourCamera()`. `CameraId` covers both until `I2-tour`.
+- **Page size:** `PAGE_WIDTH` 1440 and `PAGE_HEIGHT` 900.
+
+### IDs, one scheme for every plan
+
+| Who makes it | IDs |
+|---|---|
+| The tour and the scripted data | `qry_01`, `srp_01`, `thr_01`, `wsc_01` (the tour's scan), `run_01` (the support run), `run_02` (the listing run), `run_03` (the Designer run), `stp_0001` onward, `chk_01` onward (listing checks), `ctb_01` onward |
+| A person, through `userEvent()` payloads | `qry_user_<n>`, `srp_user_<n>`, `thr_user_<n>`, `wsc_user_<n>`, `lst_user_<n>`, `ctb_user_<n>`, `ord_user_<n>` |
+| A scripted or live answer to a person | `run_user_<n>`, `stp_user_<n>` |
+
+Numbering starts at 1 for each prefix and counts what's already in the store, so a reset starts over.
+
+### Events and requests
+
+- **Payload additions:**
+  - `search.mapped` adds `approx?: boolean`, true when the points come from scripted data.
+  - `beat.started` adds `drawer?: "support" | "ask" | "audit"`. A beat may carry more than one `beat.started` with the same `beatId`.
+- **New event:** `storefront.requested` `{ storefrontId }`, a person's request keyed `b14-swarm`. The scripted answer is the Designer run (`run_03`, `threadId` the storefront ID) ending in `storefront.drafted`. The live answer is `POST /api/b14/storefront`.
+- **Listing runs** use the `listingId` as `threadId`. Notes equal to `lst_01.notes` get `lst_01`'s run, re-keyed to the person's IDs. The run ends with `approval.requested` `apr_04`, at 98.5 in the tour.
+- **The watch run** (the person's and the tour's) carries `followup.drafted` `fup_02` (the Reporter's draft), then `approval.requested` `apr_03`.
+- **New Requests rows:**
+
+| Request | Key | Scripted answer |
+|---|---|---|
+| a person's `piece.opened` | `b10-derived` | `split.shown` from `src/mock/splits.ts` (one split per piece under the `ch_cindia` rules, `pc_01` equal to figure 1) |
+| a person's `checkout.started` on any piece but the timeline's | none | `card.tokenized` (a token made from the piece ID, no randomness, last four 4242), `order.placed` `ord_user_<n>` on `ch_cindia`, `receipt.updated` received. These orders stay out of the month, the ledger and the money map |
+| a person's `wip.milestone_reached` (date always `2026-10-01`) | `b08-approvals` | `agent.acted` (propose) and `approval.requested` `apr_05` for `wip_01`'s second milestone. Any other milestone gets only the `agent.acted` line |
+| `approval.granted` on a `milestone_release` | `b08-approvals` | `wip.milestone_paid` and a `money.moved` of kind `milestone`, Cindia to the maker, the next `mv_01xx` ID, dated `2026-10-02` |
+| `storefront.requested` | `b14-swarm` | the Designer run |
+
+### Data (`S3-catalog`)
+
+- **Exports** from `src/mock/` (every file re-exported by `src/mock/index.ts`):
+  - existing: `pieces` (`catalog.ts`)
+  - `communities` (`communities.ts`)
+  - `searchIndex`, `keywordAliases` (`searchIndex.ts`)
+  - `demoSearch`, `demoSurprise` (`search.ts`)
+  - `searchEval` (`searchEval.ts`)
+  - `projects`, `worksInProgress` (`projects.ts`)
+  - `storefronts` (`storefronts.ts`)
+  - `agents`, `getAgent(agentId)` (`agents.ts`)
+  - `swarmRuns`, `fallbackSupportRun`, `fallbackListingRun`, `demoQuestions` (`swarm.ts`)
+  - `listings` (`listings.ts`)
+  - `counterfeitCandidates`, `scriptedScan` (`watch.ts`)
+  - `modelId`, `report` (`model.ts`)
+  - `policy` (`policy.ts`)
+  - `splits` (`splits.ts`)
+  - `getById()` also finds `com_`, `prj_`, `wip_`, `sto_`, `lst_`, `cft_` and the new people.
+- **`demoQuestions`** is `{ side: "buyer" | "seller"; text: Text }[]`, and the buyer's first entry is the d04 question.
+- **Approval subjects:**
+  - `apr_03.subjectIds` is `["cft_01"]`,
+  - `apr_04.subjectIds` is `["lst_01"]`,
+  - `apr_05.subjectIds` is `["wip_01", <its second milestone ID>]`, with `amountCents` that milestone's share of the price.
+- **`fup_02`** is the Reporter's draft about `cft_01`.
+- **`wip_01`** is a Gu commission (`com_gu`, one of `mkr_01` to `mkr_03`).
+- **Storefront block props:**
+  - hero: `tagline`,
+  - pieces: `pieceIds`,
+  - projects: `projectIds`,
+  - visit: `address` and `hours`.
+- **Keyword chips:** `extractKeywords(text)` lives in `src/sources/keywords.ts`, is exported from `src/sources/index.ts`, is deterministic, and returns `{ keywords: string[]; filters: { maxPriceCents?: number } }`. `keywordSearch.ts` keeps the scorer and `keywordVocab()`.
+  - Order: moods, then facet words, then occasions and recipients, then price, in text order within each group.
+  - For figure 11, `garden` and `peony` are motif words, and `keywordAliases` maps `mom` to the recipients phrase `gift for mom`.
+  - The scripted keyword scorer also applies `filters`.
+- **The surprise draw** is mulberry32 seeded with the seed, over the keyword's top 12 sorted by score and then `pieceId`, with fair weights `1 / (1 + salesThisMonth)`. The data's `salesThisMonth` values make seed 7 land on `pc_46`. A person's seed is 1 plus the number of `surprise.asked` events already in the store.
+
+### Shell and the tour
+
+- **Phase A legacy page:**
+  - Until `I2-tour`, the route `/shop/legacy` always renders `buyer.main` in a centered 480 px column.
+  - Phase A maps v1 cameras `buyer` and `receipt` to the legacy camera `shop-legacy` (`frame-buyer` on `/shop/legacy`).
+  - This replaces the transition rule in section 4. Filling `shop.home.main` no longer changes what the v1 demo sees.
+  - `I2-tour` deletes the route and the camera, and `M-buyer`'s last task deletes `buyer.main` and the concierge test IDs after G4v2.
+- **Process views:**
+  - In the tour, a beat with `process` scales its frame to 0.66 on the left and shows the process view in the right third.
+  - A person's `?process=` is a centered overlay, 1200 by 720.
+  - The top bar and the process bar stay visible above an open view, and a view never covers an open drawer.
+- **Test IDs and layout:**
+  - The process feature renders `process-bar`, `process-block-<id>`, `process-view`, `process-view-close` and `process-log`. The shell renders only the slot containers and their placeholders, `slot-process-bar` and `slot-process-view`.
+  - `/dev/kit` renders `KitGallery` from `src/ui/gallery.tsx` (test ID `dev-kit-gallery`).
+  - The Sell nav is 184 px, and the Sell header holds the studio's name and Cindy's latest line.
+- **`storefront-publish`** reads "Publish". It is the owner's own decision and emits `storefront.published` directly.
+- **Tour additions:**
+  - d04 carries `drawer: "support"`.
+  - d13 adds `model.trained` at 80.8, only when the report exists.
+  - d15's `approval.requested` `apr_04` lands at 98.5.
+- **Kit additions:** `Badge` variants `live`, `demo`, `rule`, `estimate`.
+
+### Tests
+
+- `tests/smoke/lib.ts` (`I2-shell`) exports `seekToEvent(page, match)`, which finds the event in `player.getTimeline()` and seeks to it.
+- Every v2 spec seeks by event, never by a fixed time, because `I2-tour` moves the beats.
+- A feature's own `<slug>-lib.ts` may wrap it but never copies it.
+
+### Server and scripts
+
+- **Server:**
+  - `server/config.py` adds `elastic_headers()` and `apify_headers()`, which send nothing when the `*_AUTH=proxy` flag is set.
+  - `server/services.py` adds `spacetime_reachable()` and `model_present()`.
+  - `tests/server/conftest.py` adds `needs_service()`.
+  - `server/requirements.txt` carries `--extra-index-url https://download.pytorch.org/whl/cpu`.
+- **Scripts:**
+  - `artifacts/mock/mock.json` holds one key per non-function export of `src/mock/index.ts`, plus `_generatedAt`.
+  - npm scripts `export:mock` and `art` (with `--check`), plus `scripts/check-contrast.mjs`.
+  - `scripts/gate.mjs` learns G1b, G2b and G4v2 (130-second runs). Tags may add `demo-ok-v2-dN` per design drop.
+
+### Glossary
+
+| Word | Code name | English label | Chinese label | Meaning |
+|---|---|---|---|---|
+| community fund | `Party.kind: "community_fund"` | Community fund | 社区基金 | Where project contributions go, in full |

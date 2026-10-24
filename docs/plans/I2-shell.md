@@ -15,7 +15,7 @@ Old links redirect. `/demo` keeps playing the v1 story, now on full-size desktop
 
 ## Read first
 
-- `docs/common/ui-contract.md` after I2-core: Routes, Surfaces and frames, the transition rule, Slots, `SlotProps`, the process bar and views, Camera states with the Phase A mapping, Test IDs (shell rows).
+- `docs/common/ui-contract.md` after I2-core: Routes, Surfaces and frames, the Phase A legacy page, Slots, `SlotProps`, the process bar and views, Camera states with the Phase A mapping, Test IDs (shell rows).
 - `docs/common/design-system.md` after I2-core: desktop sizes, the kit list.
 - `docs/common/demo-script.md`: the v1 beats with their Phase A desktop cameras, video mode, start at the catch.
 - `docs/common/events.md`: `beat.started` with `process`, and `store.demo`.
@@ -79,11 +79,10 @@ Old links redirect. `/demo` keeps playing the v1 story, now on full-size desktop
   
   One drawer at a time, using the kit's `Drawer`. Switching pages removes the parameter.
 
-**The transition rule:**
-- While `shop.home.main` has no feature and `buyer.main` does, the Shop `home` page renders `buyer.main` in a centered 480 px column instead.
-- The `receipt` page does the same while `shop.receipt.main` has no feature.
-
-`slotHasFeature()` from the feature loader decides.
+**The Phase A legacy page** (contracts section 11, replacing the transition rule):
+- The route `/shop/legacy` always renders `buyer.main` in a centered 480 px column inside `frame-buyer`, whatever fills `shop.home.main` or `shop.receipt.main`.
+- Phase A maps the v1 cameras `buyer` and `receipt` to the legacy camera `shop-legacy` (`frame-buyer` on `/shop/legacy`), so the v1 demo keeps passing while F-search and M-buyer land.
+- `/shop` and `/shop/receipt/:orderId` render only their v2 slots, with placeholders while those are empty.
 
 **Language:**
 - `SURFACE_START_LANG` gives `buyer`, `studio` and `store` English.
@@ -111,7 +110,7 @@ The integrator does every task itself, in order.
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
 | T1 | Routes and redirects, route params into `SlotProps`, `/dev/kit`, and the URL helpers for drawers and the process overlay | src/app/routes.tsx, src/app/useDrawer.ts, src/app/useProcessParam.ts, src/app/App.tsx | I2-core, I2-kit T1 | opus |
-| T2 | The four surfaces on `PageFrame`: `ShopSurface` (with the transition rule), `SellSurface` with its header, nav and view table, `MakerSurface`, `StoreSurface`. Retire `PhoneSurfaces.tsx` and `StudioSurface.tsx` once nothing imports them | src/app/surfaces/index.ts, src/app/surfaces/ShopSurface.tsx, src/app/surfaces/SellSurface.tsx, src/app/surfaces/MakerSurface.tsx, src/app/surfaces/StoreSurface.tsx, src/app/surfaces/views.ts, src/app/surfaces/PhoneSurfaces.tsx, src/app/surfaces/StudioSurface.tsx, src/app/studioInfo.ts | T1 | opus |
+| T2 | The four surfaces on `PageFrame`: `ShopSurface` (with the `/shop/legacy` page), `SellSurface` with its header, nav and view table, `MakerSurface`, `StoreSurface`. Retire `PhoneSurfaces.tsx` and `StudioSurface.tsx` once nothing imports them | src/app/surfaces/index.ts, src/app/surfaces/ShopSurface.tsx, src/app/surfaces/SellSurface.tsx, src/app/surfaces/MakerSurface.tsx, src/app/surfaces/StoreSurface.tsx, src/app/surfaces/views.ts, src/app/surfaces/PhoneSurfaces.tsx, src/app/surfaces/StudioSurface.tsx, src/app/studioInfo.ts | T1 | opus |
 | T3 | Chrome: the top bar with the switch, Help, Ask Cindy and language, then the process bar mount, the process overlay and the drawers. Strings for every new label in both languages, the slot placeholders included | src/app/chrome/AppChrome.tsx, src/app/chrome/ProcessOverlay.tsx, src/app/chrome/Drawers.tsx, src/app/strings.ts, src/app/lang.ts, src/app/Slot.tsx, src/app/featureLoader.ts | T2 | sonnet |
 | T4 | The stage, Phase A: 1440 by 900, one frame per camera, `toTourCamera()`, the pages per camera, `sell-catch`'s zoom inside the page frame, the process overlay from `store.demo.process`. Keep video mode, start at the catch and the end card working on the v1 timeline | src/app/demo/DemoStage.tsx, src/app/demo/cameras.ts, src/app/demo/cameras.test.ts, src/app/demo/stage.module.css, src/app/demo/BeatLabel.tsx, src/app/stageScale.ts, src/app/demo/EndCard.tsx | T2, T3 | opus |
 | T5 | Smoke tests: every v2 route (all eleven Sell views, a piece, a community, both projects routes, a receipt, a store, a maker, `/dev/kit`), each drawer from the URL, `?process=` for each process ID, the Shop and Sell switch, the redirects from `/buyer`, `/studio/month` and `/owner`, and no `slot-error-` anywhere | tests/smoke/routes.spec.ts, tests/smoke/shell.spec.ts, tests/smoke/lib.ts | T3 | sonnet |
@@ -141,7 +140,7 @@ The integrator does every task itself, in order.
 ## Out of scope
 
 - Features. Slots stay empty until their leads fill them. The process blocks and views are F-process.
-- The v2 tour beats, its timeline and the removal of the transition rule and the legacy cameras, which are I2-tour.
+- The v2 tour beats, its timeline and the removal of `/shop/legacy` and the legacy cameras, which are I2-tour.
 - Any edit to `tests/features/`, `src/features/` or `src/core/`. A needed core change goes under needs.
 - Restyling to the Figma design, which is I3-redesign.
 
