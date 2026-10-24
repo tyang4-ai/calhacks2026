@@ -52,3 +52,6 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - I1-demo-stage: Put test IDs on the element that is actually on screen; the demo test checks the ID's box against every clipping ancestor and samples it for covering elements.
 - all: A finished subagent may not be resumable by SendMessage ("No transcript found"); spawn a fresh agent with the full brief instead.
 - F-approvals: In the owner phone the visible inbox list is about 697 px tall once margins come off; measure card heights with a scratch spec before choosing a layout.
+- P2: `uvicorn --reload` on Windows didn't pick up new router files in `server/routers/`, so the orchestrator restarts the API after each new router and checks `/api/health` lists it before any live call. Stopping the npm task leaves the uvicorn process and its worker running, so stop them by PID.
+- B03-proof: `reconcile_month()` returns `{type, date, payload}` items, not bare payloads.
+- all: Gates that build or hit the dev server see every agent's half-written files, so a red check can come from another running agent; read the failing file's path before blaming the item under test.
