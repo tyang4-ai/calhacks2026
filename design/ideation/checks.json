@@ -1,0 +1,912 @@
+{
+ "generated": "2026-10-24 14:26 PT",
+ "note": "Checks behind the three moodboard directions in Cindia · 02 Moodboards. Contrast uses the WCAG 2 formula on hex values: text needs 4.5:1, control borders 3:1, hairlines carry no text. Font coverage was read from the font files in the google/fonts repo with fontTools.",
+ "directions": {
+  "A": "Museum label",
+  "B": "Warp and weft",
+  "C": "Daylight market"
+ },
+ "palettes": {
+  "A": {
+   "paper": "#F6F1E7",
+   "label": "#FFFDF8",
+   "mat": "#EDE4D3",
+   "ink": "#1C1A17",
+   "ink-soft": "#5A5249",
+   "line": "#D9CFBF",
+   "edge": "#8A7F72",
+   "seal": "#B23A2E",
+   "jade": "#2F6B4F",
+   "amber": "#8A5A0B",
+   "indigo": "#2B4870",
+   "seal-wash": "#F3DFDA",
+   "jade-wash": "#DFEAE2",
+   "amber-wash": "#F3E6CC",
+   "indigo-wash": "#E2E7F0"
+  },
+  "B": {
+   "undyed": "#EEE8DC",
+   "carded": "#FAF7F0",
+   "loom": "#E4DCCD",
+   "walnut": "#211C18",
+   "iron": "#554E47",
+   "warp": "#D3C9B9",
+   "edge": "#857A6C",
+   "indigo": "#22406F",
+   "madder": "#A0302A",
+   "weld": "#765600",
+   "lichen": "#3A6246",
+   "indigo-wash": "#E1E6EF",
+   "madder-wash": "#F2DCD7",
+   "weld-wash": "#F0E5C4",
+   "lichen-wash": "#DDE7DE"
+  },
+  "C": {
+   "daylight": "#FFFBF5",
+   "white": "#FFFFFF",
+   "shell": "#F5EEE3",
+   "charcoal": "#1E1B18",
+   "slate": "#57524B",
+   "line": "#E8E0D4",
+   "edge": "#8C8479",
+   "cobalt": "#2747B8",
+   "persimmon": "#B4441B",
+   "leaf": "#2D6A39",
+   "marigold-ink": "#855300",
+   "marigold": "#F4B73F",
+   "coral": "#F2A08F",
+   "mint": "#A6D9C0",
+   "sky": "#A9C8F2",
+   "lilac": "#D2B8E8",
+   "lime": "#CBDD8C",
+   "apricot": "#F5C49B",
+   "teal": "#A3D3D6"
+  }
+ },
+ "contrast": {
+  "A": [
+   {
+    "fg": "ink",
+    "bg": "paper",
+    "fgHex": "#1C1A17",
+    "bgHex": "#F6F1E7",
+    "ratio": 15.42,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "ink",
+    "bg": "label",
+    "fgHex": "#1C1A17",
+    "bgHex": "#FFFDF8",
+    "ratio": 17.08,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "ink",
+    "bg": "mat",
+    "fgHex": "#1C1A17",
+    "bgHex": "#EDE4D3",
+    "ratio": 13.76,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "ink-soft",
+    "bg": "paper",
+    "fgHex": "#5A5249",
+    "bgHex": "#F6F1E7",
+    "ratio": 6.81,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "ink-soft",
+    "bg": "label",
+    "fgHex": "#5A5249",
+    "bgHex": "#FFFDF8",
+    "ratio": 7.55,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "ink-soft",
+    "bg": "mat",
+    "fgHex": "#5A5249",
+    "bgHex": "#EDE4D3",
+    "ratio": 6.08,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "seal",
+    "bg": "paper",
+    "fgHex": "#B23A2E",
+    "bgHex": "#F6F1E7",
+    "ratio": 5.27,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "seal",
+    "bg": "label",
+    "fgHex": "#B23A2E",
+    "bgHex": "#FFFDF8",
+    "ratio": 5.84,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "seal",
+    "bg": "seal-wash",
+    "fgHex": "#B23A2E",
+    "bgHex": "#F3DFDA",
+    "ratio": 4.63,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "jade",
+    "bg": "paper",
+    "fgHex": "#2F6B4F",
+    "bgHex": "#F6F1E7",
+    "ratio": 5.59,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "jade",
+    "bg": "jade-wash",
+    "fgHex": "#2F6B4F",
+    "bgHex": "#DFEAE2",
+    "ratio": 5.1,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "amber",
+    "bg": "paper",
+    "fgHex": "#8A5A0B",
+    "bgHex": "#F6F1E7",
+    "ratio": 5.26,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "amber",
+    "bg": "amber-wash",
+    "fgHex": "#8A5A0B",
+    "bgHex": "#F3E6CC",
+    "ratio": 4.79,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "indigo",
+    "bg": "paper",
+    "fgHex": "#2B4870",
+    "bgHex": "#F6F1E7",
+    "ratio": 8.24,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "indigo",
+    "bg": "indigo-wash",
+    "fgHex": "#2B4870",
+    "bgHex": "#E2E7F0",
+    "ratio": 7.48,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "paper",
+    "bg": "ink",
+    "fgHex": "#F6F1E7",
+    "bgHex": "#1C1A17",
+    "ratio": 15.42,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "paper",
+    "bg": "seal",
+    "fgHex": "#F6F1E7",
+    "bgHex": "#B23A2E",
+    "ratio": 5.27,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "paper",
+    "bg": "indigo",
+    "fgHex": "#F6F1E7",
+    "bgHex": "#2B4870",
+    "ratio": 8.24,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "ink-soft",
+    "bg": "seal-wash",
+    "fgHex": "#5A5249",
+    "bgHex": "#F3DFDA",
+    "ratio": 5.98,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "edge",
+    "bg": "paper",
+    "fgHex": "#8A7F72",
+    "bgHex": "#F6F1E7",
+    "ratio": 3.48,
+    "kind": "ui",
+    "pass": true
+   },
+   {
+    "fg": "line",
+    "bg": "paper",
+    "fgHex": "#D9CFBF",
+    "bgHex": "#F6F1E7",
+    "ratio": 1.37,
+    "kind": "hairline",
+    "pass": true
+   }
+  ],
+  "B": [
+   {
+    "fg": "walnut",
+    "bg": "undyed",
+    "fgHex": "#211C18",
+    "bgHex": "#EEE8DC",
+    "ratio": 13.84,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "walnut",
+    "bg": "carded",
+    "fgHex": "#211C18",
+    "bgHex": "#FAF7F0",
+    "ratio": 15.78,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "walnut",
+    "bg": "loom",
+    "fgHex": "#211C18",
+    "bgHex": "#E4DCCD",
+    "ratio": 12.39,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "iron",
+    "bg": "undyed",
+    "fgHex": "#554E47",
+    "bgHex": "#EEE8DC",
+    "ratio": 6.7,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "iron",
+    "bg": "carded",
+    "fgHex": "#554E47",
+    "bgHex": "#FAF7F0",
+    "ratio": 7.65,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "iron",
+    "bg": "loom",
+    "fgHex": "#554E47",
+    "bgHex": "#E4DCCD",
+    "ratio": 6.01,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "indigo",
+    "bg": "undyed",
+    "fgHex": "#22406F",
+    "bgHex": "#EEE8DC",
+    "ratio": 8.47,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "indigo",
+    "bg": "carded",
+    "fgHex": "#22406F",
+    "bgHex": "#FAF7F0",
+    "ratio": 9.66,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "indigo",
+    "bg": "indigo-wash",
+    "fgHex": "#22406F",
+    "bgHex": "#E1E6EF",
+    "ratio": 8.26,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "madder",
+    "bg": "undyed",
+    "fgHex": "#A0302A",
+    "bgHex": "#EEE8DC",
+    "ratio": 5.83,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "madder",
+    "bg": "carded",
+    "fgHex": "#A0302A",
+    "bgHex": "#FAF7F0",
+    "ratio": 6.65,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "madder",
+    "bg": "madder-wash",
+    "fgHex": "#A0302A",
+    "bgHex": "#F2DCD7",
+    "ratio": 5.42,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "weld",
+    "bg": "undyed",
+    "fgHex": "#765600",
+    "bgHex": "#EEE8DC",
+    "ratio": 5.55,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "weld",
+    "bg": "carded",
+    "fgHex": "#765600",
+    "bgHex": "#FAF7F0",
+    "ratio": 6.33,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "weld",
+    "bg": "weld-wash",
+    "fgHex": "#765600",
+    "bgHex": "#F0E5C4",
+    "ratio": 5.39,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "lichen",
+    "bg": "undyed",
+    "fgHex": "#3A6246",
+    "bgHex": "#EEE8DC",
+    "ratio": 5.71,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "lichen",
+    "bg": "carded",
+    "fgHex": "#3A6246",
+    "bgHex": "#FAF7F0",
+    "ratio": 6.51,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "lichen",
+    "bg": "lichen-wash",
+    "fgHex": "#3A6246",
+    "bgHex": "#DDE7DE",
+    "ratio": 5.49,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "carded",
+    "bg": "indigo",
+    "fgHex": "#FAF7F0",
+    "bgHex": "#22406F",
+    "ratio": 9.66,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "carded",
+    "bg": "madder",
+    "fgHex": "#FAF7F0",
+    "bgHex": "#A0302A",
+    "ratio": 6.65,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "carded",
+    "bg": "walnut",
+    "fgHex": "#FAF7F0",
+    "bgHex": "#211C18",
+    "ratio": 15.78,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "edge",
+    "bg": "carded",
+    "fgHex": "#857A6C",
+    "bgHex": "#FAF7F0",
+    "ratio": 3.93,
+    "kind": "ui",
+    "pass": true
+   },
+   {
+    "fg": "edge",
+    "bg": "undyed",
+    "fgHex": "#857A6C",
+    "bgHex": "#EEE8DC",
+    "ratio": 3.44,
+    "kind": "ui",
+    "pass": true
+   },
+   {
+    "fg": "warp",
+    "bg": "carded",
+    "fgHex": "#D3C9B9",
+    "bgHex": "#FAF7F0",
+    "ratio": 1.53,
+    "kind": "hairline",
+    "pass": true
+   }
+  ],
+  "C": [
+   {
+    "fg": "charcoal",
+    "bg": "daylight",
+    "fgHex": "#1E1B18",
+    "bgHex": "#FFFBF5",
+    "ratio": 16.63,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "white",
+    "fgHex": "#1E1B18",
+    "bgHex": "#FFFFFF",
+    "ratio": 17.14,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "shell",
+    "fgHex": "#1E1B18",
+    "bgHex": "#F5EEE3",
+    "ratio": 14.87,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "slate",
+    "bg": "daylight",
+    "fgHex": "#57524B",
+    "bgHex": "#FFFBF5",
+    "ratio": 7.51,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "slate",
+    "bg": "white",
+    "fgHex": "#57524B",
+    "bgHex": "#FFFFFF",
+    "ratio": 7.74,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "slate",
+    "bg": "shell",
+    "fgHex": "#57524B",
+    "bgHex": "#F5EEE3",
+    "ratio": 6.71,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "cobalt",
+    "bg": "white",
+    "fgHex": "#2747B8",
+    "bgHex": "#FFFFFF",
+    "ratio": 7.84,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "cobalt",
+    "bg": "daylight",
+    "fgHex": "#2747B8",
+    "bgHex": "#FFFBF5",
+    "ratio": 7.6,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "white",
+    "bg": "cobalt",
+    "fgHex": "#FFFFFF",
+    "bgHex": "#2747B8",
+    "ratio": 7.84,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "persimmon",
+    "bg": "white",
+    "fgHex": "#B4441B",
+    "bgHex": "#FFFFFF",
+    "ratio": 5.55,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "persimmon",
+    "bg": "daylight",
+    "fgHex": "#B4441B",
+    "bgHex": "#FFFBF5",
+    "ratio": 5.38,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "white",
+    "bg": "persimmon",
+    "fgHex": "#FFFFFF",
+    "bgHex": "#B4441B",
+    "ratio": 5.55,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "leaf",
+    "bg": "white",
+    "fgHex": "#2D6A39",
+    "bgHex": "#FFFFFF",
+    "ratio": 6.5,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "leaf",
+    "bg": "daylight",
+    "fgHex": "#2D6A39",
+    "bgHex": "#FFFBF5",
+    "ratio": 6.3,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "marigold-ink",
+    "bg": "white",
+    "fgHex": "#855300",
+    "bgHex": "#FFFFFF",
+    "ratio": 6.49,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "marigold-ink",
+    "bg": "daylight",
+    "fgHex": "#855300",
+    "bgHex": "#FFFBF5",
+    "ratio": 6.3,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "white",
+    "bg": "charcoal",
+    "fgHex": "#FFFFFF",
+    "bgHex": "#1E1B18",
+    "ratio": 17.14,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "marigold",
+    "fgHex": "#1E1B18",
+    "bgHex": "#F4B73F",
+    "ratio": 9.54,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "coral",
+    "fgHex": "#1E1B18",
+    "bgHex": "#F2A08F",
+    "ratio": 8.33,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "mint",
+    "fgHex": "#1E1B18",
+    "bgHex": "#A6D9C0",
+    "ratio": 10.86,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "sky",
+    "fgHex": "#1E1B18",
+    "bgHex": "#A9C8F2",
+    "ratio": 9.98,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "lilac",
+    "fgHex": "#1E1B18",
+    "bgHex": "#D2B8E8",
+    "ratio": 9.6,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "lime",
+    "fgHex": "#1E1B18",
+    "bgHex": "#CBDD8C",
+    "ratio": 11.64,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "apricot",
+    "fgHex": "#1E1B18",
+    "bgHex": "#F5C49B",
+    "ratio": 10.82,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "charcoal",
+    "bg": "teal",
+    "fgHex": "#1E1B18",
+    "bgHex": "#A3D3D6",
+    "ratio": 10.49,
+    "kind": "text",
+    "pass": true
+   },
+   {
+    "fg": "edge",
+    "bg": "white",
+    "fgHex": "#8C8479",
+    "bgHex": "#FFFFFF",
+    "ratio": 3.69,
+    "kind": "ui",
+    "pass": true
+   },
+   {
+    "fg": "line",
+    "bg": "white",
+    "fgHex": "#E8E0D4",
+    "bgHex": "#FFFFFF",
+    "ratio": 1.31,
+    "kind": "hairline",
+    "pass": true
+   }
+  ]
+ },
+ "beamTintsB": {
+  "ground": "#211C18",
+  "tints": {
+   "text": [
+    "#FAF7F0",
+    15.78
+   ],
+   "soft": [
+    "#C9BFB1",
+    9.3
+   ],
+   "live": [
+    "#A9BDE2",
+    8.89
+   ],
+   "done": [
+    "#8FC09D",
+    8.2
+   ],
+   "flag": [
+    "#EE9A90",
+    7.77
+   ],
+   "waiting": [
+    "#DFBD63",
+    9.32
+   ]
+  }
+ },
+ "colorBlindness": {
+  "method": "Machado 2009 full severity, CIE76 delta E",
+  "A seal vs jade": {
+   "normal": 78.6,
+   "deuteranopia": 31.4,
+   "protanopia": 12.8
+  },
+  "B madder vs lichen": {
+   "normal": 69.2,
+   "deuteranopia": 24.7,
+   "protanopia": 10.1
+  },
+  "C persimmon vs leaf": {
+   "normal": 78.9,
+   "deuteranopia": 30.8,
+   "protanopia": 13.0
+  }
+ },
+ "fontCoverage": {
+  "bricolagegrotesque": {
+   "glyphs": 527,
+   "catalog_missing": "",
+   "tnum": true,
+   "Sámi": "missing Ŧ ŧ",
+   "Diné": "missing Ǫ ǫ U+02BC",
+   "Quechua": "missing U+02BC",
+   "Maa (Maasai)": "missing Ɔ ɔ Ɛ ɛ Ɨ ɨ Ʉ ʉ",
+   "Pinyin tones": "missing Ǐ ǐ Ǒ ǒ Ǔ ǔ Ǖ ǖ Ǘ ǘ Ǚ ǚ Ǜ ǜ",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "figtree": {
+   "glyphs": 391,
+   "catalog_missing": "",
+   "tnum": true,
+   "Sámi": "missing Ŧ ŧ",
+   "Diné": "missing Ǫ ǫ U+02BC",
+   "Quechua": "missing U+02BC",
+   "Maa (Maasai)": "missing Ɔ ɔ Ɛ ɛ Ɨ ɨ Ʉ ʉ",
+   "Pinyin tones": "missing Ǐ ǐ Ǒ ǒ Ǔ ǔ Ǖ ǖ Ǘ ǘ Ǚ ǚ Ǜ ǜ",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "fraunces": {
+   "glyphs": 624,
+   "catalog_missing": "",
+   "tnum": false,
+   "Sámi": "ok",
+   "Diné": "ok",
+   "Quechua": "ok",
+   "Maa (Maasai)": "missing Ɔ ɔ Ɛ ɛ Ɨ ɨ Ʉ ʉ",
+   "Pinyin tones": "missing Ǎ ǎ Ǐ ǐ Ǒ ǒ Ǔ ǔ Ǖ ǖ Ǘ ǘ Ǜ ǜ",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "ibmplexmono": {
+   "glyphs": 930,
+   "catalog_missing": "",
+   "tnum": false,
+   "Sámi": "ok",
+   "Diné": "missing Ǫ ǫ",
+   "Quechua": "ok",
+   "Maa (Maasai)": "missing Ɔ ɔ Ɛ ɛ Ɨ ɨ Ʉ ʉ",
+   "Pinyin tones": "ok",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "ibmplexsans": {
+   "glyphs": 891,
+   "catalog_missing": "",
+   "tnum": false,
+   "Sámi": "ok",
+   "Diné": "missing Ǫ ǫ",
+   "Quechua": "ok",
+   "Maa (Maasai)": "missing Ɔ ɔ Ɛ ɛ Ɨ ɨ Ʉ ʉ",
+   "Pinyin tones": "ok",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "instrumentsans": {
+   "glyphs": 343,
+   "catalog_missing": "",
+   "tnum": true,
+   "Sámi": "missing Ŧ ŧ",
+   "Diné": "missing Ǫ ǫ U+02BC",
+   "Quechua": "missing U+02BC",
+   "Maa (Maasai)": "missing Ɔ ɔ Ɛ ɛ Ɨ ɨ Ʉ ʉ",
+   "Pinyin tones": "missing Ǐ ǐ Ǒ ǒ Ǔ ǔ Ǖ ǖ Ǘ ǘ Ǚ ǚ Ǜ ǜ",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "inter": {
+   "glyphs": 2849,
+   "catalog_missing": "",
+   "tnum": true,
+   "Sámi": "ok",
+   "Diné": "ok",
+   "Quechua": "ok",
+   "Maa (Maasai)": "ok",
+   "Pinyin tones": "ok",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "literata": {
+   "glyphs": 1163,
+   "catalog_missing": "",
+   "tnum": true,
+   "Sámi": "ok",
+   "Diné": "ok",
+   "Quechua": "ok",
+   "Maa (Maasai)": "missing Ɔ ɔ Ɛ ɛ Ɨ ɨ Ʉ ʉ",
+   "Pinyin tones": "ok",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "newsreader": {
+   "glyphs": 564,
+   "catalog_missing": "",
+   "tnum": true,
+   "Sámi": "ok",
+   "Diné": "ok",
+   "Quechua": "ok",
+   "Maa (Maasai)": "missing Ɔ ɔ Ɛ ɛ Ɨ ɨ Ʉ ʉ",
+   "Pinyin tones": "missing Ǎ ǎ Ǐ ǐ Ǒ ǒ Ǔ ǔ Ǖ ǖ Ǘ ǘ Ǚ ǚ Ǜ ǜ",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "sourcecodepro": {
+   "glyphs": 1334,
+   "catalog_missing": "",
+   "tnum": false,
+   "Sámi": "ok",
+   "Diné": "ok",
+   "Quechua": "ok",
+   "Maa (Maasai)": "missing Ɔ Ɛ Ɨ Ʉ",
+   "Pinyin tones": "ok",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "sourcesans3": {
+   "glyphs": 1615,
+   "catalog_missing": "",
+   "tnum": false,
+   "Sámi": "ok",
+   "Diné": "ok",
+   "Quechua": "ok",
+   "Maa (Maasai)": "ok",
+   "Pinyin tones": "ok",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  },
+  "sourceserif4": {
+   "glyphs": 918,
+   "catalog_missing": "",
+   "tnum": true,
+   "Sámi": "missing Ŧ ŧ",
+   "Diné": "missing Ǫ ǫ",
+   "Quechua": "ok",
+   "Maa (Maasai)": "missing Ɔ ɔ Ɛ ɛ Ɨ ɨ Ʉ ʉ",
+   "Pinyin tones": "ok",
+   "Inuktitut syllabics": "missing ᐃ ᓄ ᒃ ᑎ ᑐ ᑦ"
+  }
+ },
+ "fontCoverageTestSets": {
+  "catalog": "Diné Māori Sámi Sápmi pōtae whāriki raranga harakeke kete duodji guksi Aotearoa Chinchero Kajiado Nunavut Guizhou Quechua Maasai Inuit Miao, plus ĀāĒēĪīŌōŪūÁáÉéÍíÓóÚúÑñ and $ digits",
+  "Sámi": "ÁáČčĐđŊŋŠšŦŧŽž",
+  "Diné": "ĄąĘęĮįǪǫŁłŃń, U+0301, U+02BC",
+  "Quechua": "Ññ, U+02BC",
+  "Maa (Maasai)": "ƆɔƐɛƗɨɄʉ",
+  "Pinyin tones": "ǍǎǏǐǑǒǓǔǕǖǗǘǙǚǛǜÜü",
+  "Inuktitut syllabics": "ᐃᓄᒃᑎᑐᑦ (no Latin font covers these, so every stack ends with Noto Sans Canadian Aboriginal)"
+ }
+}
