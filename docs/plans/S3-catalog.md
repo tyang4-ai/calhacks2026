@@ -44,7 +44,7 @@ v2's data: eight communities, 54 pieces with the facts, culture and vibe layers 
 | `swarm.ts` | `swarmScripts: SwarmScript[]` (shape below) |
 | `watch.ts` | `counterfeitCandidates: CounterfeitCandidate[]`, `demoScan: { scanId: "wsc_01"; makerId: "mkr_01"; queries: string[] }`, `watchApprovals: Approval[]` (`apr_03`), `watchFollowUps: FollowUp[]` (`fup_02`, the report draft for `apr_03`) |
 | `model.ts` | `modelId: "cindia-embed-v1"`, `report: ModelReport \| null`, `map: { points: { pieceId; x; y }[]; demoQuery: { x; y } } \| null` |
-| `policy.ts` | `policyTopics: { topicId: string; title: Text; text: Text }[]` (`pol_01` to `pol_05`) |
+| `policy.ts` | `policyTopics: { topicId: string; title: Text; text: Text; data?: Record<string, number> }[]` (`pol_01` to `pol_05`) |
 | `index.ts` | Re-exports all of the above. `getById()` also finds communities, projects, works in progress, milestones (`mls_`), storefronts, blocks (`blk_`), listing drafts, eval queries, counterfeit candidates, policy topics and the new approvals and follow-ups |
 
 - **`SwarmScript`:** `{ runId; threadId; side: "buyer" | "seller"; for: { kind: "support"; questions: string[] } | { kind: "listing"; listingId } | { kind: "storefront"; storefrontId } | { kind: "fallback" }; steps: swarm.step payloads in order; finish: { type; payload }[] }`. `finish` holds the run's last events: `support.answered`, `listing.drafted`, `storefront.drafted` or `approval.requested`. Scripted step IDs are fixed (`stp_0001` onward across all scripts), because the tour plays them. The sources responder gives fresh IDs when it replays a script for a person (I2-core).
@@ -143,7 +143,7 @@ For figure 11, at least three pieces from three different Indigenous communities
     - `chk_03`: price, not ok, "the notes don't give a price, the maker sets it".
   - `apr_04` is a `listing_publish` for `lst_01`, pending.
 - `policy.ts`, `pol_01` to `pol_05`:
-  - shipping: per community where it ships from, with tracked air times, and the Gu studio ships within the piece's `leadTimeDays`,
+  - shipping: per community where it ships from, with tracked air times, and the Gu studio ships within the piece's `leadTimeDays`. `pol_01` also carries `data: { transitDaysMin: 6, transitDaysMax: 10 }`, which B14's `arrival_window` and the scripted `run_01` both use,
   - returns,
   - care,
   - authenticity (how verification works and what Cindia does when a piece isn't as described),
@@ -216,3 +216,4 @@ When `server/b11_embed/report.json` and `vectors.json` exist from B11's training
 - The export names in the Interfaces table, and `SwarmScript`'s shape.
 - The event-only ID prefixes `qry_`, `srp_`, `thr_`, `run_`, `stp_`, `wsc_`, `chk_`, `ctb_`, and `pol_01` to `pol_05` for policy topics.
 - `fup_02` (the report draft for `apr_03`) and `run_04` and `run_05` (the seller payout question and the fallback), which `contracts.md` section 2 doesn't list by ID.
+- `policyTopics[].data` (`pol_01`'s transit days), which B14's `arrival_window` reads.
