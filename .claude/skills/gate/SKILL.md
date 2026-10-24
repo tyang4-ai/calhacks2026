@@ -30,7 +30,7 @@ The gate is `$ARGUMENTS`. Its checklist is under Gates in `docs/common/definitio
    - Stage only what this gate covers. Run `git status --short` first and leave other agents' files unstaged.
      - R0: the paths in the four SCOPE lines of `docs/plans/R0-reskin.md`, and `docs/harness/`
      - G1b: the SCOPE paths of `docs/plans/I2-shell.md` and `docs/plans/I2-kit.md`, and `docs/harness/`
-     - G2b: `src/mock/ tests/data/ public/images/ docs/harness/`
+     - G2b: `src/mock/ tests/data/ docs/harness/` (the placeholder images went in earlier, with I2-art's T0)
      - G3: for each slug, `src/features/<slug>/ tests/features/<slug>-*`, plus any other path on the plan's SCOPE line (such as `tests/features/sell-views-lib.ts`), and `docs/harness/`
      - G4v2 after `I2-tour`: the paths on both of I2-tour's SCOPE lines (the integrator's and the data-smith's), and `docs/harness/`. After a design drop: I3-redesign's SCOPE paths and `docs/harness/`
      - G5: the upgrade's `SCOPE` paths and `docs/harness/`

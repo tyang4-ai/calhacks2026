@@ -18,6 +18,7 @@ The standing rules of `docs/harness/runbook.md` still apply (you coordinate and 
   - A lead runs at most 2 builders.
   - A training run counts as one agent.
   - One Playwright gate at a time. G1b, G3, G4v2, G5 and G6 never overlap, and G4v2 runs with no other agent active.
+  - Only one task edits `package.json` at a time (I2-core's T7, I2-art's T0, D-deploy's T2, any install). Queue the next one behind it.
 - **Heartbeat:** a cloud session pauses when it's idle, and a session cron doesn't fire while it's paused. So the heartbeat is a `send_later` message to this session every 20 minutes, prompt `/heartbeat`, if that tool exists. Each heartbeat schedules the next one. If `send_later` isn't available, use CronCreate (`*/15 * * * *`, prompt `/heartbeat`). Never keep two. The heartbeat also restarts the servers (`.claude/skills/heartbeat/SKILL.md`).
 - **Servers belong to this session.** Start each one from the main session with `run_in_background` and the longest timeout (7,200,000 ms). A background command stops at its time limit, the VM pauses when idle, and a rebuilt VM keeps only the conversation, so the heartbeat restarts whatever is down and logs it. A server started before a key changed keeps the old values, so restart `npm run server` after any key change.
 - **Cutoffs:** no 4:30 AM rule. Start any item that can pass its gate before 6:00 AM. From 5:00 AM only finish what's running, fix and polish. The freeze is still at 6:00 AM Sunday (R7 of the v1 runbook, plus the steps under Freeze below), because Gordon records the video and submits by 9:00 AM.
@@ -47,6 +48,8 @@ The standing rules of `docs/harness/runbook.md` still apply (you coordinate and 
    - a "v2 Features" table and a "v2 Upgrades" table from `docs/v2/README.md`. `R0-reskin`, the I2 plans, `S3-catalog` and `D-deploy` go in the features table, and `B11-embed` to `B16-bank-books` in the upgrades table,
    - a "Tags" table with the columns `| Tag | SHA | Gate | When |`, one row per tag, the full 40-character SHA,
    - a "Public site" line, empty until Gordon uploads (D-deploy).
+   
+   Then log two decisions in `decisions.md`, with `docs/v2/fix-plan.md` as the reason (B1-4, B1-27): the demo harness's beat tolerance is 250 ms on the cloud VM (v1 used 100 ms), and every gate that times the tour checks the tour test alone, `endedAtWallMs` in `artifacts/demo/report.json` against the timeline's `durationMs` plus a load allowance, never the whole Playwright run.
 4. **Toolchain.** Check that Node is 22.12 or later and Python 3.12 or later. Then:
    - `npm ci`, which needs `cdn.sheetjs.com`.
    - `python3 -m venv .venv` and `.venv/bin/python -m pip install -r server/requirements.txt`.
@@ -67,7 +70,7 @@ The standing rules of `docs/harness/runbook.md` still apply (you coordinate and 
    - B04 (Nessie): right after R0's commit, before I2-core spawns.
    - B02, B07 and B09 (Anthropic): right after I2-core's commit, before the next spawn.
    
-   They're checks, not builds, and they run on the Phase A demo as v1's G5 does. A key that reads false: the row stays `blocked` with the reason under Needs Gordon.
+   They're checks, not builds, and each runs v1's G5 on the demo as it stands. A key that reads false: the row stays `blocked` with the reason under Needs Gordon.
 
 ## V1 · Shared code and data
 
@@ -78,7 +81,6 @@ The order below follows the architecture review (B1-1, B1-19, B1-20). Commit eac
    - When all four report, run every v1 check: `npm run check`, `npm run check:data`, `npm run test:smoke`, `npm run build`, `npm run test:demo` once, `npm run test:offline` and `npm run test:server`. All must exit 0.
    - Then one commit, `R0: re-skin to the Diné co-op`, holding all four agents' paths. Push the branch, then tag `v2-reskin` and record it in the Tags table. This is also the first v2 push, so check that the branch push went through.
    - A red check: send the failure to the agent that owns the file, two rounds at most. R0 can't be cut, because every later plan uses its names. Still red after two rounds: a fresh agent of the same role for one more round, then Needs Gordon.
-   - Run `npm run export:mock` once R0 is in. The Python side reads the new names from it.
 1. **I2-core, first spawn.** Spawn the integrator for `I2-core` (`docs/plans/I2-core.md`, the SCOPE line its plan gives), every task except T5. It merges `docs/v2/contracts.md` into `docs/common/` and writes the types, reducers, validation, sources, server config and `export:mock`.
    - **The fallout step (B1-1).** Widening the core types breaks files the integrator may not edit. When the integrator reports, and before the first `npm run check`, spawn two agents at once, as I2-core's fallout section describes:
      - a feature-lead with `SCOPE: src/features/proof/strings.ts, src/features/money-map/strings.ts, src/features/money-map/partyLayout.ts, src/features/approvals/approvalSummary.ts`, adding placeholder entries only,
@@ -86,6 +88,7 @@ The order below follows the architecture review (B1-1, B1-19, B1-20). Commit eac
      
      If I2-core's plan names a different file list for the fallout, use the plan's.
    - Then run `npm run check` and `npm run test:smoke`. Commit the integrator's and the two fallout agents' paths together as `I2-core: v2 contracts and core`, push, then tag `v2-core` and record it.
+   - Run `npm run export:mock`, which exists from this commit on. The Python side reads R0's names from it.
    - Check the torch build again (V0 step 4), since T6 installs the v2 requirements. uvicorn reloads `config.py`, so read `/api/health` again and run the B02, B07 and B09 G5s now if `anthropic` is true (V0 step 8).
    - Nothing else starts before this lands.
 2. **S3's stubs.** Spawn the data-smith for `S3-catalog` task T1 only (the typed stub files). Commit it as soon as `npm run check` passes.
@@ -93,13 +96,14 @@ The order below follows the architecture review (B1-1, B1-19, B1-20). Commit eac
    - the integrator for `I2-core` task T5 (the responders, which import those stubs). Commit T5 on its own `npm run check:scope` pass, with T5's paths only,
    - the data-smith for S3's first data spawn: the tasks that don't need T5, which B1-20 names T2 to T5 and T7, as S3's task table splits them,
    - the integrator for `I2-kit` task T1 (the frame components), then the rest of I2-kit,
-   - once I2-kit's T1 is in, the integrator for `I2-shell`.
+   - once I2-kit's T1 is in, the integrator for `I2-shell`,
+   - the integrator for `I2-art` task T0 (`npm run art -- --placeholders`, a placeholder SVG for each of the 54 pieces, so no card shows a broken image). Commit it on its own, with its paths only, before G1b.
    
    Two integrators may run at once only with SCOPE lines that don't overlap. The plans give them.
 4. **S3's second data spawn** (the tasks B1-20 names T6 and T8: the demo search, the eval queries, the swarm runs and the integrity tests) starts only after I2-core T5 is committed and after G1b has run, if G1b is due (step 5).
-5. **G1b,** when I2-shell and I2-kit are done. A gate sees every agent's half-written files, so run it at a moment no data-smith or integrator is mid-edit: if an S3 spawn is running, wait for it to report, run G1b, then start S3's next spawn. Run it with the gate skill. Tag `v2-shell`.
-6. **The placeholders before G2b.** Spawn the integrator for I2-art's placeholder task (placeholder SVGs for all 54 pieces, as I2-art's plan gives it), so no card shows a broken image.
-7. **G2b,** when both S3 spawns and the placeholder task are done and no integrator is mid-task. Its checks are `npm run check:data` and `npm run check:scope -- src/mock/ tests/data/ src/sources/`, plus the 54 placeholder files and a verifier review. Run it with the gate skill. Tag `v2-data`. Then run `npm run export:mock`, and spawn the integrator for the rest of `I2-art` (the real illustrations).
+5. **G1b,** when I2-shell, I2-kit and I2-art's T0 are done. A gate sees every agent's half-written files, so run it at a moment no data-smith or integrator is mid-edit: if an S3 spawn is running, wait for it to report, run G1b, then start S3's next spawn. Run it with the gate skill. Tag `v2-shell`.
+6. **G2b,** when both S3 spawns are done and no integrator is mid-task. Its checks are `npm run check:data` and `npm run check:scope -- src/mock/ tests/data/ src/sources/`, plus the 54 placeholder files and a verifier review. Run it with the gate skill. Tag `v2-data`.
+7. Then run `npm run export:mock`, and spawn the integrator for `I2-art` tasks T1 to T3 (the real illustrations and the contact sheet).
 8. `B11-embed` and `B13-live` may start as soon as `I2-core` is in, within the cap. They live in `server/` and their own adapters. B11's training run needs `S3-catalog`, `npm run export:mock` and the training requirements (V2 below).
 
 ## V2 · Features, upgrades and the public site
@@ -146,7 +150,8 @@ When `F-search`, `M-buyer`, `F-support`, `F-process`, `M-approvals`, `M-desktop`
    3. the integrator for tasks T3 to T7.
    
    While I2-tour runs, queue any other integrator request that touches `src/app/` or `tests/demo/` behind it.
-2. Run **G4v2** with the gate skill, with no other agent active and no other Playwright run. Tag `demo-ok-v2`.
+2. **The contact sheet.** Before G4v2, send Gordon `artifacts/art/contact-sheet.png` with SendUserFile, if the tool exists, with one line: "Please look at the 54 piece drawings for two minutes and tell me if any reads as a copy, a sacred design or a cliché." `artifacts/` isn't committed, so this is the only way he sees it. Don't wait for his answer. If he flags a drawing later, the integrator redraws it and G4v2 reruns.
+3. Run **G4v2** with the gate skill, with no other agent active and no other Playwright run. Tag `demo-ok-v2`.
 
 ## V4 · The design drops
 
@@ -170,7 +175,7 @@ Agents in this session have no Figma tools. The integrator works from the files 
 
 v1's R7, with these steps added:
 1. Set `STAGE: FREEZE`. Start nothing new. Give running agents 15 minutes to report, stop the rest, and restore their folders with the cut skill.
-2. **The project image.** Copy the tour's catch screenshot, `artifacts/demo/d08-catch.png` from the last green G4v2 run, to `docs/devpost/project-image.png`. Devpost requires one, and the scribe has no shell to copy it.
+2. **The project image.** Copy the tour's catch screenshot, `artifacts/demo/d08-catch.png`, to `docs/devpost/project-image.png`. Every demo run overwrites that folder, so if the newest run failed, run `npm run test:demo` once first. Devpost requires an image, and the scribe has no shell to copy it.
 3. Run the scribe with `TASK: T6`.
 4. Run G6 with the gate skill. Tag `final`.
 5. In the G6 summary, give Gordon:

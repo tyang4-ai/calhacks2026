@@ -27,7 +27,7 @@ Three things the build session can't do by itself, made ready so Gordon finishes
 
 - **`npm run build:public`** runs `node scripts/build-public.mjs`, which:
   1. runs `npm run export:mock` and `node scripts/make-market.mjs`,
-  2. runs the Vite production build with `VITE_PUBLIC_SITE=1` set in the child process's environment (never a `FOO=1 cmd` prefix, which `cmd.exe` can't run),
+  2. runs the Vite production build with `VITE_PUBLIC_SITE=1` set in the child process's environment. A Node script does this the same way on every shell, where a `FOO=1 cmd` prefix fails in `cmd.exe`,
   3. writes `dist/public-build.json`: `{ "publicSite": true, "commit": <full SHA of HEAD>, "builtAt": <ISO time> }`,
   4. runs `node scripts/check-public.mjs` and exits with its code.
   The output goes to `dist/`, like every build, so it never runs beside G4, G4v2, G5 or G6.
@@ -101,7 +101,11 @@ From `docs/tech/cloudflare-pages/direct-upload.mdx`. Direct Upload can't switch 
 1. On Windows, in the repo: `git pull`, `npm ci`, `npm run build:public`. Check that `dist/public-build.json` says `"publicSite": true`. A plain `npm run build` makes the localhost build with the demo checkout, which must never go online.
 2. In the Cloudflare dashboard, go to **Workers & Pages**, then **Create application** > **Get started** > **Drag and drop your files**.
 3. Enter a project name, drag the `dist` folder in, and select **Deploy site**. The site is at `https://<project name>.pages.dev`.
-4. Open `/demo`, `/shop/piece/pc_01` (no Pay button), `/market/` and `/robots.txt` on it.
+4. Check the live site:
+   - `/demo` plays, and its controls have no Live switch,
+   - `/shop/piece/pc_01` shows L6 ("Placeholder piece. It can't be bought, even in the demo.") where Pay was,
+   - `/market/` lists the sandbox listings,
+   - `/robots.txt` disallows everything, and the page source of `/shop` holds the `noindex` tag.
 5. Send the site's URL in the build session's chat. It isn't a secret. The orchestrator writes it in `status.md` and restarts the API with it. Also add `PUBLIC_SITE_URL` with that URL to the cloud environment's variables, for later VM rebuilds, and to the laptop's `.env`.
 6. Point the MLH domain at the project, from the project's custom domains settings. Those steps aren't in `docs/tech/`, so follow Cloudflare's prompts.
 7. After the freeze: pull the final commit, run `npm run build:public` again, then in the project select **Create a new deployment**, choose production, and drag `dist` in.
@@ -123,5 +127,5 @@ From `docs/tech/cloudflare-pages/direct-upload.mdx`. Direct Upload can't switch 
 
 - Deploying from the session. The build session never uploads, logs in to Cloudflare or touches DNS. Gordon does.
 - A hosted live API. It stays in "Backend if time" (`docs/v2/fix-plan.md` section 1.5).
-- `robots.txt`, the `noindex` tag, L1 and Pay off on the public build. They come from I2-shell and M-buyer. This plan only checks them.
+- `robots.txt`, the `noindex` tag, L1, the missing Live switch and L6 in place of Pay on the public build. They come from I2-shell and M-buyer, and their own tests cover them. This plan only checks them, and writes no second `robots.txt`. The market pages carry their own `noindex` meta tag.
 - Anything in `server/`. The laptop script calls `fetch_model.py` and the B13 commands as their plans define them.

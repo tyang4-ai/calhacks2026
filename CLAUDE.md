@@ -69,7 +69,7 @@ The scaffolder creates these in S1. The names are fixed here so every plan can r
 | `npm run server` | FastAPI on http://localhost:8000 (Phase 2). The orchestrator starts it once |
 | `npm run test:server` | Backend tests (Phase 2) |
 | `npm run export:mock` | v2, from `I2-core`: writes `src/mock/` as JSON to `artifacts/mock/mock.json`, for the Python side |
-| `npm run art` | v2, from `I2-art`: draws the piece illustrations into `public/images/` |
+| `npm run art` | v2, from `I2-art`: draws the piece illustrations into `public/images/`. `-- --placeholders` writes a placeholder for each of the 54 pieces (I2-art's T0), `-- --sheet` builds the contact sheet in `artifacts/art/`, and `-- --check` checks the drawings |
 | `python server/b11_embed/train.py` | v2, from `B11-embed`: trains and scores the embedding model. Use the `.venv` Python |
 | `python server/b11_embed/fetch_model.py` | v2, from `B11-embed`: pulls the newest published model from the Hugging Face repo into `CINDIA_MODEL_DIR`. Use the `.venv` Python |
 | `spacetime start --listen-addr 127.0.0.1:3000` | v2: the local SpacetimeDB server on port 3000, bound to this machine only. The orchestrator starts it once and the heartbeat restarts it. Never a bare `spacetime start` |

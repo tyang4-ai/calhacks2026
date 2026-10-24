@@ -129,7 +129,7 @@ Every record is keyed by its entity ID, and every entry also keeps `at`, the pla
 | `model` | `trained` and `scored`, each the payload or `null` |
 | `watch` | `scans` by `scanId`: `{ makerId, queries, engine?, candidates?, results?, startedAt, scannedAt? }`, with `results` as `watch.scanned` carries them. `hits` by `cftId`, `hitIds`, `latestScanId` |
 | `sync` | `data` and `index`: the newest `data.synced` and the newest `index.synced`, each its payload with `at`, or `null` |
-| `log` | `entries`: one `{ id, type, at, source, key }` per event, newest last, one entry per event `id`, keeping the newest 400 (B1-15, D1-2). The process views and block counts read it. A status event (`data.synced`, `index.synced`) replaces the log's earlier entry of its own type instead of adding one, so live polling never pushes the tour's events out |
+| `log` | `entries`: one `{ id, type, at, source, key }` per event, newest last, one entry per event `id`, keeping the newest 400 (B1-15, D1-2). The process views and block counts read it, and the stage reads the newest `beat.started` ID from it, so it lands in the first spawn (T3). A status event (`data.synced`, `index.synced`) replaces the log's earlier entry of its own type instead of adding one, so live polling never pushes the tour's events out |
 | `demo` | gains `process: ProcessId \| null` and `drawer: "support" \| "ask" \| "audit" \| null`, both from `beat.started` |
 | `buyer` | gains `checkouts` and `cards` by `pieceId` (B1-34). `card.tokenized` is filed under its `pieceId`, or under the latest `checkout.started`'s piece when the event has none. `checkout` and `card` stay as the latest of each, for v1's readers, until M-buyer moves off them |
 | `approvals` | each `ApprovalState` gains `approval?`, the inline object from `approval.requested`, stored as it arrives (D1-16). M-approvals, F-watch and F-seller-hub read it when `getById()` finds nothing |
@@ -230,7 +230,7 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
   - **Names:** G1, G1b, G2, G2b, G3, G4, G4v2, G5 and G6, in any case. The report is written as `<gate>-<HHMM>.md` with the gate's own spelling.
   - **The tour's time (fix-plan 1.9, B1-4):** after every `npm run test:demo`, the gate reads `artifacts/demo/report.json`. The check passes when the file was written by this run and its `endedAtWallMs` is at most its `durationMs` plus 15 seconds, the same margin v1's 75-second limit gave its 60-second demo. Playwright's whole-run time, which also counts `modes.spec.ts` and the browser start, is recorded for information and never judged. G1b, G4, G4v2, G5 and G6 all use this one rule. The 75-second and 130-second limits are gone.
   - **G1b:** `npm run check`, `npm run test:smoke`, `npm run build`, `npm run test:demo` once (the Phase A mapping), `npm run test:offline`.
-  - **G2b:** `npm run check:data` and `npm run check:scope -- src/mock/ tests/data/ src/sources/`, never a whole-repo check while other V1 agents are mid-edit (B1-19).
+  - **G2b:** `npm run check:data`, `npm run check:scope -- src/mock/ tests/data/ src/sources/` and `npm run art -- --check`, never a whole-repo check while other V1 agents are mid-edit (B1-19). I2-art T0 adds the `art` script and the 54 placeholders before G1b.
   - **G3** takes one or more slugs. It runs `check:scope` over every slug's folder and specs, `test:feature` with every slug, and `test:smoke`. M-desktop's nine folders fit one call (B1-24).
   - **G4v2:** `npm run build`, `npm run test:demo` three times, `npm run test:offline`.
   - **G5 for `b01` to `b10`:** as v1, on whatever timeline is current.
@@ -416,7 +416,7 @@ The output order is moods, then facet words (object, materials, techniques, moti
 ## Out of scope
 
 - The desktop shell, routes, frames, the process bar and the navigator it registers, which are I2-shell.
-- Kit components, `Link`, `StatTile`, `PAGE_WIDTH` and `PAGE_HEIGHT`, which are I2-kit.
+- Kit components, `Link`, `StatTile`, `PAGE_WIDTH` and `PAGE_HEIGHT`, which are I2-kit. `src/core/` defines neither size.
 - Mock data, which is S3-catalog, apart from FO2's minimal fields.
 - Live adapters and routers, which are B11 to B16.
 - The tour, its timeline, `beats.ts` and the pitch cards, which are I2-tour.
