@@ -59,7 +59,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B02-explain | blocked | | | needs ANTHROPIC_API_KEY |
 | B03-proof | green | live at 59.0 s | demo-ok-b03 | G5 13/13, verifier PASS |
 | B04-bank | blocked | | | needs NESSIE_KEY |
-| B05-scenario | running | | | built, server 117 passed; live proof in TestClient tests (no timeline events); API restarted with b05 |
+| B05-scenario | green | TestClient flow tests (no timeline events) | demo-ok-b05 | G5 13/13, verifier PASS |
 | B06-workbook | green | live at 44.6 s | demo-ok-b06 | G5 13/13, verifier PASS |
 | B07-ask | blocked | | | needs ANTHROPIC_API_KEY |
 | B08-approvals | green | live, scripted grant allowed | demo-ok-b08 | G5 13/13, verifier PASS |
@@ -166,3 +166,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 05:58 PT · G5 B06-workbook PASS 13/13, verifier PASS, tag demo-ok-b06 · artifacts/gates/G5-0516.md, artifacts/gates/G5-batch-verifier.md
 - 2026-10-24 05:58 PT · G5 B08-approvals PASS 13/13, verifier PASS, tag demo-ok-b08 · artifacts/gates/G5-0525.md, artifacts/gates/G5-batch-verifier.md
 - 2026-10-24 05:58 PT · G5 B10-derived PASS 13/13, verifier PASS, tag demo-ok-b10 · artifacts/gates/G5-0534.md, artifacts/gates/G5-batch-verifier.md
+- 2026-10-24 05:58 PT · G5 B05-scenario PASS 13/13, verifier PASS, tag demo-ok-b05 · artifacts/gates/G5-0543.md, artifacts/gates/G5-batch-verifier.md

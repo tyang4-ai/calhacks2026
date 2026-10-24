@@ -1,0 +1,181 @@
+{
+  "monthId": "2026-10",
+  "scenarioId": "scn_01",
+  "sampleFileName": "fogline-statement-2026-10-sample.csv",
+  "sampleRecordIds": [
+    "scn_stm_01",
+    "scn_ord_01",
+    "scn_ord_02",
+    "scn_ord_03",
+    "scn_pay_01",
+    "scn_txn_01"
+  ],
+  "csv": "date,orderId,pieceId,saleCents,commissionBps,netCents\n2026-10-03,scn_ord_01,pc_09,12000,4000,7200\n2026-10-05,scn_ord_02,pc_12,9500,4000,5700\n2026-10-06,scn_ord_03,pc_10,8500,5000,4250\n",
+  "statement": {
+    "id": "scn_stm_01",
+    "channelId": "ch_gallery",
+    "monthId": "2026-10",
+    "issuedDate": "2026-10-09",
+    "lines": [
+      {
+        "orderId": "scn_ord_01",
+        "pieceId": "pc_09",
+        "saleCents": 12000,
+        "commissionBps": 4000,
+        "commissionCents": 4800,
+        "netCents": 7200
+      },
+      {
+        "orderId": "scn_ord_02",
+        "pieceId": "pc_12",
+        "saleCents": 9500,
+        "commissionBps": 4000,
+        "commissionCents": 3800,
+        "netCents": 5700
+      },
+      {
+        "orderId": "scn_ord_03",
+        "pieceId": "pc_10",
+        "saleCents": 8500,
+        "commissionBps": 5000,
+        "commissionCents": 4250,
+        "netCents": 4250
+      }
+    ],
+    "totalSaleCents": 30000,
+    "totalCommissionCents": 12850,
+    "totalNetCents": 17150
+  },
+  "records": {
+    "orders": [
+      {
+        "id": "scn_ord_01",
+        "channelId": "ch_gallery",
+        "pieceId": "pc_09",
+        "buyerId": "buy_18",
+        "date": "2026-10-03",
+        "grossCents": 12000,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0,
+        "commissionCents": 4800,
+        "materialsCents": 1200,
+        "makerShareCents": 6000,
+        "status": "paid"
+      },
+      {
+        "id": "scn_ord_02",
+        "channelId": "ch_gallery",
+        "pieceId": "pc_12",
+        "buyerId": "buy_19",
+        "date": "2026-10-05",
+        "grossCents": 9500,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0,
+        "commissionCents": 3800,
+        "materialsCents": 1000,
+        "makerShareCents": 4700,
+        "status": "paid"
+      },
+      {
+        "id": "scn_ord_03",
+        "channelId": "ch_gallery",
+        "pieceId": "pc_10",
+        "buyerId": "buy_20",
+        "date": "2026-10-06",
+        "grossCents": 8500,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0,
+        "commissionCents": 3400,
+        "materialsCents": 900,
+        "makerShareCents": 4200,
+        "status": "paid"
+      }
+    ],
+    "payouts": [
+      {
+        "id": "scn_pay_01",
+        "channelId": "ch_gallery",
+        "date": "2026-10-09",
+        "grossCents": 30000,
+        "feesCents": 12850,
+        "refundCents": 0,
+        "netCents": 17150,
+        "orderIds": [
+          "scn_ord_01",
+          "scn_ord_02",
+          "scn_ord_03"
+        ],
+        "refundIds": [],
+        "monthId": "2026-10"
+      }
+    ],
+    "refunds": [],
+    "statements": [],
+    "bankTxns": [
+      {
+        "id": "scn_txn_01",
+        "date": "2026-10-09",
+        "direction": "in",
+        "amountCents": 17150,
+        "counterparty": {
+          "en": "Fogline Gallery",
+          "zh": "雾线画廊"
+        },
+        "memo": "Gallery payment, early-October statement",
+        "refId": "scn_pay_01"
+      }
+    ],
+    "contracts": [
+      {
+        "id": "ctr_gallery_01",
+        "channelId": "ch_gallery",
+        "commissionBps": 4000,
+        "statementDay": 30,
+        "signedDate": "2026-03-02",
+        "terms": {
+          "en": "Fogline Gallery sells the studio's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the studio the balance with the statement.",
+          "zh": "雾线画廊寄售工作室作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向工作室支付余款。"
+        }
+      }
+    ]
+  },
+  "replies": [
+    {
+      "type": "match.made",
+      "payload": {
+        "matchId": "scn_mat_01",
+        "kind": "one_to_one",
+        "recordIds": [
+          "scn_stm_01",
+          "scn_ord_01"
+        ]
+      }
+    },
+    {
+      "type": "match.made",
+      "payload": {
+        "matchId": "scn_mat_02",
+        "kind": "one_to_one",
+        "recordIds": [
+          "scn_stm_01",
+          "scn_ord_02"
+        ]
+      }
+    },
+    {
+      "type": "flag.raised",
+      "payload": {
+        "flagId": "scn_flg_01",
+        "kind": "short_payment",
+        "recordIds": [
+          "ctr_gallery_01",
+          "scn_stm_01",
+          "scn_txn_01"
+        ],
+        "expectedCents": 18000,
+        "actualCents": 17150,
+        "deltaCents": 850
+      }
+    }
+  ]
+}

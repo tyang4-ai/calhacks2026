@@ -1,0 +1,4 @@
+date,orderId,pieceId,saleCents,commissionBps,netCents
+2026-10-03,scn_ord_01,pc_09,12000,4000,7200
+2026-10-05,scn_ord_02,pc_12,9500,4000,5700
+2026-10-06,scn_ord_03,pc_10,8500,5000,4250
