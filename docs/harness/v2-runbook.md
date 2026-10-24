@@ -82,18 +82,14 @@ The order below follows the architecture review (B1-1, B1-19, B1-20). Commit eac
    - Then one commit, `R0: re-skin to the Diné co-op`, holding all four agents' paths. Push the branch, then tag `v2-reskin` and record it in the Tags table. This is also the first v2 push, so check that the branch push went through.
    - A red check: send the failure to the agent that owns the file, two rounds at most. R0 can't be cut, because every later plan uses its names. Still red after two rounds: a fresh agent of the same role for one more round, then Needs Gordon.
 1. **I2-core, first spawn.** Spawn the integrator for `I2-core` (`docs/plans/I2-core.md`, the SCOPE line its plan gives), every task except T5. It merges `docs/v2/contracts.md` into `docs/common/` and writes the types, reducers, validation, sources, server config and `export:mock`.
-   - **The fallout step (B1-1).** Widening the core types breaks files the integrator may not edit. When the integrator reports, and before the first `npm run check`, spawn two agents at once, as I2-core's fallout section describes:
-     - a feature-lead with `SCOPE: src/features/proof/strings.ts, src/features/money-map/strings.ts, src/features/money-map/partyLayout.ts, src/features/approvals/approvalSummary.ts`, adding placeholder entries only,
-     - a data-smith with `SCOPE: src/mock/catalog.ts`, adding the minimal v2 fields to the twelve co-op pieces.
-     
-     If I2-core's plan names a different file list for the fallout, use the plan's.
-   - Then run `npm run check` and `npm run test:smoke`. Commit the integrator's and the two fallout agents' paths together as `I2-core: v2 contracts and core`, push, then tag `v2-core` and record it.
+   - **The fallout step (B1-1).** Widening the core types breaks files the integrator may not edit. When the integrator reports, and before the first `npm run check`, spawn I2-core's two fallout tasks at once, each with the delegation header `docs/plans/I2-core.md` gives it: FO1 for a feature-lead (placeholder entries in the v1 feature files the widened types break) and FO2 for a data-smith (the minimal v2 fields on the twelve co-op pieces).
+   - Then run `npm run check` and `npm run test:smoke`. Commit the integrator's and the two fallout tasks' paths together as `I2-core: v2 contracts and core`, push, then tag `v2-core` and record it.
    - Run `npm run export:mock`, which exists from this commit on. The Python side reads R0's names from it.
    - Check the torch build again (V0 step 4), since T6 installs the v2 requirements. uvicorn reloads `config.py`, so read `/api/health` again and run the B02, B07 and B09 G5s now if `anthropic` is true (V0 step 8).
    - Nothing else starts before this lands.
 2. **S3's stubs.** Spawn the data-smith for `S3-catalog` task T1 only (the typed stub files). Commit it as soon as `npm run check` passes.
 3. **Then, within the cap of 3:**
-   - the integrator for `I2-core` task T5 (the responders, which import those stubs). Commit T5 on its own `npm run check:scope` pass, with T5's paths only,
+   - the integrator for `I2-core`'s second spawn, task T5 (the responders, which import those stubs). Commit it on its own `npm run check:scope -- src/sources/` pass, with T5's paths only,
    - the data-smith for S3's first data spawn: the tasks that don't need T5, which B1-20 names T2 to T5 and T7, as S3's task table splits them,
    - the integrator for `I2-kit` task T1 (the frame components), then the rest of I2-kit,
    - once I2-kit's T1 is in, the integrator for `I2-shell`,

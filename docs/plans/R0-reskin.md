@@ -72,7 +72,7 @@ People's Chinese names are the same romanized names, as v1 already does for buye
 
 ### The twelve pieces
 
-Same IDs, `makerId`, `kind`, `hours`, `materialsCents`, `priceCents` and `image` as v1. Seven weavings and five silver pieces. The four gallery pieces (`pc_03` to `pc_06`) are the larger weavings. Every maker works in both crafts, as a co-op member can. Stories follow A2 R11: what the piece is, its materials, one plain detail about colors or size, no lineage, hardship or meaning, and never a real person. The data-smith writes each story's Chinese in natural Simplified Chinese, and Gordon checks it.
+Same IDs, `makerId`, `kind`, `hours`, `materialsCents`, `priceCents` and `image` as v1. Seven weavings and five silver pieces, each an object type the sources name (weavings and rugs, and silver earrings, necklaces, bracelets and buttons). The four gallery pieces (`pc_03` to `pc_06`) are the larger weavings. Every maker works in both crafts, as a co-op member can. Stories follow A2 R11: what the piece is, its materials, one plain detail about colors or size, no lineage, hardship or meaning, and never a real person. The data-smith writes each story's Chinese in natural Simplified Chinese, and Gordon checks it.
 
 | ID | Maker | Kind | Price | Hours | Materials | Title (en / zh) | Story (en) | Process steps (hours) |
 |---|---|---|---|---|---|---|---|---|
@@ -83,8 +83,8 @@ Same IDs, `makerId`, `kind`, `hours`, `materialsCents`, `priceCents` and `image`
 | `pc_05` | Lena T. | featured | 80000 | 110 | 7000 | Indigo and white striped wool weaving / 靛蓝白条纹羊毛编织 | Wide and narrow stripes in indigo blue and natural white. About 60 by 90 cm, for a wall or across a bench. | spin 20, dye 12, warp 8, weave 64, finish 6 |
 | `pc_06` | Mae K. | featured | 45000 | 60 | 4500 | Grey and white zigzag wool weaving / 灰白锯齿纹羊毛编织 | Grey and white bands that bend into zigzags across the weaving. About 45 by 60 cm. | yarn 4, warp 5, weave 47, finish 4 |
 | `pc_07` | Lena T. | series | 4800 | 6 | 600 | Red and grey wool mini weaving / 红灰双色迷你羊毛编织 | A palm-sized weaving in red and grey, about 15 by 15 cm, for a shelf or a desk. | yarn 1, warp 1, weave 3, finish 1 |
-| `pc_08` | Mae K. | series | 3800 | 4 | 500 | Thin silver ring with stamped chevrons / 压印人字纹细银戒 | A narrow silver band stamped all the way around with small chevrons. | cut 1, stamp 1.5, solder 0.5, file 1 |
-| `pc_09` | Grace N. | series | 12000 | 14 | 1200 | Silver and turquoise ring / 绿松石银戒 | A silver ring set with one small oval of turquoise, with a stamped border around the stone. | cut 3, stamp 3, set 4, file 4 |
+| `pc_08` | Mae K. | series | 3800 | 4 | 500 | Stamped silver buttons, set of two / 压花银纽扣（两枚） | Two round silver buttons, each stamped with small chevrons, to sew onto a jacket or a bag. | cut 1, stamp 1.5, solder 0.5, file 1 |
+| `pc_09` | Grace N. | series | 12000 | 14 | 1200 | Silver and turquoise pendant necklace / 绿松石银吊坠项链 | One small oval of turquoise set in silver with a stamped border, on a silver chain. | cut 3, stamp 3, set 4, file 4 |
 | `pc_10` | Mae K. | series | 8500 | 10 | 900 | Silver and turquoise drop earrings / 绿松石银坠耳环 | Each earring is a small turquoise stone in a plain silver setting, hanging from a short wire. | cut 2, set 4, wires 1, file 3 |
 | `pc_11` | Lena T. | featured | 17500 | 24 | 2100 | Red and white wool weaving / 红白双色羊毛编织 | Red and white stripes with a band of red diamonds through the middle. About 30 by 40 cm. | yarn 2, dye 3, warp 3, weave 14, finish 2 |
 | `pc_12` | Grace N. | series | 9500 | 11 | 1000 | Narrow stamped silver bangle / 压花细银手镯 | A narrow silver bangle stamped with small dots and lines, to wear alone or stacked. | cut 3, stamp 4, solder 1, file 3 |
