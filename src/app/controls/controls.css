@@ -1,0 +1,81 @@
+/* The demo controls bar. Collapsed, only the handle shows. Hover or focus expands it.
+   The row stays laid out while collapsed (opacity only), so a test can click a control directly:
+   the pointer moving onto it is a hover, which expands the bar. */
+.c-demo-controls {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--c-font-body);
+  font-size: 14px;
+}
+.c-demo-controls__row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  opacity: 0;
+  transition: opacity var(--c-motion-ui);
+}
+.c-demo-controls--open .c-demo-controls__row,
+.c-demo-controls:hover .c-demo-controls__row,
+.c-demo-controls:focus-within .c-demo-controls__row {
+  opacity: 1;
+}
+.c-demo-controls__row button {
+  font: inherit;
+  font-size: 14px;
+  border: 1px solid var(--c-color-line);
+  background: var(--c-color-paper);
+  color: var(--c-color-ink);
+  border-radius: var(--c-radius-control);
+  padding: 4px 10px;
+  min-height: 32px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.c-demo-controls__row button:hover {
+  background: var(--c-color-mat);
+}
+.c-demo-controls__handle {
+  font: inherit;
+  font-size: 14px;
+  border: 1px solid var(--c-color-ink);
+  background: var(--c-color-ink);
+  color: var(--c-color-paper);
+  border-radius: var(--c-radius-chip);
+  padding: 4px 12px;
+  min-height: 32px;
+  cursor: default;
+}
+.c-demo-controls__dots {
+  display: inline-flex;
+  gap: 3px;
+}
+.c-demo-controls__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  border: 1px solid var(--c-color-ink-soft);
+  box-sizing: border-box;
+}
+.c-demo-controls__dot--on {
+  background: var(--c-color-jade);
+  border-color: var(--c-color-jade);
+}
+.c-demo-controls__offline {
+  color: var(--c-color-seal);
+  border: 1px solid var(--c-color-seal);
+  border-radius: var(--c-radius-chip);
+  padding: 2px 8px;
+}

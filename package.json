@@ -1,0 +1,47 @@
+{
+  "name": "cindia",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "check": "node scripts/check.mjs",
+    "check:scope": "node scripts/check-scope.mjs",
+    "check:data": "vitest run tests/data",
+    "test:smoke": "node scripts/run-playwright.mjs smoke",
+    "test:feature": "node scripts/test-feature.mjs",
+    "test:demo": "node scripts/run-playwright.mjs demo",
+    "test:offline": "node scripts/run-playwright.mjs offline",
+    "gate": "node scripts/gate.mjs",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "server": "node scripts/server.mjs",
+    "test:server": "node scripts/test-server.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/fraunces": "5.3.0",
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource/noto-sans-sc": "5.3.1",
+    "@fontsource/noto-serif-sc": "5.3.1",
+    "motion": "14.6.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-is": "19.3.1",
+    "react-router": "8.5.0",
+    "recharts": "3.10.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "oxlint": "1.89.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

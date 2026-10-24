@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc", "unicorn"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "env": {
+    "browser": true,
+    "es2024": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }],
+    "react/react-in-jsx-scope": "off",
+    "no-unused-vars": "error",
+    "no-underscore-dangle": ["warn", { "allow": ["__cindia"] }]
+  },
+  "ignorePatterns": [
+    "dist/**",
+    "node_modules/**",
+    "test-results/**",
+    "artifacts/**",
+    "playwright-report/**",
+    ".venv/**",
+    ".claude/**",
+    "scripts/preflight.mjs",
+    "scripts/secrets-scan.mjs"
+  ]
+}

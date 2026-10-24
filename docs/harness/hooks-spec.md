@@ -45,7 +45,7 @@ Runs before every file write. A deny returns `permissionDecision: "deny"` with a
 
 - **Shared code** is `src/app/**`, `src/core/**`, `src/ui/**`, `src/sources/**` except `src/sources/live/**`, and the files directly in `src/` (`main.tsx`, `index.css`, `vite-env.d.ts`).
 - **Root config** is `package.json`, `package-lock.json`, `vite.config.ts`, `vitest.config.ts`, `tsconfig*.json`, `eslint.config.js`, `.oxlintrc.json`, `.prettierrc`, `.prettierrc.json`, `.prettierignore`, `playwright.config.ts`, `index.html` and a root `requirements.txt`.
-- **The server skeleton** is what S1 creates for the backend: the files directly in `server/` (`server/*.py`, not deeper), `server/requirements.txt`, `server/routers/__init__.py`, `tests/server/conftest.py` and `tests/server/__init__.py`. Upgrades add their own routers and tests next to it.
+- **The server skeleton** is what S1 creates for the backend: the files directly in `server/` (`server/*.py`, not deeper), `server/requirements.txt`, `server/routers/__init__.py`, `tests/server/conftest.py` and, if it is ever added, `tests/server/__init__.py` (S1 left it out because it shadows the `server` package in pytest). Upgrades add their own routers and tests next to it.
 
 **SCOPE rules:**
 - The agent may write a path only when it is in the role area and matches one of its SCOPE entries.

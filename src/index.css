@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import "./ui/tokens.css";
+
+/* Tailwind's theme maps to the tokens, so features can use either: bg-paper, text-ink, font-heading... */
+@theme {
+  --color-paper: var(--c-color-paper);
+  --color-mat: var(--c-color-mat);
+  --color-ink: var(--c-color-ink);
+  --color-ink-soft: var(--c-color-ink-soft);
+  --color-line: var(--c-color-line);
+  --color-seal: var(--c-color-seal);
+  --color-jade: var(--c-color-jade);
+  --color-amber: var(--c-color-amber);
+  --color-seal-wash: var(--c-color-seal-wash);
+  --color-jade-wash: var(--c-color-jade-wash);
+
+  --font-sans: var(--c-font-body);
+  --font-heading: var(--c-font-heading-en);
+  --font-heading-zh: var(--c-font-heading-zh);
+  --font-zh: var(--c-font-body-zh);
+
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 24px;
+  --text-3xl: 36px;
+  --text-4xl: 48px;
+
+  --radius-panel: var(--c-radius-panel);
+  --radius-control: var(--c-radius-control);
+  --radius-chip: var(--c-radius-chip);
+  --radius-phone: var(--c-radius-phone);
+
+  --shadow-phone: var(--c-shadow-phone);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--c-color-paper);
+  color: var(--c-color-ink);
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-16);
+  line-height: var(--c-leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+:lang(zh) {
+  font-family: var(--c-font-body-zh);
+  line-height: var(--c-leading-body-zh);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--c-font-heading-en);
+  font-weight: 600;
+  font-optical-sizing: auto;
+  line-height: var(--c-leading-heading);
+  margin: 0;
+}
+
+:lang(zh) h1,
+:lang(zh) h2,
+:lang(zh) h3,
+:lang(zh) h4 {
+  font-family: var(--c-font-heading-zh);
+}
+
+.c-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-color-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
+}

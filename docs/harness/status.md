@@ -1,9 +1,9 @@
-STAGE: S1
-NEXT: R2
-SHARED_LOCK: off
+STAGE: S2
+NEXT: R3
+SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 02:04 PT
+UPDATED: 2026-10-24 02:35 PT
 
 # Status board
 
@@ -13,14 +13,15 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 
 - Kickoff passed (Oct 24, 2:01 AM): 25 plan files and 9 contracts present, hooks 292/292, preflight 0 blockers.
 - Heartbeat cron f57ce95e every 15 min (session-only).
-- Now: R2, S1 scaffold. Scaffolder running.
+- G1 passed 2:35 AM (5/5, verifier PASS). Shared lock on.
+- Now: R3, S2 mock data. Data-smith running. Dev server on 5173.
 
 ## Gates
 
 | Gate | Result | When | Report | Tag |
 |---|---|---|---|---|
 | G0 | PASS | Oct 24 2:01 AM | `artifacts/preflight.md` (0 blockers, 1 warning: no `.env`) | none |
-| G1 | | | | |
+| G1 | PASS | Oct 24 2:33 AM | `artifacts/gates/G1-0233.md`, `artifacts/gates/G1-verifier.md` | g1-scaffold |
 | G2 | | | | |
 | G3 (W1) | | | | |
 | G4 | | | | |
@@ -90,3 +91,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 02:01 PT · kickoff passed · `artifacts/preflight.md`
 - 2026-10-24 02:04 PT · heartbeat created (cron f57ce95e, */15) · CronList
 - 2026-10-24 02:04 PT · G0 recorded, stage S1, scaffolder spawned · `artifacts/preflight.md`
+- 2026-10-24 02:35 PT · G1 passed 5/5, verifier PASS, shared lock on, tag g1-scaffold · `artifacts/gates/G1-0233.md`
