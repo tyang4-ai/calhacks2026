@@ -55,16 +55,16 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
-| B01-match | running | | |  |
+| B01-match | running | gate 13/13 | | G5 verifier FAIL: no proof the live source played; integrator adding a live-source assertion |
 | B02-explain | blocked | | | needs ANTHROPIC_API_KEY |
 | B03-proof | running | | | built, unit 13 passed; G5 waits for B01 (it calls B01's matcher) |
 | B04-bank | blocked | | | needs NESSIE_KEY |
 | B05-scenario | todo | | |  |
-| B06-workbook | running | | |  |
+| B06-workbook | running | | | built, server 42 passed; API restarted, health lists b06; G5 after B01 |
 | B07-ask | blocked | | | needs ANTHROPIC_API_KEY |
-| B08-approvals | todo | | |  |
+| B08-approvals | running | | |  |
 | B09-concierge | blocked | | | needs ANTHROPIC_API_KEY |
-| B10-derived | todo | | |  |
+| B10-derived | running | | |  |
 
 ## Environment
 
@@ -156,3 +156,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 04:42 PT · G3 audit PASS 3/3, verifier PASS, tag w2-audit · artifacts/gates/G3-0438.md, artifacts/verify/F-audit-G3-1131.md
 - 2026-10-24 04:42 PT · G3 dashboard PASS 3/3, verifier PASS, tag w2-dashboard · artifacts/gates/G3-0438.md, artifacts/verify/F-dashboard-G3-0432.md
 - 2026-10-24 04:42 PT · G3 scenario PASS 3/3, verifier PASS, tag w2-scenario · artifacts/gates/G3-0438.md, artifacts/verify/F-scenario-G3-0436.md
+- 2026-10-24 04:43 PT · W2 all green (audit, dashboard, scenario); B01 G5 13/13 but verifier FAIL (no live-source proof); integrator adding a store sources assertion to the live demo run; B08 and B10 started; API restarted with b06 · artifacts/gates/G5-b01-verifier.md

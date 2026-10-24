@@ -55,3 +55,6 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - P2: `uvicorn --reload` on Windows didn't pick up new router files in `server/routers/`, so the orchestrator restarts the API after each new router and checks `/api/health` lists it before any live call. Stopping the npm task leaves the uvicorn process and its worker running, so stop them by PID.
 - B03-proof: `reconcile_month()` returns `{type, date, payload}` items, not bare payloads.
 - all: Gates that build or hit the dev server see every agent's half-written files, so a red check can come from another running agent; read the failing file's path before blaming the item under test.
+- G5: A screenshot can't prove a live source played, because the scripted fallback renders the same pixels; the live-mode demo run must assert the store's `sources` for the upgrade's key.
+- B01-match: Read JSON fixtures with `encoding="utf-8"`; Windows' default cp1252 can't decode the dataset's Chinese text.
+- B06-workbook: openpyxl doesn't calculate formulas, so server tests evaluate their few formula shapes themselves; to dump `src/mock` to JSON, bundle `src/mock/index.ts` with `node_modules/rolldown` into the scratchpad.
