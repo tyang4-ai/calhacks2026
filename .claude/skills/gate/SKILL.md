@@ -12,10 +12,11 @@ The gate is `$ARGUMENTS`. Its checklist is under Gates in `docs/common/definitio
    - G1b and G2b run at a moment no data-smith or integrator is mid-edit (the v2 runbook, V1 steps 5 and 7),
    - G4v2 runs with no other agent active at all.
 2. **Checks.** If `package.json` has a `gate` script, run `npm run gate -- $ARGUMENTS`. It writes `artifacts/gates/<gate>-<HHMM>.md`. Otherwise run each command in the gate's checklist yourself and write that file, one evidence line per check.
-   - A migration plan's G3 takes every slug it owns: `npm run gate -- G3 money-map reconcile scenario close impact proof dashboard ask-cindy audit` for `M-desktop`. If the script still takes one slug, run it once per slug and write one report that holds them all.
+   - A migration plan's G3 takes every slug it owns: `npm run gate -- G3 money-map reconcile scenario close impact proof dashboard ask-cindy audit` for `M-desktop`.
+   - G5 for a v2 upgrade takes the upgrade's slug and its live feature spec: `npm run gate -- G5 <slug> <spec>`, with the spec its plan names.
    - G2b's checks are `npm run check:data` and `npm run check:scope -- src/mock/ tests/data/ src/sources/`, plus a check that `public/images/` holds a file for each of the 54 pieces.
    - G1b, G4v2, G5 and G6 time the tour test alone: `endedAtWallMs` in `artifacts/demo/report.json` against the timeline's `durationMs` plus the load allowance `scripts/gate.mjs` sets. Never the whole Playwright run.
-   - G5 for a v2 upgrade (B11 to B16) passes when `npm run test:server` passes, the upgrade's live feature spec answers a person's own request end to end with every event valid, and the scripted tour still passes with that source in live mode, with the tour's keyed events for that source listed in `ALLOWED_EMPTY_FALLBACKS` (`docs/v2/fix-plan.md` section 1.4). v1 upgrades keep v1's G5 on the Phase A demo.
+   - G5 for a v2 upgrade (B11 to B16) passes when `npm run test:server` passes, the upgrade's live feature spec answers a person's own request end to end with every event valid, and the scripted tour still passes with that source in live mode, with the tour's keyed events for that source listed in `ALLOWED_EMPTY_FALLBACKS` (`docs/v2/fix-plan.md` section 1.4). It plays the live tour once, not three scripted and three live runs. v1 upgrades keep v1's G5.
 3. **Review.** Spawn one verifier (subagent type `verifier`) whose prompt starts with:
    ```text
    ROLE: verifier

@@ -61,10 +61,10 @@ The scaffolder creates these in S1. The names are fixed here so every plan can r
 | `npm run check:scope -- <path> [<path> ...]` | The same checks, reporting only problems in the files or folders given |
 | `npm run check:data` | Integrity tests for the mock dataset and the answer key |
 | `npm run test:smoke` | Playwright: every route renders with no console errors |
-| `npm run test:feature -- <slug>` | Playwright: one feature's acceptance tests, against the dev server |
+| `npm run test:feature -- <slug or spec> [...]` | Playwright: the acceptance tests of one or more features, by slug or spec file, against the dev server |
 | `npm run test:demo` | Playwright: plays the demo on the production build and saves a screenshot per beat. That's v1's 60-second demo (with the co-op's names from R0 on) until `I2-tour` lands, then the tour |
 | `npm run test:offline` | The demo with every request beyond localhost blocked, failing on any attempt |
-| `npm run gate -- <gate> [<slug>]` | Runs one gate's checks (G1 to G6, with a feature or upgrade slug for G3 and G5) and writes `artifacts/gates/<gate>-<time>.md` |
+| `npm run gate -- <gate> [<slug> ...]` | Runs one gate's checks and writes `artifacts/gates/<gate>-<time>.md`: G1 to G6, and v2's G1b, G2b and G4v2. G3 takes one or more feature slugs, and G5 an upgrade slug, plus its live feature spec for B11 to B16 |
 | `npm run build`, `npm run preview` | Production build, served on http://localhost:4173 |
 | `npm run server` | FastAPI on http://localhost:8000 (Phase 2). The orchestrator starts it once |
 | `npm run test:server` | Backend tests (Phase 2) |

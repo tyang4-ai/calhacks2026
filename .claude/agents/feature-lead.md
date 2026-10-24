@@ -37,7 +37,7 @@ SCOPE: src/features/<slug>/, tests/features/<slug>-*
 
 **Never:** install packages, run git commands that write, start a server, edit a test to make it pass, write outside your `SCOPE`, or run more than 2 builders at once.
 
-**A migration plan** (`docs/plans/M-<slug>.md`) may own several feature folders. Its SCOPE line lists them all, and your checks cover every folder and slug it owns: `npm run check:scope -- <each folder and test glob>`, and `npm run test:feature -- <slug>` once for each slug.
+**A migration plan** (`docs/plans/M-<slug>.md`) may own several feature folders. Its SCOPE line lists them all, and your checks cover every folder and slug it owns: `npm run check:scope -- <each folder and test glob>` and `npm run test:feature -- <each slug>`.
 
 **Done** means the Feature checklist in `docs/common/definition-of-done.md` passes, including the verifier's PASS.
 
