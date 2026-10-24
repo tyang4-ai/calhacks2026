@@ -12,9 +12,31 @@ One plan file per stage, feature and upgrade. The orchestrator reads the lists b
 |---|---|---|---|
 | S1-scaffold | `docs/plans/S1-scaffold.md` | S1 | P0 |
 | S2-mock-data | `docs/plans/S2-mock-data.md` | S2 | P0 |
+| F-buyer | `docs/plans/F-buyer.md` | W1 | P0 |
+| F-money-map | `docs/plans/F-money-map.md` | W1 | P0 |
+| F-reconcile | `docs/plans/F-reconcile.md` | W1 | P0 |
+| F-approvals | `docs/plans/F-approvals.md` | W1 | P0 |
+| F-maker-statement | `docs/plans/F-maker-statement.md` | W1 | P0 |
+| F-close | `docs/plans/F-close.md` | W1 | P0 |
+| F-proof | `docs/plans/F-proof.md` | W1 | P0 |
+| F-ask-cindy | `docs/plans/F-ask-cindy.md` | W1 | P0 |
+| F-impact | `docs/plans/F-impact.md` | W1 | P0 |
 | I1-demo-stage | `docs/plans/I1-demo-stage.md` | I1 | P0 |
+| F-audit | `docs/plans/F-audit.md` | W2 | P1 |
+| F-dashboard | `docs/plans/F-dashboard.md` | W2 | P1 |
+| F-scenario | `docs/plans/F-scenario.md` | W2 | P1 |
+| B01-match | `docs/plans/B01-match.md` | P2 | P2 |
+| B02-explain | `docs/plans/B02-explain.md` | P2 | P2 |
+| B03-proof | `docs/plans/B03-proof.md` | P2 | P2 |
+| B04-bank | `docs/plans/B04-bank.md` | P2 | P2 |
+| B05-scenario | `docs/plans/B05-scenario.md` | P2 | P2 |
+| B06-workbook | `docs/plans/B06-workbook.md` | P2 | P2 |
+| B07-ask | `docs/plans/B07-ask.md` | P2 | P2 |
+| B08-approvals | `docs/plans/B08-approvals.md` | P2 | P2 |
+| B09-concierge | `docs/plans/B09-concierge.md` | P2 | P2 |
+| B10-derived | `docs/plans/B10-derived.md` | P2 | P2 |
 
-W1 features, W2 features and B01 to B10 get their rows during planning. W1 and W2 rows run in table order. Upgrades run in number order.
+W1 and W2 rows run in table order, so the core demo path (buyer, money map, reconcile, approvals, maker statement) is built first. Upgrades run in number order, two at a time, beside W2.
 
 ## Template
 

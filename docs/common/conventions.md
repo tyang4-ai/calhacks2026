@@ -97,7 +97,7 @@ UPDATED: 2026-10-24 00:00 PT
 
 | Thing | Rule | Example |
 |---|---|---|
-| Plan IDs | `S1-scaffold`, `S2-mock-data`, `I1-demo-stage`, `F-<slug>`, `B01-<slug>` to `B10-<slug>` | `F-money-map`, `B04-live-concierge` |
+| Plan IDs | `S1-scaffold`, `S2-mock-data`, `I1-demo-stage`, `F-<slug>`, `B01-<slug>` to `B10-<slug>` | `F-money-map`, `B04-bank` |
 | Feature folders | `src/features/<slug>/`, where the slug is the plan ID without `F-` | `src/features/money-map/` |
 | Feature entry | `src/features/<slug>/index.ts` exports the feature module from `ui-contract.md` | |
 | React components | PascalCase file and export | `MoneyMap.tsx` |
@@ -106,8 +106,8 @@ UPDATED: 2026-10-24 00:00 PT
 | Event types | lowercase `noun.verb_past` with a dot, listed in `events.md` | `approval.requested` |
 | Test IDs | `data-testid="<slug>-<element>"`, kebab-case, listed in `ui-contract.md` | `money-map-flow-line` |
 | CSS custom properties | `--c-<group>-<name>`, defined only in `src/ui/` | `--c-color-ink` |
-| Backend routers | `server/routers/bNN_<slug>.py` | `server/routers/b04_live_concierge.py` |
-| Live adapters | `src/sources/live/bNN-<slug>.ts` | `src/sources/live/b04-live-concierge.ts` |
+| Backend routers | `server/routers/bNN_<slug>.py` | `server/routers/b04_bank.py` |
+| Live adapters | `src/sources/live/bNN-<slug>.ts`, one per source key in `events.md` | `src/sources/live/b04-bank.ts` |
 | Tags | `g1-scaffold`, `g2-data`, `w1-<slug>`, `w1`, `demo-ok-1`, `w2-<slug>`, `demo-ok-bNN`, `final` | `demo-ok-b04` |
 | Commits | `<plan ID or gate>: <what changed>`, one line, plain words | `G2: mock data passes integrity tests` |
 

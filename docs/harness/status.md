@@ -11,8 +11,8 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 
 ## Now
 
-- Harness installed. Planning docs and plan files not written yet.
-- The build starts with the kickoff skill once `docs/plans/` is complete (runbook step R0).
+- Harness installed. Planning in progress: contracts and plan files are being written (Oct 24, about 1 AM).
+- The build starts when `docs/plans/README.md` says `PLANNING: done`. The heartbeat runs the kickoff steps then (runbook step R0).
 
 ## Gates
 
