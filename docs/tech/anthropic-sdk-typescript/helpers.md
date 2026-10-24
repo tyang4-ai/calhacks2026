@@ -1,0 +1,830 @@
+> Downloaded from https://github.com/anthropics/anthropic-sdk-typescript on 2026-10-22 (official repository, file as published).
+
+# Message Helpers
+
+## Streaming Responses
+
+```ts
+anthropic.messages.stream({ … }, options?): MessageStream
+```
+
+`anthropic.messages.stream()` returns a `MessageStream`, which emits events, has an async
+iterator, and exposes helper methods to accumulate stream events into a convenient shape and make it easy to reason
+about the conversation.
+
+Alternatively, you can use `anthropic.messages.create({ stream: true, … })` which returns an async
+iterable of the chunks in the stream and uses less memory (most notably, it does not accumulate a message
+object for you).
+
+If you need to cancel a stream, you can `break` from a `for await` loop or call `stream.abort()`.
+
+See an example of streaming helpers in action in [`examples/streaming.ts`](examples/streaming.ts).
+
+## MessageStream API
+
+### Events
+
+#### `.on('connect', () => …)`
+
+The first event that is fired when the connection with the Anthropic API is established.
+
+#### `.on('streamEvent', (event: MessageStreamEvent, snapshot: Message) => …)`
+
+The event fired when a stream event is received from the API. Not fired when it is not streaming. The snapshot
+returns an accumulated `Message` which is progressively built-up over events.
+
+An event of a type this SDK version doesn't know is passed through as received, with the snapshot unchanged.
+It isn't fired for anything that arrives before `message_start`, because there is no snapshot yet. `for await` and
+`.toReadableStream()` do yield those events.
+
+#### `.on('text', (textDelta: string, textSnapshot: string) => …)`
+
+The event fired when a text delta is sent by the API. The second parameter returns a `textSnapshot`.
+
+#### `.on('inputJson', (partialJson: string, jsonSnapshot: unknown) => …)`
+
+The event fired when a json delta is sent by the API. The second parameter returns a `jsonSnapshot`.
+
+#### `.on('message', (message: Message) => …)`
+
+The event fired when a message is done being streamed by the API. Corresponds to the `message_stop` SSE event.
+
+#### `.on('contentBlock', (content: ContentBlock) => …)`
+
+The event fired when a content block is done being streamed by the API. Corresponds to the
+`content_block_stop` SSE event.
+
+#### `.on('finalMessage', (message: Message) => …)`
+
+The event fired for the final message. Currently this is equivalent to the `message` event, but is fired after
+it.
+
+#### `.on('error', (error: AnthropicError) => …)`
+
+The event fired when an error is encountered while streaming.
+
+#### `.on('abort', (error: APIUserAbortError) => …)`
+
+The event fired when the stream receives a signal to abort.
+
+#### `.on('end', () => …)`
+
+The last event fired in the stream.
+
+### Methods
+
+#### `.abort()`
+
+Aborts the runner and the streaming request, equivalent to `.controller.abort()`. Calling `.abort()` on a
+`MessageStream` will also abort any in-flight network requests.
+
+#### `await .done()`
+
+An empty promise which resolves when the stream is done.
+
+#### `.currentMessage`
+
+Returns the current state of the message that is being accumulated, or `undefined` if there is no such
+message.
+
+#### `await .finalMessage()`
+
+A promise which resolves with the last message received from the API. Throws if no such message exists.
+
+#### `await .finalText()`
+
+A promise which resolves with the text of the last message received from the API.
+
+### Fields
+
+#### `.messages`
+
+A mutable array of all messages in the conversation.
+
+#### `.controller`
+
+The underlying `AbortController` for the runner.
+
+## Structured Outputs
+
+The SDK provides helpers for parsing structured JSON outputs from Claude using JSON Schema, Zod, or any library implementing [Standard Schema](https://standardschema.dev).
+
+### Usage with Zod
+
+```ts
+import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
+import Anthropic from '@anthropic-ai/sdk';
+import { z } from 'zod';
+
+const client = new Anthropic();
+
+const NumbersResponse = z.object({
+  primes: z.array(z.number()),
+});
+
+const message = await client.messages.parse({
+  model: 'claude-sonnet-5-5',
+  max_tokens: 1024,
+  messages: [{ role: 'user', content: 'What are the first 3 prime numbers?' }],
+  output_config: {
+    format: zodOutputFormat(NumbersResponse),
+  },
+});
+
+console.log(message.parsed_output?.primes); // [2, 3, 5]
+```
+
+### Usage with Standard Schema (Valibot, ArkType, ...)
+
+Standard Schema support is currently available under the beta namespace (`@anthropic-ai/sdk/helpers/beta/standard-schema` with `client.beta.messages.parse()`).
+
+```ts
+import { betaStandardSchemaOutputFormat } from '@anthropic-ai/sdk/helpers/beta/standard-schema';
+import Anthropic from '@anthropic-ai/sdk';
+import * as v from 'valibot';
+import { toStandardJsonSchema } from '@valibot/to-json-schema';
+
+const client = new Anthropic();
+
+const NumbersResponse = toStandardJsonSchema(
+  v.object({
+    primes: v.array(v.number()),
+  }),
+);
+
+const message = await client.beta.messages.parse({
+  model: 'claude-sonnet-5-5',
+  max_tokens: 1024,
+  messages: [{ role: 'user', content: 'What are the first 3 prime numbers?' }],
+  output_config: {
+    format: betaStandardSchemaOutputFormat(NumbersResponse),
+  },
+});
+
+console.log(message.parsed_output?.primes); // [2, 3, 5]
+```
+
+The JSON schema sent to the API is derived from the schema's `~standard.jsonSchema` (Standard JSON Schema) interface. For libraries or versions that don't implement it, pass the `jsonSchema` option explicitly.
+
+### Usage with JSON Schema
+
+```ts
+import { jsonSchemaOutputFormat } from '@anthropic-ai/sdk/helpers/json-schema';
+import Anthropic from '@anthropic-ai/sdk';
+
+const client = new Anthropic();
+
+const NumbersResponse = {
+  type: 'object',
+  properties: {
+    primes: { type: 'array', items: { type: 'number' } },
+  },
+  required: ['primes'],
+} as const;
+
+const message = await client.messages.parse({
+  model: 'claude-sonnet-5-5',
+  max_tokens: 1024,
+  messages: [{ role: 'user', content: 'What are the first 3 prime numbers?' }],
+  output_config: {
+    format: jsonSchemaOutputFormat(NumbersResponse),
+  },
+});
+
+console.log(message.parsed_output?.primes); // [2, 3, 5]
+```
+
+### `zodOutputFormat(zodObject)`
+
+Creates a JSON schema output format from a Zod schema. The response will be validated and parsed using Zod.
+
+### `betaStandardSchemaOutputFormat(schema, options?)`
+
+Creates a JSON schema output format from a [Standard Schema](https://standardschema.dev). The response will be validated and parsed using the schema's (synchronous) `~standard.validate`. Options:
+
+- `jsonSchema?: Record<string, unknown>` - The JSON schema to send to the API, instead of deriving it from `~standard.jsonSchema`
+
+### `jsonSchemaOutputFormat(schema, options?)`
+
+Creates a JSON schema output format from a raw JSON schema. Options:
+
+- `transform?: boolean` - Whether to transform the schema for Claude compatibility (default: `true`)
+
+### Examples
+
+See the following example files:
+
+- [`examples/structured-outputs-zod.ts`](examples/structured-outputs-zod.ts)
+- [`examples/structured-outputs-standard-schema.ts`](examples/structured-outputs-standard-schema.ts)
+- [`examples/structured-outputs-json-schema.ts`](examples/structured-outputs-json-schema.ts)
+- [`examples/structured-outputs-streaming.ts`](examples/structured-outputs-streaming.ts)
+- [`examples/structured-outputs-raw.ts`](examples/structured-outputs-raw.ts)
+
+## Tool Helpers
+
+The SDK provides helper functions to create runnable tools that can be automatically invoked by the `.toolRunner()` method. These helpers simplify tool creation with JSON Schema, Zod, or [Standard Schema](https://standardschema.dev) validation.
+
+### Usage
+
+```ts
+import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod';
+import { z } from 'zod';
+
+const weatherTool = betaZodTool({
+  name: 'get_weather',
+  inputSchema: z.object({
+    location: z.string(),
+  }),
+  description: 'Get the current weather in a given location',
+  run: (input) => {
+    return `The weather in ${input.location} is foggy and 60°F`;
+  },
+});
+
+const finalMessage = await anthropic.beta.messages.toolRunner({
+  model: 'claude-sonnet-5-5',
+  max_tokens: 1000,
+  messages: [{ role: 'user', content: 'What is the weather in San Francisco?' }],
+  tools: [weatherTool],
+});
+
+console.log(finalMessage.content);
+```
+
+#### Advanced usage
+
+When you need to process intermediate messages or control the conversation flow, you can iterate through
+`BetaToolRunner`.
+
+```ts
+const runner = anthropic.beta.messages.toolRunner({
+  model: 'claude-sonnet-5-5',
+  max_tokens: 1000,
+  messages: [{ role: 'user', content: 'What is the weather in San Francisco?' }],
+  tools: [weatherTool],
+});
+
+// Process each message as it arrives
+for await (const message of runner) {
+  console.log(message);
+}
+
+// Get the final result
+console.log(await runner);
+```
+
+See [`examples/tools-helpers-advanced.ts`](examples/tools-helpers-advanced.ts) for a more in-depth
+example.
+
+#### Streaming
+
+```ts
+const runner = anthropic.beta.messages.toolRunner({
+  model: 'claude-sonnet-5-5',
+  max_tokens: 1000,
+  messages: [{ role: 'user', content: 'What is the weather in San Francisco?' }],
+  tools: [calculatorTool],
+  stream: true,
+});
+
+// When streaming, the runner returns BetaMessageStream
+for await (const messageStream of runner) {
+  for await (const event of messageStream) {
+    console.log('event:', event);
+  }
+  console.log('message:', await messageStream.finalMessage());
+}
+
+console.log(await runner);
+```
+
+See [`examples/tools-helpers-advanced-streaming.ts`](examples/tools-helpers-advanced-streaming.ts) for a more
+in-depth example.
+
+##### Running tools while the reply streams
+
+By default, the runner runs a reply's tools after your loop body for that reply ends. With `runToolsEagerly: true` and `stream: true`, each tool starts as soon as the model finishes writing its call. A toolset's call starts early too when the toolset's earlier calls have ended, and otherwise waits for the reply. Its `confirm` is still asked before each call runs. To hold a call until your loop body ends, pass it to `runner.deferToolCall()` when you see it. It won't have started yet. `runner.deferredToolCalls` lists the held calls without waiting, so read it after the stream ends.
+
+```ts
+const runner = anthropic.beta.messages.toolRunner({
+  model: 'claude-sonnet-5',
+  max_tokens: 1000,
+  messages: [{ role: 'user', content: 'Clean up the log files in /tmp/demo.' }],
+  tools: [listFiles, deleteFile],
+  stream: true,
+  runToolsEagerly: true,
+});
+
+for await (const messageStream of runner) {
+  for await (const event of messageStream) {
+    if (
+      event.type === 'content_block_start' &&
+      event.content_block.type === 'tool_use' &&
+      event.content_block.name === 'delete_file'
+    ) {
+      runner.deferToolCall(event.content_block);
+    }
+  }
+
+  const held = runner.deferredToolCalls;
+  if (held.length > 0 && !(await confirm(held))) break;
+}
+```
+
+Here, `break` means the held call never runs. A tool that has started runs to the end, even if the reply is cut short or you replace the history. The model then never gets its result and may ask for the same call again. So defer calls that aren't safe to run twice. See [`examples/tools-helpers-deferred-streaming.ts`](examples/tools-helpers-deferred-streaming.ts).
+
+#### Cancellation
+
+The `BetaToolRunner` supports cancellation via `AbortSignal`. The signal is passed to both API calls and tool `run` methods via the `BetaToolRunContext`.
+
+```ts
+const controller = new AbortController();
+
+const runner = anthropic.beta.messages.toolRunner(
+  {
+    model: 'claude-sonnet-5-5',
+    max_tokens: 1000,
+    messages: [{ role: 'user', content: 'Do a long task' }],
+    tools: [
+      betaZodTool({
+        name: 'long_task',
+        inputSchema: z.object({ query: z.string() }),
+        description: 'A long-running task',
+        run: async (input, context) => {
+          // Throws AbortError if already cancelled before run() was called
+          context?.signal?.throwIfAborted();
+          // Pass the signal to downstream operations for mid-flight cancellation
+          const result = await fetch(url, { signal: context?.signal });
+          return result.text();
+        },
+      }),
+    ],
+  },
+  { signal: controller.signal },
+);
+
+// Cancel after 5 seconds
+setTimeout(() => controller.abort(), 5000);
+
+const finalMessage = await runner;
+```
+
+You can also set or update the signal after creating the runner:
+
+```ts
+runner.setRequestOptions({ signal: controller.signal });
+```
+
+#### Compaction
+
+With the `compact-2026-09-04` beta you decide when a conversation is compacted: a request with the `compaction` param returns a single `compaction` block, which then replaces the messages it summarizes. In a tool runner, call `runner.compactBeforeNextTurn()` and the runner does this for you.
+
+```ts
+const runner = anthropic.beta.messages.toolRunner({
+  model: 'claude-sonnet-5-5',
+  max_tokens: 1000,
+  betas: ['compact-2026-09-04'],
+  messages: [{ role: 'user', content: 'Find every page that mentions rate limits.' }],
+  tools: [searchDocsTool],
+});
+
+for await (const message of runner) {
+  if (message.usage.input_tokens > 100_000) {
+    runner.compactBeforeNextTurn();
+  }
+}
+```
+
+The call only schedules the compaction. Once the current turn has finished, including any tool calls, the runner requests a summary, replaces its message history with the compaction response the API returns, and carries on. A turn that was paused (`pause_turn`) is resumed and finished first. If the current turn is the last one, the runner compacts and then stops. If you call it before iterating, the compaction is the first request.
+
+The compaction response is yielded like any other message and doesn't count towards `max_iterations`. It has `stop_reason: 'compaction'`, the summary is in the `content` of its first content block, and its top-level `usage.input_tokens` and `usage.output_tokens` are 0: what the compaction cost is in `usage.iterations`. Calling `compactBeforeNextTurn()` while handling that message does nothing, so a threshold like the one above doesn't compact twice.
+
+`compactBeforeNextTurn()` takes the same config as the `compaction` param of `messages.create()`, for example to give your own summarization instructions:
+
+```ts
+runner.compactBeforeNextTurn({ type: 'summarize', instructions: 'Keep the page URLs found so far.' });
+```
+
+A few things to know:
+
+- Calling it again before the compaction runs replaces the pending one.
+- The runner doesn't add the beta for you, so pass `betas: ['compact-2026-09-04']`.
+- A compaction request returns only the compaction block, never a reply, so the API doesn't accept `compaction` together with `context_management` or with the params that only shape a reply: `stop_sequences`, a `tool_choice` that forces a tool (`any` or `tool`), and `output_config.format` (or the deprecated `output_format`), including the `output_config.format` of any entry in `fallbacks`. The runner leaves these out of the compaction request and sends them again afterwards. `compactBeforeNextTurn()` throws if `context_management` has a `compact_*` edit, and so does adding one with `setMessagesParams()` while a compaction is scheduled.
+- While you're handling the compaction response, `pushMessages()` and replacing `messages` with `setMessagesParams()` throw, because the compaction response is about to replace the messages. Other params can still be changed.
+- If the API returns no summary, the runner logs a warning and keeps the history as it is.
+- If the run ends on a turn that was cut short with tool calls that never ran (`stop_reason: 'max_tokens'`, for example), the pending compaction is skipped with a warning. It is also skipped if `max_iterations` ends the run after a turn with tool calls, or you `break` out of the loop.
+- When the runner compacts on the last turn and a summary comes back, the compaction response is the last message it receives, so that is what `await runner` and `runner.done()` resolve to.
+- The `compaction` param itself can't be set on a tool runner, because every request in the loop would compact again.
+
+### `betaZodTool`
+
+Zod schemas can be used to define the input schema for your tools:
+
+```ts
+import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod';
+
+const weatherTool = betaZodTool({
+  name: 'get_weather',
+  inputSchema: z.object({
+    location: z.string().describe('The city and state, e.g. San Francisco, CA'),
+    unit: z.enum(['celsius', 'fahrenheit']).default('fahrenheit'),
+  }),
+  description: 'Get the current weather in a given location',
+  run: async (input) => {
+    return `The weather in ${input.location} is ${input.unit === 'celsius' ? '22°C' : '72°F'}`;
+  },
+});
+```
+
+### `betaStandardSchemaTool`
+
+Any schema library implementing [Standard Schema](https://standardschema.dev) (Valibot, ArkType, Zod, Effect Schema, ...) can be used to define the input schema for your tools:
+
+```ts
+import { betaStandardSchemaTool } from '@anthropic-ai/sdk/helpers/beta/standard-schema';
+import * as v from 'valibot';
+import { toStandardJsonSchema } from '@valibot/to-json-schema';
+
+const weatherTool = betaStandardSchemaTool({
+  name: 'get_weather',
+  inputSchema: toStandardJsonSchema(
+    v.object({
+      location: v.pipe(v.string(), v.description('The city and state, e.g. San Francisco, CA')),
+      unit: v.optional(v.picklist(['celsius', 'fahrenheit']), 'fahrenheit'),
+    }),
+  ),
+  description: 'Get the current weather in a given location',
+  run: async (input) => {
+    return `The weather in ${input.location} is ${input.unit === 'celsius' ? '22°C' : '72°F'}`;
+  },
+});
+```
+
+As with `betaStandardSchemaOutputFormat`, pass the `jsonSchema` option if the schema doesn't implement `~standard.jsonSchema`.
+
+### `betaTool`
+
+You can use JSON Schema to define the input schema for your tools. `betaTool` will infer the type of `input` for you
+based on the supplied JSON Schema.
+
+```ts
+import { betaTool } from '@anthropic-ai/sdk/helpers/beta/json-schema';
+
+const calculatorTool = betaTool({
+  name: 'calculator',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      operation: { type: 'string', enum: ['add', 'subtract', 'multiply', 'divide'] },
+      a: { type: 'number' },
+      b: { type: 'number' },
+    },
+    required: ['operation', 'a', 'b'],
+  },
+  description: 'Perform basic arithmetic operations',
+  run: (input) => {
+    const { operation, a, b } = input;
+    switch (operation) {
+      case 'add':
+        return String(a + b);
+      case 'subtract':
+        return String(a - b);
+      case 'multiply':
+        return String(a * b);
+      case 'divide':
+        return String(a / b);
+      default:
+        throw new Error(`Unknown operation: ${operation}`);
+    }
+  },
+});
+```
+
+### Other tool definition fields
+
+`betaZodTool`, `betaStandardSchemaTool` and `betaTool` also accept every other field of the tool definition, named as in the API, and send it as given:
+
+```ts
+const weatherTool = betaZodTool({
+  name: 'get_weather',
+  inputSchema: z.object({ location: z.string() }),
+  description: 'Get the current weather in a given location',
+  strict: true,
+  cache_control: { type: 'ephemeral' },
+  run: async (input) => `The weather in ${input.location} is 72°F`,
+});
+```
+
+`mcpTool`, `mcpTools` and `betaMemoryTool` take the other fields of their tool definition as their last argument.
+
+### `client.messages.toolRunner(params): BetaToolRunner`
+
+**Parameters:** All standard message parameters except `compaction` (see [Compaction](#compaction)), plus:
+
+- `tools: Array<BetaToolUnion | BetaRunnableTool>` - Array of tools
+- `max_iterations?: number` - Maximum number of tool execution iterations (default: no limit)
+
+**Returns:**: `BetaToolRunner`
+
+### `BetaToolRunner` API
+
+#### `BetaToolRunner.done()`
+
+Waits for the conversation to complete and returns the final message.
+
+```ts
+// Start consuming the iterator
+for await (const message of runner) {
+  console.log('Message:', message);
+}
+
+// Wait for completion
+const finalMessage = await runner.done();
+```
+
+#### `BetaToolRunner.runUntilDone()`
+
+Waits for the conversation and returns the final assistant message. Unlike `done()`, this will eagerly read the stream.
+
+```ts
+const finalMessage = await runner.runUntilDone();
+```
+
+#### Direct await
+
+The BetaToolRunner is directly awaitable, which is equivalent to calling `.runUntilDone()`:
+
+```ts
+const finalMessage = await runner;
+```
+
+#### `BetaToolRunner.setMessagesParams()`
+
+Updates the conversation parameters. Can accept new parameters or a mutator function.
+
+```ts
+// Direct parameter update
+runner.setMessagesParams({
+  ...runner.params,
+  model: 'claude-haiku-4-5',
+  max_tokens: 500,
+});
+
+// Using mutator function
+runner.setMessagesParams((prevParams) => ({
+  ...prevParams,
+  max_tokens: prevParams.max_tokens * 2,
+  messages: [...prevParams.messages, { role: 'user', content: 'Additional context' }],
+}));
+```
+
+#### `BetaToolRunner.pushMessages()`
+
+Adds messages to the conversation history.
+
+```ts
+runner.pushMessages(
+  { role: 'user', content: 'Please also consider this information...' },
+  { role: 'assistant', content: 'I understand, let me factor that in.' },
+);
+```
+
+#### `BetaToolRunner.compactBeforeNextTurn()`
+
+Schedules a compaction of the conversation for when the current turn has finished. Takes the same config as the `compaction` param of `messages.create()` and defaults to `{ type: 'summarize' }`. See [Compaction](#compaction).
+
+```ts
+runner.compactBeforeNextTurn();
+```
+
+#### `BetaToolRunner.addTools()` and `BetaToolRunner.removeTools()`
+
+Changing `tools` in the middle of a conversation misses the prompt cache for everything sent so far. With the `inline-tools-2026-09-15` beta a tool change is sent as a message instead, and these two methods do that for you. `tools` is sent exactly as you first passed it on every request.
+
+```ts
+const runner = anthropic.beta.messages.toolRunner({
+  model: 'claude-sonnet-5-5',
+  max_tokens: 1000,
+  betas: ['inline-tools-2026-09-15'],
+  messages: [{ role: 'user', content: 'How many orders shipped late last week?' }],
+  tools: [readFileTool],
+});
+
+for await (const message of runner) {
+  if (database.justConnected()) {
+    runner.addTools(queryDatabaseTool);
+  }
+  if (database.justDisconnected()) {
+    runner.removeTools(queryDatabaseTool); // or by name: 'query_database'
+  }
+}
+```
+
+`addTools()` takes runnable tools and raw tool definitions, as `tools` does, but not a runnable toolset or a raw definition of a toolset the runner has. The whole definition is sent to the model either way.
+
+- A runnable tool can be called from the request that carries its definition. If a runnable tool of the same name is already there, the new one replaces it straight away: a call the model has already made in the message you're handling runs the new one.
+- A raw definition is sent as given and is never run by the tool runner, which also stops running a tool of the same name. That is what you want for server tools, such as `{ type: 'web_search_20250305', name: 'web_search' }`, which the API runs. A call to a raw client tool gets the same "not found" error result as when it is passed in `tools`.
+- An `mcp_toolset` definition also needs its server in `mcp_servers`, which `addTools()` doesn't change.
+
+`removeTools()` takes the tools themselves or their names.
+
+- The tool stops being run straight away. If the model has already called it in the message you're handling, that call gets the same "not found" error result as a call to an unknown tool, and the tool isn't run. Calls that have already started still finish.
+- The tool stays removed whatever happens to the message history later. To bring it back, pass it to `addTools()` again.
+- Removing a server tool only tells the model.
+
+A few things to know:
+
+- Changes made while you're handling a message are sent together as one `role: "system"` message, in the order you made them, right after that turn's tool results. Changes made before iterating follow the initial messages.
+- After a paused turn (`pause_turn`) the turn is sent back as it came, and the changes go out with the request after that.
+- Changes still waiting when the run ends are never sent.
+- In the rare case where a compaction response comes back without `tool_changes` even though the messages it summarized added or removed tools, the model goes back to the tools in `tools`, and the runner doesn't detect it. Call `addTools()` / `removeTools()` again after that compaction if you need the change restored.
+- The runner doesn't add the beta for you, so pass `betas: ['inline-tools-2026-09-15']`.
+- Changing `tools` with `setMessagesParams()` still works, but misses the prompt cache and does not undo what these methods did.
+- Use either these methods or `tool_addition` / `tool_removal` blocks you append yourself for a given tool, not both.
+- Runnable toolsets, such as a browser or computer toolset, can't be added or removed this way: change them with `setMessagesParams()`, or build a new runner.
+
+#### `BetaToolRunner.setRequestOptions()`
+
+Updates the request options (e.g., headers, abort signal) for future API calls and tool executions.
+
+```ts
+// Direct options update
+const controller = new AbortController();
+runner.setRequestOptions({ signal: controller.signal });
+
+// Using mutator function to preserve existing options
+runner.setRequestOptions((prev) => ({
+  ...prev,
+  signal: controller.signal,
+}));
+```
+
+#### `BetaToolRunner.generateToolResponse(signal?)`
+
+Gets the tool response for the last assistant message (if any tools need to be executed). Accepts an optional `AbortSignal` parameter that will be passed to tool `run` methods; defaults to the signal from request options.
+
+```ts
+for await (const message of runner) {
+  const toolResponse = await runner.generateToolResponse();
+  if (toolResponse) {
+    console.log('Tool results:', toolResponse.content);
+  }
+}
+```
+
+#### `BetaToolRunner.params`
+
+Read-only access to the current conversation parameters.
+
+```ts
+console.log('Current model:', runner.params.model);
+console.log('Message count:', runner.params.messages.length);
+```
+
+### `ToolError`
+
+When a tool encounters an error, you can throw a `ToolError` to return structured content blocks as the error result instead of just a string message. The ToolRunner will catch this error and send the content back to the model with `is_error: true`. From a browser or computer toolset, only a `ToolError`'s text blocks are sent.
+
+```ts
+import { ToolError } from '@anthropic-ai/sdk/resources/beta/messages';
+
+const screenshotTool = betaZodTool({
+  name: 'take_screenshot',
+  inputSchema: z.object({ url: z.string() }),
+  description: 'Take a screenshot of a webpage',
+  run: async (input) => {
+    try {
+      const screenshot = await takeScreenshot(input.url);
+      return [{ type: 'image', source: { type: 'base64', data: screenshot, media_type: 'image/png' } }];
+    } catch (e) {
+      // Return structured error content with an image showing what went wrong
+      throw new ToolError([
+        { type: 'text', text: `Failed to screenshot ${input.url}: ${e.message}` },
+        { type: 'image', source: { type: 'base64', data: errorScreenshot, media_type: 'image/png' } },
+      ]);
+    }
+  },
+});
+```
+
+You can also throw a `ToolError` with a simple string:
+
+```ts
+throw new ToolError('Invalid input: URL must start with https://');
+```
+
+### Examples
+
+See the following example files for more usage patterns:
+
+- [`examples/tools-helpers-zod.ts`](examples/tools-helpers-zod.ts) - Zod-based tools
+- [`examples/tools-helpers-standard-schema.ts`](examples/tools-helpers-standard-schema.ts) - Standard Schema (Valibot) tools
+- [`examples/tools-helpers-json-schema.ts`](examples/tools-helpers-json-schema.ts) - JSON Schema tools
+- [`examples/tools.ts`](examples/tools.ts) - Basic tool usage
+
+## Browser toolset
+
+The browser toolset has its own guide, [browser-toolset.md](browser-toolset.md): subclassing `BetaAbstractBrowserToolset20260801` to drive a real browser, its options, policies and result types, and how to run one safely.
+
+## Computer toolset
+
+The computer toolset has its own guide, [computer-toolset.md](computer-toolset.md): subclassing `BetaAbstractComputerToolset20260801` to drive a desktop, its options and result types, the coordinate and image rules, and how to run one safely.
+
+# Self-Hosted Environment Runner
+
+The SDK exposes a few building blocks for serving managed-agents sessions from a self-hosted environment:
+
+- `client.beta.environments.work.worker({ ... })` (returns an `EnvironmentWorker`, also exported from `@anthropic-ai/sdk/helpers/beta/environments`) — the full worker: polls for work, and for each claimed session sets up the workdir + downloads the agent's skills, runs the local tools against the session's `agent.tool_use` events while heartbeating the work-item lease, force-stops the work on exit, cleans up the downloaded skills, and loops. `worker.handleItem(...)` runs that same per-item flow for a single work item you've already claimed; with no arguments it reads the work id / environment id / session id from `ANTHROPIC_WORK_ID` / `ANTHROPIC_ENVIRONMENT_ID` / `ANTHROPIC_SESSION_ID` (the env vars `ant worker poll --on-work` sets) and the environment key from `ANTHROPIC_ENVIRONMENT_KEY`. `environmentId` / `environmentKey` are only needed by `run()`'s poll loop — `handleItem()` works without them. Composed from the two pieces below.
+- `client.beta.environments.work.poller(...)` — control-plane only (a `WorkPoller`): claims work items from an environment, ack's each one before yielding it, and posts `stop` automatically when the consumer's loop body returns or the iteration ends.
+- `client.beta.sessions.events.toolRunner(...)` — the sessions-side counterpart to `client.beta.messages.toolRunner` (a `SessionToolRunner`): for each `agent.tool_use` event the agent emits during a session, runs the matching tool from your registry, posts the result back, and yields a `DispatchedToolCall` so you can observe what happened. Internally drives event-stream reconnect and result posting; it does not touch the work-item lease.
+
+The tool implementations themselves live in a separate Node-only module — `@anthropic-ai/sdk/tools/agent-toolset/node` — alongside `@anthropic-ai/sdk/tools/memory/node`. `betaAgentToolset20260401(ctx)` returns the standard `agent_toolset_20260401` set (`bash`, `read`, `write`, `edit`, `glob`, `grep`) as `BetaRunnableTool` objects, the same shape `client.beta.messages.toolRunner` accepts. The individual factories — `betaBashTool`, `betaReadTool`, `betaWriteTool`, `betaEditTool`, `betaGlobTool`, `betaGrepTool` — are exported too.
+
+> **Node 22+ required.** The agent toolset uses the native `fs.glob` (added in Node 22) for its `glob` tool, so `@anthropic-ai/sdk/tools/agent-toolset/node` requires Node 22 or newer. The rest of the SDK still supports Node 18+.
+
+```ts
+import Anthropic from '@anthropic-ai/sdk';
+import { betaAgentToolset20260401 } from '@anthropic-ai/sdk/tools/agent-toolset/node';
+
+const client = new Anthropic();
+
+// One-stop worker: poll → run the toolset for each session → force-stop → loop.
+// `tools` is a factory so `betaAgentToolset20260401` is bound to each session's workdir/id.
+// `environmentKey` is the runner's single credential — it authenticates both the
+// work-poll calls and every per-session call (event stream, heartbeat, force-stop).
+await client.beta.environments.work
+  .worker({
+    environmentId: process.env.ANTHROPIC_ENVIRONMENT_ID!,
+    environmentKey: process.env.ANTHROPIC_ENVIRONMENT_KEY!,
+    workdir: '/workspace',
+    tools: (ctx) => [...betaAgentToolset20260401(ctx), myCustomTool],
+  })
+  .run(AbortSignal.timeout(60 * 60_000));
+```
+
+If you already hold a claimed work item — e.g. an `ant worker poll --on-work` script handed one to a fresh process — call `handleItem` to run just the per-item flow (build the workdir + skills, run the session's tools while heartbeating the lease, force-stop on exit). Inside that command the work id / environment id / session id / environment key are already in the environment, so the sandbox case is just:
+
+```ts
+await client.beta.environments.work.worker({ workdir: '/workspace', tools }).handleItem();
+```
+
+Pass the values explicitly when you have the objects in hand (e.g. you iterate the poller yourself):
+
+```ts
+await client.beta.environments.work.worker({ workdir: '/workspace', tools }).handleItem({
+  workId: work.id,
+  environmentId: work.environment_id,
+  sessionId: work.data.id,
+  environmentKey: process.env.ANTHROPIC_ENVIRONMENT_KEY!,
+});
+```
+
+`betaAgentToolset20260401(ctx)` returns a plain array — filter or extend it to customise:
+
+```ts
+const tools = betaAgentToolset20260401(ctx).filter((t) => t.name !== 'grep'); // remove
+const tools = [...betaAgentToolset20260401(ctx), myCustomTool]; // extend with any BetaRunnableTool
+```
+
+> **Keep custom tools non-blocking.** The worker renews the work-item lease on the same event loop that runs your tools, so a `run` that blocks synchronously (a CPU-bound loop, `fs.readFileSync`, `execSync`) stops the heartbeat and can cost the worker its lease. Await async APIs instead, or move CPU-heavy work to a `worker_threads` worker or child process. The built-in `agent_toolset_20260401` tools are already async.
+
+If you want the pieces separately — e.g. to observe each tool call, or to manage the work lifecycle yourself — drive the poller and the session tool runner directly:
+
+```ts
+import {
+  betaAgentToolset20260401,
+  setupSkills,
+  type AgentToolContext,
+} from '@anthropic-ai/sdk/tools/agent-toolset/node';
+
+const environmentKey = process.env.ANTHROPIC_ENVIRONMENT_KEY!;
+// The environment key authenticates the per-session calls too — scope a client to it.
+// It replaces the client's own credential on the copy.
+const sessionClient = client.withOptions({ authToken: environmentKey });
+
+for await (const work of client.beta.environments.work.poller({
+  environmentId: process.env.ANTHROPIC_ENVIRONMENT_ID!,
+  environmentKey,
+})) {
+  if (work.data.type !== 'session') continue;
+  // Setting `client` + `sessionId` makes `setupSkills` fetch the session's
+  // resolved agent and download each of its skills into `{workdir}/skills/<name>/`
+  // (via `client.beta.skills.versions.download`). Call it before the tool runner;
+  // it returns a cleanup function to call once the work item is done.
+  const ctx: AgentToolContext = { workdir: '/workspace', client, sessionId: work.data.id };
+  const cleanupSkills = await setupSkills(ctx);
+  try {
+    for await (const call of sessionClient.beta.sessions.events.toolRunner(work.data.id, {
+      tools: betaAgentToolset20260401(ctx),
+    })) {
+      console.log(`${call.name} -> ${call.isError ? 'error' : 'ok'}`);
+    }
+  } finally {
+    await cleanupSkills();
+  }
+}
+```
+
+The toolset executes shell and file operations directly on the host. Run it inside a container or other isolation boundary you control. Files and directories that `write`/`edit` create are owner-only (`0o600`/`0o700`) whatever the process umask, so other local users can't read what an agent wrote; a file that already exists keeps its mode when it is rewritten.
+
+See [`examples/managed-agents-self-hosted-sandbox-worker.ts`](examples/managed-agents-self-hosted-sandbox-worker.ts) for a complete example.

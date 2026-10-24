@@ -1,6 +1,6 @@
-# docs/tech · offline docs for the v2 backend
+# docs/tech · offline docs for the stack
 
-Clean markdown copies of the official doc pages the v2 backend builders need. Builders have no web access, so read these instead of writing an API from memory. Every page starts with its source URL, the date it was fetched (Oct 24, 2026) and a short note on what was kept.
+Clean markdown copies of the official doc pages the v2 backend builders need. Builders have no web access, so read these instead of writing an API from memory. The v1 stack (Claude API, Anthropic SDKs, Claude Code, FastAPI, Vite and the rest) is listed at the end. Every page starts with its source URL, the date it was fetched (Oct 24, 2026) and a short note on what was kept.
 
 How the pages were made:
 
@@ -107,3 +107,22 @@ The accounts, keys, hosts and gotchas for every service are in `docs/v2/apis-and
 | Page | What it answers |
 |---|---|
 | `tools-and-setup.md` | Every Figma MCP server tool (read, write, Weave) with file types and where it runs, the skills and the prompt, the tool names in Gordon's connector, and the setup and best practices from figma/mcp-server-guide |
+
+## The v1 stack (copied from the vault, Oct 24)
+
+These folders came from Gordon's vault (`resources/tech/docs/`), where they were saved on Oct 22 for offline work. Read `ch13-tech-stack.md` first: it gives the v1 versions, the setup steps, the recent breaking changes and a table of which page answers what.
+
+| Folder | What's in it |
+|---|---|
+| `claude-api/` | Models overview with the current model IDs, the Oct 21, 2026 migration (no `temperature`, `top_p` or `top_k`, no enabled thinking, no prefill), errors, structured outputs, and tool use (overview, defining tools, handling tool calls, strict mode). Read these before writing any agent in `B14-swarm` |
+| `anthropic-sdk-python/`, `anthropic-sdk-typescript/` | Each SDK's README, API reference, helpers, migration notes and tool-use examples |
+| `claude-code/` | Claude Code docs for the orchestrator: sub-agents, hooks, skills, settings, permissions, scheduled tasks, `/goal`, headless runs, worktrees, costs, troubleshooting |
+| `fastapi/` | The tutorial pages the server uses (first steps, body, CORS, files, static files) and their example sources under `docs_src/` |
+| `pypi-readmes/` | uvicorn, openpyxl and python-multipart |
+| `openpyxl/` | Simple usage and bar charts, for the workbook |
+| `vite/` | Getting started, features, env and modes, server options, static deploy |
+| `tailwindcss/` | The README and installing with Vite |
+| `recharts/`, `motion/` | The READMEs |
+| `sheetjs/` | Installing in a bundler (the package comes from `cdn.sheetjs.com`, not npm), exporting, formulae, the feature index |
+| `cloudflare-pages/` | Direct upload and `_redirects`, for a public static build |
+| `npm-readmes/` | cors, express, qrcode.react and wrangler |

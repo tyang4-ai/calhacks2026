@@ -93,7 +93,8 @@ lessons: <a gotcha the next agent should know, or none>
 ```
 docs/common/        shared contracts and conventions: read before you work
 docs/v2/            the v2 brief, contract changes, plan order, outside APIs and accounts
-docs/tech/          offline copies of the outside API docs v2 needs
+docs/tech/          offline copies of the library and outside API docs
+docs/reference/     the Devpost page, hacker guide, schedule and sponsor notes
 docs/harness/       runbook, v2 runbook, status, decisions, lessons, hooks spec, kickoff
 docs/plans/         one plan file per stage, feature and upgrade
 docs/spec/          the v1 product spec and pitch, for background
@@ -109,7 +110,7 @@ tests/ scripts/ artifacts/
 
 ## When stuck
 
-- Library docs for v2's outside APIs (Elastic, SpacetimeDB, Apify, sentence-transformers, Hugging Face Hub, Figma) are in `docs/tech/` in the repo, with `docs/tech/README.md` saying which page answers what. On the Windows machines, the v1 stack docs are in the vault folder added at launch (`B:\Alioth\Notes\Hackathons\my-entries\2026-10-cal-hacks-13\resources\tech`): read `ch13-tech-stack.md` first, then `docs/<library>/` next to it. The Explore subagent can search them for you.
+- Library docs are in `docs/tech/`: v2's outside APIs (Elastic, SpacetimeDB, Apify, sentence-transformers, Hugging Face Hub, Figma) and the v1 stack (Claude API, Anthropic SDKs, Claude Code, FastAPI, Vite, Tailwind, Recharts, Motion, SheetJS, openpyxl, Cloudflare Pages). `docs/tech/README.md` says which page answers what, and `docs/tech/ch13-tech-stack.md` gives the v1 versions, setup and breaking changes. The event, Devpost and sponsor notes are in `docs/reference/`. The Explore subagent can search them for you.
 - Every outside API, its account, its env names and its auth: `docs/v2/apis-and-accounts.md`.
 - Gotchas found earlier in this build are in `docs/harness/lessons.md`.
 - The Claude API changed on Oct 21, 2026: no `temperature`, `top_p` or `top_k`, no `thinking: {"type": "enabled"}`, no prefilled assistant turns. Model IDs are `claude-opus-5-5`, `claude-sonnet-5-5` and `claude-haiku-5-5`.
