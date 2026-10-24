@@ -15,7 +15,7 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 - Heartbeat cron f57ce95e every 15 min (session-only).
 - G1 passed 2:35 AM (5/5, verifier PASS). Shared lock on.
 - G2 passed 2:58 AM (2/2, verifier PASS; smoke 22/22 after the integrator fix).
-- Now: R4, W1. Six features green; leads running for close, ask-cindy, impact. Dev server on 5173.
+- Now: R4, W1. Seven features green; leads running for close, impact. Dev server on 5173.
 
 ## Gates
 
@@ -40,8 +40,8 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 | F-maker-statement | W1 | green | feature-lead | w1-maker-statement | G3 3/3, verifier PASS |
 | F-close | W1 | running | feature-lead | | |
 | F-proof | W1 | green | feature-lead | w1-proof | G3 3/3, verifier PASS |
-| F-ask-cindy | W1 | running | feature-lead | | |
-| F-impact | W1 | todo |  | | |
+| F-ask-cindy | W1 | green | feature-lead | w1-ask-cindy | G3 3/3, verifier PASS |
+| F-impact | W1 | running | feature-lead | | |
 
 States: `todo`, `running`, `green`, `failed`, `CUT`.
 
@@ -118,3 +118,6 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 03:20 PT · G3 maker-statement PASS 3/3, verifier PASS, tag w1-maker-statement · artifacts/gates/G3-0318.md · artifacts/verify/F-maker-statement-G3-0316.md
 - 2026-10-24 03:20 PT · G3 proof PASS 3/3, verifier PASS, tag w1-proof · artifacts/gates/G3-0318.md · artifacts/verify/F-proof-G3-0319.md
 - 2026-10-24 03:21 PT · G3 money-map PASS 3/3 (gate output 03:18, report file overwritten by the maker-statement run), verifier rerun PASS, tag w1-money-map · artifacts/verify/F-money-map-G3-rerun.md
+- 2026-10-24 03:22 PT · pending for the integrator at I1: add `money-map-balance-nessie` to ui-contract.md; add `setSpeed` to the `window.__cindia.player` type in tests/smoke/lib.ts · reports of F-money-map and F-proof
+- 2026-10-24 03:21 PT · G3 ask-cindy PASS 3/3, verifier PASS, tag w1-ask-cindy · artifacts/gates/G3-0320.md, artifacts/verify/F-ask-cindy-G3-1020.md
+- 2026-10-24 03:21 PT · pending for the integrator at I1: add `ask-cindy-refs` to ui-contract.md · F-ask-cindy report

@@ -36,3 +36,4 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - all: Feature specs that import `src/` modules type-check under `tsconfig.node.json`, which now includes `vite/client` types.
 - all: Gate reports are named `<gate>-<HHMM>.md`, so two gates in the same minute overwrite each other; the evidence lines in `status.md` and `artifacts/gates/logs/` keep each result.
 - F-maker-statement: `statement.issued` has no `monthId`, so the month label comes from `getById<MakerStatement>(id).monthId` with `state.month.monthId` as fallback; Money's tone class sets the color, so pass `style.color` to keep a held amount seal red.
+- F-ask-cindy: The scripted answer to a person's `ask.asked` runs on a 1.2 s wall-clock timer that drops itself when the player epoch changes, so tests must seek before sending a question, never after.
