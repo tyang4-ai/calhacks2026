@@ -35,6 +35,10 @@ claude --permission-mode auto --remote-control "Cindia build" --add-dir "$V\reso
 
 ## 3. Start the build (in the Claude session)
 
+**If planning is still being written** (for example, you launch before going to sleep): type `/loop 10m /heartbeat` and leave it. Every 10 minutes it pulls from GitHub. When `docs/plans/README.md` says `PLANNING: done`, it runs the kickoff checks and starts the build on its own, then keeps it moving. Skip the steps below. In the morning you can still add the goal line from your phone.
+
+**If planning is done:**
+
 1. Type `/kickoff`. It runs G0, fills in the Environment section of `status.md`, sets a 15-minute heartbeat, and prints the goal line. The heartbeat restarts the build whenever it goes quiet, which `/goal` alone doesn't do while the dev server runs in the background.
 2. Type the goal line exactly:
 

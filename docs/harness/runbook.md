@@ -9,7 +9,7 @@ You are the main session. This is your procedure from kickoff to freeze. Read `d
 - **Spawn in the background** and keep working. You get a notification when an agent finishes.
 - **Concurrency:** at most 4 feature leads and backend-builders at once in total. A lead runs at most 3 builders. On a usage-limit warning or repeated rate-limit errors, drop to 2 at once and log it.
 - **One production-build gate at a time.** G4, G5 and G6 share `dist/` and port 4173. Never run two of them at once.
-- **Heartbeat.** The kickoff skill sets a 15-minute heartbeat with CronCreate. It's what restarts the build when `/goal` can't, because `/goal` skips its check while the dev server runs in the background, and a Remote Control session doesn't resume by itself after a usage limit. After a restart, run CronList and create the heartbeat again if it's missing (same prompt as the kickoff skill).
+- **Heartbeat.** A recurring session task runs `/heartbeat` every 10 to 15 minutes. Gordon starts it with `/loop 10m /heartbeat`, or the kickoff skill creates it. It's what restarts the build when `/goal` can't, because `/goal` skips its check while the dev server runs in the background, and a Remote Control session doesn't resume by itself after a usage limit. After a restart, run CronList and create it again if it's missing (CronCreate, `*/15 * * * *`, prompt `/heartbeat`). Never run two.
 - **After every report:** read the REPORT block. Copy any `lessons:` line into `lessons.md` (one line, with the plan ID). Route `needs:` lines: a shared-code or contract change goes to the integrator, a question only Gordon can answer goes under Needs Gordon in `status.md` with the default in use, and anything else you handle yourself.
 - **Evidence.** A gate passes only on its recorded checks. Print a short gate summary in the conversation every time, because `/goal` reads the conversation, not files.
 - **Status.** Update the marker lines (`STAGE`, `NEXT`, `SHARED_LOCK`, `UPDATED`) before the commit that goes with them, so what's pushed is current. Add a Log line at every step change.
@@ -30,7 +30,7 @@ You are the main session. This is your procedure from kickoff to freeze. Read `d
 
 ## R0 · Planning (STAGE: PLANNING)
 
-The build hasn't started. Plans and contracts are still being written with Gordon. Don't build anything. When Gordon types `/kickoff`, the kickoff skill runs G0, sets the heartbeat and moves the board to R1.
+The build hasn't started. Plans and contracts are still being written. Don't build anything. The build starts in one of two ways: Gordon types `/kickoff`, or the heartbeat finds `PLANNING: done` in `docs/plans/README.md` after a pull and runs the same kickoff steps. Either way G0 runs and the board moves to R1.
 
 ## R1 · S0 preflight (STAGE: S0)
 

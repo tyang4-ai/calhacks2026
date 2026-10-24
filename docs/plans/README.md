@@ -1,5 +1,9 @@
 # Plans
 
+PLANNING: in progress
+
+The line above turns to `PLANNING: done` once every plan file and contract exists and the contract audit has passed. The heartbeat starts the build when it sees it.
+
 One plan file per stage, feature and upgrade. The orchestrator reads the lists below in order. The kickoff skill checks that every file in the Plan files table exists before the build starts.
 
 ## Plan files
