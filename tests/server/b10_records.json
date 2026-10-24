@@ -1,0 +1,2397 @@
+{
+  "monthId": "2026-09",
+  "records": {
+    "catalog": [
+      {
+        "id": "pc_01",
+        "makerId": "mkr_01",
+        "priceCents": 18000,
+        "materialsCents": 2200
+      },
+      {
+        "id": "pc_02",
+        "makerId": "mkr_02",
+        "priceCents": 6500,
+        "materialsCents": 800
+      },
+      {
+        "id": "pc_03",
+        "makerId": "mkr_03",
+        "priceCents": 120000,
+        "materialsCents": 9500
+      },
+      {
+        "id": "pc_04",
+        "makerId": "mkr_01",
+        "priceCents": 95000,
+        "materialsCents": 8000
+      },
+      {
+        "id": "pc_05",
+        "makerId": "mkr_02",
+        "priceCents": 80000,
+        "materialsCents": 7000
+      },
+      {
+        "id": "pc_06",
+        "makerId": "mkr_03",
+        "priceCents": 45000,
+        "materialsCents": 4500
+      },
+      {
+        "id": "pc_07",
+        "makerId": "mkr_02",
+        "priceCents": 4800,
+        "materialsCents": 600
+      },
+      {
+        "id": "pc_08",
+        "makerId": "mkr_03",
+        "priceCents": 3800,
+        "materialsCents": 500
+      },
+      {
+        "id": "pc_09",
+        "makerId": "mkr_01",
+        "priceCents": 12000,
+        "materialsCents": 1200
+      },
+      {
+        "id": "pc_10",
+        "makerId": "mkr_03",
+        "priceCents": 8500,
+        "materialsCents": 900
+      },
+      {
+        "id": "pc_11",
+        "makerId": "mkr_02",
+        "priceCents": 17500,
+        "materialsCents": 2100
+      },
+      {
+        "id": "pc_12",
+        "makerId": "mkr_01",
+        "priceCents": 9500,
+        "materialsCents": 1000
+      }
+    ],
+    "orders": [
+      {
+        "id": "ord_001",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_01",
+        "buyerId": "buy_01",
+        "date": "2026-09-01",
+        "grossCents": 18000,
+        "cardFeeCents": 552,
+        "platformFeeCents": 1800,
+        "commissionCents": 0,
+        "materialsCents": 2200,
+        "makerShareCents": 13448,
+        "status": "paid"
+      },
+      {
+        "id": "ord_002",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_07",
+        "buyerId": "buy_02",
+        "date": "2026-09-02",
+        "grossCents": 4800,
+        "cardFeeCents": 169,
+        "platformFeeCents": 480,
+        "commissionCents": 0,
+        "materialsCents": 600,
+        "makerShareCents": 3551,
+        "status": "paid"
+      },
+      {
+        "id": "ord_003",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_09",
+        "buyerId": "buy_03",
+        "date": "2026-09-04",
+        "grossCents": 12000,
+        "cardFeeCents": 378,
+        "platformFeeCents": 1200,
+        "commissionCents": 0,
+        "materialsCents": 1200,
+        "makerShareCents": 9222,
+        "status": "paid"
+      },
+      {
+        "id": "ord_004",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_02",
+        "buyerId": "buy_04",
+        "date": "2026-09-06",
+        "grossCents": 6500,
+        "cardFeeCents": 219,
+        "platformFeeCents": 650,
+        "commissionCents": 0,
+        "materialsCents": 800,
+        "makerShareCents": 4831,
+        "status": "paid"
+      },
+      {
+        "id": "ord_005",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_12",
+        "buyerId": "buy_05",
+        "date": "2026-09-09",
+        "grossCents": 9500,
+        "cardFeeCents": 306,
+        "platformFeeCents": 950,
+        "commissionCents": 0,
+        "materialsCents": 1000,
+        "makerShareCents": 7244,
+        "status": "paid"
+      },
+      {
+        "id": "ord_006",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_10",
+        "buyerId": "buy_06",
+        "date": "2026-09-11",
+        "grossCents": 8500,
+        "cardFeeCents": 277,
+        "platformFeeCents": 850,
+        "commissionCents": 0,
+        "materialsCents": 900,
+        "makerShareCents": 6473,
+        "status": "paid"
+      },
+      {
+        "id": "ord_007",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_08",
+        "buyerId": "buy_07",
+        "date": "2026-09-13",
+        "grossCents": 3800,
+        "cardFeeCents": 140,
+        "platformFeeCents": 380,
+        "commissionCents": 0,
+        "materialsCents": 500,
+        "makerShareCents": 2780,
+        "status": "paid"
+      },
+      {
+        "id": "ord_008",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_07",
+        "buyerId": "buy_08",
+        "date": "2026-09-15",
+        "grossCents": 4800,
+        "cardFeeCents": 169,
+        "platformFeeCents": 480,
+        "commissionCents": 0,
+        "materialsCents": 600,
+        "makerShareCents": 3551,
+        "status": "paid"
+      },
+      {
+        "id": "ord_009",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_09",
+        "buyerId": "buy_09",
+        "date": "2026-09-17",
+        "grossCents": 12000,
+        "cardFeeCents": 378,
+        "platformFeeCents": 1200,
+        "commissionCents": 0,
+        "materialsCents": 1200,
+        "makerShareCents": 9222,
+        "status": "paid"
+      },
+      {
+        "id": "ord_010",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_02",
+        "buyerId": "buy_10",
+        "date": "2026-09-19",
+        "grossCents": 6500,
+        "cardFeeCents": 219,
+        "platformFeeCents": 650,
+        "commissionCents": 0,
+        "materialsCents": 800,
+        "makerShareCents": 4831,
+        "status": "paid"
+      },
+      {
+        "id": "ord_011",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_12",
+        "buyerId": "buy_11",
+        "date": "2026-09-25",
+        "grossCents": 9500,
+        "cardFeeCents": 306,
+        "platformFeeCents": 950,
+        "commissionCents": 0,
+        "materialsCents": 1000,
+        "makerShareCents": 7244,
+        "status": "paid"
+      },
+      {
+        "id": "ord_012",
+        "channelId": "ch_cindia",
+        "pieceId": "pc_10",
+        "buyerId": "buy_12",
+        "date": "2026-09-27",
+        "grossCents": 8500,
+        "cardFeeCents": 277,
+        "platformFeeCents": 850,
+        "commissionCents": 0,
+        "materialsCents": 900,
+        "makerShareCents": 6473,
+        "status": "paid"
+      },
+      {
+        "id": "ord_013",
+        "channelId": "ch_site",
+        "pieceId": "pc_02",
+        "buyerId": "buy_13",
+        "date": "2026-09-03",
+        "grossCents": 6500,
+        "cardFeeCents": 219,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 800,
+        "makerShareCents": 5481,
+        "status": "paid"
+      },
+      {
+        "id": "ord_014",
+        "channelId": "ch_site",
+        "pieceId": "pc_09",
+        "buyerId": "buy_14",
+        "date": "2026-09-05",
+        "grossCents": 12000,
+        "cardFeeCents": 378,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 1200,
+        "makerShareCents": 10422,
+        "status": "paid"
+      },
+      {
+        "id": "ord_015",
+        "channelId": "ch_site",
+        "pieceId": "pc_07",
+        "buyerId": "buy_15",
+        "date": "2026-09-08",
+        "grossCents": 4800,
+        "cardFeeCents": 169,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 600,
+        "makerShareCents": 4031,
+        "status": "paid"
+      },
+      {
+        "id": "ord_016",
+        "channelId": "ch_site",
+        "pieceId": "pc_08",
+        "buyerId": "buy_16",
+        "date": "2026-09-09",
+        "grossCents": 3800,
+        "cardFeeCents": 140,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 500,
+        "makerShareCents": 3160,
+        "status": "paid"
+      },
+      {
+        "id": "ord_017",
+        "channelId": "ch_site",
+        "pieceId": "pc_10",
+        "buyerId": "buy_17",
+        "date": "2026-09-10",
+        "grossCents": 8500,
+        "cardFeeCents": 277,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 900,
+        "makerShareCents": 7323,
+        "status": "paid"
+      },
+      {
+        "id": "ord_018",
+        "channelId": "ch_site",
+        "pieceId": "pc_12",
+        "buyerId": "buy_18",
+        "date": "2026-09-12",
+        "grossCents": 9500,
+        "cardFeeCents": 306,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 1000,
+        "makerShareCents": 8194,
+        "status": "paid"
+      },
+      {
+        "id": "ord_019",
+        "channelId": "ch_site",
+        "pieceId": "pc_02",
+        "buyerId": "buy_19",
+        "date": "2026-09-14",
+        "grossCents": 6500,
+        "cardFeeCents": 219,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 800,
+        "makerShareCents": 5481,
+        "status": "paid"
+      },
+      {
+        "id": "ord_020",
+        "channelId": "ch_site",
+        "pieceId": "pc_12",
+        "buyerId": "buy_20",
+        "date": "2026-09-16",
+        "grossCents": 9500,
+        "cardFeeCents": 306,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 1000,
+        "makerShareCents": 8194,
+        "status": "refunded"
+      },
+      {
+        "id": "ord_021",
+        "channelId": "ch_site",
+        "pieceId": "pc_09",
+        "buyerId": "buy_01",
+        "date": "2026-09-20",
+        "grossCents": 12000,
+        "cardFeeCents": 378,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 1200,
+        "makerShareCents": 10422,
+        "status": "paid"
+      },
+      {
+        "id": "ord_022",
+        "channelId": "ch_site",
+        "pieceId": "pc_11",
+        "buyerId": "buy_02",
+        "date": "2026-09-22",
+        "grossCents": 17500,
+        "cardFeeCents": 538,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 2100,
+        "makerShareCents": 14862,
+        "status": "paid"
+      },
+      {
+        "id": "ord_023",
+        "channelId": "ch_site",
+        "pieceId": "pc_07",
+        "buyerId": "buy_03",
+        "date": "2026-09-24",
+        "grossCents": 4800,
+        "cardFeeCents": 169,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 600,
+        "makerShareCents": 4031,
+        "status": "paid"
+      },
+      {
+        "id": "ord_024",
+        "channelId": "ch_site",
+        "pieceId": "pc_10",
+        "buyerId": "buy_04",
+        "date": "2026-09-26",
+        "grossCents": 8500,
+        "cardFeeCents": 277,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 900,
+        "makerShareCents": 7323,
+        "status": "paid"
+      },
+      {
+        "id": "ord_025",
+        "channelId": "ch_site",
+        "pieceId": "pc_08",
+        "buyerId": "buy_05",
+        "date": "2026-09-28",
+        "grossCents": 3800,
+        "cardFeeCents": 140,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 500,
+        "makerShareCents": 3160,
+        "status": "paid"
+      },
+      {
+        "id": "ord_026",
+        "channelId": "ch_site",
+        "pieceId": "pc_02",
+        "buyerId": "buy_06",
+        "date": "2026-09-29",
+        "grossCents": 6500,
+        "cardFeeCents": 219,
+        "platformFeeCents": 0,
+        "commissionCents": 0,
+        "materialsCents": 800,
+        "makerShareCents": 5481,
+        "status": "paid"
+      },
+      {
+        "id": "ord_027",
+        "channelId": "ch_gallery",
+        "pieceId": "pc_03",
+        "buyerId": "buy_07",
+        "date": "2026-09-06",
+        "grossCents": 120000,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0,
+        "commissionCents": 48000,
+        "materialsCents": 9500,
+        "makerShareCents": 62500,
+        "status": "paid"
+      },
+      {
+        "id": "ord_028",
+        "channelId": "ch_gallery",
+        "pieceId": "pc_04",
+        "buyerId": "buy_08",
+        "date": "2026-09-13",
+        "grossCents": 95000,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0,
+        "commissionCents": 38000,
+        "materialsCents": 8000,
+        "makerShareCents": 49000,
+        "status": "paid"
+      },
+      {
+        "id": "ord_029",
+        "channelId": "ch_gallery",
+        "pieceId": "pc_05",
+        "buyerId": "buy_09",
+        "date": "2026-09-19",
+        "grossCents": 80000,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0,
+        "commissionCents": 32000,
+        "materialsCents": 7000,
+        "makerShareCents": 41000,
+        "status": "paid"
+      },
+      {
+        "id": "ord_030",
+        "channelId": "ch_gallery",
+        "pieceId": "pc_06",
+        "buyerId": "buy_10",
+        "date": "2026-09-25",
+        "grossCents": 45000,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0,
+        "commissionCents": 18000,
+        "materialsCents": 4500,
+        "makerShareCents": 22500,
+        "status": "paid"
+      }
+    ],
+    "payouts": [
+      {
+        "id": "pay_001",
+        "channelId": "ch_cindia",
+        "date": "2026-09-01",
+        "grossCents": 18000,
+        "feesCents": 2352,
+        "refundCents": 0,
+        "netCents": 15648,
+        "orderIds": [
+          "ord_001"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_002",
+        "channelId": "ch_cindia",
+        "date": "2026-09-02",
+        "grossCents": 4800,
+        "feesCents": 649,
+        "refundCents": 0,
+        "netCents": 4151,
+        "orderIds": [
+          "ord_002"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_003",
+        "channelId": "ch_cindia",
+        "date": "2026-09-04",
+        "grossCents": 12000,
+        "feesCents": 1578,
+        "refundCents": 0,
+        "netCents": 10422,
+        "orderIds": [
+          "ord_003"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_004",
+        "channelId": "ch_site",
+        "date": "2026-09-05",
+        "grossCents": 6500,
+        "feesCents": 219,
+        "refundCents": 0,
+        "netCents": 6281,
+        "orderIds": [
+          "ord_013"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_005",
+        "channelId": "ch_cindia",
+        "date": "2026-09-06",
+        "grossCents": 6500,
+        "feesCents": 869,
+        "refundCents": 0,
+        "netCents": 5631,
+        "orderIds": [
+          "ord_004"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_006",
+        "channelId": "ch_site",
+        "date": "2026-09-07",
+        "grossCents": 12000,
+        "feesCents": 378,
+        "refundCents": 0,
+        "netCents": 11622,
+        "orderIds": [
+          "ord_014"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_007",
+        "channelId": "ch_cindia",
+        "date": "2026-09-09",
+        "grossCents": 9500,
+        "feesCents": 1256,
+        "refundCents": 0,
+        "netCents": 8244,
+        "orderIds": [
+          "ord_005"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_008",
+        "channelId": "ch_cindia",
+        "date": "2026-09-11",
+        "grossCents": 8500,
+        "feesCents": 1127,
+        "refundCents": 0,
+        "netCents": 7373,
+        "orderIds": [
+          "ord_006"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_009",
+        "channelId": "ch_site",
+        "date": "2026-09-12",
+        "grossCents": 17100,
+        "feesCents": 586,
+        "refundCents": 0,
+        "netCents": 16514,
+        "orderIds": [
+          "ord_015",
+          "ord_016",
+          "ord_017"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_010",
+        "channelId": "ch_cindia",
+        "date": "2026-09-13",
+        "grossCents": 3800,
+        "feesCents": 520,
+        "refundCents": 0,
+        "netCents": 3280,
+        "orderIds": [
+          "ord_007"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_011",
+        "channelId": "ch_site",
+        "date": "2026-09-14",
+        "grossCents": 9500,
+        "feesCents": 306,
+        "refundCents": 0,
+        "netCents": 9194,
+        "orderIds": [
+          "ord_018"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_012",
+        "channelId": "ch_cindia",
+        "date": "2026-09-15",
+        "grossCents": 4800,
+        "feesCents": 649,
+        "refundCents": 0,
+        "netCents": 4151,
+        "orderIds": [
+          "ord_008"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_013",
+        "channelId": "ch_site",
+        "date": "2026-09-16",
+        "grossCents": 6500,
+        "feesCents": 219,
+        "refundCents": 0,
+        "netCents": 6281,
+        "orderIds": [
+          "ord_019"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_014",
+        "channelId": "ch_cindia",
+        "date": "2026-09-17",
+        "grossCents": 12000,
+        "feesCents": 1578,
+        "refundCents": 0,
+        "netCents": 10422,
+        "orderIds": [
+          "ord_009"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_015",
+        "channelId": "ch_site",
+        "date": "2026-09-18",
+        "grossCents": 9500,
+        "feesCents": 306,
+        "refundCents": 0,
+        "netCents": 9194,
+        "orderIds": [
+          "ord_020"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_016",
+        "channelId": "ch_cindia",
+        "date": "2026-09-19",
+        "grossCents": 6500,
+        "feesCents": 869,
+        "refundCents": 0,
+        "netCents": 5631,
+        "orderIds": [
+          "ord_010"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_017",
+        "channelId": "ch_site",
+        "date": "2026-09-23",
+        "grossCents": 12000,
+        "feesCents": 378,
+        "refundCents": 9500,
+        "netCents": 2122,
+        "orderIds": [
+          "ord_021"
+        ],
+        "refundIds": [
+          "rfd_001"
+        ],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_018",
+        "channelId": "ch_site",
+        "date": "2026-09-24",
+        "grossCents": 17500,
+        "feesCents": 538,
+        "refundCents": 0,
+        "netCents": 16962,
+        "orderIds": [
+          "ord_022"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_019",
+        "channelId": "ch_cindia",
+        "date": "2026-09-25",
+        "grossCents": 9500,
+        "feesCents": 1256,
+        "refundCents": 0,
+        "netCents": 8244,
+        "orderIds": [
+          "ord_011"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_020",
+        "channelId": "ch_site",
+        "date": "2026-09-26",
+        "grossCents": 4800,
+        "feesCents": 169,
+        "refundCents": 0,
+        "netCents": 4631,
+        "orderIds": [
+          "ord_023"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_021",
+        "channelId": "ch_cindia",
+        "date": "2026-09-27",
+        "grossCents": 8500,
+        "feesCents": 1127,
+        "refundCents": 0,
+        "netCents": 7373,
+        "orderIds": [
+          "ord_012"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_022",
+        "channelId": "ch_site",
+        "date": "2026-09-28",
+        "grossCents": 8500,
+        "feesCents": 277,
+        "refundCents": 0,
+        "netCents": 8223,
+        "orderIds": [
+          "ord_024"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_023",
+        "channelId": "ch_gallery",
+        "date": "2026-09-30",
+        "grossCents": 340000,
+        "feesCents": 170000,
+        "refundCents": 0,
+        "netCents": 170000,
+        "orderIds": [
+          "ord_027",
+          "ord_028",
+          "ord_029",
+          "ord_030"
+        ],
+        "refundIds": [],
+        "monthId": "2026-09"
+      },
+      {
+        "id": "pay_024",
+        "channelId": "ch_site",
+        "date": "2026-10-02",
+        "grossCents": 10300,
+        "feesCents": 359,
+        "refundCents": 0,
+        "netCents": 9941,
+        "orderIds": [
+          "ord_025",
+          "ord_026"
+        ],
+        "refundIds": [],
+        "monthId": "2026-10"
+      }
+    ],
+    "makerPayouts": [
+      {
+        "id": "mpo_01",
+        "makerId": "mkr_01",
+        "monthId": "2026-09",
+        "amountCents": 114918,
+        "orderIds": [
+          "ord_001",
+          "ord_003",
+          "ord_005",
+          "ord_009",
+          "ord_011",
+          "ord_014",
+          "ord_018",
+          "ord_021",
+          "ord_028"
+        ],
+        "heldCents": 9500,
+        "status": "proposed"
+      },
+      {
+        "id": "mpo_02",
+        "makerId": "mkr_02",
+        "monthId": "2026-09",
+        "amountCents": 83650,
+        "orderIds": [
+          "ord_002",
+          "ord_004",
+          "ord_008",
+          "ord_010",
+          "ord_013",
+          "ord_015",
+          "ord_019",
+          "ord_022",
+          "ord_023",
+          "ord_029"
+        ],
+        "heldCents": 8000,
+        "status": "proposed"
+      },
+      {
+        "id": "mpo_03",
+        "makerId": "mkr_03",
+        "monthId": "2026-09",
+        "amountCents": 102032,
+        "orderIds": [
+          "ord_006",
+          "ord_007",
+          "ord_012",
+          "ord_016",
+          "ord_017",
+          "ord_024",
+          "ord_027",
+          "ord_030"
+        ],
+        "heldCents": 16500,
+        "status": "proposed"
+      }
+    ],
+    "ledger": [
+      {
+        "id": "led_0001",
+        "date": "2026-09-01",
+        "account": "cash",
+        "debitCents": 15648,
+        "creditCents": 0,
+        "refId": "pay_001",
+        "memo": "Payout pay_001"
+      },
+      {
+        "id": "led_0002",
+        "date": "2026-09-01",
+        "account": "card_fees",
+        "debitCents": 552,
+        "creditCents": 0,
+        "refId": "pay_001",
+        "memo": "Card fee ord_001"
+      },
+      {
+        "id": "led_0003",
+        "date": "2026-09-01",
+        "account": "platform_fees",
+        "debitCents": 1800,
+        "creditCents": 0,
+        "refId": "pay_001",
+        "memo": "Cindia fee ord_001"
+      },
+      {
+        "id": "led_0004",
+        "date": "2026-09-01",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 18000,
+        "refId": "pay_001",
+        "memo": "Sale ord_001"
+      },
+      {
+        "id": "led_0005",
+        "date": "2026-09-02",
+        "account": "cash",
+        "debitCents": 4151,
+        "creditCents": 0,
+        "refId": "pay_002",
+        "memo": "Payout pay_002"
+      },
+      {
+        "id": "led_0006",
+        "date": "2026-09-02",
+        "account": "card_fees",
+        "debitCents": 169,
+        "creditCents": 0,
+        "refId": "pay_002",
+        "memo": "Card fee ord_002"
+      },
+      {
+        "id": "led_0007",
+        "date": "2026-09-02",
+        "account": "platform_fees",
+        "debitCents": 480,
+        "creditCents": 0,
+        "refId": "pay_002",
+        "memo": "Cindia fee ord_002"
+      },
+      {
+        "id": "led_0008",
+        "date": "2026-09-02",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 4800,
+        "refId": "pay_002",
+        "memo": "Sale ord_002"
+      },
+      {
+        "id": "led_0009",
+        "date": "2026-09-03",
+        "account": "materials",
+        "debitCents": 18500,
+        "creditCents": 0,
+        "refId": "pur_001",
+        "memo": "Mulberry silk ground fabric, 6 m"
+      },
+      {
+        "id": "led_0010",
+        "date": "2026-09-03",
+        "account": "cash",
+        "debitCents": 0,
+        "creditCents": 18500,
+        "refId": "pur_001",
+        "memo": "Mulberry silk ground fabric, 6 m"
+      },
+      {
+        "id": "led_0011",
+        "date": "2026-09-04",
+        "account": "cash",
+        "debitCents": 10422,
+        "creditCents": 0,
+        "refId": "pay_003",
+        "memo": "Payout pay_003"
+      },
+      {
+        "id": "led_0012",
+        "date": "2026-09-04",
+        "account": "card_fees",
+        "debitCents": 378,
+        "creditCents": 0,
+        "refId": "pay_003",
+        "memo": "Card fee ord_003"
+      },
+      {
+        "id": "led_0013",
+        "date": "2026-09-04",
+        "account": "platform_fees",
+        "debitCents": 1200,
+        "creditCents": 0,
+        "refId": "pay_003",
+        "memo": "Cindia fee ord_003"
+      },
+      {
+        "id": "led_0014",
+        "date": "2026-09-04",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 12000,
+        "refId": "pay_003",
+        "memo": "Sale ord_003"
+      },
+      {
+        "id": "led_0015",
+        "date": "2026-09-05",
+        "account": "cash",
+        "debitCents": 6281,
+        "creditCents": 0,
+        "refId": "pay_004",
+        "memo": "Payout pay_004"
+      },
+      {
+        "id": "led_0016",
+        "date": "2026-09-05",
+        "account": "card_fees",
+        "debitCents": 219,
+        "creditCents": 0,
+        "refId": "pay_004",
+        "memo": "Card fee ord_013"
+      },
+      {
+        "id": "led_0017",
+        "date": "2026-09-05",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 6500,
+        "refId": "pay_004",
+        "memo": "Sale ord_013"
+      },
+      {
+        "id": "led_0018",
+        "date": "2026-09-06",
+        "account": "receivable_gallery",
+        "debitCents": 72000,
+        "creditCents": 0,
+        "refId": "ord_027",
+        "memo": "Consignment sale ord_027, owed by the contract"
+      },
+      {
+        "id": "led_0019",
+        "date": "2026-09-06",
+        "account": "gallery_commission",
+        "debitCents": 48000,
+        "creditCents": 0,
+        "refId": "ord_027",
+        "memo": "Gallery commission ord_027, 40% by contract"
+      },
+      {
+        "id": "led_0020",
+        "date": "2026-09-06",
+        "account": "sales_gallery",
+        "debitCents": 0,
+        "creditCents": 120000,
+        "refId": "ord_027",
+        "memo": "Sale ord_027"
+      },
+      {
+        "id": "led_0021",
+        "date": "2026-09-06",
+        "account": "cash",
+        "debitCents": 5631,
+        "creditCents": 0,
+        "refId": "pay_005",
+        "memo": "Payout pay_005"
+      },
+      {
+        "id": "led_0022",
+        "date": "2026-09-06",
+        "account": "card_fees",
+        "debitCents": 219,
+        "creditCents": 0,
+        "refId": "pay_005",
+        "memo": "Card fee ord_004"
+      },
+      {
+        "id": "led_0023",
+        "date": "2026-09-06",
+        "account": "platform_fees",
+        "debitCents": 650,
+        "creditCents": 0,
+        "refId": "pay_005",
+        "memo": "Cindia fee ord_004"
+      },
+      {
+        "id": "led_0024",
+        "date": "2026-09-06",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 6500,
+        "refId": "pay_005",
+        "memo": "Sale ord_004"
+      },
+      {
+        "id": "led_0025",
+        "date": "2026-09-07",
+        "account": "cash",
+        "debitCents": 11622,
+        "creditCents": 0,
+        "refId": "pay_006",
+        "memo": "Payout pay_006"
+      },
+      {
+        "id": "led_0026",
+        "date": "2026-09-07",
+        "account": "card_fees",
+        "debitCents": 378,
+        "creditCents": 0,
+        "refId": "pay_006",
+        "memo": "Card fee ord_014"
+      },
+      {
+        "id": "led_0027",
+        "date": "2026-09-07",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 12000,
+        "refId": "pay_006",
+        "memo": "Sale ord_014"
+      },
+      {
+        "id": "led_0028",
+        "date": "2026-09-09",
+        "account": "cash",
+        "debitCents": 8244,
+        "creditCents": 0,
+        "refId": "pay_007",
+        "memo": "Payout pay_007"
+      },
+      {
+        "id": "led_0029",
+        "date": "2026-09-09",
+        "account": "card_fees",
+        "debitCents": 306,
+        "creditCents": 0,
+        "refId": "pay_007",
+        "memo": "Card fee ord_005"
+      },
+      {
+        "id": "led_0030",
+        "date": "2026-09-09",
+        "account": "platform_fees",
+        "debitCents": 950,
+        "creditCents": 0,
+        "refId": "pay_007",
+        "memo": "Cindia fee ord_005"
+      },
+      {
+        "id": "led_0031",
+        "date": "2026-09-09",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 9500,
+        "refId": "pay_007",
+        "memo": "Sale ord_005"
+      },
+      {
+        "id": "led_0032",
+        "date": "2026-09-11",
+        "account": "cash",
+        "debitCents": 7373,
+        "creditCents": 0,
+        "refId": "pay_008",
+        "memo": "Payout pay_008"
+      },
+      {
+        "id": "led_0033",
+        "date": "2026-09-11",
+        "account": "card_fees",
+        "debitCents": 277,
+        "creditCents": 0,
+        "refId": "pay_008",
+        "memo": "Card fee ord_006"
+      },
+      {
+        "id": "led_0034",
+        "date": "2026-09-11",
+        "account": "platform_fees",
+        "debitCents": 850,
+        "creditCents": 0,
+        "refId": "pay_008",
+        "memo": "Cindia fee ord_006"
+      },
+      {
+        "id": "led_0035",
+        "date": "2026-09-11",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 8500,
+        "refId": "pay_008",
+        "memo": "Sale ord_006"
+      },
+      {
+        "id": "led_0036",
+        "date": "2026-09-12",
+        "account": "cash",
+        "debitCents": 16514,
+        "creditCents": 0,
+        "refId": "pay_009",
+        "memo": "Payout pay_009"
+      },
+      {
+        "id": "led_0037",
+        "date": "2026-09-12",
+        "account": "card_fees",
+        "debitCents": 169,
+        "creditCents": 0,
+        "refId": "pay_009",
+        "memo": "Card fee ord_015"
+      },
+      {
+        "id": "led_0038",
+        "date": "2026-09-12",
+        "account": "card_fees",
+        "debitCents": 140,
+        "creditCents": 0,
+        "refId": "pay_009",
+        "memo": "Card fee ord_016"
+      },
+      {
+        "id": "led_0039",
+        "date": "2026-09-12",
+        "account": "card_fees",
+        "debitCents": 277,
+        "creditCents": 0,
+        "refId": "pay_009",
+        "memo": "Card fee ord_017"
+      },
+      {
+        "id": "led_0040",
+        "date": "2026-09-12",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 4800,
+        "refId": "pay_009",
+        "memo": "Sale ord_015"
+      },
+      {
+        "id": "led_0041",
+        "date": "2026-09-12",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 3800,
+        "refId": "pay_009",
+        "memo": "Sale ord_016"
+      },
+      {
+        "id": "led_0042",
+        "date": "2026-09-12",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 8500,
+        "refId": "pay_009",
+        "memo": "Sale ord_017"
+      },
+      {
+        "id": "led_0043",
+        "date": "2026-09-13",
+        "account": "receivable_gallery",
+        "debitCents": 57000,
+        "creditCents": 0,
+        "refId": "ord_028",
+        "memo": "Consignment sale ord_028, owed by the contract"
+      },
+      {
+        "id": "led_0044",
+        "date": "2026-09-13",
+        "account": "gallery_commission",
+        "debitCents": 38000,
+        "creditCents": 0,
+        "refId": "ord_028",
+        "memo": "Gallery commission ord_028, 40% by contract"
+      },
+      {
+        "id": "led_0045",
+        "date": "2026-09-13",
+        "account": "sales_gallery",
+        "debitCents": 0,
+        "creditCents": 95000,
+        "refId": "ord_028",
+        "memo": "Sale ord_028"
+      },
+      {
+        "id": "led_0046",
+        "date": "2026-09-13",
+        "account": "cash",
+        "debitCents": 3280,
+        "creditCents": 0,
+        "refId": "pay_010",
+        "memo": "Payout pay_010"
+      },
+      {
+        "id": "led_0047",
+        "date": "2026-09-13",
+        "account": "card_fees",
+        "debitCents": 140,
+        "creditCents": 0,
+        "refId": "pay_010",
+        "memo": "Card fee ord_007"
+      },
+      {
+        "id": "led_0048",
+        "date": "2026-09-13",
+        "account": "platform_fees",
+        "debitCents": 380,
+        "creditCents": 0,
+        "refId": "pay_010",
+        "memo": "Cindia fee ord_007"
+      },
+      {
+        "id": "led_0049",
+        "date": "2026-09-13",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 3800,
+        "refId": "pay_010",
+        "memo": "Sale ord_007"
+      },
+      {
+        "id": "led_0050",
+        "date": "2026-09-14",
+        "account": "cash",
+        "debitCents": 9194,
+        "creditCents": 0,
+        "refId": "pay_011",
+        "memo": "Payout pay_011"
+      },
+      {
+        "id": "led_0051",
+        "date": "2026-09-14",
+        "account": "card_fees",
+        "debitCents": 306,
+        "creditCents": 0,
+        "refId": "pay_011",
+        "memo": "Card fee ord_018"
+      },
+      {
+        "id": "led_0052",
+        "date": "2026-09-14",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 9500,
+        "refId": "pay_011",
+        "memo": "Sale ord_018"
+      },
+      {
+        "id": "led_0053",
+        "date": "2026-09-15",
+        "account": "cash",
+        "debitCents": 4151,
+        "creditCents": 0,
+        "refId": "pay_012",
+        "memo": "Payout pay_012"
+      },
+      {
+        "id": "led_0054",
+        "date": "2026-09-15",
+        "account": "card_fees",
+        "debitCents": 169,
+        "creditCents": 0,
+        "refId": "pay_012",
+        "memo": "Card fee ord_008"
+      },
+      {
+        "id": "led_0055",
+        "date": "2026-09-15",
+        "account": "platform_fees",
+        "debitCents": 480,
+        "creditCents": 0,
+        "refId": "pay_012",
+        "memo": "Cindia fee ord_008"
+      },
+      {
+        "id": "led_0056",
+        "date": "2026-09-15",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 4800,
+        "refId": "pay_012",
+        "memo": "Sale ord_008"
+      },
+      {
+        "id": "led_0057",
+        "date": "2026-09-15",
+        "account": "materials",
+        "debitCents": 7200,
+        "creditCents": 0,
+        "refId": "pur_002",
+        "memo": "Silk floss, 40 colors"
+      },
+      {
+        "id": "led_0058",
+        "date": "2026-09-15",
+        "account": "cash",
+        "debitCents": 0,
+        "creditCents": 7200,
+        "refId": "pur_002",
+        "memo": "Silk floss, 40 colors"
+      },
+      {
+        "id": "led_0059",
+        "date": "2026-09-16",
+        "account": "cash",
+        "debitCents": 6281,
+        "creditCents": 0,
+        "refId": "pay_013",
+        "memo": "Payout pay_013"
+      },
+      {
+        "id": "led_0060",
+        "date": "2026-09-16",
+        "account": "card_fees",
+        "debitCents": 219,
+        "creditCents": 0,
+        "refId": "pay_013",
+        "memo": "Card fee ord_019"
+      },
+      {
+        "id": "led_0061",
+        "date": "2026-09-16",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 6500,
+        "refId": "pay_013",
+        "memo": "Sale ord_019"
+      },
+      {
+        "id": "led_0062",
+        "date": "2026-09-17",
+        "account": "cash",
+        "debitCents": 10422,
+        "creditCents": 0,
+        "refId": "pay_014",
+        "memo": "Payout pay_014"
+      },
+      {
+        "id": "led_0063",
+        "date": "2026-09-17",
+        "account": "card_fees",
+        "debitCents": 378,
+        "creditCents": 0,
+        "refId": "pay_014",
+        "memo": "Card fee ord_009"
+      },
+      {
+        "id": "led_0064",
+        "date": "2026-09-17",
+        "account": "platform_fees",
+        "debitCents": 1200,
+        "creditCents": 0,
+        "refId": "pay_014",
+        "memo": "Cindia fee ord_009"
+      },
+      {
+        "id": "led_0065",
+        "date": "2026-09-17",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 12000,
+        "refId": "pay_014",
+        "memo": "Sale ord_009"
+      },
+      {
+        "id": "led_0066",
+        "date": "2026-09-18",
+        "account": "cash",
+        "debitCents": 9194,
+        "creditCents": 0,
+        "refId": "pay_015",
+        "memo": "Payout pay_015"
+      },
+      {
+        "id": "led_0067",
+        "date": "2026-09-18",
+        "account": "card_fees",
+        "debitCents": 306,
+        "creditCents": 0,
+        "refId": "pay_015",
+        "memo": "Card fee ord_020"
+      },
+      {
+        "id": "led_0068",
+        "date": "2026-09-18",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 9500,
+        "refId": "pay_015",
+        "memo": "Sale ord_020"
+      },
+      {
+        "id": "led_0069",
+        "date": "2026-09-19",
+        "account": "receivable_gallery",
+        "debitCents": 48000,
+        "creditCents": 0,
+        "refId": "ord_029",
+        "memo": "Consignment sale ord_029, owed by the contract"
+      },
+      {
+        "id": "led_0070",
+        "date": "2026-09-19",
+        "account": "gallery_commission",
+        "debitCents": 32000,
+        "creditCents": 0,
+        "refId": "ord_029",
+        "memo": "Gallery commission ord_029, 40% by contract"
+      },
+      {
+        "id": "led_0071",
+        "date": "2026-09-19",
+        "account": "sales_gallery",
+        "debitCents": 0,
+        "creditCents": 80000,
+        "refId": "ord_029",
+        "memo": "Sale ord_029"
+      },
+      {
+        "id": "led_0072",
+        "date": "2026-09-19",
+        "account": "cash",
+        "debitCents": 5631,
+        "creditCents": 0,
+        "refId": "pay_016",
+        "memo": "Payout pay_016"
+      },
+      {
+        "id": "led_0073",
+        "date": "2026-09-19",
+        "account": "card_fees",
+        "debitCents": 219,
+        "creditCents": 0,
+        "refId": "pay_016",
+        "memo": "Card fee ord_010"
+      },
+      {
+        "id": "led_0074",
+        "date": "2026-09-19",
+        "account": "platform_fees",
+        "debitCents": 650,
+        "creditCents": 0,
+        "refId": "pay_016",
+        "memo": "Cindia fee ord_010"
+      },
+      {
+        "id": "led_0075",
+        "date": "2026-09-19",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 6500,
+        "refId": "pay_016",
+        "memo": "Sale ord_010"
+      },
+      {
+        "id": "led_0076",
+        "date": "2026-09-23",
+        "account": "cash",
+        "debitCents": 2122,
+        "creditCents": 0,
+        "refId": "pay_017",
+        "memo": "Payout pay_017"
+      },
+      {
+        "id": "led_0077",
+        "date": "2026-09-23",
+        "account": "card_fees",
+        "debitCents": 378,
+        "creditCents": 0,
+        "refId": "pay_017",
+        "memo": "Card fee ord_021"
+      },
+      {
+        "id": "led_0078",
+        "date": "2026-09-23",
+        "account": "refunds",
+        "debitCents": 9500,
+        "creditCents": 0,
+        "refId": "pay_017",
+        "memo": "Refund rfd_001 for ord_020"
+      },
+      {
+        "id": "led_0079",
+        "date": "2026-09-23",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 12000,
+        "refId": "pay_017",
+        "memo": "Sale ord_021"
+      },
+      {
+        "id": "led_0080",
+        "date": "2026-09-24",
+        "account": "cash",
+        "debitCents": 16962,
+        "creditCents": 0,
+        "refId": "pay_018",
+        "memo": "Payout pay_018"
+      },
+      {
+        "id": "led_0081",
+        "date": "2026-09-24",
+        "account": "card_fees",
+        "debitCents": 538,
+        "creditCents": 0,
+        "refId": "pay_018",
+        "memo": "Card fee ord_022"
+      },
+      {
+        "id": "led_0082",
+        "date": "2026-09-24",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 17500,
+        "refId": "pay_018",
+        "memo": "Sale ord_022"
+      },
+      {
+        "id": "led_0083",
+        "date": "2026-09-24",
+        "account": "materials",
+        "debitCents": 4600,
+        "creditCents": 0,
+        "refId": "pur_003",
+        "memo": "Backing cotton and fan frames"
+      },
+      {
+        "id": "led_0084",
+        "date": "2026-09-24",
+        "account": "cash",
+        "debitCents": 0,
+        "creditCents": 4600,
+        "refId": "pur_003",
+        "memo": "Backing cotton and fan frames"
+      },
+      {
+        "id": "led_0085",
+        "date": "2026-09-25",
+        "account": "receivable_gallery",
+        "debitCents": 27000,
+        "creditCents": 0,
+        "refId": "ord_030",
+        "memo": "Consignment sale ord_030, owed by the contract"
+      },
+      {
+        "id": "led_0086",
+        "date": "2026-09-25",
+        "account": "gallery_commission",
+        "debitCents": 18000,
+        "creditCents": 0,
+        "refId": "ord_030",
+        "memo": "Gallery commission ord_030, 40% by contract"
+      },
+      {
+        "id": "led_0087",
+        "date": "2026-09-25",
+        "account": "sales_gallery",
+        "debitCents": 0,
+        "creditCents": 45000,
+        "refId": "ord_030",
+        "memo": "Sale ord_030"
+      },
+      {
+        "id": "led_0088",
+        "date": "2026-09-25",
+        "account": "cash",
+        "debitCents": 8244,
+        "creditCents": 0,
+        "refId": "pay_019",
+        "memo": "Payout pay_019"
+      },
+      {
+        "id": "led_0089",
+        "date": "2026-09-25",
+        "account": "card_fees",
+        "debitCents": 306,
+        "creditCents": 0,
+        "refId": "pay_019",
+        "memo": "Card fee ord_011"
+      },
+      {
+        "id": "led_0090",
+        "date": "2026-09-25",
+        "account": "platform_fees",
+        "debitCents": 950,
+        "creditCents": 0,
+        "refId": "pay_019",
+        "memo": "Cindia fee ord_011"
+      },
+      {
+        "id": "led_0091",
+        "date": "2026-09-25",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 9500,
+        "refId": "pay_019",
+        "memo": "Sale ord_011"
+      },
+      {
+        "id": "led_0092",
+        "date": "2026-09-26",
+        "account": "cash",
+        "debitCents": 4631,
+        "creditCents": 0,
+        "refId": "pay_020",
+        "memo": "Payout pay_020"
+      },
+      {
+        "id": "led_0093",
+        "date": "2026-09-26",
+        "account": "card_fees",
+        "debitCents": 169,
+        "creditCents": 0,
+        "refId": "pay_020",
+        "memo": "Card fee ord_023"
+      },
+      {
+        "id": "led_0094",
+        "date": "2026-09-26",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 4800,
+        "refId": "pay_020",
+        "memo": "Sale ord_023"
+      },
+      {
+        "id": "led_0095",
+        "date": "2026-09-27",
+        "account": "cash",
+        "debitCents": 7373,
+        "creditCents": 0,
+        "refId": "pay_021",
+        "memo": "Payout pay_021"
+      },
+      {
+        "id": "led_0096",
+        "date": "2026-09-27",
+        "account": "card_fees",
+        "debitCents": 277,
+        "creditCents": 0,
+        "refId": "pay_021",
+        "memo": "Card fee ord_012"
+      },
+      {
+        "id": "led_0097",
+        "date": "2026-09-27",
+        "account": "platform_fees",
+        "debitCents": 850,
+        "creditCents": 0,
+        "refId": "pay_021",
+        "memo": "Cindia fee ord_012"
+      },
+      {
+        "id": "led_0098",
+        "date": "2026-09-27",
+        "account": "sales_cindia",
+        "debitCents": 0,
+        "creditCents": 8500,
+        "refId": "pay_021",
+        "memo": "Sale ord_012"
+      },
+      {
+        "id": "led_0099",
+        "date": "2026-09-28",
+        "account": "cash",
+        "debitCents": 8223,
+        "creditCents": 0,
+        "refId": "pay_022",
+        "memo": "Payout pay_022"
+      },
+      {
+        "id": "led_0100",
+        "date": "2026-09-28",
+        "account": "card_fees",
+        "debitCents": 277,
+        "creditCents": 0,
+        "refId": "pay_022",
+        "memo": "Card fee ord_024"
+      },
+      {
+        "id": "led_0101",
+        "date": "2026-09-28",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 8500,
+        "refId": "pay_022",
+        "memo": "Sale ord_024"
+      },
+      {
+        "id": "led_0102",
+        "date": "2026-09-30",
+        "account": "cash",
+        "debitCents": 170000,
+        "creditCents": 0,
+        "refId": "pay_023",
+        "memo": "Gallery payment pay_023"
+      },
+      {
+        "id": "led_0103",
+        "date": "2026-09-30",
+        "account": "receivable_gallery",
+        "debitCents": 0,
+        "creditCents": 170000,
+        "refId": "pay_023",
+        "memo": "Gallery payment pay_023"
+      },
+      {
+        "id": "led_0104",
+        "date": "2026-10-02",
+        "account": "cash",
+        "debitCents": 9941,
+        "creditCents": 0,
+        "refId": "pay_024",
+        "memo": "Payout pay_024"
+      },
+      {
+        "id": "led_0105",
+        "date": "2026-10-02",
+        "account": "card_fees",
+        "debitCents": 140,
+        "creditCents": 0,
+        "refId": "pay_024",
+        "memo": "Card fee ord_025"
+      },
+      {
+        "id": "led_0106",
+        "date": "2026-10-02",
+        "account": "card_fees",
+        "debitCents": 219,
+        "creditCents": 0,
+        "refId": "pay_024",
+        "memo": "Card fee ord_026"
+      },
+      {
+        "id": "led_0107",
+        "date": "2026-10-02",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 3800,
+        "refId": "pay_024",
+        "memo": "Sale ord_025"
+      },
+      {
+        "id": "led_0108",
+        "date": "2026-10-02",
+        "account": "sales_site",
+        "debitCents": 0,
+        "creditCents": 6500,
+        "refId": "pay_024",
+        "memo": "Sale ord_026"
+      },
+      {
+        "id": "led_0109",
+        "date": "2026-10-02",
+        "account": "maker_pay",
+        "debitCents": 114918,
+        "creditCents": 0,
+        "refId": "mpo_01",
+        "memo": "Maker payout mpo_01"
+      },
+      {
+        "id": "led_0110",
+        "date": "2026-10-02",
+        "account": "cash",
+        "debitCents": 0,
+        "creditCents": 114918,
+        "refId": "mpo_01",
+        "memo": "Maker payout mpo_01"
+      },
+      {
+        "id": "led_0111",
+        "date": "2026-10-02",
+        "account": "maker_pay",
+        "debitCents": 83650,
+        "creditCents": 0,
+        "refId": "mpo_02",
+        "memo": "Maker payout mpo_02"
+      },
+      {
+        "id": "led_0112",
+        "date": "2026-10-02",
+        "account": "cash",
+        "debitCents": 0,
+        "creditCents": 83650,
+        "refId": "mpo_02",
+        "memo": "Maker payout mpo_02"
+      },
+      {
+        "id": "led_0113",
+        "date": "2026-10-02",
+        "account": "maker_pay",
+        "debitCents": 102032,
+        "creditCents": 0,
+        "refId": "mpo_03",
+        "memo": "Maker payout mpo_03"
+      },
+      {
+        "id": "led_0114",
+        "date": "2026-10-02",
+        "account": "cash",
+        "debitCents": 0,
+        "creditCents": 102032,
+        "refId": "mpo_03",
+        "memo": "Maker payout mpo_03"
+      }
+    ],
+    "contracts": [
+      {
+        "id": "ctr_gallery_01",
+        "channelId": "ch_gallery",
+        "commissionBps": 4000,
+        "statementDay": 30,
+        "signedDate": "2026-03-02",
+        "terms": {
+          "en": "Fogline Gallery sells the studio's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the studio the balance with the statement.",
+          "zh": "雾线画廊寄售工作室作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向工作室支付余款。"
+        }
+      }
+    ]
+  },
+  "triggers": {
+    "split": {
+      "id": "evt_0007",
+      "type": "split.shown",
+      "at": 8300,
+      "source": "scripted",
+      "payload": {
+        "pieceId": "pc_01",
+        "grossCents": 18000,
+        "cardFeeCents": 552,
+        "platformFeeCents": 1800,
+        "materialsCents": 2200,
+        "makerShareCents": 13448
+      },
+      "key": "b10-derived"
+    },
+    "receiptReceived": {
+      "id": "evt_0012",
+      "type": "receipt.updated",
+      "at": 14000,
+      "source": "scripted",
+      "payload": {
+        "orderId": "ord_001",
+        "status": "received",
+        "makerId": "mkr_01",
+        "makerShareCents": 13448
+      },
+      "key": "b10-derived"
+    },
+    "receiptPaid": {
+      "id": "evt_0161",
+      "type": "receipt.updated",
+      "at": 51000,
+      "source": "scripted",
+      "payload": {
+        "orderId": "ord_001",
+        "status": "paid_to_maker",
+        "makerId": "mkr_01",
+        "makerShareCents": 13448,
+        "paidDate": "2026-10-02"
+      },
+      "key": "b10-derived"
+    },
+    "statement": {
+      "id": "evt_0159",
+      "type": "statement.issued",
+      "at": 47400,
+      "source": "scripted",
+      "payload": {
+        "makerStatementId": "mst_01",
+        "makerId": "mkr_01",
+        "lines": [
+          {
+            "orderId": "ord_001",
+            "pieceId": "pc_01",
+            "makerShareCents": 13448
+          },
+          {
+            "orderId": "ord_003",
+            "pieceId": "pc_09",
+            "makerShareCents": 9222
+          },
+          {
+            "orderId": "ord_005",
+            "pieceId": "pc_12",
+            "makerShareCents": 7244
+          },
+          {
+            "orderId": "ord_009",
+            "pieceId": "pc_09",
+            "makerShareCents": 9222
+          },
+          {
+            "orderId": "ord_011",
+            "pieceId": "pc_12",
+            "makerShareCents": 7244
+          },
+          {
+            "orderId": "ord_014",
+            "pieceId": "pc_09",
+            "makerShareCents": 10422
+          },
+          {
+            "orderId": "ord_018",
+            "pieceId": "pc_12",
+            "makerShareCents": 8194
+          },
+          {
+            "orderId": "ord_021",
+            "pieceId": "pc_09",
+            "makerShareCents": 10422
+          },
+          {
+            "orderId": "ord_028",
+            "pieceId": "pc_04",
+            "makerShareCents": 49000
+          }
+        ],
+        "totalCents": 124418,
+        "heldCents": 9500,
+        "payoutDate": "2026-10-02"
+      },
+      "key": "b10-derived"
+    },
+    "impact": {
+      "id": "evt_0157",
+      "type": "impact.updated",
+      "at": 45500,
+      "source": "scripted",
+      "payload": {
+        "impactId": "imp_2026_09",
+        "makerShareBps": 7555,
+        "daysCloseToPayout": 2,
+        "daysCloseToPayoutBefore": 45,
+        "bookkeepingHoursSaved": 12,
+        "estimate": true
+      },
+      "key": "b10-derived"
+    }
+  },
+  "expected": {
+    "orders": {
+      "ord_001": {
+        "makerShareCents": 13448,
+        "cardFeeCents": 552,
+        "platformFeeCents": 1800
+      },
+      "ord_002": {
+        "makerShareCents": 3551,
+        "cardFeeCents": 169,
+        "platformFeeCents": 480
+      },
+      "ord_003": {
+        "makerShareCents": 9222,
+        "cardFeeCents": 378,
+        "platformFeeCents": 1200
+      },
+      "ord_004": {
+        "makerShareCents": 4831,
+        "cardFeeCents": 219,
+        "platformFeeCents": 650
+      },
+      "ord_005": {
+        "makerShareCents": 7244,
+        "cardFeeCents": 306,
+        "platformFeeCents": 950
+      },
+      "ord_006": {
+        "makerShareCents": 6473,
+        "cardFeeCents": 277,
+        "platformFeeCents": 850
+      },
+      "ord_007": {
+        "makerShareCents": 2780,
+        "cardFeeCents": 140,
+        "platformFeeCents": 380
+      },
+      "ord_008": {
+        "makerShareCents": 3551,
+        "cardFeeCents": 169,
+        "platformFeeCents": 480
+      },
+      "ord_009": {
+        "makerShareCents": 9222,
+        "cardFeeCents": 378,
+        "platformFeeCents": 1200
+      },
+      "ord_010": {
+        "makerShareCents": 4831,
+        "cardFeeCents": 219,
+        "platformFeeCents": 650
+      },
+      "ord_011": {
+        "makerShareCents": 7244,
+        "cardFeeCents": 306,
+        "platformFeeCents": 950
+      },
+      "ord_012": {
+        "makerShareCents": 6473,
+        "cardFeeCents": 277,
+        "platformFeeCents": 850
+      },
+      "ord_013": {
+        "makerShareCents": 5481,
+        "cardFeeCents": 219,
+        "platformFeeCents": 0
+      },
+      "ord_014": {
+        "makerShareCents": 10422,
+        "cardFeeCents": 378,
+        "platformFeeCents": 0
+      },
+      "ord_015": {
+        "makerShareCents": 4031,
+        "cardFeeCents": 169,
+        "platformFeeCents": 0
+      },
+      "ord_016": {
+        "makerShareCents": 3160,
+        "cardFeeCents": 140,
+        "platformFeeCents": 0
+      },
+      "ord_017": {
+        "makerShareCents": 7323,
+        "cardFeeCents": 277,
+        "platformFeeCents": 0
+      },
+      "ord_018": {
+        "makerShareCents": 8194,
+        "cardFeeCents": 306,
+        "platformFeeCents": 0
+      },
+      "ord_019": {
+        "makerShareCents": 5481,
+        "cardFeeCents": 219,
+        "platformFeeCents": 0
+      },
+      "ord_020": {
+        "makerShareCents": 8194,
+        "cardFeeCents": 306,
+        "platformFeeCents": 0
+      },
+      "ord_021": {
+        "makerShareCents": 10422,
+        "cardFeeCents": 378,
+        "platformFeeCents": 0
+      },
+      "ord_022": {
+        "makerShareCents": 14862,
+        "cardFeeCents": 538,
+        "platformFeeCents": 0
+      },
+      "ord_023": {
+        "makerShareCents": 4031,
+        "cardFeeCents": 169,
+        "platformFeeCents": 0
+      },
+      "ord_024": {
+        "makerShareCents": 7323,
+        "cardFeeCents": 277,
+        "platformFeeCents": 0
+      },
+      "ord_025": {
+        "makerShareCents": 3160,
+        "cardFeeCents": 140,
+        "platformFeeCents": 0
+      },
+      "ord_026": {
+        "makerShareCents": 5481,
+        "cardFeeCents": 219,
+        "platformFeeCents": 0
+      },
+      "ord_027": {
+        "makerShareCents": 62500,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0
+      },
+      "ord_028": {
+        "makerShareCents": 49000,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0
+      },
+      "ord_029": {
+        "makerShareCents": 41000,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0
+      },
+      "ord_030": {
+        "makerShareCents": 22500,
+        "cardFeeCents": 0,
+        "platformFeeCents": 0
+      }
+    },
+    "makerStatements": [
+      {
+        "id": "mst_01",
+        "makerId": "mkr_01",
+        "monthId": "2026-09",
+        "lines": [
+          {
+            "orderId": "ord_001",
+            "pieceId": "pc_01",
+            "makerShareCents": 13448
+          },
+          {
+            "orderId": "ord_003",
+            "pieceId": "pc_09",
+            "makerShareCents": 9222
+          },
+          {
+            "orderId": "ord_005",
+            "pieceId": "pc_12",
+            "makerShareCents": 7244
+          },
+          {
+            "orderId": "ord_009",
+            "pieceId": "pc_09",
+            "makerShareCents": 9222
+          },
+          {
+            "orderId": "ord_011",
+            "pieceId": "pc_12",
+            "makerShareCents": 7244
+          },
+          {
+            "orderId": "ord_014",
+            "pieceId": "pc_09",
+            "makerShareCents": 10422
+          },
+          {
+            "orderId": "ord_018",
+            "pieceId": "pc_12",
+            "makerShareCents": 8194
+          },
+          {
+            "orderId": "ord_021",
+            "pieceId": "pc_09",
+            "makerShareCents": 10422
+          },
+          {
+            "orderId": "ord_028",
+            "pieceId": "pc_04",
+            "makerShareCents": 49000
+          }
+        ],
+        "totalCents": 124418,
+        "heldCents": 9500,
+        "payoutDate": "2026-10-02"
+      },
+      {
+        "id": "mst_02",
+        "makerId": "mkr_02",
+        "monthId": "2026-09",
+        "lines": [
+          {
+            "orderId": "ord_002",
+            "pieceId": "pc_07",
+            "makerShareCents": 3551
+          },
+          {
+            "orderId": "ord_004",
+            "pieceId": "pc_02",
+            "makerShareCents": 4831
+          },
+          {
+            "orderId": "ord_008",
+            "pieceId": "pc_07",
+            "makerShareCents": 3551
+          },
+          {
+            "orderId": "ord_010",
+            "pieceId": "pc_02",
+            "makerShareCents": 4831
+          },
+          {
+            "orderId": "ord_013",
+            "pieceId": "pc_02",
+            "makerShareCents": 5481
+          },
+          {
+            "orderId": "ord_015",
+            "pieceId": "pc_07",
+            "makerShareCents": 4031
+          },
+          {
+            "orderId": "ord_019",
+            "pieceId": "pc_02",
+            "makerShareCents": 5481
+          },
+          {
+            "orderId": "ord_022",
+            "pieceId": "pc_11",
+            "makerShareCents": 14862
+          },
+          {
+            "orderId": "ord_023",
+            "pieceId": "pc_07",
+            "makerShareCents": 4031
+          },
+          {
+            "orderId": "ord_029",
+            "pieceId": "pc_05",
+            "makerShareCents": 41000
+          }
+        ],
+        "totalCents": 91650,
+        "heldCents": 8000,
+        "payoutDate": "2026-10-02"
+      },
+      {
+        "id": "mst_03",
+        "makerId": "mkr_03",
+        "monthId": "2026-09",
+        "lines": [
+          {
+            "orderId": "ord_006",
+            "pieceId": "pc_10",
+            "makerShareCents": 6473
+          },
+          {
+            "orderId": "ord_007",
+            "pieceId": "pc_08",
+            "makerShareCents": 2780
+          },
+          {
+            "orderId": "ord_012",
+            "pieceId": "pc_10",
+            "makerShareCents": 6473
+          },
+          {
+            "orderId": "ord_016",
+            "pieceId": "pc_08",
+            "makerShareCents": 3160
+          },
+          {
+            "orderId": "ord_017",
+            "pieceId": "pc_10",
+            "makerShareCents": 7323
+          },
+          {
+            "orderId": "ord_024",
+            "pieceId": "pc_10",
+            "makerShareCents": 7323
+          },
+          {
+            "orderId": "ord_027",
+            "pieceId": "pc_03",
+            "makerShareCents": 62500
+          },
+          {
+            "orderId": "ord_030",
+            "pieceId": "pc_06",
+            "makerShareCents": 22500
+          }
+        ],
+        "totalCents": 118532,
+        "heldCents": 16500,
+        "payoutDate": "2026-10-02"
+      }
+    ],
+    "impact": {
+      "id": "imp_2026_09",
+      "makerShareBps": 7555,
+      "daysCloseToPayout": 2,
+      "daysCloseToPayoutBefore": 45,
+      "bookkeepingHoursSaved": 12,
+      "estimate": true
+    },
+    "makerPayoutDate": "2026-10-02"
+  }
+}

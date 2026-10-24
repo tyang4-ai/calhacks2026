@@ -64,7 +64,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B07-ask | blocked | | | needs ANTHROPIC_API_KEY |
 | B08-approvals | green | live, scripted grant allowed | demo-ok-b08 | G5 13/13, verifier PASS |
 | B09-concierge | blocked | | | needs ANTHROPIC_API_KEY |
-| B10-derived | running | | | built, server 87 passed; API restart pending |
+| B10-derived | green | live at 8.3 s | demo-ok-b10 | G5 13/13, verifier PASS |
 
 ## Environment
 
@@ -165,3 +165,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 05:58 PT · G5 B03-proof PASS 13/13, verifier PASS, tag demo-ok-b03 · artifacts/gates/G5-0506.md, artifacts/gates/G5-batch-verifier.md
 - 2026-10-24 05:58 PT · G5 B06-workbook PASS 13/13, verifier PASS, tag demo-ok-b06 · artifacts/gates/G5-0516.md, artifacts/gates/G5-batch-verifier.md
 - 2026-10-24 05:58 PT · G5 B08-approvals PASS 13/13, verifier PASS, tag demo-ok-b08 · artifacts/gates/G5-0525.md, artifacts/gates/G5-batch-verifier.md
+- 2026-10-24 05:58 PT · G5 B10-derived PASS 13/13, verifier PASS, tag demo-ok-b10 · artifacts/gates/G5-0534.md, artifacts/gates/G5-batch-verifier.md
