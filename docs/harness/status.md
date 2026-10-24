@@ -116,3 +116,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 03:20 PT · G3 reconcile PASS 3/3, verifier PASS, tag w1-reconcile · artifacts/gates/G3-0317.md · artifacts/verify/F-reconcile-G3-0310.md
 - 2026-10-24 03:20 PT · G3 buyer PASS 3/3, verifier PASS, tag w1-buyer · artifacts/gates/G3-0317.md · artifacts/verify/F-buyer-G3-0312.md
 - 2026-10-24 03:20 PT · G3 maker-statement PASS 3/3, verifier PASS, tag w1-maker-statement · artifacts/gates/G3-0318.md · artifacts/verify/F-maker-statement-G3-0316.md
+- 2026-10-24 03:20 PT · G3 proof PASS 3/3, verifier PASS, tag w1-proof · artifacts/gates/G3-0318.md · artifacts/verify/F-proof-G3-0319.md
