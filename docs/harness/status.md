@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:25 PT
+UPDATED: 2026-10-24 23:41 PT
 
 # Status board
 
@@ -201,7 +201,7 @@ Each item names the default already in use, so the build never waits.
 |---|---|---|
 | Oct 24 11:25 PM | Upload the public site (about 5 minutes, from Windows, tonight and again after the freeze): `git pull`, `npm ci`, `npm run build:public` (must end "build:public: PASS"; if it says the rendered checks were skipped, run `npx playwright install chromium` and build again); check `dist\public-build.json` says `"publicSite": true`; never upload a plain `npm run build`. Cloudflare: Workers & Pages > Create application > Get started > Drag and drop your files, name the project, drag `dist` in, Deploy. On the live site check `/demo` has no Live switch, `/shop/piece/pc_01` shows L6 instead of Pay, `/market/` lists 4 listings and both `/market/listing-01.html` and `/market/listing-01` open, `/robots.txt` disallows all, `/shop` source has noindex. Paste the URL in this session's chat and add `PUBLIC_SITE_URL` to the cloud environment and the laptop's `.env`. After the freeze: rebuild and Create a new deployment (Production). Full steps: `docs/plans/D-deploy.md` Gordon's steps | Not uploaded; B15's watch stays scripted until `PUBLIC_SITE_URL` is set |
 | Oct 24 11:25 PM | Demo laptop, Saturday night on a good network: put the keys in `.env`, run `node scripts/laptop-setup.mjs` until `/api/health` reads all true, then rehearse as `docs/plans/D-deploy.md` says (presenter mode, Live off then on, the scripted fallback with the API closed). Step 5 (the model) needs B11's publish, which is next tonight | Not run |
-| Oct 24 10:28 PM | I2-art: the two-minute look at `artifacts/art/contact-sheet.png` (sent to you in the app) before G4v2. Worth a glance: pc_01 and pc_04 (stepped diamonds), pc_16 (leaf earrings, the most feather-like), the Acoma terrace jars pc_27, pc_32, pc_35, pc_38, pc_39. A flagged piece goes back with `npm run art -- --placeholders <pieceId>` | The 54 drawings as verified (`artifacts/gates/I2-art-verifier.md` PASS) |
+| Oct 24 10:28 PM | ~~I2-art: the two-minute look at the contact sheet~~ Done 11:40 PM: pc_27, pc_32, pc_35, pc_37, pc_38, pc_39 and pc_48 back to placeholders, the other 47 kept (decisions.md) | Done |
 | Oct 24 8:55 PM | Chinese words for the kit: 部族认证 for "Nation attestation" (design drop 3's proposal), and 插图, 示例, 待完成, 已达成, 您的请求, 近似, 事件日志 in `src/ui/strings.ts` | As written by the kit integrator |
 | Oct 24 8:20 PM | Scribe's Devpost skeleton (`docs/devpost/devpost.md`, 14 `[GORDON: ...]` items listed in `sponsors/README.md`): write your sections; check the Figma prize names on Devpost; set the three Figma files to "Anyone with the link" | Drafts and placeholders |
 | Oct 24 6:16 PM | R0: check the Chinese of the co-op's place (美国亚利桑那州纳瓦霍保留区) and the twelve Chinese piece stories in `src/mock/catalog.ts`, plus the Chinese of L1, L2, L4 and L15 (fix-plan section 7) | The data-smith's Chinese, as written |
@@ -364,3 +364,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:20 PT · API stopped at its 2-hour limit, restarted (all keys true; B13 reseeded from SpacetimeDB: catalog 54, orders 38, approvals 5); B11 T7 (adapter, liveMap for B12) and T8 (publish, fetch, card, train_akbari.sh) done: test_b11_embed 239, test:server 619, check:scope PASS; committed with scripts/train-akbari.sh; F-seller-hub verifier PASS (findings to the polish queue) · status.md
 - 2026-10-24 23:23 PT · M-approvals built (T0-T5, every spec file passes alone, smoke 123, live two-screen spec passes); its worktree G3 queued and verifier spawned; demo regression on main queued before I2-tour · status.md
 - 2026-10-24 23:25 PT · G3 seller-hub PASS in the worktree (feature 30, smoke 123) plus verifier PASS; committed, tag v2-seller-hub · artifacts/gates/G3-seller-hub-wt-2316.md
+- 2026-10-24 23:41 PT · Gordon's art check: pc_27, pc_32, pc_35, pc_37, pc_38, pc_39, pc_48 back to placeholders (art --check 54 PASS, contact sheet rebuilt); committed · decisions.md
