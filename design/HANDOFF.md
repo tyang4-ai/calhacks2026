@@ -76,7 +76,7 @@ Figures come from `docs/plans/R0-reskin.md` and `docs/plans/S3-catalog.md`. Text
 
 **Pages in Cindia · Design:** Style tiles, Wireframes, Components, Screens (the 24 frames in the table). Every color is bound to a variable and every text uses a text style. Add `?node-id=` and the node, with the colon as a dash, to the Design link.
 
-All three files sit in Gordon's drafts on his Figma team. Sharing as "Anyone with the link" has to be set in Figma by Gordon, because the MCP server has no sharing tool.
+All three files sit in Gordon's drafts on his Figma team, shared as "Anyone with the link can view" (checked Oct 25, 12:35 AM). 01 Research and 02 Moodboards each carry a banner saying they come from before the scope change.
 
 ## Still to do in Figma
 
