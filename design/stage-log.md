@@ -52,7 +52,7 @@ This section backs up the entries above and is not part of their word count.
 | Cindia · 02 Moodboards (FigJam) | https://www.figma.com/board/KAOXGbhwnS0A0tJ8j5ABj7 | How the directions were checked, A · Museum label, B · Warp and weft, C · Daylight market (idea, palette, type, texture and imagery, the product vignette), a side-by-side table and the recommendation, with a sticky for Gordon's pick |
 | Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 18 text styles, the overlay shadow, and four pages: Style tiles (`design/style-tiles.png`), Wireframes, Components and Screens (the 24 frames in `design/screens/`) |
 
-All three files sit in Gordon's drafts on his Figma team, which moved from the Starter tier to the student tier after his Edu verification. All three are shared as "Anyone with the link can view", checked in Figma on Oct 25 at 12:35 AM. The MCP server has no sharing tool, so that check was done in the browser.
+All three files sit in Gordon's drafts on his Figma team, which moved from the Starter tier to the student tier after his Edu verification. All three are shared as "Anyone with the link can view", checked in Figma on Oct 25 at 12:25 AM. The MCP server has no sharing tool, so that check was done in the browser.
 
 ### Timeline
 
@@ -120,7 +120,7 @@ All three files sit in Gordon's drafts on his Figma team, which moved from the S
 | 17:56 to 18:01 | Every screen re-exported. Leftover verification overrides cleared, and the swarm view's background replaced with the new piece page | use_figma, get_screenshot |
 | 18:02 | HANDOFF, components, changes, flows, layout and tokens updated for drop 3 | Write |
 | 18:09 | Style tiles: the earlier studio's type samples, seal, chip and drawing replaced with the co-op's, and the live beam component placed in the kit tile. Re-exported as `design/style-tiles.png` | use_figma, get_screenshot |
-| Oct 25, 00:35 | Banners at the top of 01 Research and 02 Moodboards: written and drawn before the scope change, with a pointer to Cindia · Design | use_figma |
+| Oct 25, 00:26 | Banners at the top of 01 Research and 02 Moodboards: written and drawn before the scope change, with a pointer to Cindia · Design | use_figma |
 
 ### Figma MCP calls
 
