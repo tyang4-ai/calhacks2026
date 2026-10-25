@@ -120,7 +120,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B12-search | T1-T6 built and committed; G5 after G4v2 | Elastic hybrid live: seed ~30 s, query 0.61 s, Agent Builder 7.1 s | | Elastic eval recall@5 0.819, MRR 0.887; T7 not built |
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
 | B14-swarm | first spawn committed; second spawn (T4, T7-T10) running | Intake on Haiku 2.2 s | | Finder budgets 9 s for Agent Builder |
-| B15-watch | todo | | | fixture until the public site is up |
+| B15-watch | T1-T6 running | | | fixture until the public site is up |
 | B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
 
 ## Tags
