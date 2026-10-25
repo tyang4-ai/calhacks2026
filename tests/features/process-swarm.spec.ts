@@ -48,6 +48,41 @@ test("run_01 shows Intake, Cindy, Steward, Clerk and Writer, one row per step in
   watch.expectClean();
 });
 
+/** The element's height and how much of it survives every box that clips it, in px. */
+async function shown(page: Page, selector: string) {
+  return page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    if (!el) return { height: 0, shown: 0 };
+    const box = el.getBoundingClientRect();
+    let top = Math.max(box.top, 0);
+    let bottom = Math.min(box.bottom, window.innerHeight);
+    for (let e = el.parentElement; e && e !== document.body; e = e.parentElement) {
+      const cs = getComputedStyle(e);
+      if (cs.overflowX === "visible" && cs.overflowY === "visible") continue;
+      const r = e.getBoundingClientRect();
+      top = Math.max(top, r.top);
+      bottom = Math.min(bottom, r.bottom);
+    }
+    return { height: box.height, shown: Math.max(0, bottom - top) };
+  }, selector);
+}
+
+test("once run_01 has finished, its check step and the graph show whole, in the overlay and in the tour's 480 by 900 panel", async ({ page }) => {
+  const check = run01.steps.find((s) => s.kind === "check")!;
+  const places: [string, string, () => Promise<unknown>][] = [
+    ["/shop?process=swarm", '[data-testid="process-view"]', () => toRun01(page)],
+    ["/demo", '[data-stage-layer="process-panel"]', () => seekToEvent(page, "support.answered", { runId: "run_01" }, 300)],
+  ];
+  for (const [route, root, toRun] of places) {
+    await open(page, route);
+    await toRun();
+    await expect(page.locator(`${root} [data-testid="process-pane-swarm"]`)).toHaveAttribute("data-run-id", "run_01");
+    for (const sel of [`${root} [data-testid="process-swarm-step-${check.stepId}"]`, `${root} [data-testid="process-swarm-graph"]`]) {
+      await expect.poll(async () => { const s = await shown(page, sel); return s.height > 0 && s.shown >= s.height - 1; }, { message: `${route}: ${sel}` }).toBe(true);
+    }
+  }
+});
+
 test("run_02 through its listing.indexed: the Indexer's row is rule-based, and the swarm view's log lists the listing.indexed", async ({ page }) => {
   const watch = watchPage(page);
   await open(page, "/shop?process=swarm");

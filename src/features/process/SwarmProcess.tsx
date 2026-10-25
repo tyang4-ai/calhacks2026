@@ -5,12 +5,14 @@
 //   elastic_agent is drawn on a tool node, Elastic Agent Builder, beside the Finder (C-3);
 // - one row per step (process-swarm-step-<stepId>): the agent's name from the roster, the step's
 //   kind, tool, model, ms and summary, the Rule-based badge on code agents, and the step's source and
-//   key, so a judge can tell a B13-streamed step from a scripted one;
+//   key, so a judge can tell a B13-streamed step from a scripted one. The list fills the height the
+//   graph leaves and scrolls to the newest step while a run streams, then to its newest check step
+//   once it finishes, so the tour's 480 by 900 panel shows run_01's check (I2-tour, d04);
 // - process-swarm-run-picker chooses the run. When the tour opened the view (the store's demo.process
 //   is swarm) the default is the newest run from src/mock/swarm.ts, never a run_user_ run (B2-15);
 //   anywhere else the newest run;
 // - in live mode, process-swarm-shared shows L18.
-import { useCallback, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import type { Payloads } from "../../core/events";
 import type { CindiaState, LogEntry, Stamped } from "../../core/state";
 import { useCindia } from "../../core/store";
@@ -178,6 +180,24 @@ export function SwarmProcess({ lang }: { lang: Lang }) {
   const runId = picked && v.stepsByRun[picked] ? picked : v.defaultRun;
   const steps = runId ? (v.stepsByRun[runId] ?? []) : [];
   const graph = graphFor(steps);
+  const listRef = useRef<HTMLOListElement>(null);
+  const done = v.runs.find((r) => r.runId === runId)?.done ?? false;
+  const newestCheck = steps.findLast((s) => s.kind === "check")?.stepId ?? null;
+  const newestStep = steps.at(-1)?.stepId ?? null;
+
+  // Keep the step that matters in the list's view: while a run streams, its newest step; once it has
+  // finished, its newest check (the run's own verification, which the tour talks about) with the
+  // steps after it. It moves only when the run, its steps or its state change, so a person scrolling
+  // the list keeps their place between arrivals.
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list || !runId) return;
+    const toCheck = done && newestCheck !== null;
+    const row = list.querySelector<HTMLElement>(`[data-testid="process-swarm-step-${toCheck ? newestCheck : newestStep}"]`);
+    if (!row) return;
+    // The check row at the list's top; the newest row at its bottom.
+    list.scrollTop = toCheck ? row.offsetTop : row.offsetTop + row.offsetHeight - list.clientHeight;
+  }, [runId, newestStep, done, newestCheck]);
 
   if (!runId) {
     return (
@@ -194,43 +214,48 @@ export function SwarmProcess({ lang }: { lang: Lang }) {
     );
   }
 
+  // The pane fills the view's body. In a narrow body (the tour's 480 by 900 panel) the graph sits
+  // over the steps; in a wide one (the 1200 by 720 overlay) beside them. Either way the step list
+  // takes the height left and scrolls on its own, so the rows it scrolls to stay on screen.
   return (
-    <div data-testid="process-pane-swarm" data-run-id={runId} className="flex flex-wrap gap-6">
-      <div className="flex min-w-0 flex-col gap-2 [&_figure]:max-w-full [&_svg]:h-auto [&_svg]:max-w-full" style={{ flex: `1 1 ${GRAPH_W}px`, maxWidth: GRAPH_W }}>
-        <AgentGraph testId="process-swarm-graph" nodes={graph.nodes} edges={graph.edges} steps={graph.graphSteps} now={now} lang={lang} centerId={graph.hub} width={GRAPH_W} height={GRAPH_H} />
-        <Quiet>{t(SWARM.graphNote, lang)}</Quiet>
-      </div>
-      <div className="flex min-h-0 min-w-0 flex-col" style={{ flex: "1 1 380px" }}>
-        <SectionHead
-          title={SWARM.steps}
-          lang={lang}
-          right={
-            <select
-              data-testid="process-swarm-run-picker"
-              aria-label={t(SWARM.pickRun, lang)}
-              value={runId}
-              onChange={(e) => setPicked(e.target.value)}
-              className="px-2 py-1"
-              style={{ border: "1px solid var(--c-color-line)", borderRadius: "var(--c-radius-control)", background: "var(--c-color-paper)", fontSize: "var(--c-text-14)" }}
-            >
-              {v.runs.map((r) => (
-                <option key={r.runId} value={r.runId}>
-                  {r.runId} · {r.steps} {t(SWARM.stepsWord, lang)} · {t(r.done ? SWARM.finished : SWARM.running, lang)}
-                </option>
-              ))}
-            </select>
-          }
-        />
-        {v.live && (
-          <p data-testid="process-swarm-shared" className="mb-1">
-            <Quiet>{t(L18, lang)}</Quiet>
-          </p>
-        )}
-        <ol className="m-0 list-none overflow-auto p-0" style={{ maxHeight: v.live ? GRAPH_H - 28 : GRAPH_H }}>
-          {steps.map((step, i) => (
-            <StepRow key={step.stepId} step={step} n={i + 1} lang={lang} source={v.sources[step.stepId]} />
-          ))}
-        </ol>
+    <div data-testid="process-pane-swarm" data-run-id={runId} className="@container h-full">
+      <div className="flex h-full min-h-0 flex-col gap-4 @3xl:flex-row @3xl:gap-6">
+        <div className="flex min-w-0 shrink-0 flex-col gap-2 @3xl:basis-[480px] [&_figure]:max-w-full [&_svg]:h-auto [&_svg]:max-w-full" style={{ maxWidth: GRAPH_W }}>
+          <AgentGraph testId="process-swarm-graph" nodes={graph.nodes} edges={graph.edges} steps={graph.graphSteps} now={now} lang={lang} centerId={graph.hub} width={GRAPH_W} height={GRAPH_H} />
+          <Quiet>{t(SWARM.graphNote, lang)}</Quiet>
+        </div>
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          <SectionHead
+            title={SWARM.steps}
+            lang={lang}
+            right={
+              <select
+                data-testid="process-swarm-run-picker"
+                aria-label={t(SWARM.pickRun, lang)}
+                value={runId}
+                onChange={(e) => setPicked(e.target.value)}
+                className="px-2 py-1"
+                style={{ border: "1px solid var(--c-color-line)", borderRadius: "var(--c-radius-control)", background: "var(--c-color-paper)", fontSize: "var(--c-text-14)" }}
+              >
+                {v.runs.map((r) => (
+                  <option key={r.runId} value={r.runId}>
+                    {r.runId} · {r.steps} {t(SWARM.stepsWord, lang)} · {t(r.done ? SWARM.finished : SWARM.running, lang)}
+                  </option>
+                ))}
+              </select>
+            }
+          />
+          {v.live && (
+            <p data-testid="process-swarm-shared" className="mb-1">
+              <Quiet>{t(L18, lang)}</Quiet>
+            </p>
+          )}
+          <ol ref={listRef} data-role="steps" className="relative m-0 min-h-[120px] flex-1 list-none overflow-auto p-0">
+            {steps.map((step, i) => (
+              <StepRow key={step.stepId} step={step} n={i + 1} lang={lang} source={v.sources[step.stepId]} />
+            ))}
+          </ol>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-// F-process layout: at 1440 by 900, in English and Chinese, no text in any of the eleven views is cut,
+// F-process layout: at 1440 by 900, in English (the site is English only), no text in any of the eleven views is cut,
 // runs past its drawing, overlaps other text or sits on a box it doesn't belong to, and every view fits
 // the overlay's body above its log. The populated store is the G3 verifier's: the v1 timeline sought
 // past the paid receipt, then the v2 events the tour will carry, emitted from src/mock/ (the swarm's
@@ -55,12 +55,6 @@ async function populate(page: Page) {
     { type: "approval.requested", payload: { approvalId: scriptedScan.approvalId! }, key: "b08-approvals" },
     ...demoFundMoves.map((m) => ({ type: "money.moved" as const, payload: m, key: "b04-bank" as const })),
   ]);
-}
-
-async function toChinese(page: Page) {
-  await page.getByTestId("demo-lang-toggle").click();
-  await page.getByTestId("demo-lang-toggle").click();
-  await expect(page.getByTestId("process-block-search")).toContainText("按感觉搜索");
 }
 
 /** Opens each view from the bar and collects its layout problems, keyed by view. */
@@ -121,15 +115,6 @@ test("every view, populated, English: nothing cut, overlapping or under the log"
   await open(page, "/sell/month");
   await populate(page);
   await expect(page.getByTestId("process-block-status-watch")).toHaveText(/attention/i);
-  expect(await barProblems(page)).toEqual([]);
-  expect(await auditViews(page, (id) => everyRun(page, id))).toEqual({});
-});
-
-test("every view, populated, Chinese: nothing cut, overlapping or under the log", async ({ page }) => {
-  test.setTimeout(120_000);
-  await open(page, "/sell/month");
-  await populate(page);
-  await toChinese(page);
   expect(await barProblems(page)).toEqual([]);
   expect(await auditViews(page, (id) => everyRun(page, id))).toEqual({});
 });

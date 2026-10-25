@@ -48,10 +48,3 @@ test("the money diagram draws a thread per move, the fund moves included, with t
   await expect(page.getByTestId("process-money-sandbox")).toHaveText(glossaryLabel("L29").en);
   watch.expectClean();
 });
-
-test("L29 reads word for word in Chinese too", async ({ page }) => {
-  await open(page, "/shop?process=money");
-  await page.getByTestId("demo-lang-toggle").click();
-  await page.getByTestId("demo-lang-toggle").click();
-  await expect(page.getByTestId("process-money-sandbox")).toHaveText(glossaryLabel("L29").zh);
-});

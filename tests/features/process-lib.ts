@@ -187,7 +187,18 @@ export async function layoutProblems(page: Page, processId: string): Promise<str
       let block: Element | null = el instanceof HTMLElement ? el : null;
       while (block && /^(inline|contents)$/.test(getComputedStyle(block).display)) block = block.parentElement;
       const br = block?.getBoundingClientRect();
-      const lines = br ? rects.map((r) => new DOMRect(r.x, Math.max(r.top, br.top), r.width, Math.max(0, Math.min(r.bottom, br.bottom) - Math.max(r.top, br.top)))) : rects;
+      let lines = br ? rects.map((r) => new DOMRect(r.x, Math.max(r.top, br.top), r.width, Math.max(0, Math.min(r.bottom, br.bottom) - Math.max(r.top, br.top)))) : rects;
+      // A list that scrolls by design shows only the part of a row inside it: a row scrolled out of
+      // view isn't on screen, so it can't overlap anything or sit on a box.
+      for (let a = el.parentElement; a && a !== pane; a = a.parentElement) {
+        if (!/auto|scroll/.test(`${getComputedStyle(a).overflowX} ${getComputedStyle(a).overflowY}`)) continue;
+        const ar = a.getBoundingClientRect();
+        lines = lines.map((r) => {
+          const left = Math.max(r.left, ar.left);
+          const top = Math.max(r.top, ar.top);
+          return new DOMRect(left, top, Math.max(0, Math.min(r.right, ar.right) - left), Math.max(0, Math.min(r.bottom, ar.bottom) - top));
+        });
+      }
       texts.push({ el, text, rects, lines });
     }
 
@@ -239,7 +250,7 @@ export async function layoutProblems(page: Page, processId: string): Promise<str
     for (const t of texts) {
       for (const b of boxes) {
         if (b.group && b.group.contains(t.el)) continue;
-        if (t.rects.some((r) => h.hit(r, b.r, 2))) out.push(`text on another box: "${t.text.slice(0, 30)}" on ${b.group?.getAttribute("data-node-id") ?? b.group?.getAttribute("data-party") ?? "a box"}`);
+        if (t.lines.some((r) => h.hit(r, b.r, 2))) out.push(`text on another box: "${t.text.slice(0, 30)}" on ${b.group?.getAttribute("data-node-id") ?? b.group?.getAttribute("data-party") ?? "a box"}`);
       }
     }
     for (const label of pane.querySelectorAll("[data-move-id] rect")) {

@@ -42,13 +42,6 @@ test("the model card says Not trained yet with no model.trained, then shows the 
   watch.expectClean();
 });
 
-test("L28 reads word for word in Chinese", async ({ page }) => {
-  await open(page, "/shop?process=model");
-  await page.getByTestId("demo-lang-toggle").click();
-  await page.getByTestId("demo-lang-toggle").click();
-  await expect(page.getByTestId("process-model-test-note")).toHaveText(glossaryLabel("L28").zh);
-});
-
 test("proof lists each planted error from proof.scored and whether it was caught", async ({ page }) => {
   const watch = watchPage(page);
   await open(page, "/sell/proof?process=proof");
