@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 01:30 PT
+UPDATED: 2026-10-25 01:50 PT
 
 # Status board
 
@@ -194,6 +194,7 @@ Filled in from `artifacts/preflight.md` at G0.
 
 Run once the V2 leads are done, so a shared-code edit can't reload the dev server under another lead's tests.
 
+- M-desktop (after G4v2, with B16 present): tests/features/scenario-live.spec.ts:99 and :161 assert every flag.raised in the log is B05's, but B16's live twin of flg_01 is there now (accept B16's twin or filter by source key); money-map-live-bank.spec.ts as below (recheck `G3-desktop-verifier-recheck.md` section 8).
 - M-desktop (for B16's G5): tests/features/money-map-live-bank.spec.ts drives the player wrong: in the apr_05 test play the player after the milestone's nessieId lands until the thread shows "Checked against Nessie", then pause; in the tour test pause and seek to 135700 (inside d06-money) after mv_0102's nessieId lands, before checking frame-studio.
 - M-approvals (on the tour, T8): approvals-cards.spec.ts 97-104, approvals-details.spec.ts 63-70, approvals-flow.spec.ts 74-82 assume apr_01 is the first request (the tour requests apr_04 at 128.0 s); with apr_04 pending, apr_02's Approve and Decline sit at 894-936 px in the 900 px frame after apr_01's grant (A1, keep the pending card's buttons in view); R1 selection.ts:128 fallback; decidedAt into events.md (integrator).
 - M-buyer: F1 a piece route with another entity's ID crashes the slot (`PiecePage.tsx:36-38`, treat a non-piece as missing, plus a spec); F2 the story column's verification block ends below y 876 on 20 of 54 pieces in English (pc_27 to pc_42, pc_45, pc_46, pc_49, pc_51; worst pc_38), move `PieceVerification` to the price column or shorten the story column, plus a multi-piece fit spec (`artifacts/gates/G3-buyer-verifier.md`). With T7 after G4v2.
@@ -416,3 +417,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 01:19 PT · API stopped at its 2-hour limit, restarted (all 16 routers) · status.md
 - 2026-10-25 01:20 PT · B16 done (reconcile over Nessie's records finds flg_01 with v1's figures and its nessieId, seed, fund deposit and milestone withdrawal, adapter): test_b16 72 + 1 live, test:server 854, check PASS, smoke 124; committed; reconcile-live-bank passes, money-map-live-bank needs M-desktop's player fix · status.md
 - 2026-10-25 01:30 PT · I2-tour T3-T7 done: check PASS, check:data 300, smoke 124, build, modes 6/6, the tour 220.009 s; demo and offline fail on one item, run_01's check step (stp_0006) out of view in the 480x900 process panel at d04 (F-process); Chinese still renders from M-buyer's piece subtitle and F-seller-hub's d15 translated draft; fixes sent to F-process and F-seller-hub, M-buyer lead spawned; G4v2 after them · status.md
+- 2026-10-25 01:50 PT · F-process's fix keeps the check step in view (tour test:demo 7/7 on the production build); M-buyer English only (44 buyer specs; 19 v1 phone-flow specs fail on the tour by design until T7); F-seller-hub English only (30 specs on the tour); M-desktop recheck: every screen fix confirmed, FAIL only on 3 live specs B16's arrival broke (lead fixes after G4v2); its adversarial lens stopped so G4v2 runs alone; G4v2 starting · status.md
