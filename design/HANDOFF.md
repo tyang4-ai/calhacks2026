@@ -81,7 +81,7 @@ All three files sit in Gordon's drafts on his Figma team, shared as "Anyone with
 ## Still to do in Figma
 
 - The clickable prototype: the links in `flows.md` wired between the frames.
-- The Figma Slides deck that mirrors the three pitch cards.
+- ~~The Figma Slides deck that mirrors the three pitch cards.~~ Made Oct 25 at 00:40: Cindia · Pitch, https://www.figma.com/slides/edmnscKXlUVzaIAIti6Eqh
 - Screens not drawn yet: the month's records table (`d07-month`), the proof page (`d13-proof`), the counterfeit watch (`d14-watch`), the Surprise me result after a draw (`d02-surprise`), the projects pages, the storefront builder, the end card, the process views other than swarm, search and data, and the tour's split layout (the frame at 0.66 with the process panel in the right third). The process views here show the centered overlay a person opens with `?process=`.
 - The Research board, if it should show the co-op instead of the earlier studio.
 
