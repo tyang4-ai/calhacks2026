@@ -1,0 +1,449 @@
+/* The counterfeit watch's layout. Colors, type, space and corners come only from the kit's tokens. */
+
+/* ---- The panel fills the Sell view, the scan bar stays put and the results scroll ---- */
+
+.fillPanel {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fillPanel > div {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.titleIntro {
+  display: block;
+  margin-top: var(--c-space-4);
+  max-width: 860px;
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-14);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--c-color-ink-soft);
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+}
+
+.scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: var(--c-space-4);
+}
+
+/* ---- Shared ---- */
+
+.h3 {
+  margin: 0 0 var(--c-space-8);
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-16);
+  font-weight: 600;
+  line-height: var(--c-leading-heading);
+}
+
+.h3:lang(zh) {
+  font-family: var(--c-font-heading-zh);
+}
+
+.mono {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+  user-select: text;
+  overflow-wrap: anywhere;
+}
+
+.soft {
+  margin: 0;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  color: var(--c-color-ink-soft);
+}
+
+/* ---- The scan bar ---- */
+
+.scanBar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+  padding-bottom: var(--c-space-8);
+  border-bottom: 1px solid var(--c-color-line);
+}
+
+.scanRow {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) auto;
+  gap: var(--c-space-16);
+  align-items: end;
+}
+
+.makerField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-4);
+}
+
+.select {
+  font: inherit;
+  font-size: var(--c-text-16);
+  min-height: 40px;
+  padding: var(--c-space-4) var(--c-space-8);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  background: var(--c-color-paper);
+  color: var(--c-color-ink);
+}
+
+.queriesField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-4);
+  min-width: 0;
+}
+
+.queries {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--c-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.query {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: var(--c-space-8) var(--c-space-12);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-chip);
+  font-size: var(--c-text-14);
+  line-height: 1.2;
+}
+
+.query::before {
+  content: "\201C";
+}
+
+.query::after {
+  content: "\201D";
+}
+
+.scanButton {
+  min-width: 132px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--c-space-16);
+}
+
+.status {
+  margin: 0;
+  font-size: var(--c-text-14);
+}
+
+.engine {
+  display: flex;
+  align-items: baseline;
+  gap: var(--c-space-8);
+  margin: 0;
+  font-size: var(--c-text-14);
+}
+
+.engine .fieldLabel {
+  display: inline;
+}
+
+/* ---- The results ---- */
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-16);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--c-space-12) var(--c-space-16);
+  border: 1px dashed var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  font-size: var(--c-text-16);
+}
+
+/* ---- One hit ---- */
+
+.hit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+  padding: var(--c-space-12) var(--c-space-16);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  background: var(--c-color-paper);
+}
+
+.hitFolded {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--c-space-12);
+  padding: var(--c-space-8) var(--c-space-16);
+}
+
+.foldedLine {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--c-text-14);
+}
+
+.foldedNote {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+.undo {
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  padding: var(--c-space-4) var(--c-space-12);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  background: transparent;
+  color: var(--c-color-ink);
+  cursor: pointer;
+}
+
+.claimRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--c-space-16);
+}
+
+.claim {
+  margin: 0;
+  min-width: 0;
+  padding-left: var(--c-space-12);
+  border-left: 3px solid var(--c-color-amber);
+  line-height: var(--c-leading-body);
+}
+
+.claimLabel {
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  color: var(--c-color-ink-soft);
+}
+
+.claimLabel::after {
+  content: ":";
+}
+
+.claimLabel:lang(zh)::after {
+  content: "：";
+}
+
+.claimText {
+  font-size: var(--c-text-16);
+  line-height: var(--c-leading-body);
+}
+
+.liveNote {
+  flex: 0 1 320px;
+  margin: 0;
+  padding: var(--c-space-4) var(--c-space-8);
+  border: 1px solid var(--c-color-jade);
+  border-radius: var(--c-radius-control);
+  background: var(--c-color-jade-wash);
+  font-size: var(--c-text-14);
+}
+
+.sideLabel {
+  margin: 0 0 var(--c-space-8);
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  color: var(--c-color-ink-soft);
+}
+
+.found {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+  min-width: 0;
+  padding: var(--c-space-16);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  background: var(--c-color-paper);
+}
+
+.found .sideLabel {
+  margin: 0;
+}
+
+.foundTitle {
+  margin: 0;
+  font-size: var(--c-text-18);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.foundUrl {
+  margin: 0;
+}
+
+.foundSnippet {
+  margin: 0;
+  font-size: var(--c-text-14);
+  line-height: var(--c-leading-body);
+}
+
+.mine {
+  min-width: 0;
+}
+
+.decideRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--c-space-24);
+  padding-top: var(--c-space-8);
+  border-top: 1px solid var(--c-color-line);
+}
+
+.fairness {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--c-text-14);
+  line-height: var(--c-leading-body);
+}
+
+.fairnessLead {
+  font-weight: 600;
+}
+
+.actionsBlock {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--c-space-4);
+  width: 500px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--c-space-12);
+}
+
+.actionButton {
+  width: 100%;
+}
+
+.proposed {
+  margin: 0;
+  font-size: var(--c-text-14);
+  line-height: 1.3;
+  color: var(--c-color-ink-soft);
+}
+
+/* ---- Every checked result ---- */
+
+.checked {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkedList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--c-color-line);
+}
+
+.checkedRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) 190px minmax(0, 1.3fr);
+  gap: var(--c-space-12);
+  align-items: center;
+  padding: var(--c-space-8) 0;
+  border-bottom: 1px solid var(--c-color-line);
+  font-size: var(--c-text-14);
+}
+
+.checkedTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkedUrl {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkedScore {
+  min-width: 0;
+}
+
+.verdict {
+  min-width: 0;
+}
+
+.verdictCopy {
+  font-weight: 600;
+}
+
+.verdictClaim {
+  font-style: italic;
+}
