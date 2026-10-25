@@ -233,5 +233,7 @@ About an hour from approval to push.
 Start a new Claude Code cloud session with the GitHub repo `tyang4-ai/calhacks2026` as its source and the environment from step 1, then send:
 
 ```text
-You are the orchestrator for the Cindia v2 build. The desktop session is stopped. Read CLAUDE.md, docs/harness/status.md, docs/harness/v2-runbook.md and docs/v2/fix-plan.md, then run the v2 runbook from V0 and keep going unattended until the 6:00 AM freeze.
+You are the orchestrator for the Cindia v2 build. The desktop session is stopped. First run git pull origin main. If the status line at the top of docs/v2/fix-plan.md doesn't say APPLIED yet, use send_later to send yourself this same message in 10 minutes, then stop. Once it says APPLIED, read CLAUDE.md, docs/harness/status.md, docs/harness/v2-runbook.md and docs/v2/fix-plan.md, then run the v2 runbook from V0 and keep going unattended until the 6:00 AM freeze. Gordon is away and won't answer questions, so follow the docs' defaults and list anything only he can do under Needs Gordon in status.md.
 ```
+
+This version waits on its own, so the session can be started before the fixes are pushed.
