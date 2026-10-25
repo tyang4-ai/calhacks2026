@@ -231,10 +231,9 @@ The integrator does every task itself, in order.
 
 ## Contract additions needed
 
-Settled in `docs/v2/contracts.md` section 11: `?drawer=support` on Shop routes, `/dev/kit` and `dev-kit-gallery`, the overlay's size, the Sell nav and header, `refId` on `owner.main`, and the shell rendering only slot containers for the process test IDs. Still to add:
-- `SlotProps.publicSite?: boolean`, and `VITE_PUBLIC_SITE` in section 1 as a public-build flag (value `1`, not a secret, read only by `src/app/site.ts`).
-- `registerNavigator` in `src/core/nav.ts`, and the `/demo` behavior: `navigate` does nothing, and `openDrawer` and `setProcess` set a stage override that the next `beat.started` or a seek clears.
-- `?drawer=support` on maker pages (`studio.drawer.support`, with `makerId`) and store pages (`shop.drawer.support`, with `slug`). `pieceId` and `orderId` on `shop.drawer.support`.
-- `seekToEvent(page, type, match, offsetMs)` as the signature in section 11's Tests (D1-34).
-- The Phase A legacy boxes, and the legacy page's 844 px column scaled to fit, in `ui-contract.md`'s Phase A notes.
-- The `store` camera's page, `/store/dine-weavers`.
+None. Each is settled in `docs/v2/contracts.md`:
+- section 1: `VITE_PUBLIC_SITE`, the public-build flag (value `1`, not a secret, read only by `src/app/site.ts`),
+- section 4: the `store` camera's page, `/store/dine-weavers`, and the shell rendering only the slot containers `slot-process-bar` and `slot-process-view` for the process test IDs,
+- section 11, Navigation and slot props: `registerNavigator` in `src/core/nav.ts` and the `/demo` behavior (`navigate` does nothing, and `openDrawer` and `setProcess` set a stage override that the next `beat.started` or a seek clears), `SlotProps.publicSite?`, `refId` on `owner.main`, `?drawer=support` on Shop routes, on store pages (`shop.drawer.support`, with `slug`) and on maker pages (`studio.drawer.support`, with `makerId`), and `pieceId` and `orderId` on `shop.drawer.support`,
+- section 11, Shell and the tour: the Phase A legacy page with its 844 px column scaled to fit, the Phase A legacy boxes, the overlay's size, `/dev/kit` with `dev-kit-gallery`, and the Sell nav and header,
+- section 11, Tests: `seekToEvent(page, type, match, offsetMs)` (D1-34).
