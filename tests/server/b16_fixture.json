@@ -1,0 +1,1512 @@
+{
+ "_note": "Written from src/mock through npm run export:mock (data-model.md demo-critical figures). The co-op's operating account on Nessie as B04 leaves it: September's history seeded as '<memo> (<id>)', the opening deposit, the live sale and maker payouts, plus one cancelled deposit. The month's records as the B16 adapter sends them, the scripted flag flg_01, wip_01's commission, and the tour's and a person's fund moves.",
+ "monthId": "2026-09",
+ "records": {
+  "orders": [
+   {
+    "id": "ord_001",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_01",
+    "buyerId": "buy_01",
+    "date": "2026-09-01",
+    "grossCents": 18000,
+    "cardFeeCents": 552,
+    "platformFeeCents": 1800,
+    "commissionCents": 0,
+    "materialsCents": 2200,
+    "makerShareCents": 13448,
+    "status": "paid"
+   },
+   {
+    "id": "ord_002",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_07",
+    "buyerId": "buy_02",
+    "date": "2026-09-02",
+    "grossCents": 4800,
+    "cardFeeCents": 169,
+    "platformFeeCents": 480,
+    "commissionCents": 0,
+    "materialsCents": 600,
+    "makerShareCents": 3551,
+    "status": "paid"
+   },
+   {
+    "id": "ord_003",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_09",
+    "buyerId": "buy_03",
+    "date": "2026-09-04",
+    "grossCents": 12000,
+    "cardFeeCents": 378,
+    "platformFeeCents": 1200,
+    "commissionCents": 0,
+    "materialsCents": 1200,
+    "makerShareCents": 9222,
+    "status": "paid"
+   },
+   {
+    "id": "ord_004",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_02",
+    "buyerId": "buy_04",
+    "date": "2026-09-06",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 650,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 4831,
+    "status": "paid"
+   },
+   {
+    "id": "ord_005",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_12",
+    "buyerId": "buy_05",
+    "date": "2026-09-09",
+    "grossCents": 9500,
+    "cardFeeCents": 306,
+    "platformFeeCents": 950,
+    "commissionCents": 0,
+    "materialsCents": 1000,
+    "makerShareCents": 7244,
+    "status": "paid"
+   },
+   {
+    "id": "ord_006",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_10",
+    "buyerId": "buy_06",
+    "date": "2026-09-11",
+    "grossCents": 8500,
+    "cardFeeCents": 277,
+    "platformFeeCents": 850,
+    "commissionCents": 0,
+    "materialsCents": 900,
+    "makerShareCents": 6473,
+    "status": "paid"
+   },
+   {
+    "id": "ord_007",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_08",
+    "buyerId": "buy_07",
+    "date": "2026-09-13",
+    "grossCents": 3800,
+    "cardFeeCents": 140,
+    "platformFeeCents": 380,
+    "commissionCents": 0,
+    "materialsCents": 500,
+    "makerShareCents": 2780,
+    "status": "paid"
+   },
+   {
+    "id": "ord_008",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_07",
+    "buyerId": "buy_08",
+    "date": "2026-09-15",
+    "grossCents": 4800,
+    "cardFeeCents": 169,
+    "platformFeeCents": 480,
+    "commissionCents": 0,
+    "materialsCents": 600,
+    "makerShareCents": 3551,
+    "status": "paid"
+   },
+   {
+    "id": "ord_009",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_09",
+    "buyerId": "buy_09",
+    "date": "2026-09-17",
+    "grossCents": 12000,
+    "cardFeeCents": 378,
+    "platformFeeCents": 1200,
+    "commissionCents": 0,
+    "materialsCents": 1200,
+    "makerShareCents": 9222,
+    "status": "paid"
+   },
+   {
+    "id": "ord_010",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_02",
+    "buyerId": "buy_10",
+    "date": "2026-09-19",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 650,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 4831,
+    "status": "paid"
+   },
+   {
+    "id": "ord_011",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_12",
+    "buyerId": "buy_11",
+    "date": "2026-09-25",
+    "grossCents": 9500,
+    "cardFeeCents": 306,
+    "platformFeeCents": 950,
+    "commissionCents": 0,
+    "materialsCents": 1000,
+    "makerShareCents": 7244,
+    "status": "paid"
+   },
+   {
+    "id": "ord_012",
+    "channelId": "ch_cindia",
+    "pieceId": "pc_10",
+    "buyerId": "buy_12",
+    "date": "2026-09-27",
+    "grossCents": 8500,
+    "cardFeeCents": 277,
+    "platformFeeCents": 850,
+    "commissionCents": 0,
+    "materialsCents": 900,
+    "makerShareCents": 6473,
+    "status": "paid"
+   },
+   {
+    "id": "ord_013",
+    "channelId": "ch_site",
+    "pieceId": "pc_02",
+    "buyerId": "buy_13",
+    "date": "2026-09-03",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 5481,
+    "status": "paid"
+   },
+   {
+    "id": "ord_014",
+    "channelId": "ch_site",
+    "pieceId": "pc_09",
+    "buyerId": "buy_14",
+    "date": "2026-09-05",
+    "grossCents": 12000,
+    "cardFeeCents": 378,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 1200,
+    "makerShareCents": 10422,
+    "status": "paid"
+   },
+   {
+    "id": "ord_015",
+    "channelId": "ch_site",
+    "pieceId": "pc_07",
+    "buyerId": "buy_15",
+    "date": "2026-09-08",
+    "grossCents": 4800,
+    "cardFeeCents": 169,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 600,
+    "makerShareCents": 4031,
+    "status": "paid"
+   },
+   {
+    "id": "ord_016",
+    "channelId": "ch_site",
+    "pieceId": "pc_08",
+    "buyerId": "buy_16",
+    "date": "2026-09-09",
+    "grossCents": 3800,
+    "cardFeeCents": 140,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 500,
+    "makerShareCents": 3160,
+    "status": "paid"
+   },
+   {
+    "id": "ord_017",
+    "channelId": "ch_site",
+    "pieceId": "pc_10",
+    "buyerId": "buy_17",
+    "date": "2026-09-10",
+    "grossCents": 8500,
+    "cardFeeCents": 277,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 900,
+    "makerShareCents": 7323,
+    "status": "paid"
+   },
+   {
+    "id": "ord_018",
+    "channelId": "ch_site",
+    "pieceId": "pc_12",
+    "buyerId": "buy_18",
+    "date": "2026-09-12",
+    "grossCents": 9500,
+    "cardFeeCents": 306,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 1000,
+    "makerShareCents": 8194,
+    "status": "paid"
+   },
+   {
+    "id": "ord_019",
+    "channelId": "ch_site",
+    "pieceId": "pc_02",
+    "buyerId": "buy_19",
+    "date": "2026-09-14",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 5481,
+    "status": "paid"
+   },
+   {
+    "id": "ord_020",
+    "channelId": "ch_site",
+    "pieceId": "pc_12",
+    "buyerId": "buy_20",
+    "date": "2026-09-16",
+    "grossCents": 9500,
+    "cardFeeCents": 306,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 1000,
+    "makerShareCents": 8194,
+    "status": "refunded"
+   },
+   {
+    "id": "ord_021",
+    "channelId": "ch_site",
+    "pieceId": "pc_09",
+    "buyerId": "buy_01",
+    "date": "2026-09-20",
+    "grossCents": 12000,
+    "cardFeeCents": 378,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 1200,
+    "makerShareCents": 10422,
+    "status": "paid"
+   },
+   {
+    "id": "ord_022",
+    "channelId": "ch_site",
+    "pieceId": "pc_11",
+    "buyerId": "buy_02",
+    "date": "2026-09-22",
+    "grossCents": 17500,
+    "cardFeeCents": 538,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 2100,
+    "makerShareCents": 14862,
+    "status": "paid"
+   },
+   {
+    "id": "ord_023",
+    "channelId": "ch_site",
+    "pieceId": "pc_07",
+    "buyerId": "buy_03",
+    "date": "2026-09-24",
+    "grossCents": 4800,
+    "cardFeeCents": 169,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 600,
+    "makerShareCents": 4031,
+    "status": "paid"
+   },
+   {
+    "id": "ord_024",
+    "channelId": "ch_site",
+    "pieceId": "pc_10",
+    "buyerId": "buy_04",
+    "date": "2026-09-26",
+    "grossCents": 8500,
+    "cardFeeCents": 277,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 900,
+    "makerShareCents": 7323,
+    "status": "paid"
+   },
+   {
+    "id": "ord_025",
+    "channelId": "ch_site",
+    "pieceId": "pc_08",
+    "buyerId": "buy_05",
+    "date": "2026-09-28",
+    "grossCents": 3800,
+    "cardFeeCents": 140,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 500,
+    "makerShareCents": 3160,
+    "status": "paid"
+   },
+   {
+    "id": "ord_026",
+    "channelId": "ch_site",
+    "pieceId": "pc_02",
+    "buyerId": "buy_06",
+    "date": "2026-09-29",
+    "grossCents": 6500,
+    "cardFeeCents": 219,
+    "platformFeeCents": 0,
+    "commissionCents": 0,
+    "materialsCents": 800,
+    "makerShareCents": 5481,
+    "status": "paid"
+   },
+   {
+    "id": "ord_027",
+    "channelId": "ch_gallery",
+    "pieceId": "pc_03",
+    "buyerId": "buy_07",
+    "date": "2026-09-06",
+    "grossCents": 120000,
+    "cardFeeCents": 0,
+    "platformFeeCents": 0,
+    "commissionCents": 48000,
+    "materialsCents": 9500,
+    "makerShareCents": 62500,
+    "status": "paid"
+   },
+   {
+    "id": "ord_028",
+    "channelId": "ch_gallery",
+    "pieceId": "pc_04",
+    "buyerId": "buy_08",
+    "date": "2026-09-13",
+    "grossCents": 95000,
+    "cardFeeCents": 0,
+    "platformFeeCents": 0,
+    "commissionCents": 38000,
+    "materialsCents": 8000,
+    "makerShareCents": 49000,
+    "status": "paid"
+   },
+   {
+    "id": "ord_029",
+    "channelId": "ch_gallery",
+    "pieceId": "pc_05",
+    "buyerId": "buy_09",
+    "date": "2026-09-19",
+    "grossCents": 80000,
+    "cardFeeCents": 0,
+    "platformFeeCents": 0,
+    "commissionCents": 32000,
+    "materialsCents": 7000,
+    "makerShareCents": 41000,
+    "status": "paid"
+   },
+   {
+    "id": "ord_030",
+    "channelId": "ch_gallery",
+    "pieceId": "pc_06",
+    "buyerId": "buy_10",
+    "date": "2026-09-25",
+    "grossCents": 45000,
+    "cardFeeCents": 0,
+    "platformFeeCents": 0,
+    "commissionCents": 18000,
+    "materialsCents": 4500,
+    "makerShareCents": 22500,
+    "status": "paid"
+   }
+  ],
+  "payouts": [
+   {
+    "id": "pay_001",
+    "channelId": "ch_cindia",
+    "date": "2026-09-01",
+    "grossCents": 18000,
+    "feesCents": 2352,
+    "refundCents": 0,
+    "netCents": 15648,
+    "orderIds": [
+     "ord_001"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_002",
+    "channelId": "ch_cindia",
+    "date": "2026-09-02",
+    "grossCents": 4800,
+    "feesCents": 649,
+    "refundCents": 0,
+    "netCents": 4151,
+    "orderIds": [
+     "ord_002"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_003",
+    "channelId": "ch_cindia",
+    "date": "2026-09-04",
+    "grossCents": 12000,
+    "feesCents": 1578,
+    "refundCents": 0,
+    "netCents": 10422,
+    "orderIds": [
+     "ord_003"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_004",
+    "channelId": "ch_site",
+    "date": "2026-09-05",
+    "grossCents": 6500,
+    "feesCents": 219,
+    "refundCents": 0,
+    "netCents": 6281,
+    "orderIds": [
+     "ord_013"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_005",
+    "channelId": "ch_cindia",
+    "date": "2026-09-06",
+    "grossCents": 6500,
+    "feesCents": 869,
+    "refundCents": 0,
+    "netCents": 5631,
+    "orderIds": [
+     "ord_004"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_006",
+    "channelId": "ch_site",
+    "date": "2026-09-07",
+    "grossCents": 12000,
+    "feesCents": 378,
+    "refundCents": 0,
+    "netCents": 11622,
+    "orderIds": [
+     "ord_014"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_007",
+    "channelId": "ch_cindia",
+    "date": "2026-09-09",
+    "grossCents": 9500,
+    "feesCents": 1256,
+    "refundCents": 0,
+    "netCents": 8244,
+    "orderIds": [
+     "ord_005"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_008",
+    "channelId": "ch_cindia",
+    "date": "2026-09-11",
+    "grossCents": 8500,
+    "feesCents": 1127,
+    "refundCents": 0,
+    "netCents": 7373,
+    "orderIds": [
+     "ord_006"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_009",
+    "channelId": "ch_site",
+    "date": "2026-09-12",
+    "grossCents": 17100,
+    "feesCents": 586,
+    "refundCents": 0,
+    "netCents": 16514,
+    "orderIds": [
+     "ord_015",
+     "ord_016",
+     "ord_017"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_010",
+    "channelId": "ch_cindia",
+    "date": "2026-09-13",
+    "grossCents": 3800,
+    "feesCents": 520,
+    "refundCents": 0,
+    "netCents": 3280,
+    "orderIds": [
+     "ord_007"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_011",
+    "channelId": "ch_site",
+    "date": "2026-09-14",
+    "grossCents": 9500,
+    "feesCents": 306,
+    "refundCents": 0,
+    "netCents": 9194,
+    "orderIds": [
+     "ord_018"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_012",
+    "channelId": "ch_cindia",
+    "date": "2026-09-15",
+    "grossCents": 4800,
+    "feesCents": 649,
+    "refundCents": 0,
+    "netCents": 4151,
+    "orderIds": [
+     "ord_008"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_013",
+    "channelId": "ch_site",
+    "date": "2026-09-16",
+    "grossCents": 6500,
+    "feesCents": 219,
+    "refundCents": 0,
+    "netCents": 6281,
+    "orderIds": [
+     "ord_019"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_014",
+    "channelId": "ch_cindia",
+    "date": "2026-09-17",
+    "grossCents": 12000,
+    "feesCents": 1578,
+    "refundCents": 0,
+    "netCents": 10422,
+    "orderIds": [
+     "ord_009"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_015",
+    "channelId": "ch_site",
+    "date": "2026-09-18",
+    "grossCents": 9500,
+    "feesCents": 306,
+    "refundCents": 0,
+    "netCents": 9194,
+    "orderIds": [
+     "ord_020"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_016",
+    "channelId": "ch_cindia",
+    "date": "2026-09-19",
+    "grossCents": 6500,
+    "feesCents": 869,
+    "refundCents": 0,
+    "netCents": 5631,
+    "orderIds": [
+     "ord_010"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_017",
+    "channelId": "ch_site",
+    "date": "2026-09-23",
+    "grossCents": 12000,
+    "feesCents": 378,
+    "refundCents": 9500,
+    "netCents": 2122,
+    "orderIds": [
+     "ord_021"
+    ],
+    "refundIds": [
+     "rfd_001"
+    ],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_018",
+    "channelId": "ch_site",
+    "date": "2026-09-24",
+    "grossCents": 17500,
+    "feesCents": 538,
+    "refundCents": 0,
+    "netCents": 16962,
+    "orderIds": [
+     "ord_022"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_019",
+    "channelId": "ch_cindia",
+    "date": "2026-09-25",
+    "grossCents": 9500,
+    "feesCents": 1256,
+    "refundCents": 0,
+    "netCents": 8244,
+    "orderIds": [
+     "ord_011"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_020",
+    "channelId": "ch_site",
+    "date": "2026-09-26",
+    "grossCents": 4800,
+    "feesCents": 169,
+    "refundCents": 0,
+    "netCents": 4631,
+    "orderIds": [
+     "ord_023"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_021",
+    "channelId": "ch_cindia",
+    "date": "2026-09-27",
+    "grossCents": 8500,
+    "feesCents": 1127,
+    "refundCents": 0,
+    "netCents": 7373,
+    "orderIds": [
+     "ord_012"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_022",
+    "channelId": "ch_site",
+    "date": "2026-09-28",
+    "grossCents": 8500,
+    "feesCents": 277,
+    "refundCents": 0,
+    "netCents": 8223,
+    "orderIds": [
+     "ord_024"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_023",
+    "channelId": "ch_gallery",
+    "date": "2026-09-30",
+    "grossCents": 340000,
+    "feesCents": 170000,
+    "refundCents": 0,
+    "netCents": 170000,
+    "orderIds": [
+     "ord_027",
+     "ord_028",
+     "ord_029",
+     "ord_030"
+    ],
+    "refundIds": [],
+    "monthId": "2026-09"
+   },
+   {
+    "id": "pay_024",
+    "channelId": "ch_site",
+    "date": "2026-10-02",
+    "grossCents": 10300,
+    "feesCents": 359,
+    "refundCents": 0,
+    "netCents": 9941,
+    "orderIds": [
+     "ord_025",
+     "ord_026"
+    ],
+    "refundIds": [],
+    "monthId": "2026-10"
+   }
+  ],
+  "refunds": [
+   {
+    "id": "rfd_001",
+    "orderId": "ord_020",
+    "date": "2026-09-21",
+    "amountCents": 9500,
+    "nettedInPayoutId": "pay_017"
+   }
+  ],
+  "statements": [
+   {
+    "id": "stm_gallery_2026_09",
+    "channelId": "ch_gallery",
+    "monthId": "2026-09",
+    "issuedDate": "2026-09-30",
+    "lines": [
+     {
+      "orderId": "ord_027",
+      "pieceId": "pc_03",
+      "saleCents": 120000,
+      "commissionBps": 5000,
+      "commissionCents": 60000,
+      "netCents": 60000
+     },
+     {
+      "orderId": "ord_028",
+      "pieceId": "pc_04",
+      "saleCents": 95000,
+      "commissionBps": 5000,
+      "commissionCents": 47500,
+      "netCents": 47500
+     },
+     {
+      "orderId": "ord_029",
+      "pieceId": "pc_05",
+      "saleCents": 80000,
+      "commissionBps": 5000,
+      "commissionCents": 40000,
+      "netCents": 40000
+     },
+     {
+      "orderId": "ord_030",
+      "pieceId": "pc_06",
+      "saleCents": 45000,
+      "commissionBps": 5000,
+      "commissionCents": 22500,
+      "netCents": 22500
+     }
+    ],
+    "totalSaleCents": 340000,
+    "totalCommissionCents": 170000,
+    "totalNetCents": 170000
+   }
+  ],
+  "contracts": [
+   {
+    "id": "ctr_gallery_01",
+    "channelId": "ch_gallery",
+    "commissionBps": 4000,
+    "statementDay": 30,
+    "signedDate": "2026-03-02",
+    "terms": {
+     "en": "Fogline Gallery sells the co-op's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the co-op the balance with the statement.",
+     "zh": "雾线画廊寄售合作社作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向合作社支付余款。"
+    }
+   }
+  ]
+ },
+ "scriptedBankTxns": [
+  {
+   "id": "txn_002",
+   "date": "2026-09-02",
+   "direction": "in",
+   "amountCents": 4151,
+   "memo": "Cindia settlement pay_002",
+   "refId": "pay_002"
+  },
+  {
+   "id": "txn_003",
+   "date": "2026-09-03",
+   "direction": "out",
+   "amountCents": 18500,
+   "memo": "Wool weaving yarn, 4 kg",
+   "refId": "pur_001"
+  },
+  {
+   "id": "txn_004",
+   "date": "2026-09-04",
+   "direction": "in",
+   "amountCents": 10422,
+   "memo": "Cindia settlement pay_003",
+   "refId": "pay_003"
+  },
+  {
+   "id": "txn_005",
+   "date": "2026-09-05",
+   "direction": "in",
+   "amountCents": 6281,
+   "memo": "Card processor payout pay_004",
+   "refId": "pay_004"
+  },
+  {
+   "id": "txn_006",
+   "date": "2026-09-06",
+   "direction": "in",
+   "amountCents": 5631,
+   "memo": "Cindia settlement pay_005",
+   "refId": "pay_005"
+  },
+  {
+   "id": "txn_007",
+   "date": "2026-09-07",
+   "direction": "in",
+   "amountCents": 11622,
+   "memo": "Card processor payout pay_006",
+   "refId": "pay_006"
+  },
+  {
+   "id": "txn_008",
+   "date": "2026-09-09",
+   "direction": "in",
+   "amountCents": 8244,
+   "memo": "Cindia settlement pay_007",
+   "refId": "pay_007"
+  },
+  {
+   "id": "txn_009",
+   "date": "2026-09-11",
+   "direction": "in",
+   "amountCents": 7373,
+   "memo": "Cindia settlement pay_008",
+   "refId": "pay_008"
+  },
+  {
+   "id": "txn_010",
+   "date": "2026-09-12",
+   "direction": "in",
+   "amountCents": 16514,
+   "memo": "Card processor payout pay_009",
+   "refId": "pay_009"
+  },
+  {
+   "id": "txn_011",
+   "date": "2026-09-13",
+   "direction": "in",
+   "amountCents": 3280,
+   "memo": "Cindia settlement pay_010",
+   "refId": "pay_010"
+  },
+  {
+   "id": "txn_012",
+   "date": "2026-09-14",
+   "direction": "in",
+   "amountCents": 9194,
+   "memo": "Card processor payout pay_011",
+   "refId": "pay_011"
+  },
+  {
+   "id": "txn_013",
+   "date": "2026-09-15",
+   "direction": "in",
+   "amountCents": 4151,
+   "memo": "Cindia settlement pay_012",
+   "refId": "pay_012"
+  },
+  {
+   "id": "txn_014",
+   "date": "2026-09-15",
+   "direction": "out",
+   "amountCents": 7200,
+   "memo": "Silver sheet and wire",
+   "refId": "pur_002"
+  },
+  {
+   "id": "txn_015",
+   "date": "2026-09-16",
+   "direction": "in",
+   "amountCents": 6281,
+   "memo": "Card processor payout pay_013",
+   "refId": "pay_013"
+  },
+  {
+   "id": "txn_016",
+   "date": "2026-09-17",
+   "direction": "in",
+   "amountCents": 10422,
+   "memo": "Cindia settlement pay_014",
+   "refId": "pay_014"
+  },
+  {
+   "id": "txn_017",
+   "date": "2026-09-18",
+   "direction": "in",
+   "amountCents": 9194,
+   "memo": "Card processor payout pay_015",
+   "refId": "pay_015"
+  },
+  {
+   "id": "txn_018",
+   "date": "2026-09-19",
+   "direction": "in",
+   "amountCents": 5631,
+   "memo": "Cindia settlement pay_016",
+   "refId": "pay_016"
+  },
+  {
+   "id": "txn_019",
+   "date": "2026-09-23",
+   "direction": "in",
+   "amountCents": 2122,
+   "memo": "Card processor payout pay_017",
+   "refId": "pay_017"
+  },
+  {
+   "id": "txn_020",
+   "date": "2026-09-24",
+   "direction": "in",
+   "amountCents": 16962,
+   "memo": "Card processor payout pay_018",
+   "refId": "pay_018"
+  },
+  {
+   "id": "txn_021",
+   "date": "2026-09-24",
+   "direction": "out",
+   "amountCents": 4600,
+   "memo": "Turquoise stones and ear wires",
+   "refId": "pur_003"
+  },
+  {
+   "id": "txn_022",
+   "date": "2026-09-25",
+   "direction": "in",
+   "amountCents": 8244,
+   "memo": "Cindia settlement pay_019",
+   "refId": "pay_019"
+  },
+  {
+   "id": "txn_023",
+   "date": "2026-09-26",
+   "direction": "in",
+   "amountCents": 4631,
+   "memo": "Card processor payout pay_020",
+   "refId": "pay_020"
+  },
+  {
+   "id": "txn_024",
+   "date": "2026-09-27",
+   "direction": "in",
+   "amountCents": 7373,
+   "memo": "Cindia settlement pay_021",
+   "refId": "pay_021"
+  },
+  {
+   "id": "txn_025",
+   "date": "2026-09-28",
+   "direction": "in",
+   "amountCents": 8223,
+   "memo": "Card processor payout pay_022",
+   "refId": "pay_022"
+  },
+  {
+   "id": "txn_026",
+   "date": "2026-09-30",
+   "direction": "in",
+   "amountCents": 170000,
+   "memo": "Gallery payment pay_023",
+   "refId": "pay_023"
+  },
+  {
+   "id": "txn_027",
+   "date": "2026-10-02",
+   "direction": "in",
+   "amountCents": 9941,
+   "memo": "Card processor payout pay_024",
+   "refId": "pay_024"
+  }
+ ],
+ "scriptedFlag": {
+  "flagId": "flg_01",
+  "kind": "short_payment",
+  "recordIds": [
+   "ctr_gallery_01",
+   "stm_gallery_2026_09",
+   "txn_026"
+  ],
+  "expectedCents": 204000,
+  "actualCents": 170000,
+  "deltaCents": 34000
+ },
+ "nessie": {
+  "customers": [
+   {
+    "_id": "6a1600000000000000000001",
+    "first_name": "Dine Weaving and Silver",
+    "last_name": "Co-op",
+    "address": {
+     "street_number": "1450",
+     "street_name": "Grant Avenue",
+     "city": "San Francisco",
+     "state": "CA",
+     "zip": "94133"
+    }
+   },
+   {
+    "_id": "6a1600000000000000000003",
+    "first_name": "Another",
+    "last_name": "Sandbox Customer",
+    "address": {
+     "street_number": "1",
+     "street_name": "Main Street",
+     "city": "Oakland",
+     "state": "CA",
+     "zip": "94607"
+    }
+   }
+  ],
+  "accounts": [
+   {
+    "_id": "6a1600000000000000000004",
+    "type": "Checking",
+    "nickname": "Commissions held by Cindia",
+    "rewards": 0,
+    "balance": 0,
+    "account_number": "2222222222222222",
+    "customer_id": "6a1600000000000000000003"
+   },
+   {
+    "_id": "6a1600000000000000000002",
+    "type": "Checking",
+    "nickname": "Dine co-op operating",
+    "rewards": 0,
+    "balance": 0,
+    "account_number": "1111111111111111",
+    "customer_id": "6a1600000000000000000001"
+   }
+  ],
+  "deposits": {
+   "6a1600000000000000000002": [
+    {
+     "_id": "6a1600000000000000000005",
+     "type": "deposit",
+     "transaction_date": "2026-09-02",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 4151,
+     "description": "Cindia settlement pay_002 (txn_002)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000007",
+     "type": "deposit",
+     "transaction_date": "2026-09-04",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 10422,
+     "description": "Cindia settlement pay_003 (txn_004)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000008",
+     "type": "deposit",
+     "transaction_date": "2026-09-05",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 6281,
+     "description": "Card processor payout pay_004 (txn_005)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000009",
+     "type": "deposit",
+     "transaction_date": "2026-09-06",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 5631,
+     "description": "Cindia settlement pay_005 (txn_006)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000000a",
+     "type": "deposit",
+     "transaction_date": "2026-09-07",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 11622,
+     "description": "Card processor payout pay_006 (txn_007)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000000b",
+     "type": "deposit",
+     "transaction_date": "2026-09-09",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 8244,
+     "description": "Cindia settlement pay_007 (txn_008)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000000c",
+     "type": "deposit",
+     "transaction_date": "2026-09-11",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 7373,
+     "description": "Cindia settlement pay_008 (txn_009)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000000d",
+     "type": "deposit",
+     "transaction_date": "2026-09-12",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 16514,
+     "description": "Card processor payout pay_009 (txn_010)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000000e",
+     "type": "deposit",
+     "transaction_date": "2026-09-13",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 3280,
+     "description": "Cindia settlement pay_010 (txn_011)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000000f",
+     "type": "deposit",
+     "transaction_date": "2026-09-14",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 9194,
+     "description": "Card processor payout pay_011 (txn_012)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000010",
+     "type": "deposit",
+     "transaction_date": "2026-09-15",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 4151,
+     "description": "Cindia settlement pay_012 (txn_013)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000012",
+     "type": "deposit",
+     "transaction_date": "2026-09-16",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 6281,
+     "description": "Card processor payout pay_013 (txn_015)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000013",
+     "type": "deposit",
+     "transaction_date": "2026-09-17",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 10422,
+     "description": "Cindia settlement pay_014 (txn_016)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000014",
+     "type": "deposit",
+     "transaction_date": "2026-09-18",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 9194,
+     "description": "Card processor payout pay_015 (txn_017)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000015",
+     "type": "deposit",
+     "transaction_date": "2026-09-19",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 5631,
+     "description": "Cindia settlement pay_016 (txn_018)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000016",
+     "type": "deposit",
+     "transaction_date": "2026-09-23",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 2122,
+     "description": "Card processor payout pay_017 (txn_019)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000017",
+     "type": "deposit",
+     "transaction_date": "2026-09-24",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 16962,
+     "description": "Card processor payout pay_018 (txn_020)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000019",
+     "type": "deposit",
+     "transaction_date": "2026-09-25",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 8244,
+     "description": "Cindia settlement pay_019 (txn_022)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000001a",
+     "type": "deposit",
+     "transaction_date": "2026-09-26",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 4631,
+     "description": "Card processor payout pay_020 (txn_023)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000001b",
+     "type": "deposit",
+     "transaction_date": "2026-09-27",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 7373,
+     "description": "Cindia settlement pay_021 (txn_024)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000001c",
+     "type": "deposit",
+     "transaction_date": "2026-09-28",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 8223,
+     "description": "Card processor payout pay_022 (txn_025)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000001d",
+     "type": "deposit",
+     "transaction_date": "2026-09-30",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 170000,
+     "description": "Gallery payment pay_023 (txn_026)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000001e",
+     "type": "deposit",
+     "transaction_date": "2026-10-02",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 9941,
+     "description": "Card processor payout pay_024 (txn_027)",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a160000000000000000001f",
+     "type": "deposit",
+     "transaction_date": "2026-08-31",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 1250000,
+     "description": "Opening balance std_dine 2026-09",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000020",
+     "type": "deposit",
+     "transaction_date": "2026-09-01",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 15648,
+     "description": "Cindia sale ord_001, Small grey, red and black wool weaving, net of fees",
+     "payee_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000024",
+     "type": "deposit",
+     "transaction_date": "2026-09-30",
+     "status": "cancelled",
+     "medium": "balance",
+     "amount": 204000,
+     "description": "Gallery payment pay_023",
+     "payee_id": "6a1600000000000000000002"
+    }
+   ],
+   "6a1600000000000000000004": []
+  },
+  "withdrawals": {
+   "6a1600000000000000000002": [
+    {
+     "_id": "6a1600000000000000000006",
+     "type": "withdrawal",
+     "transaction_date": "2026-09-03",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 18500,
+     "description": "Wool weaving yarn, 4 kg (txn_003)",
+     "payer_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000011",
+     "type": "withdrawal",
+     "transaction_date": "2026-09-15",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 7200,
+     "description": "Silver sheet and wire (txn_014)",
+     "payer_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000018",
+     "type": "withdrawal",
+     "transaction_date": "2026-09-24",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 4600,
+     "description": "Turquoise stones and ear wires (txn_021)",
+     "payer_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000021",
+     "type": "withdrawal",
+     "transaction_date": "2026-10-02",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 114918,
+     "description": "Maker payout mpo_01",
+     "payer_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000022",
+     "type": "withdrawal",
+     "transaction_date": "2026-10-02",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 83650,
+     "description": "Maker payout mpo_02",
+     "payer_id": "6a1600000000000000000002"
+    },
+    {
+     "_id": "6a1600000000000000000023",
+     "type": "withdrawal",
+     "transaction_date": "2026-10-02",
+     "status": "completed",
+     "medium": "balance",
+     "amount": 102032,
+     "description": "Maker payout mpo_03",
+     "payer_id": "6a1600000000000000000002"
+    }
+   ],
+   "6a1600000000000000000004": []
+  },
+  "operatingId": "6a1600000000000000000002",
+  "galleryDepositId": "6a160000000000000000001d"
+ },
+ "commission": {
+  "wipId": "wip_01",
+  "priceCents": 120000
+ },
+ "moves": {
+  "fund": {
+   "id": "evt_0101",
+   "type": "money.moved",
+   "at": 106500,
+   "source": "scripted",
+   "key": "b04-bank",
+   "payload": {
+    "moveId": "mv_0102",
+    "kind": "project_fund",
+    "from": {
+     "kind": "cindia"
+    },
+    "to": {
+     "kind": "community_fund",
+     "id": "prj_01"
+    },
+    "amountCents": 500,
+    "refId": "ctb_01",
+    "date": "2026-09-01"
+   }
+  },
+  "buyerLeg": {
+   "id": "evt_0100",
+   "type": "money.moved",
+   "at": 106200,
+   "source": "scripted",
+   "key": "b04-bank",
+   "payload": {
+    "moveId": "mv_0101",
+    "kind": "project_fund",
+    "from": {
+     "kind": "buyer",
+     "id": "buy_01"
+    },
+    "to": {
+     "kind": "cindia"
+    },
+    "amountCents": 500,
+    "refId": "ctb_01",
+    "date": "2026-09-01"
+   }
+  },
+  "milestone": {
+   "id": "evt_reply_3",
+   "type": "money.moved",
+   "at": 52000,
+   "source": "scripted",
+   "key": "b08-approvals",
+   "payload": {
+    "moveId": "mv_user_1",
+    "kind": "milestone",
+    "from": {
+     "kind": "cindia"
+    },
+    "to": {
+     "kind": "maker",
+     "id": "mkr_01"
+    },
+    "amountCents": 48000,
+    "refId": "mls_02",
+    "date": "2026-10-02"
+   }
+  }
+ }
+}

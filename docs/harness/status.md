@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 01:19 PT
+UPDATED: 2026-10-25 01:20 PT
 
 # Status board
 
@@ -125,7 +125,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
 | B14-swarm | T1-T10 built and committed; G5 after G4v2 | d04 live median 5.87 s (L15 quoted), listing 6.6 s, storefront 3.3 s | | Agent Builder times out at 9.4 s, find answers on B12 search at about 17 s |
 | B15-watch | T1-T6 built and committed; G5 blocked on PUBLIC_SITE_URL | Haiku claims and Sonnet Reporter (3.3 s) live; Apify crawl waits for the market | | threshold 0.22 measured; T7 not built |
-| B16-bank-books | T1-T4 running | | | B04's live calls pass; its G5 after G4v2 |
+| B16-bank-books | T1-T4 built and committed; G5 after G4v2 | Nessie live: seed 8.3 s, reconcile 1.2 s, fund move 1.9 s | | money-map-live-bank.spec needs M-desktop's player fix |
 
 ## Tags
 
@@ -194,6 +194,7 @@ Filled in from `artifacts/preflight.md` at G0.
 
 Run once the V2 leads are done, so a shared-code edit can't reload the dev server under another lead's tests.
 
+- M-desktop (for B16's G5): tests/features/money-map-live-bank.spec.ts drives the player wrong: in the apr_05 test play the player after the milestone's nessieId lands until the thread shows "Checked against Nessie", then pause; in the tour test pause and seek to 135700 (inside d06-money) after mv_0102's nessieId lands, before checking frame-studio.
 - M-approvals (on the tour, T8): approvals-cards.spec.ts 97-104, approvals-details.spec.ts 63-70, approvals-flow.spec.ts 74-82 assume apr_01 is the first request (the tour requests apr_04 at 128.0 s); with apr_04 pending, apr_02's Approve and Decline sit at 894-936 px in the 900 px frame after apr_01's grant (A1, keep the pending card's buttons in view); R1 selection.ts:128 fallback; decidedAt into events.md (integrator).
 - M-buyer: F1 a piece route with another entity's ID crashes the slot (`PiecePage.tsx:36-38`, treat a non-piece as missing, plus a spec); F2 the story column's verification block ends below y 876 on 20 of 54 pieces in English (pc_27 to pc_42, pc_45, pc_46, pc_49, pc_51; worst pc_38), move `PieceVerification` to the price column or shorten the story column, plus a multi-piece fit spec (`artifacts/gates/G3-buyer-verifier.md`). With T7 after G4v2.
 - F-seller-hub (`artifacts/gates/G3-seller-hub-verifier.md`): F1 steps list keeps its scroll offset after a language toggle (`ListingSteps.tsx:34-37`, add `lang`), F2 the steps list scrolls so Cindy's route and the Lister sit out of view at the final d15 state (the design shows all seven), F3 the embedded passage clamped to two lines, F4 "Vibe words" on its own row, F5 "September"/九月 typed in strings.ts, F10 the maker side panel 912 px in a 732 px view; F6 `--c-font-mono` for I3-redesign.
@@ -413,3 +414,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 01:01 PT · B14 Clerk English only and its d04 answer fixed (the prompt made it say unknown to the whole two-part question): 134 non-live + 2 live tests pass, endpoint 6.87 s; committed · status.md
 - 2026-10-25 01:03 PT · dev server stopped at its 2-hour limit, restarted on 5173 (a fresh module cache also clears the ?t= store copies that broke store-importing specs) · status.md
 - 2026-10-25 01:19 PT · API stopped at its 2-hour limit, restarted (all 16 routers) · status.md
+- 2026-10-25 01:20 PT · B16 done (reconcile over Nessie's records finds flg_01 with v1's figures and its nessieId, seed, fund deposit and milestone withdrawal, adapter): test_b16 72 + 1 live, test:server 854, check PASS, smoke 124; committed; reconcile-live-bank passes, money-map-live-bank needs M-desktop's player fix · status.md
