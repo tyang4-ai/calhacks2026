@@ -88,6 +88,9 @@ The integrator does every task itself, in order. T1 reports as soon as it's done
 - Given `StatTile` with `attention`, then the left rule shows, and the figure sits in the element marked `data-role="value"`.
 - Given `ProcessBlock` with `status: "working"` and the player playing, then it pulses on the player clock. Under reduced motion, or with the player paused, it doesn't move.
 - Given eleven `ProcessBlock`s in a row, then they fit the 1440 px page without wrapping.
+- Given `ProcessBlock` with `live: false`, then it shows no Live mark and no Simulated badge. With `live: true`, the Live mark shows inside `liveTestId`. Its status word and icon sit inside `statusTestId`, and its count inside `countTestId`.
+- Given `ProcessView` with `onClose` and `closeTestId`, when the close button is pressed, then `onClose` is called once. Without `onClose`, no close button shows.
+- Given `SideBySide` with `similarityLabel` and `similarityHint`, then both show inside the `similarityTestId` element, and the bar shows no other word.
 - Given `EmbeddingMap` with 54 points and a query, then every point and the star sit inside the given width and height, and the links reach exactly the `linkIds`.
 - Given `AgentGraph` with the 21 roster nodes, then the layout is the same on every render for the same inputs.
 - Given `PieceCard`, then the "Illustration" tag is visible on the picture, and the price is formatted by `Money`.
@@ -103,8 +106,8 @@ The integrator does every task itself, in order. T1 reports as soon as it's done
 
 ## Contract additions needed
 
-Settled in `docs/v2/contracts.md` section 11: the `Badge` variant names, `KitGallery` at `/dev/kit` with `dev-kit-gallery`, and the kit `Link` built on `navigate`. Still to add:
-- `PAGE_WIDTH` and `PAGE_HEIGHT` belong to I2-kit, in `src/ui/PageFrame.tsx`, not to I2-core. Section 11's "Page size" line says so.
-- `Link`'s props (`to`, `testId?`, `children`) and `StatTile` in section 7's kit list.
-- The `demo` prop on `PieceCard` and `VerificationLine`, showing L3 and L4 from section 12.
-- The `SearchBar`'s remove control test ID, `<chipPrefix>remove-<n>`, in section 7's kit list.
+None. Each is settled in `docs/v2/contracts.md`:
+- section 7: the kit list, with `Link` (`to`, `testId?`, `children`) and `StatTile`, and the `demo` prop on `PieceCard` and `VerificationLine`, which shows L3 and L4 as section 12 words them,
+- section 11: the `Badge` variant names, `KitGallery` at `/dev/kit` with `dev-kit-gallery`, the kit `Link` built on `navigate`, and `PAGE_WIDTH` and `PAGE_HEIGHT` in `src/ui/PageFrame.tsx` (its "Page size" line).
+
+The test ID props this plan adds for features need no contract line: `SearchBar`'s `<chipPrefix>remove-<n>`, `ProcessBlock`'s `statusTestId`, `countTestId` and `liveTestId`, and `ProcessView`'s `closeTestId`. The kit puts each ID it's given on its element. An ID a feature builds from them, such as F-search's `search-chip-remove-<n>`, stays that feature's internal test ID unless the contracts list it (ui-contract's rule).
