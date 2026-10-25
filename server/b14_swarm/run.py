@@ -38,6 +38,7 @@ from server.b14_swarm.agents import (
     ListingJob,
     SpecialistResult,
     StorefrontJob,
+    english,
     SupportContext,
     SupportJob,
     checker,
@@ -146,7 +147,8 @@ def run_group(ctx: SupportContext, group: list[str]) -> dict[str, SpecialistResu
 
 
 def _answered(job: SupportJob, reply: dict[str, str], ref_ids: list[str]) -> dict[str, Any]:
-    return {"threadId": job.thread_id, "runId": job.run_id, "agentId": "writer", "reply": reply, "refIds": ref_ids}
+    # English only: the reply's zh value repeats the English (decisions.md, Oct 25 00:14 PT).
+    return {"threadId": job.thread_id, "runId": job.run_id, "agentId": "writer", "reply": english(reply), "refIds": ref_ids}
 
 
 def _escalate(ctx: SupportContext, rec: RunRecorder) -> list[dict[str, Any]]:
@@ -166,10 +168,10 @@ def _escalate(ctx: SupportContext, rec: RunRecorder) -> list[dict[str, Any]]:
         "subjectIds": subjects,
         "overLimit": False,
         "proposedBy": "cindy",
-        "summary": text(
+        "summary": english(text(
             f"Support needs a person: {steps.ENUMS['cause'][cause][0]}, on {about}.",
             f"客服需要真人处理：{steps.ENUMS['cause'][cause][1]}，涉及{about}。",
-        ),
+        )),
         "decisionDate": decision_date(),
     }
     gross = (r.order(order_id) or {}).get("grossCents") if order_id else None
@@ -177,7 +179,7 @@ def _escalate(ctx: SupportContext, rec: RunRecorder) -> list[dict[str, Any]]:
         approval["amountCents"] = gross  # from the records, never from the person's words
         approval["overLimit"] = gross > OVER_LIMIT_CENTS
     finals = [
-        envelope("support.escalated", {"threadId": job.thread_id, "runId": job.run_id, "reason": dict(ESCALATION_REASONS[cause]),
+        envelope("support.escalated", {"threadId": job.thread_id, "runId": job.run_id, "reason": english(ESCALATION_REASONS[cause]),
                                         "approvalId": approval_id}, job.at),
         envelope("approval.requested", {"approvalId": approval_id, "approval": approval}, job.at),
     ]
@@ -195,7 +197,7 @@ def _forward(ctx: SupportContext, rec: RunRecorder, steward: SpecialistResult, o
     if answered_others:
         facts = {f.name: f for o in answered_others for f in o.facts}
         rest = fill_text(join_drafts([o.template or o.draft for o in answered_others]), facts)  # type: ignore[misc]
-        reply = {"en": f"{reply['en']} {rest['en']}".strip(), "zh": f"{reply['zh']}{rest['zh']}"}
+        reply = {"en": f"{reply['en']} {rest['en']}".strip(), "zh": ""}
         ref_ids += [i for o in answered_others for i in o.ref_ids if i not in ref_ids]
     finals = [
         envelope("support.answered", _answered(job, reply, ref_ids), job.at),

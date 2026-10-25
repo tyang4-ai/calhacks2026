@@ -37,6 +37,11 @@ def text(en: str, zh: str) -> Text:
     return {"en": en, "zh": zh}
 
 
+def english(t: Text) -> Text:
+    """English only (decisions.md, Oct 25 00:14 PT): a Text whose zh value repeats the English."""
+    return {"en": t.get("en", ""), "zh": t.get("en", "")}
+
+
 @dataclass
 class SupportJob:
     """One person's support request (`POST /api/b14/support`), after the router's checks."""

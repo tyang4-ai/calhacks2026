@@ -305,11 +305,10 @@ GOOD_REPLY_EN = (
     "{attest} The co-op's record reads: {quote} Ordered on {buy_date}, it ships by {ship_by} and arrives between "
     "{arrival_earliest} and {arrival_latest}, before {date_asked}."
 )
-GOOD_REPLY_ZH = "{attest}记录原文：{quote}如果{buy_date}下单，这件作品会在{ship_by}前发出，{arrival_earliest}到{arrival_latest}之间送达，早于{date_asked}。"
 
 
 def writer_out(**over) -> WriterOut:
-    base = dict(reply_en=GOOD_REPLY_EN, reply_zh=GOOD_REPLY_ZH, refIds=["pc_01", "com_dine", "mkr_01", "pol_01"])
+    base = dict(reply=GOOD_REPLY_EN, refIds=["pc_01", "com_dine", "mkr_01", "pol_01"])
     base.update(over)
     return WriterOut(**base)
 
@@ -749,7 +748,7 @@ def _marker_answers() -> dict[type, Any]:
         CindyOut: cindy_out(specialists=["steward", "clerk", m], parallel=["steward", m], routeNote=f"{m} note"),
         StewardOut: StewardOut(status="answered", sentence=sentence_number("verification.note")),
         ClerkOut: clerk_out(answer_en=f"{m} " + clerk_out().answer_en, answer_zh=f"{m}" + clerk_out().answer_zh),
-        WriterOut: writer_out(reply_en=f"{m} " + GOOD_REPLY_EN, reply_zh=f"{m}" + GOOD_REPLY_ZH, refIds=[m]),
+        WriterOut: writer_out(reply=f"{m} " + GOOD_REPLY_EN, refIds=[m]),
     }
 
 
@@ -943,7 +942,7 @@ def test_a_buyer_asking_about_another_order_gets_l17_and_no_trace_of_it(monkeypa
     j = job("Where is my order ord_002?", context=["ord_001"])
     answers = {
         IntakeOut: intake_out(intents=["order_status"], pieceIds=[], orderIds=["ord_002"], dateAsked=""),
-        WriterOut: writer_out(reply_en="{order_scope}", reply_zh="{order_scope}", refIds=["ord_002"]),
+        WriterOut: writer_out(reply="{order_scope}", refIds=["ord_002"]),
     }
     stp, finals, fake = run_support(monkeypatch, j, answers)
     blob = json.dumps(stp + [f["payload"] for f in finals], ensure_ascii=False)
@@ -1197,13 +1196,10 @@ def test_the_d04_question_end_to_end(monkeypatch):
     p = finals[0]["payload"]
     assert set(p["refIds"]) <= {"pc_01", "com_dine", "mkr_01", "pol_01"} and "pc_01" in p["refIds"]
     sentence_en = steward.split_en(NOTE["en"])[0]
-    sentence_zh = steward.split_zh(NOTE["zh"])[0]
-    assert p["reply"]["en"].startswith(L15_EN) and p["reply"]["zh"].startswith(L15_ZH)
+    assert p["reply"]["en"].startswith(L15_EN) and p["reply"]["zh"] == p["reply"]["en"]  # English only
     assert f"“{sentence_en}” (verification note, Diné Weaving and Silver Co-op)" in p["reply"]["en"]
-    assert f"“{sentence_zh}”（纳瓦霍（Diné）编织与银饰合作社的认证说明）" in p["reply"]["zh"]
     assert "Ordered on Sep 1, it ships by Sep 4 and arrives between Sep 10 and Sep 14, before Oct 10." in p["reply"]["en"]
-    assert "9月10日到9月14日之间送达，早于10月10日" in p["reply"]["zh"]
-    assert "{" not in p["reply"]["en"] + p["reply"]["zh"]
+    assert "{" not in p["reply"]["en"]
     # The step IDs start at the reserved number and the shape matches run_01's specialists.
     assert stp[0]["stepId"] == f"stp_user_{TAG}_11"
     run01 = next(r for r in FIXTURE["swarmRuns"] if r["runId"] == "run_01")
@@ -1219,7 +1215,7 @@ def test_the_d04_question_end_to_end(monkeypatch):
 
 
 def test_guaranteed_authentic_is_rejected_then_replaced(monkeypatch):
-    bad = writer_out(reply_en="Guaranteed authentic! " + GOOD_REPLY_EN)
+    bad = writer_out(reply="Guaranteed authentic! " + GOOD_REPLY_EN)
     stp, finals, fake = run_support(monkeypatch, job(D04), d04_answers({WriterOut: [bad, writer_out()]}))
     assert fake.agents_called().count("writer") == 2
     retry_hint = [c for c in fake.calls if c["output_format"] is WriterOut][1]["messages"][0]["content"]
@@ -1233,7 +1229,7 @@ def test_guaranteed_authentic_is_rejected_then_replaced(monkeypatch):
 
 
 def test_a_typed_amount_is_rejected_twice_then_the_template_answers(monkeypatch):
-    bad = writer_out(reply_en=GOOD_REPLY_EN + " It costs $180.00.")
+    bad = writer_out(reply=GOOD_REPLY_EN + " It costs $180.00.")
     stp, finals, fake = run_support(monkeypatch, job(D04), d04_answers({WriterOut: [bad, bad]}))
     assert fake.agents_called().count("writer") == 2
     last = stp[-1]
@@ -1249,10 +1245,11 @@ def test_a_typed_amount_is_rejected_twice_then_the_template_answers(monkeypatch)
 def test_a_reply_opening_in_another_language_fails_the_content_check(monkeypatch):
     b = writer.brief(ctx_for(job(D04)), [])
     for opening in ("¡Hola! ", "Yá'át'ééh! ", "Bonjour! "):
-        failed = writer.check(opening + "The records don't say.", "记录里没有写。", b, None)
+        failed = writer.check(opening + "The records don't say.", b, None)
         assert "language" in failed or "diacritics" in failed, (opening, failed)
-    assert writer.check("The records don't say.", "记录里没有写。", b, None) == []
-    bad = writer_out(reply_en="¡Hola! " + GOOD_REPLY_EN)
+    assert writer.check("The records don't say.", b, None) == []
+    assert "language" in writer.check("The records don't say. 记录里没有写。", b, None)  # English only
+    bad = writer_out(reply="¡Hola! " + GOOD_REPLY_EN)
     stp, finals, _ = run_support(monkeypatch, job(D04), d04_answers({WriterOut: [bad, bad]}))
     assert "another language" in stp[-3]["summary"]["en"] or "another language" in stp[-2]["summary"]["en"]
     assert not _reply(finals)["en"].startswith("¡Hola")
@@ -1264,13 +1261,13 @@ def test_the_writer_checks_placeholders_and_what_the_answer_needs():
     q = steward.SpecialistResult("steward", "answered", facts=[writer.Fact("quote", {"en": "“x”", "zh": "“x”"}, "q")],
                                  required=[["quote"]], draft={"en": "{quote}", "zh": "{quote}"})
     b = writer.brief(ctx, [q])
-    assert writer.check("It says {quote}", "记录：{quote}", b, None) == []
-    assert "missing" in writer.check("It says nothing.", "什么也没说。", b, None)
-    assert "placeholder" in writer.check("It says {quote} by {price}", "{quote}", b, None)
-    assert "typed_number" in writer.check("It says {quote} on Sep 4, 2026", "{quote}", b, None)
-    assert "typed_number" in writer.check("It says {quote}", "{quote}，十月十日前送到", b, None)
-    assert "promise" in writer.check("It says {quote}, certified.", "{quote}", b, None)
-    assert "meaning" in writer.check("It says {quote}; the diamond represents a mountain.", "{quote}", b, None)
+    assert writer.check("It says {quote}", b, None) == []
+    assert "missing" in writer.check("It says nothing.", b, None)
+    assert "placeholder" in writer.check("It says {quote} by {price}", b, None)
+    assert "typed_number" in writer.check("It says {quote} on Sep 4, 2026", b, None)
+    assert {"typed_number", "language"} <= set(writer.check("It says {quote}，十月十日前送到", b, None))
+    assert "promise" in writer.check("It says {quote}, certified.", b, None)
+    assert "meaning" in writer.check("It says {quote}; the diamond represents a mountain.", b, None)
 
 
 def test_slow_agents_still_answer_inside_the_budget_through_the_template(monkeypatch):
@@ -1310,7 +1307,7 @@ def test_a_meaning_question_goes_to_the_maker(monkeypatch):
     assert agents_in_order(stp) == ["intake", "cindy", "steward", "writer"]
     assert [f["type"] for f in finals] == ["support.answered", "question.forwarded"]
     ans, fwd = finals[0]["payload"], finals[1]["payload"]
-    assert ans["reply"] == {"en": L14_EN, "zh": L14_ZH}
+    assert ans["reply"] == {"en": L14_EN, "zh": L14_EN}  # L14 word for word, English only
     qid = f"qst_user_{TAG}_3"
     assert ans["refIds"] == ["pc_01", "mkr_01", qid]
     assert fwd == {"questionId": qid, "threadId": THREAD, "makerId": "mkr_01", "pieceId": "pc_01", "text": MEANING_Q, "lang": "en"}
@@ -1357,8 +1354,7 @@ def test_a_payout_question_on_the_sellers_side(monkeypatch):
     answers = {
         IntakeOut: intake_out(intents=["payout"], pieceIds=[], dateAsked=""),
         WriterOut: writer_out(
-            reply_en="Your {month} payout is {payout_amount}, paid on {payout_date} once the co-op's manager approves it. {held_amount} is held until the gallery pays what it owes.",
-            reply_zh="您{month}的结款是{payout_amount}，于{payout_date}发放。其中{held_amount}暂缓发放。",
+            reply="Your {month} payout is {payout_amount}, paid on {payout_date} once the co-op's manager approves it. {held_amount} is held until the gallery pays what it owes.",
             refIds=["mpo_01", "mst_01"],
         ),
     }
@@ -1370,12 +1366,30 @@ def test_a_payout_question_on_the_sellers_side(monkeypatch):
     assert p["refIds"] == ["mpo_01", "mst_01"]
 
 
+def test_every_support_ending_is_english_only(monkeypatch):
+    """Chinese goes entirely (decisions.md, Oct 25 00:14 PT): the Writer writes no Chinese, and every
+    Text in a support run's final events repeats the English."""
+    assert set(WriterOut.model_fields) == {"reply", "refIds"}
+    runs = [
+        (job(D04), d04_answers()),
+        (job(MEANING_Q), {IntakeOut: intake_out(intents=["culture"], dateAsked=""), StewardOut: StewardOut(status="unknown", sentence=0)}),
+        (job("It arrived damaged.", context=["pc_01", "ord_001"]), {IntakeOut: intake_out(needsPerson=True, dateAsked="")}),
+    ]
+    for j, answers in runs:
+        _, finals, fake = run_support(monkeypatch, j, answers)
+        texts = [f["payload"].get("reply") or f["payload"].get("reason") for f in finals if f["type"].startswith("support.")]
+        texts += [f["payload"]["approval"]["summary"] for f in finals if f["type"] == "approval.requested"]
+        assert texts and all(t["zh"] == t["en"] for t in texts), texts
+        w = [c for c in fake.calls if c["output_format"] is WriterOut]
+        assert all("ZH:" not in c["messages"][0]["content"] and "Chinese" not in c["system"] for c in w)
+
+
 def test_a_request_in_another_language_gets_the_language_note(monkeypatch):
     answers = {IntakeOut: intake_out(intents=["other"], pieceIds=[], dateAsked="", lang="other"), WriterOut: anthropic.APIConnectionError(request=REQ)}
     stp, finals, _ = run_support(monkeypatch, job("Bonjour, est-ce que vous livrez en France?"), answers)
     reply = _reply(finals)
-    assert reply["en"].startswith("I can answer in English or Chinese only.") and "Cindia's records" in reply["en"]
-    assert reply["zh"].startswith("我只能用英文或中文回答。")
+    assert reply["en"].startswith("I can answer in English only.") and "Cindia's records" in reply["en"]
+    assert reply["zh"] == reply["en"]
 
 
 def test_no_run_emits_a_forbidden_event_or_a_person_name_for_a_buyer(monkeypatch):
@@ -1456,7 +1470,7 @@ def find_answers(over: dict[type, Any] | None = None) -> dict[type, Any]:
         CindyOut: cindy_out(specialists=["finder", "curator"], parallel=["finder", "curator"]),
         FinderOut: FinderOut(keywords=["red", "wool", "Weaving", FAKE_MARK.lower(), "<b>"], maxPriceCents=0, communityIds=[]),
         CuratorOut: CuratorOut(order=["pc_13", "pc_07"]),
-        WriterOut: writer_out(reply_en="The closest pieces in the catalog are: {picks}.", reply_zh="目录中最接近的作品是：{picks}。", refIds=["pc_13", "pc_07"]),
+        WriterOut: writer_out(reply="The closest pieces in the catalog are: {picks}.", refIds=["pc_13", "pc_07"]),
     }
     a.update(over or {})
     return a
