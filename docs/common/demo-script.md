@@ -42,7 +42,7 @@ Gordon says these live. Plain and short, one line per beat.
 | `d05-money` | "Now follow the money. It lands in the co-op's bank account." |
 | `d06-month` | "Cindy plays the co-op's whole month and matches every payout to its orders." |
 | `d07-catch` | "Here's the catch. The gallery paid $340 less than the contract says, and Cindy shows why." |
-| `d08-approve` | "Cindy drafts the follow-up and the payouts. Only the owner can approve them." |
+| `d08-approve` | "Cindy drafts the follow-up and the payouts. Only the manager can approve them." |
 | `d09-close` | "The month closes into a real Excel file." |
 | `d10-statement` | "Each maker gets a plain statement, with what's still owed." |
 | `d11-receipt` | "And my receipt now shows the maker got paid." |

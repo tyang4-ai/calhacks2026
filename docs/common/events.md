@@ -213,11 +213,13 @@ interface Player {
   reset(): void;                    // clock to 0, store cleared
   seek(ms: number): void;           // replays every event up to ms at once, without animation
   setSpeed(x: 1 | 2 | 4 | 8): void;
+  getSpeed(): 1 | 2 | 4 | 8;        // the current speed
   now(): number;                    // the player clock, the only clock motion may use
   isPlaying(): boolean;
   epoch(): number;                  // counts loads, resets and seeks; a pending answer or a motion that started before a change drops itself
   getTimeline(): Timeline | null;   // the loaded timeline, events sorted by `at`
   durationMs(): number;             // the loaded timeline's `durationMs`, 0 with none; the demo harness writes it to report.json and the gate times the tour against it
+  subscribe(listener: () => void): () => void;  // called on every clock change, play, pause, speed change and load; returns the unsubscribe
 }
 ```
 
@@ -250,7 +252,7 @@ Every record is keyed by its entity ID, and every entry also keeps `at`, the pla
 | `model` | `trained` and `scored`, each the payload or `null` |
 | `watch` | `scans` by `scanId`: `{ makerId, queries, engine?, candidates?, results?, startedAt, scannedAt? }`, with `results` as `watch.scanned` carries them. `hits` by `cftId`, `hitIds`, `latestScanId` |
 | `sync` | `sync.data` and `sync.index`: the newest `data.synced` and the newest `index.synced`, each its payload with `at`, or `null` |
-| `log` | `entries`: one `{ id, type, at, source, key }` per event, newest last, one entry per event `id`, keeping the newest 400. A status event (`data.synced`, `index.synced`) replaces the log's earlier entry of its own type instead of adding one, so live polling never pushes the tour's events out. The process views and block counts read it, and the stage reads the newest `beat.started` ID from it |
+| `log` | `entries`: one `{ id, type, at, source, key }` per event, newest last, one entry per event `id`, keeping the newest 400. A status event (`data.synced`, `index.synced`) replaces the log's earlier entry of its own type instead of adding one, so live polling never pushes the tour's events out. One whose `at` is older than that entry's is ignored, so a replay never puts the older one back. The process views and block counts read it, and the stage reads the newest `beat.started` ID from it |
 | `demo` | `beatId`, `camera`, `process: ProcessId \| null` and `drawer: "support" \| "ask" \| "audit" \| null`, all from the newest `beat.started` |
 | `buyer` | v1's fields, plus `checkouts` and `cards` by `pieceId`. `card.tokenized` is filed under its `pieceId`, or under the latest `checkout.started`'s piece when the event has none. `checkout` and `card` stay as the latest of each, for v1's readers, until M-buyer moves off them |
 | `approvals` | each `ApprovalState` keeps `approval?`, the inline object from `approval.requested`, stored as it arrives. M-approvals, F-watch and F-seller-hub read it when `getById()` finds nothing |
@@ -295,6 +297,7 @@ interface LiveAdapter {
 | `answerId(prefix)` | `ids.ts` | The next ID for a scripted answer to a person, `<prefix>_user_<n>`. Numbers are reserved per prefix the moment an answer is planned, so two answers pending at once never share one. They start over at 1 when the player's epoch changes, which is when a reset or seek drops the store's person-made records |
 | `liveIdStart(prefix, count)` | `ids.ts` | Reserves `count` numbers for a live run and returns the first, sent as `idStart`. Live IDs are `<prefix>_user_<pageTag()>_<n>`, and these numbers never start over within a page, so SpacetimeDB rows from an earlier epoch never collide with new ones |
 | `extractKeywords(text, vocab?)` | `keywords.ts`, exported from `src/sources/index.ts` | The keyword chips and filters, by `data-model.md`'s keyword chip rule. `vocab` defaults to the catalog's, built once from `src/mock/`; tests pass their own |
+| `isPriceChip(chip)` | `keywordSearch.ts`, exported from `src/sources/index.ts` | True for a price chip like `under $200` or `below $1,500`, which is a filter and never a word to match |
 | `scoreKeywords(keywords, filters, index, pieces)`, `keywordVocab(index, aliases, pieces?)` | `keywordSearch.ts` | The scripted keyword scorer and its vocabulary, by `data-model.md`'s rule. `pieces` defaults to the catalog's `pieces` |
 | `drawSurprise({ keyword?, method, seed }, index, pieces)`, `mulberry32(seed)` | `surprise.ts` | The surprise draw, by `data-model.md`'s rule, or `null` when the index has no active piece. B12's Python port is tested against both |
 | `planRun(run, request, ids, opts?)` | `scriptedSwarm.ts` | Turns a `ScriptedRun` into planned `{ offset, event }` pairs, with the timing and re-keying below. `ids(prefix)` is `answerId()` in the request's epoch. `opts` carries the thread for a maker's answer, the quote to replace, the scripted approvals for the inline copy, and IDs that become the request's own (`qst_01` to the person's question) |

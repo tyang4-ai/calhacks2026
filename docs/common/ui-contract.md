@@ -25,7 +25,7 @@ Read by every feature, the integrator and the verifier. It fixes the routes, the
 | `/market/` | The sandbox market: static pages of fictional listings in `public/market/`, outside the shell (D-deploy). The copy watch crawls only these |
 
 - An unknown route or view redirects to `/shop`. The demo controls stay on every route.
-- Every page carries L1 in the top bar. `index.html` has `<meta name="robots" content="noindex">`, and `public/robots.txt` disallows everything.
+- Every page carries L1 in the top bar, except `/dev/kit`, which has no top bar and says its content is sample content. `index.html` has `<meta name="robots" content="noindex">`, and `public/robots.txt` disallows everything.
 - **The public build** (`VITE_PUBLIC_SITE=1`, read only by `src/app/site.ts`): every slot gets `publicSite: true`, Pay shows L6 in its place (`buyer-pay-blocked`), and the Live switch is hidden, so the public site stays scripted. Localhost and every gate keep the demo checkout and the Live switch.
 
 ## Navigation (`src/core/nav.ts`)
@@ -292,7 +292,26 @@ Until I2-tour, `/demo` plays v1's 60-second demo, and video mode, start at the c
 ## Test hooks
 
 - In every build, `window.__cindia` exposes `{ player, store, emit }` from `src/core/`, so Playwright can read the clock, seek and check state. Nothing else is exposed.
-- Tests find elements only by test ID. Never by text, class or position. Specs seek by event, never by a fixed time (`seekToEvent` in `conventions.md`).
+- Tests find elements only by test ID. Never by text, class or position. Inside an element found by test ID, a test may also select or read the data attributes below. Specs seek by event, never by a fixed time (`seekToEvent` in `conventions.md`).
+
+### Data attributes for tests
+
+| Attribute | Element | Rendered by |
+|---|---|---|
+| `data-slot`, `data-slot-state`, `data-slot-props`, `data-slot-loading` | Every slot's wrapper: the slot ID, `empty`, `filled` or `error`, the props the slot got as JSON, and `true` while its feature loads | the shell, `src/app/Slot.tsx` |
+| `data-view` | The Sell site's view area (`main`): the view's ID | the shell, `src/app/surfaces/SellSurface.tsx` |
+| `data-camera` | `demo-stage`: the current tour camera | the shell, `src/app/demo/DemoStage.tsx` |
+| `data-mode` | `demo-mode-toggle`: `scripted` or `live` | the shell, `src/app/controls/DemoControls.tsx` |
+| `data-source-key`, `data-healthy` | One dot per source key inside `demo-mode-toggle`, live mode only: its key, and `true` or `false` | the shell, `src/app/controls/DemoControls.tsx` |
+| `data-lang` | `demo-lang-toggle`: the store's `lang` | the shell, `src/app/controls/DemoControls.tsx` |
+| `data-variant` | Every labeled `Badge`: `simulated`, `live`, `demo`, `rule` or `estimate` | the kit, `src/ui/Badge.tsx` |
+| `data-raised`, `data-goal` | A `ProjectCard`'s progress block (`project-progress-<projectId>`): raised and goal, in cents | the kit, `src/ui/ProjectCard.tsx` |
+| `data-piece-id` | Each card's wrapper inside `search-featured`, and each piece's cell inside `communities-pieces` | search (`Featured.tsx`), communities (`CommunityPage.tsx`) |
+| `data-contribution-id` | Each row inside `communities-contributions` | communities (`SellProjects.tsx`) |
+| `data-ref-id` | Each record inside `support-refs` | support (`Thread.tsx`) |
+| `data-agent-id` | Each `support-step-<stepId>`: the step's agent | support (`StepStrip.tsx`) |
+
+A feature may set other data attributes for its own specs. Nothing outside that feature may rely on them.
 
 ## Test IDs
 
@@ -401,6 +420,21 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 | `search-surprise-rule` | search | The fair rule in one line ("Makers with fewer sales this month get a bigger chance") |
 | `search-proof` | search | Sell › Proof side panel: the model's score table |
 | `search-proof-row-<system>` | search | One row: keyword, base, custom, hybrid |
+| `search-example-<n>` | search | Internal: example vibe number n under the search box, from 1 |
+| `search-featured` | search | Internal: the featured grid on Shop home |
+| `search-chip-add` | search | Internal: the box that adds a chip on the results page |
+| `search-chip-remove-<n>` | search | Internal: the remove control on chip n, from the kit's `SearchBar` |
+| `search-filter-price` | search | Internal: the price cap filter |
+| `search-filter-community-<communityId>` | search | Internal: one community filter |
+| `search-surprise-keyword` | search | Internal: the keyword box for a keyword surprise |
+| `search-source-<pieceId>-<n>` | search | Internal: the source marker on a result's matched keyword n, from 1 |
+| `search-closeness-<pieceId>` | search | Internal: a result's closeness, when its payload has one |
+| `search-no-close` | search | Internal: the "No close matches" line |
+| `search-provenance-note` | search | Internal: the line under the grid about who wrote each part |
+| `search-model-line` | search | Internal: the model's score, inside `search-engine` |
+| `search-proof-note` | search | Internal: L28 under the proof table |
+| `search-proof-empty` | search | Internal: "Not trained yet" |
+| `search-working` | search | Internal: the waiting line while the latest query has no answer |
 | `community-card-<communityId>` | communities | A community card |
 | `community-page` | communities | A community page |
 | `community-verification` | communities | How its makers would be verified |
@@ -410,6 +444,20 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 | `project-fund-<projectId>` | communities | Fund this project |
 | `wip-milestone-<milestoneId>` | communities | One milestone of a work in progress |
 | `wip-release-<milestoneId>` | communities | Sell side: release a milestone (proposes an approval) |
+| `communities-strip` | communities | Internal: the communities and projects strip on Shop home |
+| `communities-about-note` | communities | Internal: L8 under the about box |
+| `communities-protocols-note` | communities | Internal: the rest of L9, under the protocols' title |
+| `communities-makers`, `communities-maker-<makerId>` | communities | Internal: the community page's makers, and one maker |
+| `communities-pieces` | communities | Internal: the community page's pieces |
+| `communities-storefront-link` | communities | Internal: the link to the community's storefront |
+| `communities-amount-<cents>` | communities | Internal: one amount in the funding picker, 500, 1000 or 2500 |
+| `communities-fund-note-<projectId>` | communities | Internal: L7 beside the fund button |
+| `communities-thanks` | communities | Internal: the thank-you line after funding |
+| `communities-list` | communities | Internal: the projects page without an ID |
+| `communities-wip-page` | communities | Internal: a work in progress's own page |
+| `communities-sell` | communities | Internal: Sell › Projects |
+| `communities-contributions` | communities | Internal: the contributions in this run, on Sell › Projects |
+| `communities-cindy-note` | communities | Internal: Cindy's newest line about Sell › Projects |
 | `support-drawer` | support | Either support drawer |
 | `support-input` | support | The message box |
 | `support-send` | support | Send |
@@ -419,6 +467,17 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 | `support-handoff` | support | The notice that a person is taking over |
 | `support-forwarded-<questionId>` | support | The notice in the buyer's thread that the question went to the maker |
 | `support-maker-answer-<questionId>` | support | The maker's own words, shown in the buyer's thread with her name |
+| `support-msg-<n>` | support | Internal: message number n in the thread, from 1 |
+| `support-steps` | support | Internal: the step strip, the agents taking turns |
+| `support-step-<stepId>` | support | Internal: one step in the strip |
+| `support-working` | support | Internal: the working line until the run ends |
+| `support-suggest-<n>` | support | Internal: suggested question number n in the drawer, from 1 |
+| `support-piece-suggest-<n>` | support | Internal: suggested question number n in the piece page's side panel, from 1 |
+| `support-new` | support | Internal: New conversation |
+| `support-ask-piece` | support | Internal: "Ask about this piece", the piece page's side panel |
+| `support-refs` | support | Internal: the records the latest reply names |
+| `support-records-note` | support | Internal: L11 at the top of the drawer |
+| `support-live-note` | support | Internal: L12 under the input, live mode only |
 | `seller-overview` | seller-hub | Sell › Overview |
 | `seller-listing-notes` | seller-hub | The maker's notes box |
 | `seller-listing-draft` | seller-hub | The drafted listing |

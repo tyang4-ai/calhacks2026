@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:40 PT
+UPDATED: 2026-10-24 22:42 PT
 
 # Status board
 
@@ -323,3 +323,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:25 PT · heartbeat: 5173, 8000, 3000 up, mock.json fresh, load 19; contracts docs round 1 running (integrator, docs/common/ only, then two verifiers); code items from the verifiers wait for the polish round before I2-tour · status.md
 - 2026-10-24 22:31 PT · G3 buyer 2/3 in the shared tree (check:scope, feature 62 passed; smoke 122/123, the failure in F-seller-hub's unfinished MakerSide.tsx); rerun in the worktree with buyer plus I2-art's drawings (I2-art verifier PASS) · artifacts/gates/G3-2218.md
 - 2026-10-24 22:40 PT · F-process built (check:scope 71 unit, feature 35/35 on rerun); its verifier and F-watch's lead spawned; worktree G3 now uses its own dev server on 5174 (the preview can't serve the dev-only /src imports two v1 buyer specs use); buyer and process worktree G3s running; integrator fixing the offline-font flake in shell.spec.ts:447 · status.md
+- 2026-10-24 22:42 PT · contracts docs round 1 PASS (integrator; code-match and consistency verifiers PASS, minors only): api-contract, definition-of-done, demo-script, design-system, events, ui-contract (41 internal test IDs, a data-attributes table, the scrim token, the Seal date rule); code items queued for the polish round · status.md

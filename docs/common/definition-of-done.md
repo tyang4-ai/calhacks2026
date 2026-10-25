@@ -98,7 +98,7 @@ Each gate runs through the gate skill: `npm run gate -- <gate> [<slug> ...]` whe
 - Claude Code updated with `claude update`, at or above the version `scripts/preflight.mjs` names, and signed in to the claude.ai plan, which Remote Control needs
 - `ANTHROPIC_API_KEY` not set in the shell that launched Claude Code
 - Playwright's Chromium installed
-- Ports 5173, 4173, 8000 and 3000 (the local SpacetimeDB) free
+- Ports 5173, 4173 and 8000 free, and port 3000 free or already held by the local SpacetimeDB (it answers `/v1/ping`)
 - `.env` present with `ANTHROPIC_API_KEY` and `NESSIE_KEY`, checked for presence only and never printed. A missing key doesn't block Phase 1. It blocks the upgrades that call Claude or Nessie and goes under Needs Gordon
 - The vault docs folder readable, the clock on Pacific time, and at least 5 GB free
 - `.env` and `artifacts/` listed in `.gitignore`

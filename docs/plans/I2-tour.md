@@ -243,7 +243,7 @@ T1's report gives the orchestrator the `decisions.md` entry: these checks move t
 | `d06-money` | "Now follow the money into the co-op's bank account." |
 | `d07-month` | "Cindy plays the co-op's whole month, matches every payout, and the reconcile view shows her record of work." |
 | `d08-catch` | "Here's the catch. The gallery paid $340 less than the contract says." |
-| `d09-approve` | "Cindy drafts the follow-up and the payouts. Only the owner can approve them." |
+| `d09-approve` | "Cindy drafts the follow-up and the payouts. Only the manager can approve them." |
 | `d10-close` | "The month closes into a real Excel file." |
 | `d11-maker` | "Because the gallery paid short, $95 of Grace N.'s pay is held, and her statement tells her why." |
 | `d12-receipt` | "And my receipt now shows Grace N. got paid, with a note from her." |

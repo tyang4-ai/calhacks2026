@@ -42,6 +42,7 @@ Desktop only. Phone frames are retired.
 | `--c-color-amber` | `#8A5A0B` | Waiting states: pending payout, needs review | 5.3 |
 | `--c-color-seal-wash` | `#F3DFDA` | Background of a flagged row or evidence panel | |
 | `--c-color-jade-wash` | `#DFEAE2` | Background of a matched row | |
+| `--c-color-scrim` | `#1C1A17` at 32% (`rgb(28 26 23 / 0.32)`) | The scrim behind the process overlay, never text | |
 
 - Seal red appears at most once per screen as a large area. Flags use it as a thin left rule plus the wash.
 - A color always comes with a second cue: an icon, a label or a position.
@@ -90,7 +91,7 @@ Each component takes a `testId` prop. The scaffolder built the first set in S1, 
 | `Money` | Formats integer cents. Props: `cents`, `tone` (`neutral`, `in`, `out`, `pending`) |
 | `formatDate` | `formatDate(iso, lang)` turns `2026-10-02` into "Oct 2, 2026" or "2026年10月2日", in UTC, never from the wall clock |
 | `Thread` | The animated money flow between two anchor points, with an amount label at its midpoint |
-| `Seal` | A square cinnabar stamp with one Chinese character and a date, for approvals |
+| `Seal` | A square cinnabar stamp with one Chinese character and a date, for approvals. The date is the month and day on one line at 14 px, never smaller. A seal too small to hold it, such as the 48 px compact seal with a Chinese date, shows its character alone |
 | `MakerMark` | A small square ink seal with the maker's surname character, used instead of photo avatars |
 | `Badge` | Small outlined label. The `Simulated` variant reads "Simulated 模拟" and sits in the top right of every panel fed by scripted events. The `live` ("Live 实时"), `demo` ("Demo data 演示数据"), `rule` ("Rule-based 规则程序") and `estimate` ("Estimate 估算") variants take their labels from the glossary |
 | `Flag` | Seal-red left rule plus wash, with a short reason line |
@@ -104,7 +105,7 @@ Each component takes a `testId` prop. The scaffolder built the first set in S1, 
 | `PageFrame` | The 1440 by 900 desktop page on the paper ground. Exports `PAGE_WIDTH` and `PAGE_HEIGHT` |
 | `TopNav` | The 56 px top bar, with left, center and right parts |
 | `SideSwitch` | The Shop and Sell switch, the selected side marked by fill and weight |
-| `Link` | `to`, `testId?`, `children`: a real anchor that calls `navigate` from `src/core/nav.ts` on a plain click and keeps the browser's own behavior for any other click |
+| `Link` | `to`, `testId?`, `children`, and optional `variant` (`text`, an underlined inline link and the default, or `block`, which wraps a card or tile with no underline), `className`, `style`, `title` and `ariaLabel`: a real anchor that calls `navigate` from `src/core/nav.ts` on a plain click and keeps the browser's own behavior for any other click |
 | `ProcessBlock` | One block of the process bar: label, status as an icon and a word, count, and a Live mark when all its keys are live |
 | `ProcessView` | The frame of a process view: title, Live or Simulated badge, body, event log |
 | `EventLog` | The raw event log, newest last, times as seconds on the player clock |
@@ -121,7 +122,7 @@ Each component takes a `testId` prop. The scaffolder built the first set in S1, 
 | `EmbeddingMap` | SVG scatter of points with the query star and links to the top results. An approximate query point is drawn hollow |
 | `ScoreBar` | A value from 0 to 1 as a bar |
 | `StatTile` | A titled figure with lines under it and an optional seal-colored rule for attention. Wrap it in a `Link` to make it open a view |
-| `Drawer` | Generic, 440 px, from the right. Esc and its close button close it |
+| `Drawer` | Generic, 440 px (`width`), from the right. Esc and its close button (test ID `closeTestId`) close it |
 | `Tabs` | A row of tabs |
 | `BlockEditor` | A list of blocks with move up, move down and edit |
 | `SideBySide` | Two cards with a similarity bar between them |
