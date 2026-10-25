@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:47 PT
+UPDATED: 2026-10-24 23:48 PT
 
 # Status board
 
@@ -105,7 +105,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | M-desktop | V2 P0 | built, worktree G3 queued and verifier | feature-lead | | needs FlagState.nessieId in src/core/state.ts (integrator) |
 | F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | green | feature-lead | v2-watch | live spec skips until B15; F2 in the polish queue |
-| F-storefront | V2 P1 | running | feature-lead | | |
+| F-storefront | V2 P1 | built, worktree G3 queued and verifier | feature-lead | | needs a theme field on storefront.published (integrator) |
 | M-maker-statement | V2 P1 | built, worktree G3 queued and verifier | feature-lead | | compact layout under 600 px for Phase A's box |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
 | I2-tour | V3 | T2 running | integrator, data-smith | | T1 then T3-T8; English-only toggle hiding in T3-T8 |
@@ -191,6 +191,7 @@ Run once the V2 leads are done, so a shared-code edit can't reload the dev serve
 - F-watch F2: the checked list's first title is ellipsized (`.checkedTitle` should wrap); undo is a hand-built button where the kit has Button.
 - Feature leads: F-search F1 (only the first row of the six tour results above the fold, `ResultsGrid.tsx`, `ResultCard.tsx`); F-communities F1 (Shop home strip clipped at 1440x900, `_stripBody` scroll) and F2 (`/shop/projects` inner scroll). If either can't be fixed in the feature, the integrator changes the Shop home stack ratio in `src/app/surfaces/surfaces.module.css`.
 - Integrator code: `src/sources/scriptedSwarm.ts:46-47` 沙盒市集 → 沙盒市场 (data round 1); R0's churro line `catalog.ts:28` keeps 丘罗羊（churro） by R0's own wording while swarm.ts follows R19 (orchestrator: leave, logged); `src/ui/Seal.tsx:50-51` comment (the compact card's date); `src/app/chrome/AppChrome.tsx` Ask Cindy button test ID (add to ui-contract.md); `src/ui/gallery.tsx:458` 示例山丘工作室 (old-names grep, G2b M1); `tests/smoke/routes.spec.ts` checks the co-op's name in the Sell header and the eleven ProcessBlocks on one row on /dev/kit; `src/core/validate.test.ts` negative cases for the optional fields; `scripts/gate.mjs` copies `artifacts/demo/report.json` next to each live G5's logs; `node --test scripts/*.test.mjs` in `npm run check` or a gate (D-deploy note); `ALLOWED_EMPTY_FALLBACKS` b13-live data.synced and b11-embed (search.mapped, model.trained, proof.search_scored, tourScripted: true; I2-tour T6); place `src/sources/live/b11-embed.test.ts` from the B11 builder's scratch copy (scratchpad/adapter/b11-embed.scratch.test.ts, 7 cases); tsconfig jsx.
+- Integrator code (from F-storefront): optional `theme?: { accent: string; layout: "story_first" | "grid_first" }` on `storefront.published` (events.md, validate.ts, reducers/storefront.ts) so the picked accent reaches /store/:slug; from M-desktop: `nessieId?: string` on `FlagState` (src/core/state.ts).
 - Integrator code (from G3 process): `src/ui/views.ts` graphLayout puts a tool node over an agent's name (F1, the lead works around it); the search map note renders at 13.95 px (N4); `swarm.steps` carry no event ID (N8). B13: the live data view's `processes` row reads 0 (N7).
 - Integrator docs round 2: F-process's 24 internal test IDs into ui-contract.md (N10); the v1 store sub-fields features read (`buyer.splits`, `orders`, `receipts` and the rest) in events.md (buyer N1, process N9); design-system.md "the 48 px compact seal" → "a 48 px seal", `formatMonthDay` in the kit table; ui-contract.md Test hooks rule wording (data-slot* sits on a wrapper with no test ID), add data-role, data-status, data-video-phase, data-catch-phase to the data-attributes table, the Test IDs intro now that Internal rows are many; events.md Player `setDispatch`, `subscribe` comment names reset and seek; glossary L1 Where cell "except /dev/kit"; api-contract 503/502 rows.
 - I2-tour: L1 at the end card's foot (decisions 22:5x).
@@ -373,3 +374,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:44 PT · V3 started early: I2-tour T2 integrator spawned (contract check and the tour tables in demo-script.md; tests and docs only, so it disturbs no running lead); B11 --eval-only --no-publish running on the pooled grades; English-only toggle hiding goes to I2-tour's integrator (T3-T8 owns src/app), feature-side English-only items to each lead's polish round · status.md
 - 2026-10-24 23:46 PT · B11 --eval-only on the pooled grades (fingerprint unchanged f7181c7d…): recall@5 / MRR@10 keyword 0.784 / 0.875, base 0.722 / 0.781, Cindia's model 0.789 / 0.892, hybrid 0.825 / 0.940; custom beats base on MRR (ci95 0.022 to 0.206), ties keyword within noise; publish to the private Hugging Face repo running · artifacts/b11/eval-only.out
 - 2026-10-24 23:47 PT · B11 model published to the private Hugging Face repo Fireclaw2396/cindia-embed (revision 5ad57138…, 11 files, secrets scan 0 findings); report.json has hubRepo, hubRevision, hubUrl; S3 T9 second pass sent (report copy with hubUrl, real text matches for cft_02 to cft_04) · artifacts/b11/publish.out
+- 2026-10-24 23:48 PT · F-storefront built (T0-T6, smoke 123, feature specs pass alone; shared-tree runs lose a test to reloads); its worktree G3 queued and verifier spawned; all eleven V2 leads have reported · status.md
