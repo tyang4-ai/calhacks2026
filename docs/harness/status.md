@@ -58,6 +58,7 @@ v1 (desktop session, history):
 | G4v2 | PASS | Oct 25 2:52 AM | `artifacts/gates/G4v2-0233.md` 5/5 (build, tour 220.0 s within 235 s x3, offline); first run `G4v2-0150.md` 5/5 with review FAILs (English: d15's translated step, stale v1 shots; words: d11's "Pieces for sale"), fixed; recheck `artifacts/gates/G4v2-verifier-recheck.md` | demo-ok-v2 |
 | G4v2 (drop 3) | PASS | Oct 25 4:25 AM | `artifacts/gates/G4v2-0346.md` 5/5 (tour 220.0 s x3, offline); review `artifacts/gates/G4v2-d3-review.json` and `G4v2-d3-verifier-*.md`: screens, contracts, English PASS; readable FAIL on R1 (the Model card's score table 24 px past its card on d13), which both skeptics found real but not blocking | demo-ok-v2-d3 |
 | G5 b12 (worktree) | PASS | Oct 25 4:20 AM | `artifacts/gates/G5-b12-search-wt-0406.md` 7/7 (test:server 872, B12 pytest 52 + live, search-live spec, build, live tour 220.0 s, offline) | demo-ok-b12 |
+| G5 b14 (worktree) | PASS | Oct 25 4:33 AM | `artifacts/gates/G5-b14-swarm-wt-0420.md` 7/7 (test:server 872, B14 pytest 134 + 2 live, support-live spec, build, live tour 220.0 s, offline) | demo-ok-b14 |
 | G6 | | | | |
 
 ## Features
@@ -126,7 +127,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B11-embed | T1-T8 built, trained and published; G5 after T9 pass 2 | pairs by Claude (Haiku, one Sonnet retry); Hub publish 11:57 PM | | trained 45.8 min at batch 16; recall@5 custom 0.789, keyword 0.784, hybrid 0.825; private repo Fireclaw2396/cindia-embed rev 5ad57138 |
 | B12-search | green: G5 7/7 on the tour in the worktree | Elastic hybrid live: seed ~30 s, query 0.61 s, Agent Builder 7.1 s | demo-ok-b12 | Elastic eval recall@5 0.819, MRR 0.887; T7 not built; first G5 run failed only its live tour at load 7.7 |
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
-| B14-swarm | T1-T10 built and committed; G5 after G4v2 | d04 live median 5.87 s (L15 quoted), listing 6.6 s, storefront 3.3 s | | Agent Builder times out at 9.4 s, find answers on B12 search at about 17 s |
+| B14-swarm | green: G5 7/7 on the tour in the worktree | d04 live median 5.87 s (L15 quoted), listing 6.6 s, storefront 3.3 s | demo-ok-b14 | Agent Builder times out at 9.4 s, find answers on B12 search at about 17 s |
 | B15-watch | T1-T6 built and committed; G5 blocked on PUBLIC_SITE_URL | Haiku claims and Sonnet Reporter (3.3 s) live; Apify crawl waits for the market | | threshold 0.22 measured; T7 not built |
 | B16-bank-books | T1-T4 built and committed; G5 after G4v2 | Nessie live: seed 8.3 s, reconcile 1.2 s, fund move 1.9 s | | money-map-live-bank.spec needs M-desktop's player fix |
 
@@ -164,6 +165,7 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | v2-desktop | c4c83526e6bb18825ea008e47984537f784b01aa | G3 desktop (worktree) | Oct 25 2:55 AM |
 | demo-ok-v2-d3 | 988d0c160260920a457fd69142e1d76702a6b14d | G4v2 on design drop 3 | Oct 25 4:25 AM |
 | demo-ok-b12 | 988d0c160260920a457fd69142e1d76702a6b14d | G5 b12-search (worktree, on the tour) | Oct 25 4:26 AM |
+| demo-ok-b14 | 988d0c160260920a457fd69142e1d76702a6b14d | G5 b14-swarm (worktree, on the tour) | Oct 25 4:33 AM |
 
 ## Environment
 
