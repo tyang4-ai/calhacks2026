@@ -5,8 +5,13 @@ import { defineConfig, devices } from "@playwright/test";
 const baseURL = process.env.CINDIA_BASE_URL ?? "http://localhost:5173";
 const outputDir = process.env.CINDIA_OUTPUT_DIR ?? `test-results/run-${process.pid}`;
 
+// One worker per run on the shared cloud VM, where several agents run Playwright at once and the
+// load bent the demo's timing checks. CINDIA_PW_WORKERS raises it for a run that has the VM alone.
+const workers = Number(process.env.CINDIA_PW_WORKERS ?? 1);
+
 export default defineConfig({
   outputDir,
+  workers,
   fullyParallel: true,
   forbidOnly: true,
   retries: 0,
