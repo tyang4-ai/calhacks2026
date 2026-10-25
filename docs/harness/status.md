@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:55 PT
+UPDATED: 2026-10-24 22:56 PT
 
 # Status board
 
@@ -139,6 +139,8 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | v2-support | d7c780d6ddd8b793cc24b6c7fe03cf507d70d112 | G3 support | Oct 24 10:06 PM |
 | v2-search | 7891b23c5cbb43e429ed6f3aee65b3e95bd52880 | G3 search | Oct 24 10:12 PM |
 | v2-communities | 633cc5cfc3c5b68eb109e420f6175eafebab2308 | G3 communities | Oct 24 10:23 PM |
+| v2-art | 67be93b5d9325639081cbbbddaae99547dd3f12e | I2-art | Oct 24 10:59 PM |
+| v2-buyer | a87ab88eed9fd6276ddfbd5b27fc8dc43d92bb57 | G3 buyer | Oct 24 10:59 PM |
 
 ## Environment
 
@@ -341,3 +343,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:52 PT · D-deploy verifiers PASS (public-safety, laptop-preflight; minors only); fix round 1 sent to its integrator (SKIP banner, unknown flags rejected, step 8 restart text, SpacetimeDB install page, preflight v1 rows); S3 data round 1 spawned (G2b M1-M5, M8: cft_01's seller Red Mesa Home Goods → Lantern Lane Home Goods, no business found by that name) · artifacts/gates/D-deploy-verifier-public.md
 - 2026-10-24 22:55 PT · smoke fix: shell.spec.ts:447's offline check pauses, waits for slots and fonts, and cuts the network through watch.setOffline(), which lets through only the ERR_INTERNET_DISCONNECTED failures the test causes (3 runs 5/5 at load 18-19, check:scope PASS); the other failure was a Vite full reload from another agent's edit · tests/smoke/lib.ts
 - 2026-10-24 22:55 PT · I2-art green (verifier PASS, smoke 123 in the buyer worktree run), tag v2-art; G3 buyer PASS in the worktree (feature 62, smoke 123) plus verifier PASS, tag v2-buyer; M-buyer T7 after G4v2 · artifacts/gates/G3-buyer-wt-2243.md
+- 2026-10-24 22:56 PT · B11 training done in 45.8 min (sha256 dee48137…, fingerprint f7181c7d…): recall@5 / MRR@10 keyword 0.790 / 0.875, base 0.711 / 0.763, Cindia's model 0.782 / 0.892, local hybrid 0.826 / 0.940; /api/health services.model true; next S3 T9 spawn 4 after data round 1 (both touch searchEval.ts and watch.ts), then --eval-only, T9 spawn 5, publish after T8 · artifacts/b11/train-run.out
