@@ -19,9 +19,9 @@ The catalog:
 | Community | IDs | Craft | Place | Pieces | Makers | Owner, storefront, project |
 |---|---|---|---|---|---|---|
 | **Diné Weaving and Silver Co-op**, the named community. It is v1's studio, re-skinned | `com_dine`, studio `std_dine` | Wool weavings, silver and turquoise jewelry | Navajo Nation, Arizona, USA | `pc_01` to `pc_12` | `mkr_01` to `mkr_03` | `own_01`, `sto_01`, `prj_01` |
-| An Ojibwe beadwork co-op | `com_ojibwe` | Floral beadwork: earrings, pouches, barrettes | Minnesota, USA | `pc_13` to `pc_26` | `mkr_04` to `mkr_08` | `own_02`, `sto_02`, `prj_02` |
+| An Ojibwe beadwork co-op | `com_ojibwe` | Floral beadwork: earrings, pouches and necklaces | Minnesota, USA | `pc_13` to `pc_26` | `mkr_04` to `mkr_08` | `own_02`, `sto_02`, `prj_02` |
 | An Acoma pottery studio | `com_acoma` | Coil-built, hand-painted pottery | New Mexico, USA | `pc_27` to `pc_40` | `mkr_09` to `mkr_13` | `own_03`, `sto_03`, `prj_03` |
-| A Seminole patchwork co-op | `com_seminole` | Patchwork skirts, jackets and bags | Florida, USA | `pc_41` to `pc_54` | `mkr_14` to `mkr_17` | `own_04`, `sto_04`, `prj_04` |
+| A Seminole patchwork co-op | `com_seminole` | Patchwork skirts and jackets | Florida, USA | `pc_41` to `pc_54` | `mkr_14` to `mkr_17` | `own_04`, `sto_04`, `prj_04` |
 
 - Storefront slugs: `dine-weavers`, `ojibwe-beadwork`, `acoma-pottery`, `seminole-patchwork`.
 - Pieces stay at 54 and makers at 17. Communities, owners, storefronts and projects go from eight to four.
