@@ -86,7 +86,7 @@ One backend-builder does these in order. Each task adds its own tests to `tests/
 - Given any B16 call, then B04's operating account gets no new record, so B04's `account.synced` figures stay exact.
 - Given Nessie down or a disagreeing amount, then no twin is emitted and the scripted figures keep their Simulated badge.
 - Given no `NESSIE_KEY`, then every endpoint answers 503 `key_missing` and `health()` is false.
-- `npm run test:server` passes. **G5 for v2** (fix-plan 1.4) passes as `npm run gate -- G5 b16-bank-books money-map-live-bank reconcile-live-bank`: `npm run test:server`, then two live feature specs that M-desktop's feature-lead writes: `tests/features/money-map-live-bank.spec.ts` (a person's grant of `apr_05` in live mode, and `/demo?start=d05-pay` in live mode, each bring a move twin with a `nessieId`) and `tests/features/reconcile-live-bank.spec.ts` (`/demo?start=d07-month` in live mode brings the flag's twin with a `nessieId` and the same figures), with every event valid, and the scripted tour still passing with `b16-bank-books` in live mode.
+- `npm run test:server` passes. **G5 for v2** (fix-plan 1.4) passes as `npm run gate -- G5 b16-bank-books tests/features/money-map-live-bank.spec.ts tests/features/reconcile-live-bank.spec.ts`: `npm run test:server`, then those two live feature specs, which M-desktop's feature-lead writes: `money-map-live-bank.spec.ts` (a person's grant of `apr_05` in live mode, and `/demo?start=d05-pay` in live mode, each bring a move twin with a `nessieId`) and `reconcile-live-bank.spec.ts` (`/demo?start=d07-month` in live mode brings the flag's twin with a `nessieId` and the same figures), with every event valid, and the scripted tour still passing with `b16-bank-books` in live mode.
 
 ## Out of scope
 

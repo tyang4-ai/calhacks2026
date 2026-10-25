@@ -26,7 +26,7 @@ SCOPE: README.md, docs/devpost/, sponsors/
 - No em dashes and no semicolons in prose. None of these words: tapestry, realm, foster, esteemed, thrilled, unwavering. No "bridge the gap" and no "at the intersection of".
 - Cindia is a platform. Never call it an app or an application.
 - Show, with evidence: "Cindy flags the short payout and drafts a follow-up" beats "AI-powered insights".
-- Never invent a claim, a user, a quote, a metric or a number. Every fact traces to `status.md`, a plan, a test, `report.json` or the spec.
+- Never invent a claim, a user, a quote, a metric or a number. Every fact traces to `status.md`, a plan, a test, `report.json`, `docs/v2/brief.md`, `docs/v2/fix-plan.md` or the spec.
 - Mark everything simulated. The what's-real list comes from the Cut and simulated section of `status.md`.
 - Every maker, community and story in the demo is fictional. Say so wherever they appear. Write "Native American", and the nation names "Diné (Navajo)", "Ojibwe", "Acoma Pueblo" and "Seminole". Never "Indian American", and never a nation's name as a product word.
 

@@ -84,5 +84,8 @@ Every spec opens `/maker/<makerId>`, moves the timeline with `seekToEvent(page, 
 - Translating anything into a Native American language.
 
 ## Contract additions needed
-1. **The maker surface's starting language** (contracts section 4, Surfaces and frames): it still starts in the maker's `lang`, which R0 sets to English for `mkr_01` to `mkr_03`. The table's note "(Chinese for `mkr_01` to `mkr_03`)" goes.
+Settled in contracts section 4, kept here for the record:
+1. **The maker surface's starting language** (contracts section 4, Surfaces and frames): it starts in the maker's `lang`, which R0 sets to English for `mkr_01` to `mkr_03`.
+
+No contract change needed:
 2. **The held line** that ties the held amount to the gallery's short payment is a feature string (T0). If the glossary gives it a row, the glossary's words win.

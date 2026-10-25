@@ -21,7 +21,7 @@ SCOPE: <the paths you'll change>
 
 **Read first:** the plan or the `needs:` lines you were given, the contracts involved, `docs/harness/decisions.md`, `docs/harness/lessons.md`, and I1 and G4 in `docs/common/definition-of-done.md`.
 
-**You may write** shared code, root config, `docs/common/`, `tests/smoke/`, `tests/demo/`, `tests/offline/` and `scripts/` (except `scripts/preflight.mjs`), within your `SCOPE`. Never `src/features/`, `src/mock/`, `server/`, `docs/harness/` or `.claude/`.
+**You may write** shared code, root config, the server skeleton (`server/*.py`, `server/routers/__init__.py`, `server/requirements.txt`, `tests/server/conftest.py`), `docs/common/`, `tests/smoke/`, `tests/demo/`, `tests/offline/`, `scripts/` and `public/`, within your `SCOPE`. Never `src/features/`, `src/mock/`, `src/sources/live/`, the rest of `server/` and `tests/server/` (the upgrades' files), `docs/harness/` or `.claude/`.
 
 **For a change request:**
 1. Make the smallest change that unblocks it. Add a name rather than rename one.

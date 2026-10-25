@@ -64,7 +64,7 @@ The scaffolder creates these in S1. The names are fixed here so every plan can r
 | `npm run test:feature -- <slug or spec> [...]` | Playwright: the acceptance tests of one or more features, by slug or spec file, against the dev server |
 | `npm run test:demo` | Playwright: plays the demo on the production build and saves a screenshot per beat. That's v1's 60-second demo (with the co-op's names from R0 on) until `I2-tour` lands, then the tour |
 | `npm run test:offline` | The demo with every request beyond localhost blocked, failing on any attempt |
-| `npm run gate -- <gate> [<slug> ...]` | Runs one gate's checks and writes `artifacts/gates/<gate>-<time>.md`: G1 to G6, and v2's G1b, G2b and G4v2. G3 takes one or more feature slugs, and G5 an upgrade slug, plus its live feature spec for B11 to B16 |
+| `npm run gate -- <gate> [<slug> ...]` | Runs one gate's checks and writes `artifacts/gates/<gate>-<time>.md`: G1 to G6, and v2's G1b, G2b and G4v2. G3 takes one or more feature slugs, and G5 an upgrade slug, plus the path of its live feature spec for B11 to B16 (`npm run gate -- G5 b11-embed tests/features/search-live-map.spec.ts`) |
 | `npm run build`, `npm run preview` | Production build, served on http://localhost:4173 |
 | `npm run server` | FastAPI on http://localhost:8000 (Phase 2). The orchestrator starts it once |
 | `npm run test:server` | Backend tests (Phase 2) |
@@ -73,11 +73,11 @@ The scaffolder creates these in S1. The names are fixed here so every plan can r
 | `python server/b11_embed/train.py` | v2, from `B11-embed`: trains and scores the embedding model. Use the `.venv` Python |
 | `python server/b11_embed/fetch_model.py` | v2, from `B11-embed`: pulls the newest published model from the Hugging Face repo into `CINDIA_MODEL_DIR`. Use the `.venv` Python |
 | `spacetime start --listen-addr 127.0.0.1:3000` | v2: the local SpacetimeDB server on port 3000, bound to this machine only. The orchestrator starts it once and the heartbeat restarts it. Never a bare `spacetime start` |
-| `spacetime publish -s local cindia` | v2, after `B13-live` T1: publishes the module to the local server as `cindia`, run the way `server/b13_spacetime/README.md` says. Then `python server/b13_spacetime/save_token.py` writes the owner's token to `.env` without printing it. The orchestrator runs both |
+| `spacetime publish -s local cindia` | v2, after `B13-live` T1: publishes the module to the local server as `cindia`, run the way `server/b13_spacetime/README.md` says. Then, once `B13-live` T4 has written it, `python server/b13_spacetime/save_token.py` writes the owner's token to `.env` without printing it. The orchestrator runs both |
 | `npm run build:public` | v2, from `D-deploy`: the public scripted build in `dist/` (`VITE_PUBLIC_SITE=1`, no Pay, the sandbox market at `/market/`), for Gordon's Cloudflare Pages upload |
 | `node scripts/laptop-setup.mjs` | v2, from `D-deploy`: prepares the Windows demo laptop for live mode and prints `/api/health`. Gordon runs it there, never in the cloud |
 
-R0's checks are v1's gates on the re-skinned names: `npm run gate -- G2`, `npm run gate -- G4`, `npm run test:smoke` and `npm run test:server` (`docs/v2/contracts.md` section 10), all green before its one commit.
+R0's checks are the R0 row of `docs/v2/contracts.md` section 10: `npm run check`, `npm run check:data`, `npm run test:smoke`, `npm run build`, `npm run test:demo` 3 times (v1's 60-second demo on the re-skinned names), `npm run test:offline`, `npm run test:server`, the verifier's screenshot review and the old-names search in `docs/plans/R0-reskin.md`, all green before its one commit. `npm run gate` has no entry for R0, core or D-deploy, so the gate skill runs their section 10 commands itself.
 
 Two exist from the start: `node .claude/hooks/test-hooks.mjs` (hook self-test) and `node scripts/preflight.mjs` (G0 checks).
 
@@ -120,7 +120,7 @@ tests/ scripts/ artifacts/
 - Library docs are in `docs/tech/`: v2's outside APIs (Elastic, SpacetimeDB, Apify, sentence-transformers, Hugging Face Hub, Figma) and the v1 stack (Claude API, Anthropic SDKs, Claude Code, FastAPI, Vite, Tailwind, Recharts, Motion, SheetJS, openpyxl, Cloudflare Pages). `docs/tech/README.md` says which page answers what, and `docs/tech/ch13-tech-stack.md` gives the v1 versions, setup and breaking changes. The event, Devpost and sponsor notes are in `docs/reference/`. The Explore subagent can search them for you.
 - Every outside API, its account, its env names and its auth: `docs/v2/apis-and-accounts.md`.
 - Gotchas found earlier in this build are in `docs/harness/lessons.md`.
-- The Claude API changed on Oct 21, 2026: no `temperature`, `top_p` or `top_k`, no `thinking: {"type": "enabled"}`, no prefilled assistant turns. Model IDs are `claude-opus-5-5`, `claude-sonnet-5-5` and `claude-haiku-5-5`.
+- The Claude API changed on Oct 21, 2026: no `temperature`, `top_p` or `top_k`, no `thinking: {"type": "enabled"}`, no prefilled assistant turns. Model IDs are `claude-opus-5-5`, `claude-sonnet-5-5` and `claude-haiku-5-5`. The platform uses only `claude-haiku-5-5` and `claude-sonnet-5-5` (`config.ALLOWED_MODELS`). No Opus and no Fable.
 - Nessie takes its key as `?key=` and has no way to create purchases or transfers. Use deposits and withdrawals instead.
 
 ## Always loaded

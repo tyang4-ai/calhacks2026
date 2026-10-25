@@ -1,6 +1,6 @@
 # D-deploy · The public site, the sandbox market and the demo laptop
 
-Priority: P0 · Wave: V2, as soon as G1b and G2b are green · Depends on: I2-shell (the site-wide notice L1, the `noindex` tag, `public/robots.txt`, Pay off on the public build), S3-catalog (`counterfeitCandidates`), I2-core (`npm run export:mock`) · Area: `scripts/`, `public/`, `package.json` · Owner: integrator · Gate: the Acceptance commands and a verifier review, through the gate skill with this plan as `PLAN`, tag `v2-deploy`
+Priority: P0 · Wave: V2, as soon as G1b and G2b are green · Depends on: I2-shell (the site-wide notice L1, the `noindex` tag, `public/robots.txt`, Pay off on the public build), S3-catalog (`counterfeitCandidates`), I2-core (`npm run export:mock`) · Area: `scripts/`, `public/`, `package.json` · Owner: integrator · Gate: the Acceptance commands and a verifier review, through the gate skill with this plan as `PLAN` (`scripts/gate.mjs` has no D-deploy entry, so the orchestrator runs the commands itself), tag `v2-deploy`
 
 **SCOPE:** `scripts/make-market.mjs, scripts/make-market.test.mjs, scripts/build-public.mjs, scripts/check-public.mjs, scripts/check-public.test.mjs, scripts/laptop-setup.mjs, scripts/laptop-setup.test.mjs, scripts/preflight.mjs, public/_redirects, public/market/, package.json`
 
@@ -64,14 +64,14 @@ Three things the build session can't do by itself, made ready so Gordon finishes
   1. `git pull --ff-only origin main`.
   2. The Python venv: create `.venv` if it's missing (`py -3 -m venv .venv` on Windows, `python3 -m venv .venv` elsewhere), install `server/requirements.txt` with the venv's Python, and check that `torch.__version__` ends in `+cpu`.
   3. `npm ci`, then `npm run export:mock`.
-  4. The `.env` names, read inside Node and printed as "present" or "missing", never their values: `CINDIA_ANTHROPIC_API_KEY` or `ANTHROPIC_API_KEY`, `NESSIE_KEY`, `ELASTIC_URL`, `KIBANA_URL`, `ELASTIC_API_KEY`, `APIFY_TOKEN`, `HF_TOKEN`, `CINDIA_HF_REPO` (the model's Hugging Face repo) and `PUBLIC_SITE_URL`. `SPACETIME_TOKEN` comes later, from step 6. An `ELASTIC_AUTH=proxy` or `APIFY_AUTH=proxy` line fails the step with "Proxy mode works only in the cloud. Put the real key in .env."
+  4. The `.env` names, read inside Node and printed as "present" or "missing", never their values: `CINDIA_ANTHROPIC_API_KEY` or `ANTHROPIC_API_KEY`, `NESSIE_KEY`, `ELASTIC_URL`, `KIBANA_URL`, `ELASTIC_API_KEY`, `APIFY_TOKEN`, `HF_TOKEN`, `CINDIA_HF_REPO` (the model's Hugging Face repo, `<account>/cindia-embed`) and `PUBLIC_SITE_URL`. `SPACETIME_TOKEN` comes later, from step 6. An `ELASTIC_AUTH=proxy` or `APIFY_AUTH=proxy` line fails the step with "Proxy mode works only in the cloud. Put the real key in .env."
   5. The model: `.venv`'s Python runs `server/b11_embed/fetch_model.py`, which pulls the newest published model into `CINDIA_MODEL_DIR` and checks it against `report.json`.
   6. SpacetimeDB, with the commands in `server/b13_spacetime/README.md`:
      - `spacetime --version` must answer, or the step prints the Windows install command from the SpacetimeDB docs and stops. Then `spacetime server set-default local`.
      - If `http://127.0.0.1:3000/v1/ping` doesn't answer, it starts `spacetime start --listen-addr 127.0.0.1:3000` in a window of its own and waits up to 30 seconds.
      - It installs the module's packages, publishes with `spacetime publish -s local cindia`, and runs `server/b13_spacetime/save_token.py` with `.venv`'s Python, which writes `SPACETIME_TOKEN` to `.env` without printing it. Then it checks the name is present.
      - It clears earlier runs with `spacetime call -s local cindia clear_runs`. The API seeds the catalog itself once it's up (`POST /api/b13/seed`, or the B13 adapter in live mode).
-  7. The API: if `http://localhost:8000/api/health` doesn't answer, it starts `npm run server` in a window of its own and waits up to 60 seconds.
+  7. The API: if `http://localhost:8000/api/health` doesn't answer, it starts `npm run server` in a window of its own and waits up to 60 seconds. If the API already answers and step 6 wrote a new `SPACETIME_TOKEN` (the script compares the line before and after, in memory), it restarts the API, because a running server keeps the old token: it stops the process listening on port 8000 (`netstat -ano` and `taskkill /PID <pid> /T /F` on Windows), then starts it the same way.
   8. Health: it prints each key and service from `/api/health` as true or false, and the routers it lists. It exits 1 if any is false, naming the step that fixes it.
   9. It prints the rehearsal checklist below.
   
@@ -108,7 +108,7 @@ From `docs/tech/cloudflare-pages/direct-upload.mdx`. Direct Upload can't switch 
 3. Enter a project name, drag the `dist` folder in, and select **Deploy site**. The site is at `https://<project name>.pages.dev`.
 4. Check the live site:
    - `/demo` plays, and its controls have no Live switch,
-   - `/shop/piece/pc_01` shows L6 ("This is the public demo. Nothing here can be bought.") where Pay was. Check it in the browser, because `check-public.mjs` reads the files in `dist/` and can't see the rendered page. In the browser console, `document.querySelector('[data-testid=buyer-pay-blocked]')` finds the element and `document.querySelector('[data-testid=buyer-pay-button]')` returns `null`. If the Pay button is there, don't share the site: delete the deployment and tell the build session,
+   - `/shop/piece/pc_01` shows L6 ("This is the public demo. Nothing here can be bought.") where Pay was. Check it in the browser, because `check-public.mjs` reads the files in `dist/` and can't see the rendered page. In the browser console, `document.querySelector('[data-testid=buyer-pay-blocked]')` (L6's test ID, `docs/v2/contracts.md` sections 4 and 12) finds the element and `document.querySelector('[data-testid=buyer-pay-button]')` returns `null`. If the Pay button is there, don't share the site: delete the deployment and tell the build session,
    - `/market/` lists the sandbox listings,
    - `/robots.txt` disallows everything, and the page source of `/shop` holds the `noindex` tag.
 5. Send the site's URL in the build session's chat. It isn't a secret. The orchestrator writes it in `status.md` and restarts the API with it. Also add `PUBLIC_SITE_URL` with that URL to the cloud environment's variables, for later VM rebuilds, and to the laptop's `.env`.
@@ -124,7 +124,7 @@ From `docs/tech/cloudflare-pages/direct-upload.mdx`. Direct Upload can't switch 
    - Play the whole tour in presenter mode with Live off: Space or the right arrow for each beat, the left arrow to replay one.
    - Turn Live on, then type a search and a support question of your own. Each answers live, and the badges say Live.
    - Close the API's window and ask again. The answer comes from the scripted source with the Simulated badge, and the tour still plays the same.
-   - Run `node scripts/laptop-setup.mjs --check` to bring the API back and confirm health.
+   - Start `npm run server` again in a window of its own, then run `node scripts/laptop-setup.mjs --check` to confirm health.
 5. Right before judging, clear the swarm runs with `spacetime call -s local cindia clear_runs` and restart the API, as `server/b13_spacetime/README.md` says, so the swarm view starts empty.
 6. Reserve an ethernet cable and bring a USB-C ethernet adapter. Hotspots are banned. If the network drops during judging, the tour needs none.
 

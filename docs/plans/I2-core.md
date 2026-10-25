@@ -430,11 +430,9 @@ The output order is moods, then facet words (any of object, materials, technique
 - Given T5, when `drawSurprise` runs twice with the same seed and inputs, then it returns the same piece, and the candidates' weights sum to 1. Given `pure_random`, no keyword, or a keyword that matches nothing, then the candidates are every piece in `pieceId` order, weighted by the asked method.
 - Given T8, when a person opens `pc_13`, then `split.shown` carries `splits["pc_13"]`.
 - Given T8, when a person's `wip.milestone_reached` names `wip_01`'s second milestone and the owner grants `apr_05`, then `wip.milestone_paid` and a `money.moved` of kind `milestone` with ID `mv_user_1` follow.
-- Given T8, when a person's `storefront.requested` names `sto_01`, then `run_03`'s steps play and `storefront.drafted` follows.
+- Given T8, when a person's `storefront.requested` names `sto_01`, then `run_03`'s steps play and `storefront.drafted` follows, with every block re-keyed to a `blk_user_<n>` ID.
 - Given T8, when a person's `question.answered` for `qst_01` carries her own text, then `run_09`'s `support.answered` quotes that text exactly and not `ans_01`'s.
-- Given T5 and T8 on a fresh store, when a person asks `run_07`'s meaning question with `contextIds: ["pc_01"]`, then its `question.forwarded` carries `qst_user_1` on the request's thread. When a person's `question.answered` for `qst_user_1` follows with her own text, then `run_09`'s relay, re-keyed, ends in a `support.answered` on that same thread that quotes her text exactly.
-- Given T8, when a person's `storefront.requested` names `sto_01`, then every block in its `storefront.drafted` has a `blk_user_<n>` ID.
-- Given `npm run check:scope -- src/core/ src/sources/`, then it exits 0.
+- Given T5 and T8 on a fresh store, when a person asks `run_07`'s meaning question with `contextIds: ["pc_01"]`, then its `question.forwarded` carries `qst_user_1` on the request's thread. When a person's `question.answered` for `qst_user_1` follows with her own text, then `run_09`'s relay, re-keyed, ends in a `support.answered` on that same thread that quotes her text exactly.- Given `npm run check:scope -- src/core/ src/sources/`, then it exits 0.
 
 ## Out of scope
 

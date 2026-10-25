@@ -24,7 +24,7 @@ Everything in it is fictional demo data from `src/mock/` and the events a sessio
 - `docs/plans/B14-swarm.md`: the step recorder that calls your bridge. `docs/plans/M-approvals.md`: the owner screen's live spec, for T7
 - `docs/plans/B08-approvals.md` and `src/sources/live/b08-approvals.ts`: the `start(emit)` pattern
 - `docs/tech/spacetimedb/`: `install-and-run-locally.md` (`--listen-addr`, the server-issued identity), `typescript-quickstart.md`, `tables.md`, `indexes-and-access.md` (private tables), `reducers.md` (the `init` reducer stores the owner, `ctx.sender`, `SenderError`), `http-api.md` (bearer tokens, reducer calls, `/sql`), `sql-reference.md` (no ORDER BY, `LIMIT` doesn't order), `publish-local-and-maincloud.md`, `cli-reference.md`. Check every path against these pages and `spacetime --help`. Don't write them from memory.
-- `docs/v2/apis-and-accounts.md`, the SpacetimeDB section and Differences items 1 and 9
+- `docs/v2/apis-and-accounts.md`, the SpacetimeDB section
 - `.claude/rules/backend.md`, `docs/harness/lessons.md`, and the Upgrade checklist in `docs/common/definition-of-done.md`
 
 ## Interfaces
@@ -97,7 +97,7 @@ Everything in it is fictional demo data from `src/mock/` and the events a sessio
     - **Steps from another page:** a person's thread and listing IDs carry no page tag (`thr_user_2`, `lst_user_1`), so two pages can share one. When a `swarm.step`'s `runId` carries another page's tag (`run_user_<tag>_<n>` with a tag that isn't this page's `pageTag()`), the adapter inserts that tag after `_user_` in the step's `threadId` before it emits the step, so `thr_user_2` becomes `thr_user_<tag>_2`. Those steps reach the swarm view, which groups by run, and never this page's own threads.
     - **Mirror:** it listens with `onEvent` from `src/core/store`, queues every `order.placed`, `approval.requested`, `approval.granted`, `approval.declined`, `listing.requested`, `listing.drafted` and `listing.indexed`, scripted, live or a person's, and once a second posts the queue to `POST /api/b13/record`, each event ID once per page load. So in live mode the database fills as the tour plays and as people use the platform, and every other screen sees it.
     - Returns a stop function that stops the poll and the mirror and keeps the sent-ID set for the page load.
-  - `produce()` returns `[]`, because no timeline event is keyed `b13-live`.
+  - `produce(event, state)` returns `[]` at once, with no network call. The one tour event keyed `b13-live` is `d15-listing`'s scripted `data.synced` (contracts section 11), so it plays scripted and on time in both modes, and `ALLOWED_EMPTY_FALLBACKS` lists `data.synced` for `b13-live` with `tourScripted: true` (I2-tour T6).
   - Duplicate steps are harmless. B14's response carries the same `stepId`s, and the store's reducers are idempotent per ID.
   - Nothing runs in scripted mode, because the registry starts adapters only in live mode. The data view then shows its scripted rows from `src/mock/`.
 - **Process status** (C-4): B12, B14, B15 and B16 call `bridge.set_process(<processId>, "working", n)` when a person's request starts and `"done"` when it ends, through the ordered queue. The process bar reads these rows from `data.synced` in live mode (F-process).
@@ -108,7 +108,7 @@ One backend-builder does T1 to T7 in order. Each task adds its own tests to `tes
 
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T1 | The module: the ten tables, the reducers with the owner check, its package files, and the README with the commands. A test builds it with the CLI, skipped when `spacetime` isn't on the path | `server/b13_spacetime/module/`, `server/b13_spacetime/README.md` | the CLI installed (V0) | opus |
+| T1 | The module: the ten tables, the reducers with the owner check, its package files, and the README with the commands. A test builds it with the CLI, skipped when `spacetime` isn't on the path or `server/b13_spacetime/module/node_modules` is missing, since the orchestrator installs the module's packages only after T1 | `server/b13_spacetime/module/`, `server/b13_spacetime/README.md` | the CLI installed (V0) | opus |
 | T2 | `bridge.py`: the reducer and SQL calls with the owner token from config, the ordered background queue, the no-op and back-off, no anonymous fallback. Tests with httpx `MockTransport`: the request path and argument order per reducer, the queue keeps order, no-op on a refused connection, back-off for 30 seconds, no log line or error carrying the token | `server/b13_spacetime/__init__.py`, `server/b13_spacetime/bridge.py` | T1 | opus |
 | T3 | `feed.py`: the one poller, the snapshot, the step ring, presence and expiry, and the mapping to `swarm.step` and `data.synced` with IDs from the epoch and `seq`. Tests with a fake row source: field mapping, labels built from fields only, the order by `seq`, no event sent twice, the 60-second replay rule on a first poll, a SpacetimeDB outage keeps the last snapshot | `server/b13_spacetime/feed.py`, `tests/server/b13_fixture.json` | T2 | opus |
 | T4 | `seed.py` and `save_token.py`: the catalog, orders and approvals payload from `mock.json`, and the token saver. Tests: the payload holds 54 catalog rows and the scripted approvals from the fixture, `save_token.py` replaces only its own line and prints no token (with a fake CLI) | `server/b13_spacetime/seed.py`, `server/b13_spacetime/save_token.py` | T2 | sonnet |
@@ -120,7 +120,7 @@ One backend-builder does T1 to T7 in order. Each task adds its own tests to `tes
 ### Orchestrator steps (not the builder's)
 
 - **V0:** install the SpacetimeDB CLI into the home directory (on a 403 from a GitHub release download, fetch the asset from `release-assets.githubusercontent.com` with curl, D2-27), run `spacetime server set-default local`, and start `spacetime start --listen-addr 127.0.0.1:3000` in the background. The heartbeat restarts it when port 3000 stops answering.
-- **After T1:** install the module's packages and run `spacetime publish -s local cindia` from `server/b13_spacetime/module/`, as the README says.
+- **After T1:** install the module's packages and run `spacetime publish -s local cindia` from `server/b13_spacetime/module/`, as the README says. Then rerun T1's build test, which runs once `node_modules` is there. A failed build or publish goes back to the builder as a T1 fix.
 - **After T4:** run `python server/b13_spacetime/save_token.py` (T4 writes it), then restart `npm run server` so `config.py` reads `SPACETIME_TOKEN`.
 - **After T5:** confirm `GET /api/b13/status` reports `spacetime: true`, then `POST /api/b13/seed` once, or let the adapter do it.
 - **Before every recorded demo:** `spacetime call -s local cindia clear_runs`, so no old run shows.
@@ -136,7 +136,7 @@ One backend-builder does T1 to T7 in order. Each task adds its own tests to `tes
 - Given `/api/b13/status` or any log line, then neither holds a token or a URL with credentials.
 - Given a server file edited while two screens poll, then uvicorn reloads without waiting on any open connection.
 - Given B08 in live mode, when `/sell/approvals?screen=owner` is open on a second screen, then `/api/b08/status` says `ownerConnected`, the console waits for its decision, and a person's grant of `apr_05` still brings the scripted `wip.milestone_paid`. M-approvals' `approvals-live.spec.ts` passes.
-- `npm run test:server` passes. **G5 for v2** (fix-plan 1.4) passes as `npm run gate -- G5 b13-live process-live-data`: `npm run test:server`, then the live feature spec `tests/features/process-live-data.spec.ts` (F-process's feature-lead writes it), where two pages in live mode open, a person's own request on one (a support question, or a checkout when B14 is blocked) reaches the other through `/api/b13/changes` as `swarm.step` or `data.synced` events with every event valid, and `process-presence` reads two screens, and the scripted tour still passing with `b13-live` in live mode.
+- `npm run test:server` passes. **G5 for v2** (fix-plan 1.4) passes as `npm run gate -- G5 b13-live tests/features/process-live-data.spec.ts`: `npm run test:server`, then that live feature spec (F-process's feature-lead writes it), where two pages in live mode open, a person's own request on one (a support question, or a checkout when B14 is blocked) reaches the other through `/api/b13/changes` as `swarm.step` or `data.synced` events with every event valid, and `process-presence` reads two screens, and the scripted tour still passing with `b13-live` in live mode.
 
 ## Out of scope
 
@@ -152,6 +152,6 @@ FX1 writes these into `docs/v2/contracts.md`. I2-core merges them.
 - Section 3: `data.synced` keyed `b13-live`, `{ tables: { table, rows, newest: { id, label }[] }[], screens, processes: { processId, status }[] }`, as decided with F-process, with table names `catalog`, `listings`, `orders`, `approvals`, `runs`, `steps`, `processes` and `screens`.
 - Section 5, B13 (replacing the stream): the ten tables and reducers above, private, written only by the owner. `GET /api/b13/changes?after=<seq>&screen=<screenId>&role=<role>` returns `{ events, seq }`. `GET /api/b13/status` returns `{ spacetime, db, seeded, screens, tables, seq }`. `POST /api/b13/seed` `{ trigger }` and `POST /api/b13/record` `{ trigger, events }` each return `{ events: [] }`. Event IDs come from the database's epoch and the change `seq`. Screen IDs are `scr_` plus the page tag. `/api/b13/stream` and its `role` parameter are gone.
 - Section 4: the owner screen for B08 is `/sell/approvals?screen=owner`.
-- `tests/demo/beats.ts` (I2-tour T6): `REQUIRED_SERVICES` has `b13-live: spacetime`.
+- `tests/demo/beats.ts` (I2-tour T6): `ALLOWED_EMPTY_FALLBACKS` adds `b13-live` for `data.synced`, marked `tourScripted: true`, because `d15-listing`'s `data.synced` is the one tour event keyed `b13-live`. `REQUIRED_SERVICES` has `b13-live: spacetime`.
 - F-process's feature-lead writes `tests/features/process-live-data.spec.ts` for this G5.
 - I2-core already gives B13 `SPACETIME_TOKEN` and `config.spacetime_headers()`, `pageTag()`, `onEvent`, the `data.synced` type and reducer, and the registry's `at` re-stamp.

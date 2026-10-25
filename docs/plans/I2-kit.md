@@ -18,7 +18,7 @@ T1 comes first and fast, because I2-shell waits on it.
 - `docs/v2/brief.md`: "Components for the design system" and "Under the hood".
 - `docs/common/ui-contract.md`: frames and sizes, the process bar and its statuses, test IDs. The kit never hard-codes a test ID. It puts the `testId` it's given on its root.
 - `src/core/nav.ts` from I2-core: `navigate`, which `Link` calls.
-- The on-screen labels L3 and L4 (`docs/v2/contracts.md` section 12, merged into `docs/common/` by I2-core). The label table wins on wording in both languages.
+- The on-screen labels L3 and L4 (`docs/v2/contracts.md` section 12, merged into `docs/common/glossary.md` by I2-core). The label table wins on wording in both languages.
 - `docs/v2/fix-plan.md` section 1.1, for the words the kit's samples may use.
 - The existing kit: `src/ui/index.ts`, `Panel.tsx`, `Badge.tsx`, `ConsoleFrame.tsx`, `motion.ts`, `tokens.css`, `kit.css`, and `src/features/dashboard/StatTile.tsx`, the feature-internal tile the kit's `StatTile` generalizes.
 

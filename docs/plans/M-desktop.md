@@ -62,7 +62,7 @@ Every v1 Sell view (money map, the month, the judge's scenario, the close, impac
 - `partyLayout.ts` adds a spot for each `community_fund` party (key `community_fund-<projectId>`), for up to four funds (`prj_01` to `prj_04`, one per community), placed where their threads don't cross the co-op's. Above the co-op, near Cindia, is one option. The tour draws `prj_01` only.
 - `MoveThreads` draws:
   - `project_fund` moves (buyer to Cindia, then Cindia to the fund) with the kit `Thread` in the `in` tone,
-  - a `milestone` move as one move, Cindia to the maker, drawn when it arrives after the owner grants the release, in the `in` tone (B1-42, D1-37). No buyer-to-Cindia thread and no pending thread for a milestone. Its ID is whatever contracts section 11 gives the grant's answer.
+  - a `milestone` move as one move, Cindia to the maker, drawn when it arrives after the owner grants the release, in the `in` tone (B1-42, D1-37). No buyer-to-Cindia thread and no pending thread for a milestone. Its move ID is `mv_user_<n>` (contracts section 11).
 - `PartyNodes` labels each fund with "Community fund" and the project's title.
 - A thread whose `money.moved` carries `nessieId` shows "Checked against Nessie" beside its amount, as words, so color never carries it.
 - Nothing about the six v1 moves or the balance changes.
@@ -88,6 +88,7 @@ Every v1 Sell view (money map, the month, the judge's scenario, the close, impac
 
 **T7.** The lead runs, together:
 - `npm run test:feature` for each of the nine slugs,
+- `npm run check:scope -- tests/features/sell-views-lib.ts`, because no slug's `<slug>-*` pattern covers the shared helper,
 - `npm run test:smoke`,
 - a search of the nine folders for leftover console sizes (1280, 800, 400, 390, 844 used as widths or heights).
 
@@ -96,7 +97,7 @@ Every hit is either removed by its task's builder or explained in the report. Th
 ## Acceptance
 Every spec opens `/sell/<view>` (or the drawer's query), moves the timeline with `seekToEvent(page, type, match, offsetMs)` from `tests/smoke/lib.ts`, never a fixed time, and checks by test ID only, at 1440 by 900. Arrival is asserted with Playwright's default expect timeout, never a wall-clock window (B1-27).
 
-1. **Given** 300 ms after the timeline's `account.synced` for `acct_studio` in the money beat, **then** `money-map-canvas`, `money-map-thread-mv_0001`, `money-map-thread-mv_0003` and `money-map-balance` are inside `frame-studio`. **When** the timeline also carries `mv_0101` and `mv_0102`, **then** `money-map-thread-mv_0101`, `money-map-thread-mv_0102` and `money-map-node-community_fund-prj_01` show, with $5.00 on the threads.
+1. **Given** 300 ms after the timeline's `account.synced` for `acct_studio` in the money beat, **then** `money-map-canvas`, `money-map-thread-mv_0001`, `money-map-thread-mv_0003` and `money-map-balance` are inside `frame-studio`. **Given** `seekToEvent(page, "money.moved", { moveId: "mv_0102" }, 300)`, once the timeline carries the fund moves (the tour fires `mv_0101` and `mv_0102` after `account.synced`), **then** `money-map-thread-mv_0101`, `money-map-thread-mv_0102` and `money-map-node-community_fund-prj_01` show, with $5.00 on the threads.
 2. **Given** a seeded `money.moved` of kind `milestone` from Cindia to a maker, **then** the map draws exactly one new thread for it, from Cindia to that maker's node, and no buyer-to-Cindia thread for it. **Given** seeded `project_fund` moves to `prj_01` and `prj_03`, **then** both fund nodes are inside the frame and no fund thread crosses the co-op's threads.
 3. **Given** 300 ms after the last `match.made` of the month beat, **then** the bundled, refund-netted and carried-over match rows are inside the frame.
 4. **Given** 300 ms after the timeline's `flag.explained` for `flg_01`, **then** `reconcile-flag`, `reconcile-evidence-contract`, `reconcile-evidence-statement`, `reconcile-evidence-bank` and `reconcile-explanation` sit inside one box no larger than 1060 by 660 px, and the figures read contract 40%, statement 50%, bank $1,700.00, owed $2,040.00, short $340.00.
@@ -105,7 +106,7 @@ Every spec opens `/sell/<view>` (or the drawer's query), moves the timeline with
 7. **Given** `/sell/close?drawer=ask`, **when** the owner asks the first canned question, **then** `ask-cindy-answer` and `ask-cindy-chart` fit inside the drawer with no horizontal scroll. **Given** `/sell/close?drawer=audit&ref=ord_001`, **then** the trail fits the drawer.
 8. **Given** scripted mode, **then** every one of these panels shows `simulated-badge`, as in v1.
 9. **Given** the Phase A demo and then the tour, **then** every v1 spec of the nine features passes on the `/sell` routes with event-anchored seeks and the re-skinned names from R0.
-10. **Given** live mode with `b16-bank-books` live, **when** a person grants `apr_05`, and when `/demo?start=d05-pay` plays, **then** each brings a `money.moved` twin with a `nessieId`, every event valid, and that move's thread shows "Checked against Nessie". This is `money-map-live-bank.spec.ts`. **Given** `/demo?start=d07-month` in live mode, **then** the flag's twin arrives with a `nessieId` and v1's figures, and the bank evidence card shows "Checked against Nessie". This is `reconcile-live-bank.spec.ts`. Both are B16's live feature specs, run as `npm run gate -- G5 b16-bank-books money-map-live-bank reconcile-live-bank`. Both skip with a named reason when `/api/health` doesn't list `b16` or `keys.nessie` is false, so G3 passes before B16 lands.
+10. **Given** live mode with `b16-bank-books` live, **when** a person grants `apr_05`, and when `/demo?start=d05-pay` plays, **then** each brings a `money.moved` twin with a `nessieId`, every event valid, and that move's thread shows "Checked against Nessie". This is `money-map-live-bank.spec.ts`. **Given** `/demo?start=d07-month` in live mode, **then** the flag's twin arrives with a `nessieId` and v1's figures, and the bank evidence card shows "Checked against Nessie". This is `reconcile-live-bank.spec.ts`. Both are B16's live feature specs, run as `npm run gate -- G5 b16-bank-books tests/features/money-map-live-bank.spec.ts tests/features/reconcile-live-bank.spec.ts`. Both skip with a named reason when `/api/health` doesn't list `b16` or `keys.nessie` is false, so G3 passes before B16 lands.
 11. **Given** a move or a flag without `nessieId`, **then** no "Checked against Nessie" shows on it.
 
 ## Out of scope
@@ -115,4 +116,4 @@ Every spec opens `/sell/<view>` (or the drawer's query), moves the timeline with
 - The design drops' restyle (I3-redesign changes tokens and kit, and these views follow).
 
 ## Contract additions needed
-1. Already settled, kept here for the record: the glossary row "Community fund", 社区基金, code `Party.kind: "community_fund"` (contracts section 11), and the milestone grant's one move, Cindia to the maker (section 11, Requests rows). Its move ID is section 11's call: the next `mv_01xx` as written now, or `mv_user_<n>` as D1-37 suggests.
+1. Already settled, kept here for the record: the glossary row "Community fund", 社区基金, code `Party.kind: "community_fund"` (contracts section 11), and the milestone grant's one move, Cindia to the maker (section 11, Requests rows). Its move ID is `mv_user_<n>` (contracts section 11).

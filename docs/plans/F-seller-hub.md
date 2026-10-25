@@ -1,6 +1,6 @@
 # F-seller-hub · Overview, new listings and the maker's side panel
 
-Priority: P1 · Wave: V2 · Depends on: G1b, G2b · Folder: src/features/seller-hub/ · Made real by: B14, B12, B11
+Priority: P0 · Wave: V2 · Depends on: G1b, G2b · Folder: src/features/seller-hub/ · Made real by: B14, B12, B11
 
 SCOPE: src/features/seller-hub/, tests/features/seller-hub-*
 
@@ -43,10 +43,10 @@ The co-op's owner opens Sell and sees the month at a glance: sales so far, money
 - **Source keys on the badge:**
   - overview: `b10-derived`,
   - listings: `b14-swarm` and `b12-search`,
-  - `maker.side`: the pieces and works in progress render no keyed events, so that panel shows the kit's `Demo data` badge. The questions panel declares the key `question.forwarded` carries, so it shows `simulated-badge` in scripted mode.
+  - `maker.side`: the pieces and works in progress render no keyed events, so that panel shows the kit's `Demo data` badge. The questions panel declares `b14-swarm`, the key `question.forwarded` and `question.answered` carry (contracts section 4), so it shows `simulated-badge` in scripted mode.
 - **Test IDs:**
-  - From the contracts: `seller-overview`, `seller-listing-notes`, `seller-listing-draft`, `seller-listing-check-<checkId>`, `seller-listing-indexed`, `seller-listing-approve`, `seller-maker-side`.
-  - Internal to this feature: `seller-overview-tile-<tile>` for `sales`, `waiting`, `approvals`, `flags`, `hits`, then `seller-listing-maker` (the maker picker), `seller-listing-ask` ("Draft with Cindy"), `seller-listing-steps`, `seller-listing-step-<stepId>`, `seller-listing-translated-<lang>` (L27), `seller-maker-pieces`, `seller-maker-wip`, `seller-maker-questions`, `seller-maker-question-<questionId>`, `seller-maker-reply-<questionId>`, `seller-maker-send-<questionId>`, `seller-maker-answer-<questionId>`.
+  - From the contracts: `seller-overview`, `seller-listing-notes`, `seller-listing-draft`, `seller-listing-check-<checkId>`, `seller-listing-indexed`, `seller-listing-approve`, `seller-listing-translated-<lang>` (L27), `seller-maker-side`, `seller-maker-questions`, `seller-maker-question-<questionId>`, `seller-maker-reply-<questionId>`, `seller-maker-send-<questionId>`, `seller-maker-answer-<questionId>`.
+  - Internal to this feature: `seller-overview-tile-<tile>` for `sales`, `waiting`, `approvals`, `flags`, `hits`, then `seller-listing-maker` (the maker picker), `seller-listing-ask` ("Draft with Cindy"), `seller-listing-steps`, `seller-listing-step-<stepId>`, `seller-maker-pieces`, `seller-maker-wip`.
 - **Labels from the glossary:** sales, approval, flag, counterfeit watch, new listing, keyword, rule-based, agent swarm, work in progress, milestone, demo data, proposed by Cindy. From contracts section 12: L27.
 
 ## Tasks
@@ -129,7 +129,7 @@ Every spec opens the route named, moves the timeline with `seekToEvent(page, typ
    - `seller-overview-tile-sales` reads the gross of the orders arrived so far, less the refund once `rfd_001` has arrived.
    
    **When** the owner clicks `seller-overview-tile-waiting`, **then** the page is `/sell/month` and the store wasn't reset (the flag is still there).
-2. **Given** the same page after the timeline's `approval.requested` for `apr_01` and `apr_02`, **then** `seller-overview-tile-approvals` reads 2, and after both grants it reads 0. **Given** a seeded `counterfeit.flagged`, **then** `seller-overview-tile-hits` reads 1.
+2. **Given** the same page, **then** `seller-overview-tile-approvals` rises by 2 when the timeline's `approval.requested` for `apr_01` and `apr_02` arrive, and falls by 2 after both grants (the tour's `apr_04` stays pending). **Given** a seeded `counterfeit.flagged`, **then** `seller-overview-tile-hits` reads 1.
 3. **Given** `/sell/listings` before any listing event, **then** `seller-listing-notes` holds `lst_01`'s notes and `seller-listing-maker` shows that listing's maker.
 4. **Given** the listing run for `lst_01` (the tour's events, or the same events seeded), 300 ms after its `listing.drafted`, **then**:
    - `seller-listing-steps` lists the lister, tagger, checker and indexer steps in order, with the indexer marked rule-based,
@@ -151,6 +151,7 @@ Every spec opens the route named, moves the timeline with `seekToEvent(page, typ
 - Orders management, inventory and shipping.
 
 ## Contract additions needed
-1. **`question.forwarded` and `question.answered`** (contracts section 3, from C-13): this plan reads a question's ID, `threadId`, `makerId`, `pieceId`, the buyer's `text` and `lang` from `question.forwarded`, and emits `question.answered` with that question's ID, an `answerId`, `makerId`, `text` and `lang`. If section 3 names them differently, section 3 wins and the builders follow it. A person's `answerId` is `ans_user_<n>` (contracts section 11).
-2. **`maker.side`'s source keys** (contracts section 4) add the key `question.forwarded` carries, for the questions panel's badge.
-3. Already settled, kept here for the record: `navigate()` and the kit `Link`, listing runs threaded by `listingId` and matched by notes, `apr_04` at the end of the tour's listing run, `listing.indexed` keyed `b14-swarm` at the end of `run_02`, and the kit `StatTile` (I2-kit).
+Settled in contracts sections 3, 4 and 11, kept here for the record. Nothing is still open:
+1. **`question.forwarded` and `question.answered`** (contracts section 3, from C-13): this plan reads a question's ID, `threadId`, `makerId`, `pieceId`, the buyer's `text` and `lang` from `question.forwarded`, and emits `question.answered` with that question's ID, an `answerId`, `makerId`, `text` and `lang`. A person's `answerId` is `ans_user_<n>` (contracts section 11).
+2. **`maker.side`'s source key** is `b14-swarm` (contracts section 4), for the questions panel's badge.
+3. `navigate()` and the kit `Link`, listing runs threaded by `listingId` and matched by notes, `apr_04` at the end of the tour's listing run, `listing.indexed` keyed `b14-swarm` at the end of `run_02`, and the kit `StatTile` (I2-kit).
