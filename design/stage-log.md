@@ -36,7 +36,13 @@ Figma track, Cal Hacks 13.0. Four stages, 200 words at most per stage. Times are
 
 ## 4 · Code generation
 
-Not started. The integrator restyles the kit from the drops in `I3-redesign`, and features follow without edits.
+Sunday 2:58 to 4:25 AM, about 90 minutes · rating 4 of 5 · drop 3 live on every page
+
+**Tools.** No Figma call at this stage, by design: the build read the handoff files, so it never waited on Figma. Two integrator agents in the build session split the work, one on the shell and one on the kit. Every Figma variable carries `var(--c-…)` code syntax, so each became a CSS custom property with the same name, and `scripts/check-contrast.mjs` checked all 79 text pairs again in code. The shell half landed at 3:22 AM (113 tokens, 14 font files, the top bar, the pitch and end cards), and the kit half at 3:38 AM.
+
+**Friction.** The screens were drawn at full frame, but most tour beats show the product at two thirds of its size beside a process panel, a layout the drops never drew. The review found small text there and a score table 24 px past its card. The piece drawings came from the build's own art script, so the illustration import was skipped.
+
+**Into the build.** The tour passed its gate 5 of 5 on drop 3 at 4:07 AM, with three tour runs and one offline, tagged `demo-ok-v2-d3`.
 
 ---
 
