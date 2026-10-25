@@ -1,9 +1,9 @@
 STAGE: V2
-NEXT: V4 (I3-redesign drop 3), then the G4v2 rerun; G5s in the worktree meanwhile
+NEXT: the drop 3 review, the G5 series, then the freeze at 5:00
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 02:58 PT
+UPDATED: 2026-10-25 04:07 PT
 
 # Status board
 
@@ -115,7 +115,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | M-maker-statement | V2 P1 | green | feature-lead | v2-maker-statement | compact layout under 600 px for Phase A's box; minors in the verifier report |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
 | I2-tour | V3 | green: G4v2 5/5 (tour 220.0 s x3, offline), review fixes rechecked | integrator, data-smith | demo-ok-v2 | 20 beats, 220 s; English only step 1 done; committed with T9 data and the feature fix rounds |
-| I3-redesign | V4 | drop 3 running: two integrators side by side (shell half, kit half), decisions.md 2:55 AM; T5 skipped (I2-art's drawings stay) | integrator | | G4v2 rerun alone after both, tag demo-ok-v2-d3 |
+| I3-redesign | V4 | drop 3 applied (shell and kit halves, T5 skipped), G4v2 5/5; screen review running | integrator | | tag demo-ok-v2-d3 after the review |
 
 ## v2 Upgrades
 
@@ -437,3 +437,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 03:19 PT · SpacetimeDB restarted on 127.0.0.1:3000 ahead of its 2-hour limit · status.md
 - 2026-10-25 03:31 PT · Gordon's 3:25 AM messages: new tagline on the Cindia pitch card and the end card (pitch.ts, modes spec, demo-script), public site live at cindia.design, PUBLIC_SITE_URL passed to the API processes (writing .env is denied), B15's G5 added to the series; scribe updating the tagline, prize names and the site URL · decisions.md
 - 2026-10-25 03:38 PT · I3 kit half done (check:scope 182, smoke 124; stitch 700 ms ease-out); F-process bar polish (36/36 process specs); M-approvals seal shows RB; approvals T8 specs on the tour order (42/42), committed; A1 (apr_02's buttons under the list's edge on /sell/approvals after apr_01's grant) still reproduces, polish after the freeze; spec sweep running, then the d3 G4v2 rerun · status.md
+- 2026-10-25 04:07 PT · G4v2 PASS 5/5 on drop 3 with Gordon's new tagline (tour 220.0 s x3, offline); check 1046, check:data 301, contrast 79/79; committed in five groups (tagline, I3 drop 3, F-process bar, M-approvals seal, maker-statement specs) plus the earlier English-only spec sweep (5 groups, each passed by a skeptic); screenshots kept in artifacts/demo-d3/; four-lens screen review running; G5 series started (b12, b14 worktree; b13 main; b15, b16, b11 worktree; none starts after 5:05) · artifacts/gates/G4v2-0346.md
