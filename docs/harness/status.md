@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:22 PT
+UPDATED: 2026-10-24 22:25 PT
 
 # Status board
 
@@ -319,3 +319,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:12 PT · M-buyer T0-T6 built (62 buyer specs, smoke 123; demo flaked once at load 16 on a Sell beat, passed on rerun); G3 buyer verifier spawned, gate after communities; M-desktop lead spawned · status.md
 - 2026-10-24 22:18 PT · G3 communities 3/3 (feature 29, smoke 123), verifier running; G3 buyer running; spawned B11 T7/T8 and B14's first spawn · artifacts/gates/G3-2210.md
 - 2026-10-24 22:22 PT · G3 communities PASS (verifier PASS; F1 Shop home strip clipped at 1440x900 for polish before G4v2); committed, tag v2-communities; I2-art T1-T3 done (54 drawn, art --check PASS), contact-sheet verifier next · artifacts/gates/G3-communities-verifier.md
+- 2026-10-24 22:25 PT · heartbeat: 5173, 8000, 3000 up, mock.json fresh, load 19; contracts docs round 1 running (integrator, docs/common/ only, then two verifiers); code items from the verifiers wait for the polish round before I2-tour · status.md
