@@ -1,5 +1,7 @@
 # S2-mock-data · The studio's September, the answer key and the timelines
 
+> **v1 history.** This plan was built and is green in v1. Its names (the Gu embroidery studio, its makers and pieces) are from before R0, which re-skins v1 as the Diné Weaving and Silver Co-op with every number unchanged. For current names, read `docs/plans/R0-reskin.md` and `docs/v2/contracts.md`.
+
 Priority: P0 · Wave: S2 · Depends on: G1 · Folder: `src/mock/`, `tests/data/` · Made real by: B01 (matches and the flag), B10 (derived figures)
 
 ## Goal

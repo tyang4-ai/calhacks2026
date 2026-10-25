@@ -1,8 +1,6 @@
 # v2 fix plan
 
-**Status: APPROVED by Gordon at 4:25 PM PT on Oct 24, with his changes: Native American makers only (scope C), the "underrepresented makers" framing, and Cindia called a platform. Being applied now.** Fix agents apply it to the plans, the contracts and the harness. A fresh agent re-checks the result, and the build session starts.
-
-**Build sessions: don't start V0 until this status line says APPLIED.** Until then the plans on `main` are mid-edit.
+**Status: APPLIED at 6:00 PM PT on Oct 24.** Gordon approved it at 4:25 PM with his changes: Native American makers only (scope C), the "underrepresented makers" framing, and Cindia called a platform. Section 7 says how it was applied. Build sessions can start V0.
 
 **Build sessions: work on `main`.** A cloud session may start on its own `claude/...` branch. Before V0, run `git fetch origin` and `git checkout -B main origin/main`, then commit and push with `git push origin main` as the runbook says. If GitHub refuses a push to `main`, push to your own branch instead and put "merge `<branch>` into `main`" under Needs Gordon in `status.md`.
 
@@ -239,3 +237,20 @@ You are the orchestrator for the Cindia v2 build. The desktop session is stopped
 ```
 
 This version waits on its own, so the session can be started before the fixes are pushed.
+
+## 7. How it was applied
+
+1. Nine fix agents (FX1 to FX9) applied sections 1 and 2 to their own files, and one more (FXC) folded in the items each found for the others.
+2. Three fresh checkers re-read everything against this plan and the contracts. Their findings are in `docs/v2/reviews/FX10a-shared-names-recheck.md`, `FX10b-features-recheck.md` and `FX10c-backend-harness-recheck.md`. They found all 16 blockers from B1, D1 and D2 resolved, and the backend ones from B2 resolved once the model hand-off step was added.
+3. Six fixers applied those findings, with these choices settled where a finding offered two:
+   - a number the model rewrites after training is never typed in a test,
+   - the core gate runs `check`, `test:smoke`, `test:demo` and `test:server`,
+   - G5 names its live spec by path,
+   - B12 starts after B11's T5 and T6,
+   - d15's `data.synced` is the one tour event keyed `b13-live`,
+   - the ask-the-maker store key is `support.questions`,
+   - `allApprovals` and `allFollowUps` are new mock exports,
+   - the brief keeps the pitch's claims, which its "Backend if time" table lists.
+4. `node .claude/hooks/test-hooks.mjs` passes 338 of 338. The v1 plans that still use the old Gu names carry a "v1 history" note pointing at R0.
+
+Left for Gordon: the Chinese of L1, L2, L4, L15 and the co-op's place (美国亚利桑那州纳瓦霍保留区), the font change for I3, an optional Census poverty figure for the brief, and the items in section 5.

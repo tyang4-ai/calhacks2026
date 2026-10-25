@@ -1,5 +1,7 @@
 # F-approvals · The owner approves (F9)
 
+> **v1 history.** This plan was built and is green in v1. Its names (the Gu embroidery studio, its makers and pieces) are from before R0, which re-skins v1 as the Diné Weaving and Silver Co-op with every number unchanged. For current names, read `docs/plans/R0-reskin.md` and `docs/v2/contracts.md`.
+
 Priority: P0 · Wave: W1 · Depends on: G2 · Folder: src/features/approvals/ · Made real by: B02, B08
 
 ## Goal
