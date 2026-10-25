@@ -1,0 +1,17 @@
+# Deep links on Cloudflare Pages (D-deploy). Each route family of src/app/routes.tsx is proxied to
+# the root page with status 200, so the address bar keeps the link and its query string.
+# Cloudflare applies every rule before it looks for a file, so there is no catch-all: /* would
+# also serve the page for /assets/, /images/ and /market/. Never add a rule for /assets/,
+# /images/, /market/, /robots.txt, /favicon.svg or /public-build.json. Static rules come before
+# the splat rules, as Cloudflare's docs ask. node scripts/check-public.mjs checks this file.
+/demo     /  200
+/shop     /  200
+/sell     /  200
+/buyer    /  200
+/owner    /  200
+/shop/*   /  200
+/sell/*   /  200
+/store/*  /  200
+/maker/*  /  200
+/studio/* /  200
+/dev/*    /  200

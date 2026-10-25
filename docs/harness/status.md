@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:15 PT
+UPDATED: 2026-10-24 23:17 PT
 
 # Status board
 
@@ -46,6 +46,7 @@ v1 (desktop session, history):
 | G3 communities | PASS | Oct 24 10:22 PM | `artifacts/gates/G3-2210.md` 3/3 (feature 29, smoke 123), `artifacts/gates/G3-communities-verifier.md` PASS (F1 Shop home strip clipped at 1440x900, polish before G4v2; F2 /shop/projects inner scroll; F3 data-attribute selectors) | v2-communities |
 | I2-art | PASS | Oct 24 10:58 PM | `artifacts/gates/I2-art-verifier.md` PASS (six bullets; art --check 54 valid; images.spec 54), smoke 123 in the buyer worktree run `artifacts/gates/G3-buyer-wt-2243.md` | v2-art |
 | G3 buyer | PASS | Oct 24 10:58 PM | shared tree `artifacts/gates/G3-2218.md` 2/3 (smoke failed on F-seller-hub's unfinished file), worktree `artifacts/gates/G3-buyer-wt-2243.md` 3/3 (check:scope, feature 62, smoke 123), `artifacts/gates/G3-buyer-verifier.md` PASS (F1 non-piece ID crash, F2 verification below the fold on 20 pieces: polish queue) | v2-buyer |
+| D-deploy | PASS | Oct 24 11:25 PM | `artifacts/gates/D-deploy-wt-2306.md` in the worktree (export, make-market + test 13, build:public with check-public 17 and secrets-scan 0 findings, check-public.test 21, laptop dry-run 9 steps, laptop test 26, preflight port 3000 and v2 names, check, smoke 123, build back to localhost); verifiers `D-deploy-verifier-public.md`, `D-deploy-verifier-laptop.md` PASS; fix round 1 for their notes; market pages regenerated after data round 1 (test 13, all scripts tests 60) | v2-deploy |
 | G3 process | FAIL, fix round 1 | Oct 24 11:05 PM | `artifacts/gates/G3-process-verifier.md` FAIL on screens only: F1 swarm tool node over the Finder's name, F2 data chips cut, F3 reconcile labels truncated, F4 model name truncated; contracts, labels and 20 Acceptance lines pass | |
 | G6 | | | | |
 
@@ -104,7 +105,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-watch | V2 P1 | running | feature-lead | | |
 | F-storefront | V2 P1 | running | feature-lead | | |
 | M-maker-statement | V2 P1 | running | feature-lead | | |
-| D-deploy | V2 | built, verifiers PASS (2 lenses), fix round 1, then the worktree gate | integrator | | then Gordon uploads |
+| D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
 | I2-tour | V3 | todo | integrator, data-smith | | |
 | I3-redesign | V4 | todo | integrator | | per design drop |
 
@@ -193,6 +194,8 @@ Each item names the default already in use, so the build never waits.
 
 | Since | Question | Default in use |
 |---|---|---|
+| Oct 24 11:25 PM | Upload the public site (about 5 minutes, from Windows, tonight and again after the freeze): `git pull`, `npm ci`, `npm run build:public` (must end "build:public: PASS"; if it says the rendered checks were skipped, run `npx playwright install chromium` and build again); check `dist\public-build.json` says `"publicSite": true`; never upload a plain `npm run build`. Cloudflare: Workers & Pages > Create application > Get started > Drag and drop your files, name the project, drag `dist` in, Deploy. On the live site check `/demo` has no Live switch, `/shop/piece/pc_01` shows L6 instead of Pay, `/market/` lists 4 listings and both `/market/listing-01.html` and `/market/listing-01` open, `/robots.txt` disallows all, `/shop` source has noindex. Paste the URL in this session's chat and add `PUBLIC_SITE_URL` to the cloud environment and the laptop's `.env`. After the freeze: rebuild and Create a new deployment (Production). Full steps: `docs/plans/D-deploy.md` Gordon's steps | Not uploaded; B15's watch stays scripted until `PUBLIC_SITE_URL` is set |
+| Oct 24 11:25 PM | Demo laptop, Saturday night on a good network: put the keys in `.env`, run `node scripts/laptop-setup.mjs` until `/api/health` reads all true, then rehearse as `docs/plans/D-deploy.md` says (presenter mode, Live off then on, the scripted fallback with the API closed). Step 5 (the model) needs B11's publish, which is next tonight | Not run |
 | Oct 24 10:28 PM | I2-art: the two-minute look at `artifacts/art/contact-sheet.png` (sent to you in the app) before G4v2. Worth a glance: pc_01 and pc_04 (stepped diamonds), pc_16 (leaf earrings, the most feather-like), the Acoma terrace jars pc_27, pc_32, pc_35, pc_38, pc_39. A flagged piece goes back with `npm run art -- --placeholders <pieceId>` | The 54 drawings as verified (`artifacts/gates/I2-art-verifier.md` PASS) |
 | Oct 24 8:55 PM | Chinese words for the kit: 部族认证 for "Nation attestation" (design drop 3's proposal), and 插图, 示例, 待完成, 已达成, 您的请求, 近似, 事件日志 in `src/ui/strings.ts` | As written by the kit integrator |
 | Oct 24 8:20 PM | Scribe's Devpost skeleton (`docs/devpost/devpost.md`, 14 `[GORDON: ...]` items listed in `sponsors/README.md`): write your sections; check the Figma prize names on Devpost; set the three Figma files to "Anyone with the link" | Drafts and placeholders |
@@ -352,3 +355,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:10 PT · S3 data round 1 done (G2b M1-M5, M8: old-names term by code point, sq_007 "a young child" (leak-guard clean), run_08 one piece each from two other communities, churro（丘罗羊）, 沙盒市场, cft_01's seller Lantern Lane Home Goods); check:data 234, check:scope PASS, support+search specs pass (two reruns after the dev-server restart), server tests 396; committed · status.md
 - 2026-10-24 23:11 PT · export:mock and B11's snapshot refreshed (passagesHash unchanged, 3ef4ee3c…); S3 T9 first pass spawned (model report into model.ts, pooled grading, cft_01's real text match); R0 leftovers sent: 主理人 to F-process, 市集 to M-approvals, b14 fixture to B14; scriptedSwarm.ts 沙盒市集 and gallery.tsx to the integrator's polish round · status.md
 - 2026-10-24 23:15 PT · B14 first spawn done (T1-T3, T5, T6: call path, steps, content check, roster and tools, Intake, Cindy, the specialists, the Writer and the support run; Finder and Curator stubbed until T4): test_b14_swarm 95 passed (one live Intake call 2.2 s), test:server 619, check PASS; committed (no router yet, T9) · status.md
+- 2026-10-24 23:17 PT · D-deploy PASS in the worktree (all Acceptance commands, smoke 123) after fix round 1; market pages regenerated with Lantern Lane Home Goods; committed, tag v2-deploy; Gordon's upload and laptop steps under Needs Gordon; F-watch built (15 specs, live skips), verifier and worktree G3 next · artifacts/gates/D-deploy-wt-2306.md

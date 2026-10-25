@@ -14,6 +14,7 @@
     "test:offline": "node scripts/run-playwright.mjs offline",
     "gate": "node scripts/gate.mjs",
     "build": "tsc -b && vite build",
+    "build:public": "node scripts/build-public.mjs",
     "preview": "vite preview",
     "server": "node scripts/server.mjs",
     "test:server": "node scripts/test-server.mjs",

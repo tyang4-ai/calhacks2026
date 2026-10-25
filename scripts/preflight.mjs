@@ -44,6 +44,19 @@ function argValue(name) {
   return i > -1 ? process.argv[i + 1] : undefined;
 }
 
+async function answers(url, timeoutMs = 1500) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const r = await fetch(url, { signal: ctrl.signal });
+    return r.status < 500;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 function portFree(port) {
   return new Promise((resolve) => {
     const srv = net.createServer();
@@ -124,20 +137,78 @@ for (const [port, level] of [[5173, 'blocker'], [4173, 'blocker'], [8000, 'warni
   add(`Port ${port} free`, free, free ? 'free' : 'in use. Stop whatever is listening there', level);
 }
 
-// 9. .env names present (values never read into output)
+// 8b. Port 3000, v2's local SpacetimeDB (D2-28). Free, or SpacetimeDB itself answering, is fine.
+{
+  const free = await portFree(3000);
+  const spacetime = free ? false : await answers('http://127.0.0.1:3000/v1/ping');
+  add(
+    'Port 3000 free or SpacetimeDB',
+    free || spacetime,
+    free ? 'free (spacetime start --listen-addr 127.0.0.1:3000 uses it)' : spacetime ? 'SpacetimeDB answers on 127.0.0.1:3000' : "in use by something that isn't SpacetimeDB. Stop it",
+    'warning',
+  );
+}
+
+// 9. .env names present (values never read into output). A key counts in .env or in the process
+// environment (the cloud's variables), and CINDIA_ANTHROPIC_API_KEY counts for the Anthropic row, as
+// server/config.py reads them. Only booleans leave this block: never a value.
+const envNames = new Map();
 {
   const envPath = path.join(ROOT, '.env');
   if (!fs.existsSync(envPath)) {
     add('.env present', false, 'missing. Copy C:\\dev\\secrets\\cindia.env to .env. Phase 1 can run without it', 'warning');
   } else {
-    const names = new Set();
     for (const line of fs.readFileSync(envPath, 'utf8').split(/\r?\n/)) {
-      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(\S.*)?$/);
-      if (m && m[2] && m[2].trim() !== '') names.add(m[1]);
+      const m = line.match(/^\s*(?:export\s+)?([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
+      if (!m) continue;
+      const v = m[2].replace(/^(["'])(.*)\1$/, '$2').trim();
+      envNames.set(m[1], { set: v !== '', proxy: v.toLowerCase() === 'proxy' });
     }
-    for (const key of ['ANTHROPIC_API_KEY', 'NESSIE_KEY']) {
-      add(`.env has ${key}`, names.has(key), names.has(key) ? 'present (value not shown)' : 'missing or empty. Upgrades that call it get blocked', 'warning');
-    }
+  }
+}
+/** Where a name is set: '.env', 'environment' or null. */
+function envWhere(name) {
+  if (envNames.get(name)?.set) return '.env';
+  if (typeof process.env[name] === 'string' && process.env[name].trim() !== '') return 'environment';
+  return null;
+}
+/** The first of the names that is set, as "NAME in .env", or null. */
+function envFound(names) {
+  return names.map((n) => (envWhere(n) ? `${n} in ${envWhere(n)}` : null)).find(Boolean) ?? null;
+}
+for (const [label, names] of [
+  ['ANTHROPIC_API_KEY', ['ANTHROPIC_API_KEY', 'CINDIA_ANTHROPIC_API_KEY']],
+  ['NESSIE_KEY', ['NESSIE_KEY']],
+]) {
+  const found = envFound(names);
+  add(
+    `${label} set (.env or environment)`,
+    Boolean(found),
+    found ? `present (${found}, value not shown)` : 'missing or empty in .env and the environment. Upgrades that call it get blocked',
+    'warning',
+  );
+}
+
+// 9b. The v2 names (docs/v2/contracts.md section 1, D2-28), by presence only and as warnings. A name
+// counts in .env or in the process environment (the cloud's variables), and the Elastic and Apify
+// keys also count with their *_AUTH=proxy flag (cloud only). Values are never read into output.
+{
+  const proxyFlag = (name) => envNames.get(name)?.proxy || String(process.env[name] ?? '').trim().toLowerCase() === 'proxy';
+  const V2_NAMES = [
+    { label: 'CINDIA_ANTHROPIC_API_KEY or ANTHROPIC_API_KEY', names: ['CINDIA_ANTHROPIC_API_KEY', 'ANTHROPIC_API_KEY'], use: 'every Claude call' },
+    { label: 'NESSIE_KEY', names: ['NESSIE_KEY'], use: 'B04 and B16' },
+    { label: 'ELASTIC_URL', names: ['ELASTIC_URL'], use: 'B12' },
+    { label: 'KIBANA_URL', names: ['KIBANA_URL'], use: 'B12 Agent Builder' },
+    { label: 'ELASTIC_API_KEY', names: ['ELASTIC_API_KEY'], proxy: 'ELASTIC_AUTH', use: 'B12' },
+    { label: 'APIFY_TOKEN', names: ['APIFY_TOKEN'], proxy: 'APIFY_AUTH', use: 'B15' },
+    { label: 'HF_TOKEN', names: ['HF_TOKEN'], use: 'B11 publish and fetch_model.py' },
+    { label: 'CINDIA_HF_REPO', names: ['CINDIA_HF_REPO'], use: 'B11 publish and fetch_model.py' },
+    { label: 'PUBLIC_SITE_URL', names: ['PUBLIC_SITE_URL'], use: "B15's sandbox market, once the public site is up" },
+    { label: 'SPACETIME_TOKEN', names: ['SPACETIME_TOKEN'], use: 'B13, written by save_token.py' },
+  ];
+  for (const entry of V2_NAMES) {
+    const found = envFound(entry.names) ?? (entry.proxy && proxyFlag(entry.proxy) ? `${entry.proxy}=proxy (cloud only)` : null);
+    add(`v2 name ${entry.label}`, Boolean(found), found ? `present (${found}, value not shown)` : `missing. Needed by ${entry.use}`, 'warning');
   }
 }
 
