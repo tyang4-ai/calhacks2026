@@ -218,7 +218,7 @@ Every file is re-exported by `src/mock/index.ts`. `npm run export:mock` writes e
 ### Records in detail
 
 - **`demoQuestions`** is `{ side: "buyer" | "seller"; text: Text }[]`, and every entry has its own scripted run. The buyer's first is the d04 question, the second a meaning question that ends in the "ask the maker" run, and the third a find question that goes through Agent Builder. The seller's are the payout question (`run_04`) and "Why is part of my September pay held?" (`run_10`).
-- **Approval subjects:** `apr_03.subjectIds` is `["cft_01"]`, `apr_04.subjectIds` is `["lst_01"]`, and `apr_05.subjectIds` is `["wip_01", "mls_02"]`, with `amountCents` that milestone's share of the price.
+- **Approval kinds and subjects:** `apr_01` is a `follow_up` and `apr_02` a `maker_payouts`. `apr_03` is a `report_listing` with `subjectIds` `["cft_01"]`, `apr_04` a `listing_publish` with `["lst_01"]`, and `apr_05` a `milestone_release` with `["wip_01", "mls_02"]` and `amountCents` that milestone's share of the price.
 - **Where the approvals live:** `apr_01` and `apr_02` in `month.ts`, `apr_03` and `fup_02` in `watch.ts`, `apr_04` in `listings.ts`, `apr_05` in `projects.ts`. `getById()` finds them all, and the approvals feature reads them the same way. `fup_02` is the Reporter's draft about `cft_01`.
 - **Storefront blocks:** props are single strings or string lists, never `_en` and `_zh` pairs:
   - hero: `tagline` (a plain craft line),
@@ -298,17 +298,18 @@ The chips under the search box come from a rule-based extractor in both modes. `
 5. Every matched word is used up, so no later pass matches it again, and each chip appears once.
 
 - **Order:** moods, then facet words (any of object, materials, techniques, motifs or colors, together, in text order), then occasions and recipients, then the price chip. Within each group the order is the order of first appearance in the text. A term in two groups counts in the earlier one. For figure 11's text it returns figure 11's six chips in figure 11's order.
-- **The vocabulary:** `keywordVocab(index, aliases)` in `src/sources/keywordSearch.ts` builds it from every facet and vibe word in the index, plus `keywordAliases`. `keywordAliases` never map a stereotype word to anything.
-- **The scorer:** `scoreKeywords(keywords, filters, index, pieces)` returns at most 12 results, best first, with `score` from 0 to 1, `matched` and a `reason` as `Text`. The score is the share of the request's keywords (the price chip left out) found in the piece's facets or vibe. Pieces that score 0 are left out. The filters (`maxPriceCents`, `communityIds`) apply before ranking. Ties sort by `pieceId`.
+- **The vocabulary:** `keywordVocab(index, aliases, pieces?)` in `src/sources/keywordSearch.ts` builds it from every facet and vibe word of the index's active pieces (their `facets.object.en`, materials, techniques, motifs, colors, moods, occasions and recipients, lowercased), plus `keywordAliases`. `pieces` defaults to the catalog. An alias's term that no piece carries counts with occasions and recipients. `keywordAliases` never map a stereotype word to anything.
+- **Words:** a text and every term split the same way, into runs of letters or digits and dollar amounts, so a multi-word term matches the same words in a text.
+- **The scorer:** `scoreKeywords(keywords, filters, index, pieces)` returns at most 12 results, best first, with `score` from 0 to 1, `matched` and a `reason` as `Text`. The score is the share of the request's keywords (the price chip left out) found in the piece's facets or vibe. Pieces that score 0 are left out. The filters (`maxPriceCents`, `communityIds`) apply before ranking, and a price chip caps the price too, the lower cap winning. Only the index's `active` entries are scored. Ties sort by `pieceId`.
 - **Reasons:** `reason` is `{ en: "Matches " + words, zh: "匹配：" + words }`, with the matched facet words joined by ", ". The words stay English, as the facets are.
 
 ## The surprise draw
 
 `src/sources/surprise.ts` exports `mulberry32(seed)` and `drawSurprise({ keyword?, method, seed }, index, pieces)`, which returns the `surprise.drawn` payload without `surpriseId`. B12 ports it exactly.
-- **Candidates:** for `keyword_random` and `fair_random` with a keyword, the keyword's top 12 from `scoreKeywords`, only pieces scoring above 0, sorted by score, then `pieceId`. For `pure_random`, with no keyword, or when the keyword matches nothing, all 54 in `pieceId` order, with the method's weights.
+- **Candidates:** for `keyword_random` and `fair_random` with a keyword, the keyword's top 12 from `scoreKeywords`, only pieces scoring above 0, sorted by score, then `pieceId`. For `pure_random`, with no keyword, or when the keyword matches nothing, all 54 (the index's active pieces) in `pieceId` order, with the method's weights.
 - **Weights:** the raw weights are 1 for `keyword_random` and `pure_random`, and `1 / (1 + salesThisMonth)` from the piece's `searchIndex` entry for `fair_random`.
-- **The draw:** the random number generator is `mulberry32`, seeded with `seed`. The draw takes `r = rng() * total` over the raw weights and walks them with a plain loop in candidate order. B12's Python port walks the same way.
-- **The payload:** `candidates` lists every candidate with `weight` as its raw weight divided by the total, so the weights sum to 1.
+- **The draw:** the random number generator is `mulberry32`, seeded with `seed`. The draw takes `r = rng() * total` over the raw weights, the total summed with a plain loop, and walks them with a plain loop in candidate order, landing on the first candidate whose running total is above `r` (the last one if float rounding leaves none). B12's Python port walks the same way.
+- **The payload:** `candidates` lists every candidate with `weight` as its raw weight divided by the total, unrounded, so the weights sum to 1. Validation accepts weights rounded to 4 decimals too (`events.md`, Validation).
 - The data's `salesThisMonth` values make figure 12's seed land on its piece. A person's seed is 1 plus the number of `surprise.asked` events already in the store.
 
 ## The ID scheme

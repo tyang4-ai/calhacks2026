@@ -3,7 +3,7 @@ NEXT: V1 steps 2 and 3 (S3 T1 stubs, I2-kit, I2-art T0; keyed v1 G5s in a worktr
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 20:16 PT
+UPDATED: 2026-10-24 20:34 PT
 
 # Status board
 
@@ -79,7 +79,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | Plan | Wave | State | Lead | Last green tag | Notes |
 |---|---|---|---|---|---|
 | R0-reskin | V1 step 0 | green | data-smith, integrator, feature-lead, backend-builder | v2-reskin | gate 11/11 checks, 3 verifiers PASS (screens, numbers, words) |
-| I2-core | V1 | first spawn green, second spawn running | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
+| I2-core | V1 | green (both spawns) | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
 | I2-kit | V1 | running | integrator | | T1 frames done (in tree); T2-T4 running |
 | I2-shell | V1 | running | integrator | | T1-T7 |
 | S3-catalog | V1 | running | data-smith | | T1 stubs committed (e51c66e); spawn 2 (T2-T5, T7) running |
@@ -105,7 +105,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 |---|---|---|---|---|
 | B11-embed | todo | | | |
 | B12-search | todo | | | |
-| B13-live | todo | | | T7 gates M-approvals' G3 |
+| B13-live | running | | | T1 module running; then publish, T2-T7 (T7 first) |
 | B14-swarm | todo | | | |
 | B15-watch | todo | | | fixture until the public site is up |
 | B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
@@ -282,3 +282,5 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 20:13 PT · I2-kit T1 done (7 frame components, smoke 76/76); spawned I2-shell (T1-T7) and I2-kit T2-T4; code agents: I2-core T5/T8, S3 spawn 2, I2-shell, I2-kit; plus the scribe and the worktree G5s · status.md
 - 2026-10-24 20:15 PT · B04 G5 rerun 11/13 (live d01: B09's live answer late); G5 chain stopped; backend-builder adding B09's prefetch; worktree API on 8001 isolates the gate · decisions.md
 - 2026-10-24 20:16 PT · scribe 8 PM pass done: README, whats-real, Devpost skeleton, 11 sponsor folders; Cut and simulated filled from its list; the older v1 tags (g1-scaffold, g2-data, w1-*, w2-*, demo-ok-1, demo-ok-b01, demo-ok-b03) aren't in this clone, so they have no SHA row · README.md, docs/devpost/, sponsors/
+- 2026-10-24 20:23 PT · B09 prefetch in (12 unit tests; uncommitted until its G5); keyed G5s rerunning in the worktree with it (b09, b04, b02, b07); B13 T1 spawned; registry epoch check added to I2-core T5/T8's spawn · status.md
+- 2026-10-24 20:34 PT · I2-core second spawn committed on its check:scope -- src/sources/ pass (191 passed; core 682; vitest src/sources src/core 403): responders T5 and T8, the core verifiers' minors, the registry epoch check · status.md

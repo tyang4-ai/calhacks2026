@@ -4,7 +4,7 @@ Read by every backend-builder, by the integrator, and by the scaffolder for the 
 
 ## Rules for every endpoint
 
-- **Where it runs:** FastAPI on http://localhost:8000, started by the orchestrator with `npm run server`. `scripts/server.mjs` starts uvicorn with `--reload` and `--timeout-graceful-shutdown 3` (so an open response can't hang a reload), and with `HF_HUB_OFFLINE=1` and `ANTHROPIC_BASE_URL=https://api.anthropic.com` in its environment. No server module calls out at import time. In the browser, the Vite dev server and the preview proxy `/api` to port 8000, so the app calls relative paths like `/api/b01/reconcile`. No CORS setup is needed.
+- **Where it runs:** FastAPI on http://localhost:8000, started by the orchestrator with `npm run server`. `scripts/server.mjs` starts uvicorn with `--reload` and `--timeout-graceful-shutdown 3` (so an open response can't hang a reload), and with `HF_HUB_OFFLINE=1` and `ANTHROPIC_BASE_URL=https://api.anthropic.com` in its environment. No server module calls out at import time. In the browser, the Vite dev server and the preview proxy `/api` to port 8000, so the site calls relative paths like `/api/b01/reconcile`. No CORS setup is needed.
 - **Nothing in the browser calls an outside service:** Claude, Nessie, Elastic, Apify, Hugging Face, or SpacetimeDB on port 3000. Only `server/` does, with the keys and headers from `server/config.py`. Live adapters in `src/sources/live/` call only `/api/...`.
 - **One prefix per upgrade:** every route of upgrade NN lives under `/api/bNN/` and is defined in `server/routers/bNN_<slug>.py` as `router = APIRouter(prefix="/api/bNN")`. `server/main.py` includes the `router` of every module in `server/routers/` that defines one, so an upgrade never edits it. A helper module with the upgrade's prefix and no `router`, such as `server/routers/b04_nessie.py`, is skipped. An upgrade's other files live in its own folder, `server/bNN_<slug>/`, such as `server/b11_embed/` and `server/b13_spacetime/`.
 - **Requests** are JSON with `Content-Type: application/json`, except the B05 upload. Every POST body has a `trigger` field: the scripted event the adapter is replacing, the person's request event when the registry passes one on (see Requests from people in `events.md`), or `null` when nothing in the store started the call. The adapter sends the records the server needs in the body, taken from `src/mock`, because the server can't read the TypeScript dataset.
@@ -326,16 +326,16 @@ SpacetimeDB is the platform's system of record. Elastic is the search index buil
 
 ## B14 · the agent swarm (`b14-swarm`)
 
-**`POST /api/b14/support`** · `ANTHROPIC_API_KEY` · under 19 seconds · `{ "trigger", "threadId", "runId", "idTag", "idStart", "side", "text", "lang", "contextIds", "records" }`, where `records` carries what the request's side may see (the rules at the top). Returns every `swarm.step` in order, then one of:
+**`POST /api/b14/support`** · `CINDIA_ANTHROPIC_API_KEY` (read through `config.ANTHROPIC_API_KEY`) · under 19 seconds · `{ "trigger", "threadId", "runId", "idTag", "idStart", "side", "text", "lang", "contextIds", "records" }`, where `records` carries what the request's side may see (the rules at the top). Returns every `swarm.step` in order, then one of:
 - `support.answered`,
 - `support.escalated` with an `approval.requested` (kind `support_action`, inline approval), when a person must take over,
 - for a meaning or authenticity question the records can't answer, `support.answered` with L14 and a `question.forwarded` to the piece's maker.
 
 **A maker's answer** (`question.answered`, a person's request keyed `b14-swarm`) has no live endpoint yet. The live loop is in the brief's "Backend if time". Until it lands, the B14 adapter answers it with `[]`, so the scripted relay (`run_09`) plays in both modes.
 
-**`POST /api/b14/listing`** · `ANTHROPIC_API_KEY` · under 19 seconds · `{ "trigger", "listingId", "runId", "idTag", "idStart", "makerId", "notes", "lang", "community", "maker", "vibeVocabulary", "image"? }` runs the Lister, then the Describer (only with an image), the Tagger, the Checker and the Indexer. Returns the steps, `listing.drafted`, `listing.indexed` (`cindia-drafts`, once B12 is live) and an `approval.requested` `apr_user_<tag>_<n>` whose inline approval is a `listing_publish` for the person's listing.
+**`POST /api/b14/listing`** · `CINDIA_ANTHROPIC_API_KEY` (read through `config.ANTHROPIC_API_KEY`) · under 19 seconds · `{ "trigger", "listingId", "runId", "idTag", "idStart", "makerId", "notes", "lang", "community", "maker", "vibeVocabulary", "image"? }` runs the Lister, then the Describer (only with an image), the Tagger, the Checker and the Indexer. Returns the steps, `listing.drafted`, `listing.indexed` (`cindia-drafts`, once B12 is live) and an `approval.requested` `apr_user_<tag>_<n>` whose inline approval is a `listing_publish` for the person's listing.
 
-**`POST /api/b14/storefront`** · `ANTHROPIC_API_KEY` · under 19 seconds · `{ "trigger", "storefrontId", "runId", "idTag", "idStart", "community", "pieces" }` runs the Designer. Returns the steps and `storefront.drafted`, with block IDs `blk_user_<tag>_<n>` and props as single strings or string lists (`data-model.md`'s storefront blocks).
+**`POST /api/b14/storefront`** · `CINDIA_ANTHROPIC_API_KEY` (read through `config.ANTHROPIC_API_KEY`) · under 19 seconds · `{ "trigger", "storefrontId", "runId", "idTag", "idStart", "community", "pieces" }` runs the Designer. Returns the steps and `storefront.drafted`, with block IDs `blk_user_<tag>_<n>` and props as single strings or string lists (`data-model.md`'s storefront blocks).
 
 **How a run works:**
 1. Cindy (the orchestrator) reads Intake's result and picks the specialists from the roster.
@@ -422,7 +422,7 @@ The swarm view labels `code` agents "rule-based". The `never` field on each spec
 
 ## What the server skeleton provides
 
-- **`server/requirements.txt`** pins `fastapi[standard]==0.159.1` (which brings uvicorn, httpx and python-multipart), `anthropic==2.1.0`, `openpyxl==3.1.5`, `pytest`, `httpx`, and pinned `sentence-transformers`, `torch` (the CPU build), `numpy` and `huggingface_hub`. It carries `--extra-index-url https://download.pytorch.org/whl/cpu`, so Linux gets the CPU build of torch (`torch.__version__` ends in `+cpu`). It has no `elasticsearch` package, because B12 talks to Elastic with httpx, and `websockets` only if B13-live names it.
+- **`server/requirements.txt`** pins `fastapi[standard]==0.159.1` (which brings uvicorn, httpx and python-multipart), `anthropic==2.1.0`, `openpyxl==3.1.5`, `httpx==0.28.1`, `python-dotenv==1.2.4`, `pytest==9.1.1`, `numpy==2.5.4`, `torch==2.14.1` (the CPU build), `transformers==5.20.2`, `sentence-transformers==6.2.0` and `huggingface_hub==2.3.0`. It carries `--extra-index-url https://download.pytorch.org/whl/cpu`, so Linux gets the CPU build of torch (`torch.__version__` ends in `+cpu`). It has no `elasticsearch` package, because B12 talks to Elastic with httpx, and `websockets` only if B13-live names it.
 - **`server/config.py`** reads the process environment first, then `.env` with `override=False`, and never prints, logs or returns a value. It exposes:
   - `ANTHROPIC_API_KEY` (from `CINDIA_ANTHROPIC_API_KEY`, falling back to `ANTHROPIC_API_KEY`) and `NESSIE_KEY`,
   - `ELASTIC_URL`, `KIBANA_URL`, `ELASTIC_API_KEY`, `ELASTIC_AUTH`, `APIFY_TOKEN`, `APIFY_AUTH`, `HF_TOKEN`, and `HF_REPO` (from `CINDIA_HF_REPO`, not secret, default unset),

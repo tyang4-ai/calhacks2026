@@ -21,6 +21,8 @@ export interface RegistryDeps {
   timeoutFor: (key: SourceKey) => number;
   /** The player clock, for the `at` of events pushed through start(emit). */
   now: () => number;
+  /** The player's epoch. A produce() result, or its fallback, is dropped when it changed meanwhile. */
+  epoch: () => number;
   log: (msg: string) => void;
 }
 
@@ -82,6 +84,7 @@ export function createRegistry(overrides: Partial<RegistryDeps> = {}): Registry 
     timeoutMs: PRODUCE_TIMEOUT_MS,
     timeoutFor: defaultTimeoutFor,
     now: () => player.now(),
+    epoch: () => player.epoch(),
     log: (msg) => console.warn(`[cindia sources] ${msg}`),
     ...overrides,
   };
@@ -177,8 +180,17 @@ export function createRegistry(overrides: Partial<RegistryDeps> = {}): Registry 
       deps.emit(e);
       return;
     }
+    // A reset, seek or load while produce() waits starts a new run: the old answer, live or the
+    // scripted fallback, never lands in it. The seek replays the timeline's own events itself.
+    const epoch = deps.epoch();
+    const stale = () => {
+      if (deps.epoch() === epoch) return false;
+      deps.log(`${adapter.key} answered ${e.type} after a reset or seek, dropped`);
+      return true;
+    };
     try {
       const out = await withTimeout(adapter.produce(e, deps.getState()), deps.timeoutFor(adapter.key));
+      if (stale()) return;
       if (!Array.isArray(out) || out.length === 0) {
         deps.log(`${adapter.key} returned nothing for ${e.type}, playing the scripted event`);
         deps.emit(e);
@@ -186,6 +198,7 @@ export function createRegistry(overrides: Partial<RegistryDeps> = {}): Registry 
       }
       for (const live of out) deps.emit(asLive(live, adapter.key));
     } catch (err) {
+      if (stale()) return;
       deps.log(`${adapter.key} failed for ${e.type} (${err instanceof Error ? err.message : String(err)}), playing the scripted event`);
       deps.emit(e);
     }

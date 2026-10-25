@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CindiaEvent } from "../core/events";
-import { emit, getState, reset, setStoreMode, subscribe } from "../core/store";
+import { createPlayer } from "../core/player";
+import { emit, getState, onEvent, reset, setStoreMode, subscribe } from "../core/store";
 import { sample } from "../core/testFixtures";
 import { createRegistry } from "./registry";
 import { timeoutFor, type LiveAdapter } from "./types";
@@ -186,6 +187,40 @@ describe("per-key timeouts", () => {
     await vi.advanceTimersByTimeAsync(2000);
     expect(getState().month.matches.mat_001.kind).toBe("one_to_one");
     expect(log.mock.calls.join(" ")).toMatch(/timeout after 8000 ms/);
+    r.dispose();
+  });
+
+  it("drops a produce() answer, and its fallback, when a seek happens while it waits", async () => {
+    const p = createPlayer({ wallNow: () => 0, requestFrame: () => 1, cancelFrame: () => {} });
+    p.load({ id: "t", durationMs: 60000, events: [] });
+    const log = vi.fn();
+    const slowLive = adapter("b09-concierge", (e) => later(3000, liveCopy(e, "evt_live_0901", { query: "live" })));
+    const slowFail = adapter("b04-bank", () => later(3000, 0).then(() => Promise.reject(new Error("boom"))));
+    const r = createRegistry({ adapters: [slowLive, slowFail], emit, getState, subscribe, timeoutMs: 8000, now: () => 0, epoch: () => p.epoch(), log });
+    setStoreMode("live");
+    await vi.runOnlyPendingTimersAsync();
+    await r.refreshHealth();
+    const seen: CindiaEvent[] = [];
+    const off = onEvent((e) => seen.push(e));
+
+    const answered = r.dispatch(sample("concierge.answered"));
+    const failed = r.dispatch(sample("account.synced"));
+    await vi.advanceTimersByTimeAsync(1000);
+    p.seek(5000);
+    await vi.advanceTimersByTimeAsync(3000);
+    await answered;
+    await failed;
+    expect(seen).toEqual([]);
+    expect(getState().buyer.concierge).toBeNull();
+    expect(getState().money.latestAccountId).toBeNull();
+    expect(log.mock.calls.join(" ")).toMatch(/after a reset or seek, dropped/);
+
+    // With no seek, the same wait is used.
+    const again = r.dispatch(sample("concierge.answered"));
+    await vi.advanceTimersByTimeAsync(3000);
+    await again;
+    expect(getState().buyer.concierge?.query).toBe("live");
+    off();
     r.dispose();
   });
 

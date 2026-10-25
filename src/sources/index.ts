@@ -10,7 +10,19 @@ export type { LiveAdapter } from "./types";
 export { PRODUCE_TIMEOUT_MS, REPLY_DELAY_MS, timeoutFor } from "./types";
 export { answerId, liveIdStart, pageTag } from "./ids";
 export { createRegistry, getRegistry, asLive, withTimeout, type Registry } from "./registry";
-export { createResponder, normalizeQuestion, scriptedAnswer, type MockAnswers, type Responder } from "./requests";
+export {
+  createResponder,
+  normalizeQuestion,
+  scriptedAnswer,
+  tokenFor,
+  type AnswerContext,
+  type MockAnswers,
+  type Responder,
+} from "./requests";
+export { extractKeywords, type ExtractedKeywords } from "./keywords";
+export { isPriceChip, keywordVocab, scoreKeywords, type KeywordVocab } from "./keywordSearch";
+export { drawSurprise, mulberry32 } from "./surprise";
+export { planRun, type PlannedRunEvent } from "./scriptedSwarm";
 export { loadTimeline, timelineIds } from "./timelines";
 export { loadScripted, playScripted } from "./scripted";
 export { setMode, toggleMode, useMode, useSourceHealth } from "./mode";
@@ -36,6 +48,7 @@ export function installSources(): void {
     delayMs: REQUEST_DEFAULTS.delayMs,
     timeoutFor: REQUEST_DEFAULTS.timeoutFor,
     log: (msg) => console.warn(`[cindia sources] ${msg}`),
+    timeline: () => player.getTimeline(),
   });
   loadScripted("demo");
 }

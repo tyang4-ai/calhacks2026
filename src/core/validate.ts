@@ -317,8 +317,12 @@ const MAX_CONTENT = 200 * 1024;
 const MAX_RESULTS = 12;
 /** data.synced carries at most three newest rows per table. */
 const MAX_NEWEST = 3;
-/** Payload weights are raw weights over their total, so they sum to 1 up to rounding. */
-const WEIGHT_TOLERANCE = 0.001;
+/**
+ * Payload weights are raw weights over their total, so they sum to 1 up to rounding. The scripted
+ * draw keeps them unrounded. A port that rounds each to 4 decimals is off by at most 0.00005 per
+ * candidate, so 0.003 accepts up to 60 rounded weights (all 54 pieces, for pure_random).
+ */
+const WEIGHT_TOLERANCE = 0.003;
 
 function isObj(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);

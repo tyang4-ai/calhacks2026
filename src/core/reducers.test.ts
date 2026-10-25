@@ -473,6 +473,28 @@ describe("the log", () => {
     expect(s.log.entries.map((x) => x.id)).toEqual([tour.id, `evt_live_${LOG_LIMIT + 9}`]);
   });
 
+  it("holds the same order when a timeline with two events of one status type plays twice into one store", () => {
+    const events = [
+      sample("piece.opened", {}, { id: "evt_0001", at: 1000 }),
+      sample("data.synced", { screens: 1 }, { id: "evt_0002", at: 2000 }),
+      sample("index.synced", { indexed: 12 }, { id: "evt_0003", at: 2500 }),
+      sample("agent.acted", { actId: "act_0001" }, { id: "evt_0004", at: 3000 }),
+      sample("data.synced", { screens: 2 }, { id: "evt_0005", at: 4000 }),
+      sample("index.synced", { indexed: 54 }, { id: "evt_0006", at: 4500 }),
+      sample("agent.acted", { actId: "act_0002" }, { id: "evt_0007", at: 5000 }),
+    ];
+    const once = apply(events);
+    expect(once.log.entries.map((x) => x.id)).toEqual(["evt_0001", "evt_0004", "evt_0005", "evt_0006", "evt_0007"]);
+    const twice = apply(events, once);
+    expect(twice.log).toEqual(once.log);
+    expect(twice.sync).toEqual(once.sync);
+    expect(twice.sync.data?.screens).toBe(2);
+    expect(twice.sync.index?.indexed).toBe(54);
+    // A newer status event still replaces the kept one and moves to the end.
+    const later = rootReducer(twice, sample("data.synced", { screens: 3 }, { id: "evt_live_0001", at: 6000, source: "live" }));
+    expect(later.log.entries.map((x) => x.id)).toEqual(["evt_0001", "evt_0004", "evt_0006", "evt_0007", "evt_live_0001"]);
+  });
+
   it("holds the same entries in the same order when the demo timeline plays twice, at most 400", () => {
     const t = loadTimeline("demo");
     expect(t.events.length).toBeGreaterThan(0);

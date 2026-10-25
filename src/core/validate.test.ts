@@ -171,6 +171,20 @@ describe("validateEvent", () => {
     }
   });
 
+  it("accepts surprise weights rounded to 4 decimals for all 54 pieces, and rejects a sum far from 1", () => {
+    // pure_random over 54 pieces: 1/54 rounded to 4 decimals is 0.0185, which sums to 0.999.
+    const candidates = Array.from({ length: 54 }, (_, i) => ({ pieceId: `pc_${String(i + 1).padStart(2, "0")}`, weight: 0.0185 }));
+    const rounded = candidates.reduce((sum, c) => sum + c.weight, 0);
+    expect(Math.abs(rounded - 1)).toBeGreaterThan(0.001);
+    expect(validateEvent(sample("surprise.drawn", { method: "pure_random", pieceId: "pc_38", candidates }))).toEqual([]);
+    // Unrounded weights sum to 1 up to float error.
+    const exact = candidates.map((c) => ({ ...c, weight: 1 / 54 }));
+    expect(validateEvent(sample("surprise.drawn", { method: "pure_random", pieceId: "pc_38", candidates: exact }))).toEqual([]);
+    // Off by more than rounding allows.
+    const short = candidates.map((c, i) => (i === 0 ? { ...c, weight: 0.0135 } : c));
+    expect(validateEvent(sample("surprise.drawn", { method: "pure_random", pieceId: "pc_38", candidates: short }))).not.toEqual([]);
+  });
+
   it("checks the ID prefix for live and user events", () => {
     expect(validateEvent(sample("account.synced", {}, { source: "live", id: "evt_live_0001" }))).toEqual([]);
     expect(validateEvent(sample("account.synced", {}, { source: "live", id: "evt_0001" }))).not.toEqual([]);
