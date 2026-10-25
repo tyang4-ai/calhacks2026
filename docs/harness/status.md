@@ -102,7 +102,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | M-approvals | V2 P0 | todo | feature-lead | | G3 waits for B13 T7 |
 | M-desktop | V2 P0 | running | feature-lead | | T2, T3 first |
 | F-seller-hub | V2 P0 | built, G3 queued (worktree) and verifier | feature-lead | | lead wrote T0-T7 itself; specs mock the HMR socket |
-| F-watch | V2 P1 | running | feature-lead | | |
+| F-watch | V2 P1 | built, G3 queued (worktree) and verifier | feature-lead | | live spec skips until B15 |
 | F-storefront | V2 P1 | running | feature-lead | | |
 | M-maker-statement | V2 P1 | running | feature-lead | | |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
