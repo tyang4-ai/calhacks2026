@@ -293,8 +293,7 @@ def cindy_out(**over) -> CindyOut:
 def clerk_out(**over) -> ClerkOut:
     base = dict(
         status="answered",
-        answer_en="Ordered on {buy_date}, it ships by {ship_by} and arrives between {arrival_earliest} and {arrival_latest}, before {date_asked}.",
-        answer_zh="如果{buy_date}下单，会在{ship_by}前发出，{arrival_earliest}到{arrival_latest}之间送达，早于{date_asked}。",
+        answer="Ordered on {buy_date}, it ships by {ship_by} and arrives between {arrival_earliest} and {arrival_latest}, before {date_asked}.",
         sourceIds=["pol_01"],
     )
     base.update(over)
@@ -747,7 +746,7 @@ def _marker_answers() -> dict[type, Any]:
                               orderIds=[f"ord_{m.lower()}"], intents=["authenticity", "shipping", m]),
         CindyOut: cindy_out(specialists=["steward", "clerk", m], parallel=["steward", m], routeNote=f"{m} note"),
         StewardOut: StewardOut(status="answered", sentence=sentence_number("verification.note")),
-        ClerkOut: clerk_out(answer_en=f"{m} " + clerk_out().answer_en, answer_zh=f"{m}" + clerk_out().answer_zh),
+        ClerkOut: clerk_out(answer=f"{m} " + clerk_out().answer),
         WriterOut: writer_out(reply=f"{m} " + GOOD_REPLY_EN, refIds=[m]),
     }
 
@@ -1115,24 +1114,32 @@ def test_the_clerk_gives_dates_only_through_arrival_window_placeholders(monkeypa
     assert (facts["buy_date"]["en"], facts["ship_by"]["en"], facts["arrival_earliest"]["en"], facts["arrival_latest"]["en"]) == (
         "Sep 1", "Sep 4", "Sep 10", "Sep 14")
     assert facts["arrival_latest"]["zh"] == "9月14日" and facts["transit_days"]["en"] == "6 to 10" and facts["date_asked"]["en"] == "Oct 10"
-    assert "arrival compared with the date asked: before" in res.notes
+    assert "it arrives in time: the latest arrival day is before the date asked" in res.notes
     assert [(p.kind, p.tool) for p in res.steps] == [("tool", "policy"), ("tool", "arrival_window"), ("result", None)]
     assert "model" not in steps.RunRecorder(RUN_ID, THREAD, "buyer", steps.IdMint(TAG, 1), bridge=None).add(res.steps[1])
     # The Clerk saw the policy with its numbers as placeholders, and no date at all.
     sent = fake.calls[0]["messages"][0]["content"]
     assert "{transit_days_min} to {transit_days_max} days" in sent
+    # It's told which placeholders its answer needs, and to answer its own part of a two-part question
+    # (the d04 question's first half is the Steward's: the Clerk used to say unknown to all of it).
+    assert "Your answer must use: {arrival_earliest}, {arrival_latest}" in sent
+    assert "answer your part" in clerk.SYSTEM and "Chinese" not in clerk.SYSTEM
+    assert set(clerk.ClerkOut.model_fields) == {"status", "answer", "sourceIds"}
+    assert res.draft == {"en": clerk_out().answer, "zh": clerk_out().answer}  # English only
     assert not re.search(r"Sep \d|9月\d|2026-", sent)
 
 
 @pytest.mark.parametrize(
     "bad",
     [
-        clerk_out(answer_en="It arrives by Sep 14."),  # a typed date
-        clerk_out(answer_zh="9月14日前送达。"),
-        clerk_out(answer_en="It arrives by {arrival_day}."),  # a placeholder code can't fill
+        clerk_out(answer="It arrives by Sep 14."),  # a typed date
+        clerk_out(answer="It arrives between {arrival_earliest} and {arrival_latest}，很快送达。"),  # Chinese: English only
+        clerk_out(answer="It arrives by {arrival_day}."),  # a placeholder code can't fill
         clerk_out(sourceIds=["pol_09"]),  # a source it wasn't given
         clerk_out(sourceIds=[]),
-        clerk_out(answer_en="It ships by {ship_by}.", answer_zh="{ship_by}前发出。"),  # leaves out the arrival dates
+        clerk_out(answer="It ships by {ship_by}."),  # leaves out the arrival dates
+        # Says it may be late when code's comparison says it arrives a month early (seen live on d04).
+        clerk_out(answer="It ships by {ship_by} and arrives between {arrival_earliest} and {arrival_latest}, so it cannot be guaranteed by {date_asked}."),
         clerk_out(status="unknown"),
     ],
 )
