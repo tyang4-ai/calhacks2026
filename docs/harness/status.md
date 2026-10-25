@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:56 PT
+UPDATED: 2026-10-25 00:02 PT
 
 # Status board
 
@@ -108,7 +108,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-storefront | V2 P1 | built, worktree G3 queued and verifier | feature-lead | | needs a theme field on storefront.published (integrator) |
 | M-maker-statement | V2 P1 | built, worktree G3 queued and verifier | feature-lead | | compact layout under 600 px for Phase A's box |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
-| I2-tour | V3 | T2 running | integrator, data-smith | | T1 then T3-T8; English-only toggle hiding in T3-T8 |
+| I2-tour | V3 | T2 done (uncommitted, commits with T1), T1 running | integrator, data-smith | | 20 beats, 220 s; T3-T8 next, with English-only toggle hiding |
 | I3-redesign | V4 | todo | integrator | | per design drop |
 
 ## v2 Upgrades
@@ -377,3 +377,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:48 PT · F-storefront built (T0-T6, smoke 123, feature specs pass alone; shared-tree runs lose a test to reloads); its worktree G3 queued and verifier spawned; all eleven V2 leads have reported · status.md
 - 2026-10-24 23:52 PT · S3 T9 second pass done (report copied again: keyword 0.7843 / 0.8745, base 0.722 / 0.7809, custom 0.7893 / 0.8922, hybrid 0.8247 / 0.94; real text matches cft_01 0.74, cft_02 0.34, cft_03 0.40, cft_04 0.32): check:data 244, check:scope PASS; snapshot refreshed; its worktree gate (search specs and smoke) is queued · status.md
 - 2026-10-24 23:56 PT · M-approvals fix round 1 done (F1 toast in its own strip, F2, F3, F4, F9, English-only listing card; 41/41 first run); worktree G3 rerun queued and a two-lens recheck (confirm, adversarial overlap hunt) running; F-process worktree rerun PASS (38, smoke 123), its verifier recheck pending · status.md
+- 2026-10-25 00:02 PT · I2-tour T2 done (no I2-core gaps, 3 unit tests, the tour in demo-script.md under ## Beats, 20 beats with d17-ask-maker, 220 s; timelines.test red until T1, so T2 commits with T1); T1 data-smith spawned (drafts the timeline outside src/ and swaps it in at once) · status.md
