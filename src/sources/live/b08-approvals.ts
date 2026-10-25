@@ -6,12 +6,14 @@
 //   returns [] at once, so the scripted grant plays on time. With one connected it long-polls
 //   /api/b08/approvals/{id}?wait=6 and returns the owner's decision, or [] when none came.
 //
-// The owner's phone (/owner in live mode):
-// - start(emit) polls the pending list every 2 seconds, only while the route is /owner, and emits
-//   each approval.requested it returns. On any other route it fetches nothing, so the console never
+// The owner screen (/sell/approvals?screen=owner in live mode, api-contract.md B08):
+// - start(emit) polls the pending list every 2 seconds, only while the path is /sell/approvals and
+//   the query has screen=owner, and emits each approval.requested it returns. On any other route,
+//   the plain /sell/approvals included, it fetches nothing, so the Sell site on the console never
 //   counts as an owner screen.
 // - The owner's tap reaches produce() as a user approval.granted or approval.declined (Requests from
-//   people in events.md). It posts the decision and returns the server's event.
+//   people in events.md). It posts the decision so the console sees it, then returns [], so the
+//   scripted answer to that decision plays (a milestone grant's wip.milestone_paid and its move).
 //
 // Nothing here grants an approval on its own: the only decision it ever sends is the person's tap.
 // Every fetch has a timeout, and any failure throws or returns [], so the registry plays the
@@ -28,7 +30,8 @@ const POLL_MS = 2000;
 const POLL_TIMEOUT_MS = 1900;
 /** The server waits at most 6 seconds. */
 const MAX_WAIT_S = 6;
-const OWNER_ROUTE = "/owner";
+const OWNER_PATH = "/sell/approvals";
+const OWNER_SCREEN = "owner";
 
 type ApprovalType = "approval.requested" | "approval.granted" | "approval.declined";
 const DECISIONS = new Set<string>(["approval.granted", "approval.declined"]);
@@ -75,10 +78,12 @@ function approvalEvents(out: unknown, types: ReadonlySet<string>, approvalId?: s
   return keep;
 }
 
-function onOwnerRoute(): boolean {
+/** True only on /sell/approvals with screen=owner in the query. */
+export function onOwnerRoute(): boolean {
   if (typeof window === "undefined" || !window.location) return false;
   const path = window.location.pathname.replace(/\/+$/, "");
-  return path === OWNER_ROUTE;
+  if (path !== OWNER_PATH) return false;
+  return new URLSearchParams(window.location.search ?? "").get("screen") === OWNER_SCREEN;
 }
 
 const ONLY_REQUESTED = new Set<string>(["approval.requested"]);
@@ -89,19 +94,22 @@ async function register(event: CindiaEvent<"approval.requested">): Promise<Cindi
   return approvalEvents(out, ONLY_REQUESTED, approvalId);
 }
 
-/** The owner's tap: forward the person's decision so the other screen sees it. */
+/**
+ * The owner's tap: forward the person's decision so the other screen sees it, then answer [] so the
+ * scripted answer to the decision plays. The store already holds the person's own event.
+ */
 async function forwardDecision(event: CindiaEvent): Promise<CindiaEvent[]> {
   const type = event.type as ApprovalType;
   const approvalId = (event.payload as { approvalId: string }).approvalId;
   const reason =
     type === "approval.declined" ? (event.payload as Payloads["approval.declined"]).reason : { en: "", zh: "" };
   const decision = type === "approval.granted" ? "granted" : "declined";
-  const out = await postJson(
+  await postJson(
     `/api/b08/approvals/${encodeURIComponent(approvalId)}/decision`,
     { trigger: event, decision, reason },
     PRODUCE_BUDGET_MS,
   );
-  return approvalEvents(out, DECISIONS, approvalId);
+  return [];
 }
 
 /** The scripted decision: wait for the owner only when an owner screen is connected. */
