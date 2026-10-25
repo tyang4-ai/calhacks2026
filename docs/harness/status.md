@@ -170,6 +170,16 @@ Filled in from `artifacts/preflight.md` at G0.
 | docs/harness/runbook.md present | ok | yes |
 | docs/harness/status.md present | ok | yes |
 
+## Polish queue (before I2-tour)
+
+Run once the V2 leads are done, so a shared-code edit can't reload the dev server under another lead's tests.
+
+- Feature leads: F-search F1 (only the first row of the six tour results above the fold, `ResultsGrid.tsx`, `ResultCard.tsx`); F-communities F1 (Shop home strip clipped at 1440x900, `_stripBody` scroll) and F2 (`/shop/projects` inner scroll). If either can't be fixed in the feature, the integrator changes the Shop home stack ratio in `src/app/surfaces/surfaces.module.css`.
+- Integrator code: `src/ui/Seal.tsx:50-51` comment (the compact card's date); `src/app/chrome/AppChrome.tsx` Ask Cindy button test ID (add to ui-contract.md); `src/ui/gallery.tsx:458` 示例山丘工作室 (old-names grep, G2b M1); `tests/smoke/routes.spec.ts` checks the co-op's name in the Sell header and the eleven ProcessBlocks on one row on /dev/kit; `src/core/validate.test.ts` negative cases for the optional fields; `scripts/gate.mjs` copies `artifacts/demo/report.json` next to each live G5's logs; `node --test scripts/*.test.mjs` in `npm run check` or a gate (D-deploy note); `ALLOWED_EMPTY_FALLBACKS` b13-live data.synced; tsconfig jsx.
+- Integrator docs round 2: design-system.md "the 48 px compact seal" → "a 48 px seal", `formatMonthDay` in the kit table; ui-contract.md Test hooks rule wording (data-slot* sits on a wrapper with no test ID), add data-role, data-status, data-video-phase, data-catch-phase to the data-attributes table, the Test IDs intro now that Internal rows are many; events.md Player `setDispatch`, `subscribe` comment names reset and seek; glossary L1 Where cell "except /dev/kit"; api-contract 503/502 rows.
+- I2-tour: L1 at the end card's foot (decisions 22:5x).
+- S3 data round: G2b minors M1-M5, M8.
+
 ## Needs Gordon
 
 Each item names the default already in use, so the build never waits.
