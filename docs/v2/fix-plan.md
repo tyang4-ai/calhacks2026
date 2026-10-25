@@ -4,6 +4,8 @@
 
 **Build sessions: don't start V0 until this status line says APPLIED.** Until then the plans on `main` are mid-edit.
 
+**Build sessions: work on `main`.** A cloud session may start on its own `claude/...` branch. Before V0, run `git fetch origin` and `git checkout -B main origin/main`, then commit and push with `git push origin main` as the runbook says. If GitHub refuses a push to `main`, push to your own branch instead and put "merge `<branch>` into `main`" under Needs Gordon in `status.md`.
+
 Sources: Gordon's 12 points (3:05 PM), his answers (4:25 PM), and the seven reviews in `docs/v2/reviews/` (A1 novelty, A2 culture and trust, B1 architecture, B2 backend and ML, C tracks, D1 contracts and data, D2 connections). A finding is written as review and number, so `B1-4` is finding 4 in `B1-architecture.md`.
 
 ## 1. Decisions

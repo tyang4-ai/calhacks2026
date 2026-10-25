@@ -33,6 +33,7 @@ The standing rules of `docs/harness/runbook.md` still apply (you coordinate and 
 
 ## V0 · Hand-off and cloud preflight (STAGE: V2)
 
+00. **Be on `main`.** A cloud session can start on its own `claude/...` branch. Run `git fetch origin` and `git checkout -B main origin/main` before anything else, and push only with `git push origin main`. If GitHub refuses a push to `main`, push to your own branch and put "merge `<branch>` into `main`" under Needs Gordon.
 0. **Network check. Nothing else starts until it passes.** Run this from the main session:
    ```bash
    for h in cdn.sheetjs.com huggingface.co download.pytorch.org install.spacetimedb.com cdn.playwright.dev
