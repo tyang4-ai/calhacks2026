@@ -9,7 +9,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { apr_05, demoFundMoves, worksInProgress } from "../../src/mock/index";
 import { strings } from "../../src/features/money-map/strings";
-import { SELL_VIEWPORT, emitAtClock, expectInsideFrame, inFrame, openSell, seed, seekToEvent, timelineAt, watchPage } from "./sell-views-lib";
+import { SELL_VIEWPORT, emitAtClock, expectInsideFrame, inFrame, openSell, seed, seekTo, seekToEvent, timelineAt, watchPage } from "./sell-views-lib";
 
 test.use({ viewport: SELL_VIEWPORT });
 
@@ -117,6 +117,18 @@ test("the tour's fund move mv_0102 brings its twin with a nessieId, and its thre
     await page.waitForFunction(() => Boolean(window.__cindia?.player));
     await goLive(page);
     await expect.poll(async () => (await storedMove(page, "mv_0102"))?.nessieId ?? null, { timeout: TWIN_TIMEOUT + 60_000 }).not.toBeNull();
+    // The tour moves the camera on at the beat after mv_0102, usually before B16's answer is back,
+    // so the map may have left the stage. Pause on the money beat's last moment, when mv_0102's
+    // stitch is sewn: the seek replays mv_0102 (the store keeps its first `at`) and B16 lands its
+    // kept twin again without a second post.
+    const moveAt = (await timelineAt(page, "money.moved", { moveId: "mv_0102" }))!;
+    const nextBeatAt = await page.evaluate(
+      (after) => window.__cindia!.player.getTimeline()?.events.find((e) => e.type === "beat.started" && e.at > after)?.at ?? null,
+      moveAt,
+    );
+    expect(nextBeatAt, "a beat follows mv_0102 in the tour").not.toBeNull();
+    await seekTo(page, nextBeatAt! - 1);
+    await expect.poll(async () => (await storedMove(page, "mv_0102"))?.nessieId ?? null, { timeout: TWIN_TIMEOUT, message: "mv_0102's kept twin lands again" }).not.toBeNull();
     await expect(inFrame(page, "money-map-thread-mv_0102")).toContainText(NESSIE);
   } else {
     // Before I2-tour: the same two moves, played on /sell/map in live mode as the tour plays them.

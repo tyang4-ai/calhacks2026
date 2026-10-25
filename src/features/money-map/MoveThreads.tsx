@@ -7,8 +7,13 @@
 // The amount labels are drawn here rather than by the Thread itself, sized by the canvas's units per
 // pixel (`unit`), so they draw at the kit's 14 px whatever the canvas's scale. They follow the
 // Thread's own look: the paper box, the tone's color, fading in once the stitch is half sewn.
-// Everything follows the player clock, so a seek() always renders the same frame.
-import { useCindia, type MoneyMove, type Party } from "../../core";
+// Everything follows the player clock, so a seek() always renders the same frame. One exception: a
+// move the loaded timeline doesn't play (a person's milestone release, answered at the player clock
+// when it arrives, and its live twin) draws finished while the player is paused, because a paused
+// clock never moves and its stitch would wait at 0 forever (the approvals seal and F-process do the
+// same). While the player plays, it sews on the clock like every other move.
+import { useMemo, useSyncExternalStore } from "react";
+import { player, useCindia, type MoneyMove, type Party, type Timeline } from "../../core";
 import { Thread, formatCents, stitchProgress, usePlayerTime, useReducedMotion, type Point, type ThreadProps } from "../../ui";
 import { CANVAS_H, CANVAS_W, NODE_H, NODE_W, anchor, partyKey, partyPoint, studioMakerIds } from "./partyLayout";
 import { moveKindNames, strings, t, type Lang } from "./strings";
@@ -43,6 +48,28 @@ function hasNessie(m: MoneyMove): boolean {
   return typeof m.nessieId === "string" && m.nessieId !== "";
 }
 
+/** A clock far past every move, so a stitch reads finished. */
+const FINISHED = Number.MAX_SAFE_INTEGER;
+
+/** Whether the player plays, re-read on every player change (play, pause, seek and each frame). */
+function usePlaying(): boolean {
+  return useSyncExternalStore(player.subscribe, player.isPlaying, player.isPlaying);
+}
+
+/** The loaded timeline, a new object only when one is loaded. */
+function useTimeline(): Timeline | null {
+  return useSyncExternalStore(player.subscribe, player.getTimeline, player.getTimeline);
+}
+
+/** The IDs of the moves the timeline itself plays. */
+function timelineMoveIds(timeline: Timeline | null): Set<string> {
+  const ids = new Set<string>();
+  for (const e of timeline?.events ?? []) {
+    if (e.type === "money.moved") ids.add((e.payload as { moveId: string }).moveId);
+  }
+  return ids;
+}
+
 /** A path's amount, as the kit Thread draws it, at 14 drawn pixels. */
 function AmountLabel({ at, cents, tone, progress, unit }: { at: Point; cents: number; tone: NonNullable<ThreadProps["tone"]>; progress: number; unit: number }) {
   if (progress < 0.5) return null;
@@ -61,8 +88,13 @@ function AmountLabel({ at, cents, tone, progress, unit }: { at: Point; cents: nu
 export function MoveThreads({ lang, unit = 1 }: { lang: Lang; /** Canvas units per drawn pixel. */ unit?: number }) {
   const now = usePlayerTime();
   const reduced = useReducedMotion();
+  const playing = usePlaying();
+  const timeline = useTimeline();
+  const scripted = useMemo(() => timelineMoveIds(timeline), [timeline]);
   const moveIds = useCindia((s) => s.money.moveIds);
   const movesById = useCindia((s) => s.money.moves);
+  /** The clock a move sews on: the player's, or finished for a move from outside the timeline while paused. */
+  const clockFor = (m: MoneyMove) => (!playing && !scripted.has(m.moveId) ? FINISHED : now);
 
   // Only moves that have fired by the player clock count toward a path and its total.
   const moves = moveIds.map((id) => movesById[id]).filter((m): m is MoneyMove => Boolean(m) && m.at <= now);
@@ -77,7 +109,7 @@ export function MoveThreads({ lang, unit = 1 }: { lang: Lang; /** Canvas units p
   for (const g of groups) {
     for (const id of g.moveIds) {
       const m = movesById[id];
-      if (m && hasNessie(m) && stitchProgress(now, m.at, reduced) >= 0.5) requests.push({ id, pathId: g.key, from: g.ends.from, to: g.ends.to });
+      if (m && hasNessie(m) && stitchProgress(clockFor(m), m.at, reduced) >= 0.5) requests.push({ id, pathId: g.key, from: g.ends.from, to: g.ends.to });
     }
   }
   const notes =
@@ -115,7 +147,8 @@ export function MoveThreads({ lang, unit = 1 }: { lang: Lang; /** Canvas units p
               if (!m) return null;
               const newest = id === newestId;
               const note = notes.get(id);
-              const progress = stitchProgress(now, m.at, reduced);
+              const clock = clockFor(m);
+              const progress = stitchProgress(clock, m.at, reduced);
               const tone = moveTone(m.kind, m.to);
               return (
                 <g
@@ -126,7 +159,7 @@ export function MoveThreads({ lang, unit = 1 }: { lang: Lang; /** Canvas units p
                   aria-label={t(moveKindNames[m.kind], lang)}
                   opacity={newest ? undefined : OLDER_OPACITY}
                 >
-                  <Thread from={g.ends.from} to={g.ends.to} startAt={m.at} tone={tone} />
+                  <Thread from={g.ends.from} to={g.ends.to} startAt={m.at} tone={tone} now={clock} />
                   {newest && <AmountLabel at={curveMid(g.ends.from, g.ends.to)} cents={g.totalCents} tone={tone} progress={progress} unit={unit} />}
                   {note && (
                     <text

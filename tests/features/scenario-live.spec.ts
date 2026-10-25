@@ -80,6 +80,12 @@ async function openLive(page: Page) {
 
 const b05Source = (page: Page) => page.evaluate(() => window.__cindia!.store.getState().sources["b05-scenario"]);
 const logged = (page: Page, type: string) => page.evaluate((t) => window.cindiaLiveLog!.filter((e) => e.type === t), type);
+/**
+ * The flag.raised events in the log except B16's: with b16-bank-books live, B16 repeats the month's
+ * own catch (flg_01) as a live twin keyed b16-bank-books (events.md, live twins). That twin is the
+ * month's, never the scenario's, so it is the only flag set aside; every other flag still counts.
+ */
+const scenarioFlags = (page: Page) => logged(page, "flag.raised").then((fs) => fs.filter((f) => f.key !== "b16-bank-books"));
 
 test("live: the sample statement is answered by the server, the badge goes and the flag is $8.50", async ({ page }) => {
   const watch = watchPage(page);
@@ -94,7 +100,7 @@ test("live: the sample statement is answered by the server, the badge goes and t
   await expect(panel(page).getByTestId("scenario-flag")).toContainText("$8.50");
   await expect(results(page).locator('[data-record-id="scn_stm_01"]')).toHaveCount(1);
   // The panel's flag and matches came from the live source, never the scripted fallback.
-  const flags = await logged(page, "flag.raised");
+  const flags = await scenarioFlags(page);
   expect(flags.length).toBeGreaterThan(0);
   expect(flags.every((f) => f.source === "live" && f.key === "b05-scenario")).toBe(true);
   expect(flags[0].payload.deltaCents).toBe(850);
@@ -157,8 +163,8 @@ test("live: a bad file gets the server's 400, a readable note and no crash", asy
   // The note shows while the scripted answer is still playing, so wait for its flag. A later
   // scripted event keyed b05-scenario would otherwise flip the source back after the sample's
   // live answer.
-  await expect.poll(() => logged(page, "flag.raised").then((f) => f.length), { timeout: ANSWER_TIMEOUT }).toBeGreaterThan(0);
-  expect(await logged(page, "flag.raised").then((f) => f.every((e) => e.source === "scripted"))).toBe(true);
+  await expect.poll(() => scenarioFlags(page).then((f) => f.length), { timeout: ANSWER_TIMEOUT }).toBeGreaterThan(0);
+  expect(await scenarioFlags(page).then((f) => f.every((e) => e.source === "scripted"))).toBe(true);
 
   // The panel still works: the sample still goes live afterwards.
   await panel(page).getByTestId("scenario-use-sample").click();
