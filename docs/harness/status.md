@@ -56,6 +56,7 @@ v1 (desktop session, history):
 | G3 approvals | PASS (after fix round 1) | Oct 25 1:00 AM | worktree rerun `artifacts/gates/G3-approvals2-wt-0005.md` 3/3 (check:scope, feature 41, smoke 123), `artifacts/gates/G3-approvals-verifier-recheck.md` PASS; the adversarial lens (`G3-approvals-verifier-adversarial.md`) confirmed the toast fix over 94 states and failed only on the tour (three specs assume apr_01 comes first; apr_02's buttons below the fold with the tour's apr_04 pending): T8 items | v2-approvals |
 | G3 process | FAIL, fix round 1 | Oct 24 11:05 PM | `artifacts/gates/G3-process-verifier.md` FAIL on screens only: F1 swarm tool node over the Finder's name, F2 data chips cut, F3 reconcile labels truncated, F4 model name truncated; contracts, labels and 20 Acceptance lines pass | |
 | G4v2 | PASS | Oct 25 2:52 AM | `artifacts/gates/G4v2-0233.md` 5/5 (build, tour 220.0 s within 235 s x3, offline); first run `G4v2-0150.md` 5/5 with review FAILs (English: d15's translated step, stale v1 shots; words: d11's "Pieces for sale"), fixed; recheck `artifacts/gates/G4v2-verifier-recheck.md` | demo-ok-v2 |
+| G4v2 (drop 3) | PASS | Oct 25 4:25 AM | `artifacts/gates/G4v2-0346.md` 5/5 (tour 220.0 s x3, offline); review `artifacts/gates/G4v2-d3-review.json` and `G4v2-d3-verifier-*.md`: screens, contracts, English PASS; readable FAIL on R1 (the Model card's score table 24 px past its card on d13), which both skeptics found real but not blocking | demo-ok-v2-d3 |
 | G6 | | | | |
 
 ## Features
@@ -115,7 +116,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | M-maker-statement | V2 P1 | green | feature-lead | v2-maker-statement | compact layout under 600 px for Phase A's box; minors in the verifier report |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
 | I2-tour | V3 | green: G4v2 5/5 (tour 220.0 s x3, offline), review fixes rechecked | integrator, data-smith | demo-ok-v2 | 20 beats, 220 s; English only step 1 done; committed with T9 data and the feature fix rounds |
-| I3-redesign | V4 | drop 3 applied (shell and kit halves, T5 skipped), G4v2 5/5; screen review running | integrator | | tag demo-ok-v2-d3 after the review |
+| I3-redesign | V4 | green: drop 3 applied (T5 skipped), G4v2 5/5, four-lens review with no confirmed blocker | integrator | demo-ok-v2-d3 | feature polish from changes.md and the review's F items listed under Polish after the freeze |
 
 ## v2 Upgrades
 
@@ -160,6 +161,7 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | v2-approvals | 5c39089ec351815fbdd31344045007e9327dba72 | G3 approvals | Oct 25 1:00 AM |
 | demo-ok-v2 | c4c83526e6bb18825ea008e47984537f784b01aa | G4v2 (the tour) | Oct 25 2:52 AM |
 | v2-desktop | c4c83526e6bb18825ea008e47984537f784b01aa | G3 desktop (worktree) | Oct 25 2:55 AM |
+| demo-ok-v2-d3 | 988d0c160260920a457fd69142e1d76702a6b14d | G4v2 on design drop 3 | Oct 25 4:25 AM |
 
 ## Environment
 
@@ -438,3 +440,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 03:31 PT · Gordon's 3:25 AM messages: new tagline on the Cindia pitch card and the end card (pitch.ts, modes spec, demo-script), public site live at cindia.design, PUBLIC_SITE_URL passed to the API processes (writing .env is denied), B15's G5 added to the series; scribe updating the tagline, prize names and the site URL · decisions.md
 - 2026-10-25 03:38 PT · I3 kit half done (check:scope 182, smoke 124; stitch 700 ms ease-out); F-process bar polish (36/36 process specs); M-approvals seal shows RB; approvals T8 specs on the tour order (42/42), committed; A1 (apr_02's buttons under the list's edge on /sell/approvals after apr_01's grant) still reproduces, polish after the freeze; spec sweep running, then the d3 G4v2 rerun · status.md
 - 2026-10-25 04:07 PT · G4v2 PASS 5/5 on drop 3 with Gordon's new tagline (tour 220.0 s x3, offline); check 1046, check:data 301, contrast 79/79; committed in five groups (tagline, I3 drop 3, F-process bar, M-approvals seal, maker-statement specs) plus the earlier English-only spec sweep (5 groups, each passed by a skeptic); screenshots kept in artifacts/demo-d3/; four-lens screen review running; G5 series started (b12, b14 worktree; b13 main; b15, b16, b11 worktree; none starts after 5:05) · artifacts/gates/G4v2-0346.md
+- 2026-10-25 04:25 PT · drop 3 review: no confirmed blocker (R1, d13's Model card table overflow, real but not blocking); tag demo-ok-v2-d3 on 988d0c1; polish after the freeze: search result cards cut at the frame bottom with L3 below the edge on d01/d02 (F-search), the process panel's scroll areas (F-process), d09's first card header cut (approvals), d08's flag band (reconcile), the piece page and receipt layout (buyer), the store hero (storefront), the money map lattice, the presenter hint and drawer scrim (shell), pc_38's placeholder on d02 · artifacts/gates/G4v2-d3-review.json
