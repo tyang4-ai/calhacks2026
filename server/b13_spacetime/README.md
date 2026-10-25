@@ -186,4 +186,28 @@ A listing only moves forward (`requested`, `drafted`, `indexed`, then `approved`
 |---|---|
 | `module/package.json`, `module/tsconfig.json` | The module's packages and the tsconfig SpacetimeDB's template uses |
 | `module/src/index.ts` | The ten tables and the reducers |
-| `bridge.py`, `feed.py`, `seed.py`, `save_token.py` | T2 to T4 of the plan |
+| `bridge.py` | T2: every call to SpacetimeDB, as the owner (below) |
+| `feed.py` | T3: the one poller per server process and its snapshot, which `/api/b13/changes` and `/api/b13/status` answer from |
+| `seed.py` | T4: the `seed_catalog` payload from `artifacts/mock/mock.json`, or B11's committed `server/b11_embed/data/mock.json` when that's missing |
+| `save_token.py` | T4: step 4 above |
+| `../routers/b13_live.py` | T5: the four endpoints |
+| `../../src/sources/live/b13-live.ts` | T6: the live adapter (the poll, the mirror, the background seed) |
+
+## The bridge, for the other upgrades
+
+Import it inside a function, so a missing B13 never breaks your router:
+
+```python
+from server.b13_spacetime import bridge
+
+if bridge.available():
+    bridge.start_run(run_id, thread_id, "buyer")   # queued
+    bridge.add_step(step_payload)                  # a swarm.step payload dict, queued
+    bridge.finish_run(run_id)                      # queued
+bridge.set_process("swarm", "working", 1)          # queued; "done" when the request ends
+```
+
+- `start_run`, `add_step`, `finish_run`, `set_process` and `touch_screen` go through one ordered background thread and return at once (True when queued). `record(events)`, `seed_catalog(payload)`, `expire_screens(ms)` and `sql(query)` answer directly.
+- Every request has a 0.8-second timeout (the seed 5 seconds). A failure starts a 30-second back-off with one log line, and every call is a no-op meanwhile. Without `SPACETIME_TOKEN` the bridge is off and says so once. It never calls anonymously.
+- `available()` is true when the token is set, no back-off is running and the last call worked.
+- Tests swap the HTTP transport with `monkeypatch.setattr(bridge, "_transport", httpx.MockTransport(...))` and call `bridge.reset()` between tests.

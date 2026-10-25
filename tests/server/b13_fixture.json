@@ -1,0 +1,117 @@
+{
+  "_about": "B13-live test fixture. `tables` and `changes` are a fake SpacetimeDB the feed tests poll (rows in the module's column names, `seq` first). `mock` is a small mock.json subset the seed tests build a payload from. Every text marked MARKER must never reach a data.synced label or the seed payload.",
+  "epoch": 1761359000,
+  "nowMs": 1761360000000,
+  "tables": {
+    "catalog": [
+      { "seq": 1, "piece_id": "pc_01", "community_id": "com_dine", "maker_id": "mkr_01", "title_en": "Small grey, red and black wool weaving", "title_zh": "灰红黑三色小幅羊毛编织", "community_en": "Diné Weaving and Silver Co-op", "maker_name": "Grace N.", "price_cents": 18000, "status": "active" },
+      { "seq": 2, "piece_id": "pc_02", "community_id": "com_dine", "maker_id": "mkr_02", "title_en": "Brown, white and grey wool rug", "title_zh": "棕白灰三色羊毛地毯", "community_en": "Diné Weaving and Silver Co-op", "maker_name": "Lena T.", "price_cents": 95000, "status": "active" },
+      { "seq": 3, "piece_id": "pc_03", "community_id": "com_dine", "maker_id": "mkr_03", "title_en": "Stamped silver cuff with turquoise", "title_zh": "绿松石錾刻银手镯", "community_en": "Diné Weaving and Silver Co-op", "maker_name": "Mae K.", "price_cents": 120000, "status": "active" }
+    ],
+    "orders": [
+      { "seq": 1, "order_id": "ord_001", "piece_id": "pc_01", "channel_id": "ch_cindia", "gross_cents": 18000, "date": "2026-09-01", "origin": "mock" },
+      { "seq": 2, "order_id": "ord_user_k3x9qa_1", "piece_id": "pc_01", "channel_id": "ch_cindia", "gross_cents": 18000, "date": "2026-10-01", "origin": "person" }
+    ],
+    "approvals": [
+      { "seq": 1, "approval_id": "apr_01", "kind": "follow_up", "subject_ids": "fup_01", "amount_cents": 34000, "status": "pending", "updated_at": 1761300000000 },
+      { "seq": 2, "approval_id": "apr_04", "kind": "listing_publish", "subject_ids": "lst_01", "amount_cents": 0, "status": "granted", "updated_at": 1761359000000 }
+    ],
+    "listings": [
+      { "seq": 1, "listing_id": "lst_user_k3x9qa_1", "maker_id": "mkr_02", "piece_id": "", "state": "drafted", "updated_at": 1761359950000 }
+    ],
+    "runs": [
+      { "seq": 1, "run_id": "run_user_m7p2zz_1", "thread_id": "thr_user_m7p2zz_1", "side": "seller", "started_at": 1761359400000, "finished": true },
+      { "seq": 2, "run_id": "run_user_k3x9qa_1", "thread_id": "thr_user_2", "side": "buyer", "started_at": 1761359980000, "finished": false }
+    ],
+    "steps": [
+      { "seq": 1, "step_id": "stp_user_m7p2zz_1", "run_id": "run_user_m7p2zz_1", "thread_id": "thr_user_m7p2zz_1", "agent_id": "intake", "kind": "route", "summary_en": "Read the question", "summary_zh": "读了问题", "tool_name": "", "ms": 410, "model": "claude-haiku-5-5" },
+      { "seq": 2, "step_id": "stp_user_m7p2zz_2", "run_id": "run_user_m7p2zz_1", "thread_id": "thr_user_m7p2zz_1", "agent_id": "writer", "kind": "reply", "summary_en": "Wrote the reply", "summary_zh": "写了回复", "tool_name": "", "ms": 900, "model": "claude-sonnet-5-5" },
+      { "seq": 3, "step_id": "stp_user_k3x9qa_1", "run_id": "run_user_k3x9qa_1", "thread_id": "thr_user_2", "agent_id": "intake", "kind": "route", "summary_en": "Read the question SUMMARY-MARKER", "summary_zh": "读了问题", "tool_name": "", "ms": 380, "model": "claude-haiku-5-5" },
+      { "seq": 4, "step_id": "stp_user_k3x9qa_2", "run_id": "run_user_k3x9qa_1", "thread_id": "thr_user_2", "agent_id": "finder", "kind": "tool", "summary_en": "Found 6 pieces", "summary_zh": "找到6件作品", "tool_name": "cindia_search", "ms": 120, "model": "" },
+      { "seq": 5, "step_id": "stp_user_k3x9qa_3", "run_id": "run_user_k3x9qa_1", "thread_id": "thr_user_2", "agent_id": "writer", "kind": "reply", "summary_en": "Wrote the reply", "summary_zh": "写了回复", "tool_name": "", "ms": 1200, "model": "claude-sonnet-5-5" }
+    ],
+    "processes": [
+      { "seq": 1, "process_id": "swarm", "status": "working", "count": 1, "updated_at": 1761359980000 },
+      { "seq": 2, "process_id": "search", "status": "done", "count": 0, "updated_at": 1761359981000 },
+      { "seq": 3, "process_id": "bogus", "status": "working", "count": 1, "updated_at": 1761359982000 }
+    ],
+    "screens": [
+      { "seq": 1, "screen_id": "scr_old0001", "role": "buyer", "last_seen": 1761359960000 },
+      { "seq": 2, "screen_id": "scr_k3x9qa", "role": "tour", "last_seen": 1761359997000 }
+    ]
+  },
+  "changes": [
+    { "seq": 1, "table": "catalog", "row_id": "pc_01", "op": "insert", "at": 1761300000000 },
+    { "seq": 2, "table": "catalog", "row_id": "pc_02", "op": "insert", "at": 1761300000000 },
+    { "seq": 3, "table": "catalog", "row_id": "pc_03", "op": "insert", "at": 1761300000000 },
+    { "seq": 4, "table": "orders", "row_id": "ord_001", "op": "insert", "at": 1761300000000 },
+    { "seq": 5, "table": "approvals", "row_id": "apr_01", "op": "insert", "at": 1761300000000 },
+    { "seq": 6, "table": "approvals", "row_id": "apr_04", "op": "insert", "at": 1761300000000 },
+    { "seq": 7, "table": "runs", "row_id": "run_user_m7p2zz_1", "op": "insert", "at": 1761359400000 },
+    { "seq": 8, "table": "steps", "row_id": "stp_user_m7p2zz_1", "op": "insert", "at": 1761359401000 },
+    { "seq": 9, "table": "steps", "row_id": "stp_user_m7p2zz_2", "op": "insert", "at": 1761359402000 },
+    { "seq": 10, "table": "runs", "row_id": "run_user_m7p2zz_1", "op": "update", "at": 1761359403000 },
+    { "seq": 11, "table": "listings", "row_id": "lst_user_k3x9qa_1", "op": "insert", "at": 1761359940000 },
+    { "seq": 12, "table": "approvals", "row_id": "apr_04", "op": "update", "at": 1761359000000 },
+    { "seq": 13, "table": "screens", "row_id": "scr_old0001", "op": "insert", "at": 1761359950000 },
+    { "seq": 14, "table": "screens", "row_id": "scr_k3x9qa", "op": "insert", "at": 1761359970000 },
+    { "seq": 15, "table": "runs", "row_id": "run_user_k3x9qa_1", "op": "insert", "at": 1761359980000 },
+    { "seq": 16, "table": "steps", "row_id": "stp_user_k3x9qa_1", "op": "insert", "at": 1761359981000 },
+    { "seq": 17, "table": "steps", "row_id": "stp_user_k3x9qa_2", "op": "insert", "at": 1761359982000 },
+    { "seq": 18, "table": "steps", "row_id": "stp_user_k3x9qa_3", "op": "insert", "at": 1761359983000 },
+    { "seq": 19, "table": "orders", "row_id": "ord_user_k3x9qa_1", "op": "insert", "at": 1761359984000 },
+    { "seq": 20, "table": "processes", "row_id": "swarm", "op": "insert", "at": 1761359980000 },
+    { "seq": 21, "table": "processes", "row_id": "search", "op": "insert", "at": 1761359981000 },
+    { "seq": 22, "table": "processes", "row_id": "bogus", "op": "insert", "at": 1761359982000 },
+    { "seq": 23, "table": "listings", "row_id": "lst_user_k3x9qa_1", "op": "update", "at": 1761359950000 }
+  ],
+  "expected": {
+    "firstPollSteps": ["stp_user_k3x9qa_1", "stp_user_k3x9qa_2", "stp_user_k3x9qa_3"],
+    "firstPollStepChangeSeqs": [16, 17, 18],
+    "screens": 1,
+    "processes": [ { "processId": "swarm", "status": "working" }, { "processId": "search", "status": "done" } ],
+    "newest": {
+      "catalog": [["pc_03", "Stamped silver cuff with turquoise"], ["pc_02", "Brown, white and grey wool rug"], ["pc_01", "Small grey, red and black wool weaving"]],
+      "listings": [["lst_user_k3x9qa_1", "drafted"]],
+      "orders": [["ord_user_k3x9qa_1", "person · $180.00"], ["ord_001", "mock · $180.00"]],
+      "approvals": [["apr_04", "listing_publish · granted"], ["apr_01", "follow_up · $340.00 · pending"]],
+      "runs": [["run_user_k3x9qa_1", "buyer · running"], ["run_user_m7p2zz_1", "seller · done"]],
+      "steps": [["stp_user_k3x9qa_3", "writer · reply"], ["stp_user_k3x9qa_2", "finder · tool"], ["stp_user_k3x9qa_1", "intake · route"]],
+      "processes": [["bogus", "working · 1"], ["search", "done · 0"], ["swarm", "working · 1"]],
+      "screens": [["scr_k3x9qa", "tour"], ["scr_old0001", "buyer"]]
+    }
+  },
+  "mock": {
+    "communities": [
+      { "id": "com_dine", "name": { "en": "Diné Weaving and Silver Co-op", "zh": "纳瓦霍（Diné）编织与银饰合作社" }, "about": { "en": "MARKER-ABOUT the co-op", "zh": "MARKER-ABOUT" } }
+    ],
+    "allMakers": [
+      { "id": "mkr_01", "role": "maker", "name": { "en": "Grace N.", "zh": "Grace N." }, "receiptNote": { "en": "MARKER-NOTE thank you", "zh": "MARKER-NOTE" } },
+      { "id": "mkr_02", "role": "maker", "name": { "en": "Lena T.", "zh": "Lena T." } }
+    ],
+    "pieces": [
+      { "id": "pc_01", "title": { "en": "Small grey, red and black wool weaving", "zh": "灰红黑三色小幅羊毛编织" }, "makerId": "mkr_01", "communityId": "com_dine", "priceCents": 18000, "hours": 26, "story": { "en": "MARKER-STORY a small weaving", "zh": "MARKER-STORY" } },
+      { "id": "pc_02", "title": { "en": "Brown, white and grey wool rug", "zh": "棕白灰三色羊毛地毯" }, "makerId": "mkr_02", "communityId": "com_dine", "priceCents": 95000, "heritage": { "en": "MARKER-HERITAGE", "zh": "MARKER-HERITAGE" } }
+    ],
+    "orders": [
+      { "id": "ord_001", "channelId": "ch_cindia", "pieceId": "pc_01", "buyerId": "buy_01", "date": "2026-09-01", "grossCents": 18000, "makerShareCents": 13448, "status": "paid" }
+    ],
+    "allApprovals": [
+      { "id": "apr_01", "kind": "follow_up", "subjectIds": ["fup_01"], "proposedBy": "cindy", "amountCents": 34000, "overLimit": false, "decisionDate": "2026-10-01", "status": "pending" },
+      { "id": "apr_02", "kind": "maker_payouts", "subjectIds": ["mpo_01", "mpo_02", "mpo_03"], "proposedBy": "cindy", "amountCents": 300600, "overLimit": true, "decisionDate": "2026-10-01", "status": "pending" },
+      { "id": "apr_03", "kind": "report_listing", "subjectIds": ["cft_01"], "proposedBy": "cindy", "overLimit": false, "decisionDate": "2026-10-01", "status": "pending" },
+      { "id": "apr_04", "kind": "listing_publish", "subjectIds": ["lst_01"], "proposedBy": "cindy", "overLimit": false, "decisionDate": "2026-10-01", "status": "pending" },
+      { "id": "apr_05", "kind": "milestone_release", "subjectIds": ["wip_01", "mls_02"], "proposedBy": "cindy", "amountCents": 48000, "overLimit": false, "decisionDate": "2026-10-01", "status": "pending" }
+    ],
+    "listings": [
+      { "id": "lst_01", "makerId": "mkr_02", "notes": "MARKER-LISTING-NOTES a new weaving", "lang": "en" }
+    ]
+  },
+  "seedApprovals": [
+    { "approval_id": "apr_01", "kind": "follow_up", "subject_ids": ["fup_01"], "amount_cents": 34000, "status": "pending" },
+    { "approval_id": "apr_02", "kind": "maker_payouts", "subject_ids": ["mpo_01", "mpo_02", "mpo_03"], "amount_cents": 300600, "status": "pending" },
+    { "approval_id": "apr_03", "kind": "report_listing", "subject_ids": ["cft_01"], "amount_cents": 0, "status": "pending" },
+    { "approval_id": "apr_04", "kind": "listing_publish", "subject_ids": ["lst_01"], "amount_cents": 0, "status": "pending" },
+    { "approval_id": "apr_05", "kind": "milestone_release", "subject_ids": ["wip_01", "mls_02"], "amount_cents": 48000, "status": "pending" }
+  ]
+}

@@ -3,7 +3,7 @@ NEXT: V1 steps 2 and 3 (S3 T1 stubs, I2-kit, I2-art T0; keyed v1 G5s in a worktr
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 20:58 PT
+UPDATED: 2026-10-24 21:19 PT
 
 # Status board
 
@@ -82,8 +82,8 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | R0-reskin | V1 step 0 | green | data-smith, integrator, feature-lead, backend-builder | v2-reskin | gate 11/11 checks, 3 verifiers PASS (screens, numbers, words) |
 | I2-core | V1 | green (both spawns) | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
 | I2-kit | V1 | done, commit at G1b | integrator | | T1-T4 done: check 738, smoke 123/123; /dev/kit gallery |
-| I2-shell | V1 | running | integrator | | T1-T7 |
-| S3-catalog | V1 | running | data-smith | | T1 stubs committed (e51c66e); spawn 2 (T2-T5, T7) done, check:data 180; spawn 3 (T6, T8) running; commit at G2b |
+| I2-shell | V1 | done, commit at G1b | integrator | | check 755, smoke 123, build, demo 60.0 s (0 beat problems), offline; T7: buyer 30 specs to M-buyer, approvals-frame 2 and approvals-live 1 to M-approvals and B13 T7 |
+| S3-catalog | V1 | done, G2b checks PASS | data-smith | | T1-T8 done (check:data 232); commit at G2b after the verifier |
 | I2-art | V1 | T0 committed | integrator | | T0 54 placeholders (54288bd); T1-T3 after G2b |
 | F-search | V2 P0 | todo | feature-lead | | |
 | M-buyer | V2 P0 | todo | feature-lead | | |
@@ -106,7 +106,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 |---|---|---|---|---|
 | B11-embed | running | | | T1-T2 committed (825666a); T4 code and T6 running; T3 and T5 after G2b |
 | B12-search | todo | | | |
-| B13-live | running | | | T1 committed (17c3590), module published locally as cindia; T7 then T2-T6 running |
+| B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
 | B14-swarm | todo | | | |
 | B15-watch | todo | | | fixture until the public site is up |
 | B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
@@ -293,3 +293,6 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 20:53 PT · B11 T1-T2 committed (54 passed, the passage rule rebuilds all 54 embedTexts); B11 T4 code and T6 spawned · status.md
 - 2026-10-24 20:55 PT · I2-kit T2-T4 done (components, Badge variants, KitGallery, seal date fits; check 738, smoke 123/123); worktree G5s: B09 PASS 13/13 (verifier running), B04 12/13 (modes.spec frame timing in a live run), B02 12/13 (live offline run), B07 stopped mid-run: load average 13.8 from parallel Playwright runs made the timing checks flaky, so B04, B02 and B07 rerun in a quiet window · artifacts/gates in /home/user/cindia-g5
 - 2026-10-24 20:58 PT · G5 b09-concierge PASS 13/13, verifier PASS; B09 prefetch and the co-op catalog filter committed; tag demo-ok-b09 · artifacts/gates/G5-b09-verifier.md
+- 2026-10-24 21:03 PT · I2-shell done (desktop shell, Phase A stage, public-build flags); dev server restarted; G1b waits for S3 spawn 3 to report · status.md
+- 2026-10-24 21:19 PT · G2b checks PASS 3/3 (check:data 232, check:scope, art --check 54); G1b checks PASS 5/5 (check, smoke 123, build, demo 60.0 s, offline); verifier workflow running (G1b screens and code, G2b data) · artifacts/gates/G2b-2112.md, G1b-2113.md
+- 2026-10-24 21:19 PT · B13: save_token.py wrote SPACETIME_TOKEN to .env; API restarted (routers b11, b13 loaded); /api/b13/status spacetime true; seeded 54 catalog, 30 orders, 5 approvals; test_b13_live 62 passed incl. the live round trip; T2-T6 committed · status.md
