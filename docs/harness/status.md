@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:44 PT
+UPDATED: 2026-10-24 23:46 PT
 
 # Status board
 
@@ -371,3 +371,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:42 PT · G3 watch PASS in the worktree; verifier's one blocking finding was Chinese-only, moot under English only; committed, tag v2-watch · artifacts/gates/G3-watch-wt-2324.md
 - 2026-10-24 23:43 PT · G3 approvals: worktree 3/3 PASS, verifier FAIL on F1 (the Toast covers L20 and Cindy's line at the end of a long detail), fix round 1 sent with F2-F4 and English only; M-desktop and M-maker-statement built; worktree queue: process rerun, maker-statement, desktop, T9 data with the search specs; verifier workflow for maker-statement, desktop and the process recheck · artifacts/gates/G3-approvals-verifier.md
 - 2026-10-24 23:44 PT · V3 started early: I2-tour T2 integrator spawned (contract check and the tour tables in demo-script.md; tests and docs only, so it disturbs no running lead); B11 --eval-only --no-publish running on the pooled grades; English-only toggle hiding goes to I2-tour's integrator (T3-T8 owns src/app), feature-side English-only items to each lead's polish round · status.md
+- 2026-10-24 23:46 PT · B11 --eval-only on the pooled grades (fingerprint unchanged f7181c7d…): recall@5 / MRR@10 keyword 0.784 / 0.875, base 0.722 / 0.781, Cindia's model 0.789 / 0.892, hybrid 0.825 / 0.940; custom beats base on MRR (ci95 0.022 to 0.206), ties keyword within noise; publish to the private Hugging Face repo running · artifacts/b11/eval-only.out
