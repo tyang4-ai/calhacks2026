@@ -34,6 +34,8 @@ PERSON_FIELDS = frozenset({"buyerId", "buyer", "buyerName", "name", "email", "ph
 ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 # The order whose date is the demo's buying day (src/mock/swarm.ts reads the same one for run_01).
 DEMO_ORDER_ID = "ord_001"
+# How long the Indexer waits for B11's encode lock.
+ENCODE_WAIT_S = 2.0
 
 # L17, word for word (contracts section 12).
 L17 = {"en": "I can only look up the order on your screen.", "zh": "我只能查询您屏幕上的这笔订单。"}
@@ -222,10 +224,29 @@ class Toolbox:
             return unknown("unavailable")
         try:
             result = b12_search.search(text, keywords or [], lang, filters or {})
+        except b12_search.NotReady:
+            # B11's model isn't warm yet: B12's own keyword half, with its code-built reasons.
+            return self._keyword_only(text, keywords or [], filters or {})
         except Exception as exc:
             log.info("b14 tool cindia_search failed (%s)", type(exc).__name__)
             return unknown("error")
         return {"status": "found", **result} if isinstance(result, dict) else unknown("invalid")
+
+    @staticmethod
+    def _keyword_only(text: str, keywords: list[str], filters: dict[str, Any]) -> dict[str, Any]:
+        try:
+            from server.b12_search import catalog, local
+
+            cat = catalog.get()
+            flt = local.Filters.of(keywords, filters)
+            allowed = {pid for pid in cat.active_ids() if flt.allows(cat.docs[pid])}
+            ids = local.keyword_index(cat).hits(local.keyword_query(text, keywords), allowed)
+            ranked = [(pid, 1.0 / (i + 1)) for i, pid in enumerate(ids)]
+            results, _ = local.results(ranked, cat.docs, keywords, cat.aliases, {}, None)
+        except Exception as exc:
+            log.info("b14 tool cindia_search keyword half failed (%s)", type(exc).__name__)
+            return unknown("error")
+        return {"status": "found", "results": results, "closeMatches": False, "engine": "keyword_only"}
 
     def _tool_elastic_agent(self, text: str) -> dict[str, Any]:
         try:
@@ -260,14 +281,26 @@ class Toolbox:
             from server.b11_embed import compose, model
         except Exception:
             return unknown("unavailable")
+        if not model.is_warm():
+            model.start_warmup()  # B11 loads in the background, so the next draft can be indexed
+            return unknown("unavailable")
         try:
-            passage = compose.passage_text(piece, community)
-            vector = model.encode_passages([passage])[0]
-            ok = b12_search.index_draft(entry, piece, community, vector)
+            passage = entry.get("embedText") if isinstance(entry.get("embedText"), str) and entry.get("embedText") else compose.passage_text(piece, community)
+            vector = model.encode_passages([passage], timeout=ENCODE_WAIT_S)[0]
+            ok = b12_search.index_draft({**entry, "embedText": passage}, piece, community, vector)
         except Exception as exc:
             log.info("b14 tool index_write failed (%s)", type(exc).__name__)
             return unknown("error")
-        return {"status": "found" if ok else "unknown", "embedText": passage}
+        if not ok:
+            return {"status": "unknown", "reason": "unavailable", "embedText": passage}
+        out: dict[str, Any] = {"status": "found", "embedText": passage}
+        try:
+            x, y, approx = model.project(vector)
+            out["point"] = {"x": round(float(x), 4), "y": round(float(y), 4)}
+            out["approx"] = bool(approx)
+        except Exception as exc:  # the map dot is optional
+            log.info("b14 tool index_write: no map point (%s)", type(exc).__name__)
+        return out
 
     # --- called as code ---------------------------------------------------------------------
 

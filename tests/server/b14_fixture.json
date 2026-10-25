@@ -1,5 +1,5 @@
 {
- "_about": "B14's test fixture, written from artifacts/mock/mock.json (npm run export:mock). Every line is fictional demo data from src/mock/: the roster, contentRules, the four communities, a few pieces, the co-op's makers, the policy, three orders and their payouts, Grace N.'s maker payout and statement, the gallery flag, the approvals' decision date, the scripted runs run_01 and run_07, the demo questions and the vibe vocabulary.",
+ "_about": "B14's test fixture, written from artifacts/mock/mock.json (npm run export:mock). Every line is fictional demo data from src/mock/: the roster, contentRules, the four communities, a few pieces, the co-op's makers, the policy, three orders and their payouts, Grace N.'s maker payout and statement, the gallery flag, the approvals' decision date, the scripted runs run_01 and run_07, the demo questions and the vibe vocabulary, the demo listing lst_01, the four storefronts (without their blocks) and the model ID.",
  "agents": [
   {
    "agentId": "cindy",
@@ -2558,5 +2558,56 @@
    "gift for a sister",
    "for myself"
   ]
- }
+ },
+ "listings": [
+  {
+   "id": "lst_01",
+   "makerId": "mkr_02",
+   "notes": "New small weaving, about 30 by 40 cm. Store-bought wool yarn in red, grey and white, with a zigzag band across the middle. About 20 hours on the loom. Good for someone who likes warm colors.",
+   "lang": "en"
+  }
+ ],
+ "storefronts": [
+  {
+   "id": "sto_01",
+   "communityId": "com_dine",
+   "slug": "dine-weavers",
+   "theme": {
+    "accent": "seal",
+    "layout": "story_first"
+   },
+   "status": "published"
+  },
+  {
+   "id": "sto_02",
+   "communityId": "com_ojibwe",
+   "slug": "ojibwe-beadwork",
+   "theme": {
+    "accent": "jade",
+    "layout": "grid_first"
+   },
+   "status": "published"
+  },
+  {
+   "id": "sto_03",
+   "communityId": "com_acoma",
+   "slug": "acoma-pottery",
+   "theme": {
+    "accent": "amber",
+    "layout": "story_first"
+   },
+   "status": "published"
+  },
+  {
+   "id": "sto_04",
+   "communityId": "com_seminole",
+   "slug": "seminole-patchwork",
+   "theme": {
+    "accent": "ink",
+    "layout": "grid_first"
+   },
+   "status": "published"
+  }
+ ],
+ "modelId": "cindia-embed-v1"
 }

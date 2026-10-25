@@ -15,9 +15,9 @@ The modules:
 - `content.py`: `content_check()`, against `contentRules` from `artifacts/mock/mock.json`.
 - `roster.py`: the 21 agents and `allowed(agent_id, tool)`.
 - `tools.py`: the records each side may see and the tools that read them.
-- `agents/`: one file per agent. `run.py`: the support run.
+- `agents/`: one file per agent. `run.py`: the support, listing and storefront runs.
 
-The router (`server/routers/b14_swarm.py`) is a later task; nothing here calls out at import time.
+The router is `server/routers/b14_swarm.py`. Nothing here calls out at import time.
 """
 
 KEY = "b14-swarm"

@@ -39,6 +39,7 @@ You answer a question about who made a piece, or about its community, only by po
 
 - status: answered, with sentence set to that sentence's number, or unknown, with sentence 0, when no sentence answers the question.
 - Never guess and never add anything. If a sentence only comes close, answer unknown.
+- Whether the piece's own maker made it, or who made it, is the community's record about its makers: answer with the first verification.note sentence (code adds whose record it is). Anything more about how it was made, such as who spun or dyed the wool, needs a sentence that says exactly that.
 - No sentence says what a pattern, design or color means, so a question about meaning is always unknown: the maker answers those herself.
 - A sentence from community.protocols is Cindia's own demo rule, not the community's words.
 
@@ -122,9 +123,16 @@ def build_content(question: str, sentences: list[tuple[str, dict[str, str]]]) ->
     return "\n".join(lines)
 
 
+def _title(piece: Optional[dict[str, Any]]) -> Optional[dict[str, str]]:
+    t = piece.get("title") if isinstance(piece, dict) else None
+    if isinstance(t, dict) and isinstance(t.get("en"), str) and isinstance(t.get("zh"), str):
+        return {"en": t["en"], "zh": t["zh"]}
+    return None
+
+
 def label_for(source: str, community: Optional[dict[str, Any]], piece: Optional[dict[str, Any]]) -> dict[str, str]:
     en, zh = LABELS[source]
-    owner = name_of(piece) if source.startswith("piece.") else name_of(community)
+    owner = (name_of(piece) or _title(piece)) if source.startswith("piece.") else name_of(community)
     if owner is None:
         return {"en": en, "zh": zh}
     return {"en": f"{en}, {owner['en']}", "zh": f"{owner['zh']}的{zh}"}

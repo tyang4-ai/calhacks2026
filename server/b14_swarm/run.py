@@ -1,12 +1,12 @@
-"""The runs. This file holds the support run (T6); the listing and storefront runs come with T7 and T8.
+"""The runs: the support run (T6), the listing run (T7) and the storefront run (T8).
 
 **Support** (`support_run(job)`), with a 19-second budget checked before each step:
 
 1. `intake` reads the request,
 2. `cindy` picks the specialists from the route table (the Writer is added last by code),
 3. the specialists, side by side where Cindy marks them parallel (through a thread pool), each with
-   its own tools and records. `arrival_window` is called as code for the Clerk. The Finder and the
-   Curator plug in behind `agents.specialist()`: until T4 lands they're stubs that find nothing,
+   its own tools and records. `arrival_window` is called as code for the Clerk. For a find intent
+   the Finder's `elastic_agent` call starts from code right after Intake, beside Cindy,
 4. `writer` writes the reply from their facts, and code fills every number, date and quote.
 
 Under 3 seconds left no further model call is made and the Writer works with the facts so far.
@@ -32,17 +32,26 @@ import concurrent.futures
 import logging
 from typing import Any, Optional
 
-from server.b14_swarm import data, steps
+from server.b14_swarm import data, llm, roster, steps
 from server.b14_swarm.agents import (
+    ListingContext,
+    ListingJob,
     SpecialistResult,
+    StorefrontJob,
     SupportContext,
     SupportJob,
+    checker,
     cindy,
+    describer,
+    designer,
     fill_text,
+    indexer,
     intake,
     join_drafts,
+    lister,
     name_of,
     specialist,
+    tagger,
     text,
     writer,
 )
@@ -118,7 +127,7 @@ def run_group(ctx: SupportContext, group: list[str]) -> dict[str, SpecialistResu
     only the template's time is left is abandoned and counts as late."""
     if len(group) == 1:
         return {group[0]: _safe(group[0], ctx)}
-    futures = {name: _agents_pool.submit(_safe, name, ctx) for name in group}
+    futures = {name: llm.submit(_agents_pool, _safe, name, ctx) for name in group}
     wait_s = max(0.0, ctx.budget.left() - steps.TEMPLATE_RESERVE_S)
     concurrent.futures.wait(futures.values(), timeout=wait_s)
     out: dict[str, SpecialistResult] = {}
@@ -214,6 +223,12 @@ def support_run(job: SupportJob, *, bridge: Any = steps._DEFAULT, budget_s: Opti
         rec.add_all(intake_steps)
         if it.needs_person:
             return _escalate(ctx, rec)
+        if "find" in it.intents and job.side == "buyer":
+            # Every find question goes to Elastic Agent Builder, chosen in code. It's the slowest
+            # call, so it starts now, beside Cindy and the Finder's keywords.
+            from server.b14_swarm.agents import finder
+
+            finder.start_agent(ctx)
 
         route, route_steps = cindy.run(ctx)
         rec.add_all(route_steps)
@@ -234,6 +249,126 @@ def support_run(job: SupportJob, *, bridge: Any = steps._DEFAULT, budget_s: Opti
         outcome = writer.run(ctx, order)
         rec.add_all(outcome.steps)
         final = envelope("support.answered", _answered(job, outcome.reply, outcome.ref_ids), job.at)
+        return rec.events(job.at) + [final]
+    finally:
+        rec.finish()
+
+
+# ---------------------------------------------------------------------------------------------
+# The listing run (T7) and the storefront run (T8)
+
+
+class RunFailed(Exception):
+    """The run can't produce its answer (the Lister or the Designer had no draft). `code` is the
+    contract's error code, so the router answers with it and the scripted run plays."""
+
+    def __init__(self, code: str):
+        super().__init__(code)
+        self.code = code
+
+
+def _maker_name(maker: dict[str, Any]) -> dict[str, str]:
+    n = name_of(maker)
+    return n if n else {"en": "the maker", "zh": "匠人"}
+
+
+def listing_run(job: ListingJob, *, bridge: Any = steps._DEFAULT, budget_s: Optional[float] = None) -> list[dict[str, Any]]:
+    """Cindy (code), the Lister, the Describer (with an image only), the Tagger and the Checker side
+    by side, then the Indexer. Ends in listing.drafted, listing.indexed (when the draft reached
+    cindia-drafts) and a listing_publish approval. Raises RunFailed without a draft."""
+    budget = Budget(budget_s)
+    ids = IdMint(job.id_tag, job.id_start)
+    ctx = ListingContext(job=job, budget=budget, ids=ids, box=Toolbox(Records({}, "seller", [])))
+    rec = RunRecorder(job.run_id, job.listing_id, "seller", ids, bridge=bridge)
+    rec.start()
+    try:
+        key = "cindy.listing_image" if job.image else "cindy.listing"
+        rec.add(PendingStep("cindy", "route", summary(key, listing=job.listing_id), rule_based=True))
+        draft, lister_steps, code = lister.run(ctx)
+        rec.add_all(lister_steps)
+        if draft is None:
+            raise RunFailed(code or "invalid_model_output")
+        ctx.draft = draft
+        picture, describer_steps = describer.run(ctx)
+        rec.add_all(describer_steps)
+        if picture is not None:
+            ctx.picture = picture
+            colors = draft.facets["colors"]
+            draft.facets["colors"] = (colors + [c for c in picture.colors if c not in colors])[:8]
+
+        # The Tagger and the Checker read the same draft and not each other, so they run side by side.
+        f_tag = llm.submit(_agents_pool, tagger.run, ctx)
+        f_chk = llm.submit(_agents_pool, checker.run, ctx)
+        concurrent.futures.wait([f_tag, f_chk], timeout=max(0.0, budget.left() - steps.TEMPLATE_RESERVE_S))
+        if f_tag.done() and f_tag.exception() is None:
+            vibe, tagger_steps = f_tag.result()
+        else:
+            f_tag.cancel()
+            vibe = tagger.rule_vibe(ctx)
+            tagger_steps = [PendingStep("tagger", "result", summary("agent.late"), rule_based=True)]
+        if f_chk.done() and f_chk.exception() is None:
+            checks, checker_steps = f_chk.result()
+        else:
+            f_chk.cancel()
+            checks = checker.code_checks(ctx, None)
+            checker_steps = [PendingStep("checker", "result", summary("checker.rule", reason="timeout"), rule_based=True)]
+            checker_steps += checker.check_steps(checks)
+        rec.add_all(tagger_steps)
+        rec.add_all(checker_steps)
+        drafted_checks = [{"checkId": ids.next("chk"), "kind": c.kind, "ok": c.ok, "note": c.note} for c in checks]
+
+        indexed, indexer_steps = indexer.run(ctx, vibe)
+        rec.add_all(indexer_steps)
+        approval_id = ids.next("apr")
+        rec.add(PendingStep("cindy", "handoff", summary("cindy.publish", listing=job.listing_id, approval=approval_id), rule_based=True))
+
+        drafted: dict[str, Any] = {
+            "listingId": job.listing_id,
+            "makerId": job.maker_id,
+            "title": {"en": draft.title, "zh": draft.title},
+            "summary": {"en": draft.summary, "zh": draft.summary},
+            "facets": draft.facets,
+            "vibe": {k: list(vibe.get(k) or []) for k in ("moods", "occasions", "recipients")},
+            "checks": drafted_checks,
+        }
+        if draft.hours is not None:
+            drafted["hours"] = draft.hours
+        maker = _maker_name(job.maker)
+        approval = {
+            "kind": "listing_publish",
+            "subjectIds": [job.listing_id],
+            "overLimit": False,
+            "proposedBy": "cindy",
+            "summary": {
+                "en": f"Publish {maker['en']}'s new listing to the catalog: “{draft.title}”.",
+                "zh": f"将 {maker['zh']} 的新作品上架到目录：“{draft.title}”。",
+            },
+            "decisionDate": decision_date(),
+        }
+        finals = [envelope("listing.drafted", drafted, job.at)]
+        if indexed.payload is not None:
+            finals.append(envelope("listing.indexed", indexed.payload, job.at))
+        finals.append(envelope("approval.requested", {"approvalId": approval_id, "approval": approval}, job.at))
+        return rec.events(job.at) + finals
+    finally:
+        rec.finish()
+
+
+def storefront_run(job: StorefrontJob, *, bridge: Any = steps._DEFAULT, budget_s: Optional[float] = None) -> list[dict[str, Any]]:
+    """Cindy (code), then the Designer. Ends in storefront.drafted. Raises RunFailed without blocks.
+    Publishing stays the owner's own storefront.published."""
+    budget = Budget(budget_s)
+    ids = IdMint(job.id_tag, job.id_start)
+    rec = RunRecorder(job.run_id, job.storefront_id, "seller", ids, bridge=bridge)
+    rec.start()
+    try:
+        rec.add(PendingStep("cindy", "route", summary("cindy.storefront", storefront=job.storefront_id), rule_based=True))
+        roster.require("designer", "community_page")
+        blocks, designer_steps, code = designer.run(job.community, job.pieces, ids, budget)
+        rec.add_all(designer_steps)
+        if blocks is None:
+            raise RunFailed(code or "invalid_model_output")
+        final = envelope("storefront.drafted", {"storefrontId": job.storefront_id, "blocks": blocks}, job.at)
         return rec.events(job.at) + [final]
     finally:
         rec.finish()

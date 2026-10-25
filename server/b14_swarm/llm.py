@@ -26,11 +26,12 @@
 from __future__ import annotations
 
 import concurrent.futures
+import contextvars
 import logging
 import re
 import threading
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Optional, TypeVar
 
 from pydantic import BaseModel, ValidationError
@@ -262,15 +263,63 @@ class Attempt:
         return self.value is not None
 
 
+@dataclass
+class Tally:
+    """How a run's calls went: answers Claude gave (`ok`, an Unknown counts, since Claude answered)
+    and the contract codes of the calls that failed. The router reads it: a run in which Claude never
+    answered is an error, so the scripted answer plays."""
+
+    ok: int = 0
+    failed: list[str] = field(default_factory=list)
+    _lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
+
+    def add(self, code: Optional[str]) -> None:
+        with self._lock:
+            if code is None:
+                self.ok += 1
+            else:
+                self.failed.append(code)
+
+    def never_answered(self) -> Optional[str]:
+        """The first failure's code when calls were made and none was answered, else None."""
+        with self._lock:
+            if self.ok == 0 and self.failed:
+                real = [c for c in self.failed if c != "budget"]
+                return (real or self.failed)[0]
+            return None
+
+
+_tally: contextvars.ContextVar[Optional[Tally]] = contextvars.ContextVar("b14_tally", default=None)
+
+
+def start_tally() -> Tally:
+    """A new tally for the calls made in this context (and in work submitted with copy_context())."""
+    t = Tally()
+    _tally.set(t)
+    return t
+
+
+def submit(pool: concurrent.futures.Executor, fn: Any, *args: Any, **kwargs: Any) -> concurrent.futures.Future:
+    """pool.submit() in a copy of this context, so the worker's calls count in this run's tally."""
+    return pool.submit(contextvars.copy_context().run, fn, *args, **kwargs)
+
+
 def attempt(agent_id: str, system: str, content: str, output_model: type[BaseModel], timeout_s: float) -> Attempt:
     """parse(), with Unknown and CallFailed turned into a reason. ModelNotAllowed still raises."""
     t0 = time.monotonic()
+    tally = _tally.get()
     try:
         value = parse(agent_id, system, content, output_model, timeout_s)
+        if tally is not None:
+            tally.add(None)
         return Attempt(value, None, _ms(t0))
     except Unknown as exc:
+        if tally is not None:
+            tally.add(None)
         return Attempt(None, exc.reason, _ms(t0))
     except CallFailed as exc:
+        if tally is not None:
+            tally.add("budget" if exc.reason == "budget" else exc.code)
         return Attempt(None, exc.reason, _ms(t0), exc.code)
 
 

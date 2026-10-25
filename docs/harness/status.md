@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:29 PT
+UPDATED: 2026-10-25 00:51 PT
 
 # Status board
 
@@ -121,7 +121,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B11-embed | T1-T8 built, trained and published; G5 after T9 pass 2 | pairs by Claude (Haiku, one Sonnet retry); Hub publish 11:57 PM | | trained 45.8 min at batch 16; recall@5 custom 0.789, keyword 0.784, hybrid 0.825; private repo Fireclaw2396/cindia-embed rev 5ad57138 |
 | B12-search | T1-T6 built and committed; G5 after G4v2 | Elastic hybrid live: seed ~30 s, query 0.61 s, Agent Builder 7.1 s | | Elastic eval recall@5 0.819, MRR 0.887; T7 not built |
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
-| B14-swarm | first spawn committed; second spawn (T4, T7-T10) running | Intake on Haiku 2.2 s | | Finder budgets 9 s for Agent Builder |
+| B14-swarm | T1-T10 built and committed; G5 after G4v2 | d04 live median 5.87 s (L15 quoted), listing 6.6 s, storefront 3.3 s | | Agent Builder times out at 9.4 s, find answers on B12 search at about 17 s |
 | B15-watch | T1-T6 running | | | fixture until the public site is up |
 | B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
 
@@ -401,3 +401,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:24 PT · I2-tour T1 done (the tour timeline: 234 events, 31 beat.started, durationMs 220000; check:data 300; demo-timeline.test 56); I2-tour T3-T7 integrator spawned (stage, modes, tests, contracts, with English only step 1, the final pitch text and the fallback entries); a backend-builder fixes b09-concierge.test.ts (it read v1's concierge events) and places b11-embed.test.ts · status.md
 - 2026-10-25 00:27 PT · B09 and B11 adapter tests committed (B09's builds its own v1 concierge fixture, so it passes before and after the tour; B11's 7 cases placed); merged the planning session's design/HANDOFF.md update: still drop 3, the Figma files are shared · design/HANDOFF.md
 - 2026-10-25 00:29 PT · T9 data worktree gate invalid (T1's timeline landed in src/mock/ first); T9 commits with I2-tour at G4v2 (decisions.md); search spec 4 and 17 go to F-search after T8 · status.md
+- 2026-10-25 00:51 PT · B14 second spawn done (Finder, Curator, listing run, Designer, router, adapter): test_b14_swarm 132 non-live + 2 live, test:server 780, smoke 124; support-live.spec passed once (12.3 s) before an HMR of src/core broke its store import (dev-server restart before G5); committed; G5 b14 after G4v2 · status.md

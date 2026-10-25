@@ -1,14 +1,17 @@
-"""B14 · the agent swarm: T1 (llm, steps, content), T2 (roster, tools), T3 (Intake, Cindy), T5 (Steward,
-Clerk, Bookkeeper) and T6 (the Writer and the support run).
+"""B14 · the agent swarm: T1 (llm, steps, content), T2 (roster, tools), T3 (Intake, Cindy), T4 (Finder,
+Curator), T5 (Steward, Clerk, Bookkeeper), T6 (the Writer and the support run), T7 (the listing run),
+T8 (the Designer and the storefront run) and T9 (the endpoints).
 
 Every test uses a fake Anthropic client that answers by the output model's class, the fake keys from
-conftest's autouse fixture, no B13 bridge unless a test brings its own fake, and B14's fixture
-(b14_fixture.json, written from artifacts/mock/mock.json) as the mock data. Nothing calls out except
-the one test marked live, which makes one small real call to Claude and is skipped without the key.
+conftest's autouse fixture, no B13 bridge unless a test brings its own fake, B11 and B12 faked (a
+test that doesn't bring its own fake B12 gets one that refuses, so nothing reaches Elastic), and
+B14's fixture (b14_fixture.json, written from artifacts/mock/mock.json) as the mock data. Nothing
+calls out except the tests marked live, each one small real call to Claude, skipped without the key.
 """
 
 from __future__ import annotations
 
+import base64
 import copy
 import dataclasses
 import json
@@ -27,15 +30,42 @@ import pytest
 from pydantic import BaseModel, ValidationError
 
 from conftest import needs_key
+from server import b12_search
 from server import config as server_config
+from server.b11_embed import model as b11model
 from server.b14_swarm import content, data, llm, roster, steps, tools
 from server.b14_swarm import run as run_mod
-from server.b14_swarm.agents import SupportContext, SupportJob, bookkeeper, cindy, clerk, intake, steward, writer
+from server.b14_swarm.agents import (
+    ListingJob,
+    StorefrontJob,
+    SupportContext,
+    SupportJob,
+    bookkeeper,
+    checker,
+    cindy,
+    clerk,
+    curator,
+    designer,
+    finder,
+    intake,
+    lister,
+    steward,
+    tagger,
+    writer,
+)
+from server.b14_swarm.agents.checker import CheckerOut
 from server.b14_swarm.agents.cindy import CindyOut
 from server.b14_swarm.agents.clerk import ClerkOut
+from server.b14_swarm.agents.curator import CuratorOut
+from server.b14_swarm.agents.designer import DesignerOut
+from server.b14_swarm.agents.describer import DescriberOut
+from server.b14_swarm.agents.finder import FinderOut
 from server.b14_swarm.agents.intake import IntakeOut
+from server.b14_swarm.agents.lister import ListerOut
 from server.b14_swarm.agents.steward import StewardOut
+from server.b14_swarm.agents.tagger import TaggerOut
 from server.b14_swarm.agents.writer import WriterOut
+from server.routers import b14_swarm as router_mod
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -98,7 +128,20 @@ class FakeClaude:
         return [AGENT_OF.get(c["output_format"], "?") for c in self.calls]
 
 
-AGENT_OF = {IntakeOut: "intake", CindyOut: "cindy", StewardOut: "steward", ClerkOut: "clerk", WriterOut: "writer"}
+AGENT_OF = {
+    IntakeOut: "intake",
+    CindyOut: "cindy",
+    StewardOut: "steward",
+    ClerkOut: "clerk",
+    WriterOut: "writer",
+    FinderOut: "finder",
+    CuratorOut: "curator",
+    ListerOut: "lister",
+    DescriberOut: "describer",
+    TaggerOut: "tagger",
+    CheckerOut: "checker",
+    DesignerOut: "designer",
+}
 
 
 class FakeBridge:
@@ -144,10 +187,16 @@ class Gate:
         return self.answer
 
 
+def _no_b12(*args, **kwargs):
+    raise RuntimeError("B12 is faked in these tests")
+
+
 @pytest.fixture(autouse=True)
 def _isolated(monkeypatch):
     data.use(FIXTURE)
     monkeypatch.setattr(steps, "load_bridge", lambda: None)
+    for name in ("search", "converse", "index_draft", "publish"):
+        monkeypatch.setattr(b12_search, name, _no_b12)
     llm._speed_off.clear()
     yield
     for ev in Gate.events:
@@ -287,7 +336,7 @@ def is_text(v) -> bool:
     return isinstance(v, dict) and set(v) == {"en", "zh"} and all(isinstance(v[k], str) and v[k].strip() for k in v)
 
 
-def check_event(e: dict) -> None:
+def check_event(e: dict, thread: str = THREAD) -> None:
     assert set(e) == {"id", "type", "at", "source", "key", "payload"}
     assert re.fullmatch(r"evt_live_14\d{6}\d{4,}", e["id"]), e["id"]
     assert e["source"] == "live" and e["key"] == "b14-swarm" and e["at"] == 95500
@@ -295,7 +344,7 @@ def check_event(e: dict) -> None:
     if t == "swarm.step":
         assert {"runId", "threadId", "stepId", "agentId", "kind", "summary", "ms"} <= set(p) <= {
             "runId", "threadId", "stepId", "agentId", "kind", "summary", "ms", "toolName", "model"}
-        assert p["runId"] == RUN_ID and p["threadId"] == THREAD
+        assert p["runId"] == RUN_ID and p["threadId"] == thread
         assert re.fullmatch(rf"stp_user_{TAG}_\d+", p["stepId"])
         assert roster.is_agent(p["agentId"]) and p["kind"] in steps.STEP_KINDS
         assert is_text(p["summary"]) and isinstance(p["ms"], int) and p["ms"] >= 0
@@ -317,15 +366,37 @@ def check_event(e: dict) -> None:
         assert {"kind", "subjectIds", "overLimit", "proposedBy", "summary", "decisionDate"} <= set(a) <= {
             "kind", "subjectIds", "overLimit", "proposedBy", "summary", "decisionDate", "amountCents"}
         assert a["proposedBy"] == "cindy" and is_text(a["summary"]) and isinstance(a["overLimit"], bool)
+    elif t == "listing.drafted":
+        assert {"listingId", "makerId", "title", "summary", "facets", "vibe", "checks"} <= set(p) <= {
+            "listingId", "makerId", "title", "summary", "facets", "vibe", "checks", "hours"}
+        assert p["listingId"] == thread and is_text(p["title"]) and is_text(p["summary"])
+        f = p["facets"]
+        assert {"object", "materials", "techniques", "motifs", "colors"} <= set(f) <= {
+            "object", "materials", "techniques", "motifs", "colors", "sizeCm", "oneOfAKind", "leadTimeDays"}
+        assert is_text(f["object"]) and all(isinstance(w, str) for k in ("materials", "techniques", "motifs", "colors") for w in f[k])
+        assert set(p["vibe"]) == {"moods", "occasions", "recipients"}
+        assert [c["kind"] for c in p["checks"]] == ["protocol", "facts", "price"]
+        for c in p["checks"]:
+            assert set(c) == {"checkId", "kind", "ok", "note"} and ID_RE.match(c["checkId"]) and isinstance(c["ok"], bool) and is_text(c["note"])
+    elif t == "listing.indexed":
+        assert {"listingId", "pieceId", "modelId", "embedText", "index"} <= set(p) <= {
+            "listingId", "pieceId", "modelId", "embedText", "index", "point", "approx"}
+        assert p["listingId"] == thread and p["index"] == "cindia-drafts" and ID_RE.match(p["pieceId"])
+    elif t == "storefront.drafted":
+        assert set(p) == {"storefrontId", "blocks"} and p["storefrontId"] == thread
+        assert 4 <= len(p["blocks"]) <= 6
+        for b in p["blocks"]:
+            assert set(b) == {"blockId", "kind", "props"} and ID_RE.match(b["blockId"]) and b["kind"] in designer.KINDS
+            assert all(isinstance(v, str) or (isinstance(v, list) and all(isinstance(x, str) for x in v)) for v in b["props"].values())
     else:
         raise AssertionError(f"unexpected event type {t}")
     assert t not in run_mod.FORBIDDEN_EVENTS
 
 
-def check_run(events: list[dict]) -> tuple[list[dict], list[dict]]:
+def check_run(events: list[dict], thread: str = THREAD) -> tuple[list[dict], list[dict]]:
     """(the steps' payloads, the final events), with every event checked and steps first."""
     for e in events:
-        check_event(e)
+        check_event(e, thread)
     types = [e["type"] for e in events]
     n = types.count("swarm.step")
     assert types[:n] == ["swarm.step"] * n, types
@@ -1299,19 +1370,6 @@ def test_a_payout_question_on_the_sellers_side(monkeypatch):
     assert p["refIds"] == ["mpo_01", "mst_01"]
 
 
-def test_a_find_question_runs_the_finder_stub_until_t4(monkeypatch):
-    answers = {
-        IntakeOut: intake_out(intents=["find"], budgetCents=10000, dateAsked=""),
-        WriterOut: lambda kw: writer_out(reply_en="I can't search the catalog in this run.", reply_zh="本次运行无法搜索作品目录。", refIds=[]),
-    }
-    stp, finals, fake = run_support(monkeypatch, job("Anything like this under $100?"), answers)
-    finder_steps = [s for s in stp if s["agentId"] == "finder"]
-    assert len(finder_steps) == 1 and "model" not in finder_steps[0]
-    assert finder_steps[0]["summary"]["en"] == "Search isn't connected in this build: no candidates."
-    assert _reply(finals)["en"] == "I can't search the catalog in this run."
-    assert "cindy" in fake.agents_called()  # two specialists in the table, so she's asked
-
-
 def test_a_request_in_another_language_gets_the_language_note(monkeypatch):
     answers = {IntakeOut: intake_out(intents=["other"], pieceIds=[], dateAsked="", lang="other"), WriterOut: anthropic.APIConnectionError(request=REQ)}
     stp, finals, _ = run_support(monkeypatch, job("Bonjour, est-ce que vous livrez en France?"), answers)
@@ -1338,7 +1396,527 @@ def test_no_run_emits_a_forbidden_event_or_a_person_name_for_a_buyer(monkeypatch
 
 
 # =============================================================================================
-# One live call (skipped without the key)
+# T4 · the Finder and the Curator
+
+
+class FakeB12:
+    """B12's module functions (and B11's encode and map), recorded. `agent` is the Agent Builder's
+    piece IDs or an exception, `agent_wait` how long it takes."""
+
+    def __init__(self, results: list[dict] | None = None, agent: Any = None, agent_wait: float = 0.0, indexed: bool = True):
+        self.results = list(results or [])
+        self.agent = agent
+        self.agent_wait = agent_wait
+        self.indexed = indexed
+        self.search_calls: list[dict] = []
+        self.converse_calls: list[str] = []
+        self.drafts: list[dict] = []
+        self.ev = threading.Event()
+        Gate.events.append(self.ev)
+
+    def search(self, text, keywords, lang, filters, k=12):
+        self.search_calls.append({"text": text, "keywords": list(keywords), "lang": lang, "filters": dict(filters)})
+        return {"results": copy.deepcopy(self.results), "closeMatches": True, "engine": "local_hybrid", "modelId": "cindia-embed-v1"}
+
+    def converse(self, text):
+        self.converse_calls.append(text)
+        if self.agent_wait:
+            self.ev.wait(self.agent_wait)
+        if isinstance(self.agent, BaseException):
+            raise self.agent
+        return {"pieceIds": list(self.agent or []), "ms": 7100}
+
+    def index_draft(self, entry, piece, community, vector):
+        self.drafts.append({"entry": entry, "piece": piece, "community": community, "vector": vector})
+        return self.indexed
+
+
+def use_b12(monkeypatch, fake: FakeB12) -> FakeB12:
+    for name in ("search", "converse", "index_draft"):
+        monkeypatch.setattr(b12_search, name, getattr(fake, name))
+    monkeypatch.setattr(b11model, "is_warm", lambda: True)
+    monkeypatch.setattr(b11model, "encode_passages", lambda texts, timeout=None: [[0.25, 0.5, 0.25, 0.0] for _ in texts])
+    monkeypatch.setattr(b11model, "project", lambda vector: (0.1234, -0.3363, True))
+    monkeypatch.setattr(b11model, "read_report", lambda: {"modelId": "cindia-embed-v1"})
+    monkeypatch.setattr(finder, "_b12_reason", lambda pid, kw: {"en": "Close in feel: warm.", "zh": "感觉相近：warm。"})
+    return fake
+
+
+def hit(pid: str, score: float = 1.0, matched: tuple[str, ...] = ("red", "wool")) -> dict:
+    return {"pieceId": pid, "score": score, "matched": list(matched),
+            "reason": {"en": f"Matches {' and '.join(matched)}: a piece.", "zh": f"匹配：{'、'.join(matched)}。"}}
+
+
+FIND_Q = "Anything like this under $100?"
+
+
+def find_answers(over: dict[type, Any] | None = None) -> dict[type, Any]:
+    a: dict[type, Any] = {
+        IntakeOut: intake_out(intents=["find"], budgetCents=10000, dateAsked=""),
+        CindyOut: cindy_out(specialists=["finder", "curator"], parallel=["finder", "curator"]),
+        FinderOut: FinderOut(keywords=["red", "wool", "Weaving", FAKE_MARK.lower(), "<b>"], maxPriceCents=0, communityIds=[]),
+        CuratorOut: CuratorOut(order=["pc_13", "pc_07"]),
+        WriterOut: writer_out(reply_en="The closest pieces in the catalog are: {picks}.", reply_zh="目录中最接近的作品是：{picks}。", refIds=["pc_13", "pc_07"]),
+    }
+    a.update(over or {})
+    return a
+
+
+def find_b12(**over) -> FakeB12:
+    kw = dict(results=[hit("pc_07"), hit("pc_01"), hit("pc_99"), hit("pc_04"), hit("pc_13", 0.8, ("red",))], agent=["pc_12", "pc_07", "pc_77"])
+    kw.update(over)
+    return FakeB12(**kw)
+
+
+def find_ctx(monkeypatch, answers: dict[type, Any]) -> SupportContext:
+    use(monkeypatch, answers)
+    ctx = ctx_for(job(FIND_Q))
+    ctx.intake = intake._result(ctx, answers[IntakeOut], None)
+    return ctx
+
+
+def test_finder_candidates_come_only_from_the_tools(monkeypatch):
+    fake = use_b12(monkeypatch, find_b12())
+    ctx = find_ctx(monkeypatch, find_answers())
+    res = finder.run(ctx)
+    # pc_01 is on screen, pc_99 and pc_77 aren't in the records, pc_04 is over the $100 limit.
+    assert [c["pieceId"] for c in res.extra["candidates"]] == ["pc_07", "pc_13", "pc_12"]
+    c07 = res.extra["candidates"][0]
+    assert c07["search"] and c07["agent"] and c07["reason"]["en"] == "Matches red and wool: a piece."
+    assert res.extra["candidates"][2]["reason"]["en"] == "Close in feel: warm."  # B12's code-built reason for an agent-only pick
+    assert fake.search_calls[0]["filters"] == {"maxPriceCents": 10000}
+    assert fake.search_calls[0]["keywords"] == ["red", "wool", "weaving", FAKE_MARK.lower()]
+    assert len(fake.converse_calls) == 1 and FIND_Q in fake.converse_calls[0]
+    assert res.status == "answered" and res.draft is None
+
+
+def test_a_find_intent_always_calls_elastic_agent_from_code(monkeypatch):
+    fake = use_b12(monkeypatch, find_b12())
+    answers = find_answers({FinderOut: anthropic.APIConnectionError(request=REQ)})  # the model fails: rule-based keywords
+    stp, finals, _ = run_support(monkeypatch, job(FIND_Q), answers)
+    assert agents_in_order(stp) == ["intake", "cindy", "finder", "curator", "writer"]
+    tool = [s for s in stp if s.get("toolName") == "elastic_agent"]
+    assert len(tool) == 1 and tool[0]["agentId"] == "finder" and tool[0]["kind"] == "tool"
+    assert tool[0]["summary"]["en"] == "Asked Elastic Agent Builder (cindia-finder): 3 pieces."
+    assert len(fake.converse_calls) == 1
+    kw = [s for s in stp if s["agentId"] == "finder" and s["kind"] == "result"][0]
+    assert kw["summary"]["en"].startswith("Rule-based keywords (an API error)") and "model" not in kw
+    assert fake.search_calls[0]["keywords"]  # the piece on screen's words
+    # A question with no find intent never reaches the Agent Builder.
+    run_support(monkeypatch, job(D04), d04_answers())
+    assert len(fake.converse_calls) == 1
+
+
+def test_a_failed_or_slow_agent_builder_never_holds_the_run(monkeypatch):
+    fake = use_b12(monkeypatch, find_b12(agent=RuntimeError("down")))
+    stp, finals, _ = run_support(monkeypatch, job(FIND_Q), find_answers())
+    tool = next(s for s in stp if s.get("toolName") == "elastic_agent")
+    assert tool["summary"]["en"] == "Elastic Agent Builder didn't answer (an API error). Going on with the search." and "model" not in tool
+    assert finals[0]["type"] == "support.answered"
+    # Slow: the Finder stops waiting while the Curator and the Writer still have their time.
+    use_b12(monkeypatch, find_b12(agent_wait=5.0))
+    monkeypatch.setattr(steps, "WRITER_RESERVE_S", 1.0)
+    monkeypatch.setattr(steps, "TEMPLATE_RESERVE_S", 0.4)
+    monkeypatch.setattr(finder, "AGENT_WAIT_RESERVE_S", 1.5)
+    t0 = time.perf_counter()
+    stp, finals, _ = run_support(monkeypatch, job(FIND_Q), find_answers(), budget_s=3.0)
+    assert time.perf_counter() - t0 < 3.0
+    tool = next(s for s in stp if s.get("toolName") == "elastic_agent")
+    assert tool["summary"]["en"] == "Elastic Agent Builder didn't answer (no answer in time). Going on with the search."
+    assert _reply(finals)["en"]
+
+
+def test_while_b11_loads_the_search_falls_back_to_b12s_keyword_half(monkeypatch):
+    def not_ready(*args, **kwargs):
+        raise b12_search.NotReady("The search model isn't warm yet.")
+
+    monkeypatch.setattr(b12_search, "search", not_ready)
+    box = tools.Toolbox(tools.Records.build(records(), "buyer", ["pc_01"]))
+    out = box.use("finder", "cindia_search", text=FIND_Q, keywords=["wool", "weaving", "red"], filters={"maxPriceCents": 10000})
+    assert out["status"] == "found" and out["engine"] == "keyword_only" and out["closeMatches"] is False
+    assert out["results"][0]["pieceId"] == "pc_07" and out["results"][0]["reason"]["en"].startswith("Matches ")
+    assert steps.summary("finder.search", engine="keyword_only", count=3).en == "Searched the catalog (keywords only, the model is loading): 3 pieces."
+
+
+def test_a_pick_outside_the_candidates_is_dropped(monkeypatch):
+    use_b12(monkeypatch, find_b12())
+    ctx = find_ctx(monkeypatch, find_answers())
+    ctx.results["finder"] = finder.run(ctx)
+    use(monkeypatch, {CuratorOut: CuratorOut(order=["pc_99", "pc_13", "pc_13", "pc_01", "pc_07"])})
+    res = curator.run(ctx)
+    assert res.extra["order"] == ["pc_13", "pc_07"]
+    texts = [p.summary.en for p in res.steps]
+    assert texts == ["Put pc_13, pc_07 in order, with the search's code-built reasons.", "Dropped 3 picks that weren't among the candidates."]
+    facts = {f.name: f.value for f in res.facts}
+    assert facts["pick_1"]["en"] == "Pink and white floral beaded earrings ($45.00), from an Ojibwe beadwork co-op"
+    assert facts["pick_2"]["en"] == "Red and grey wool mini weaving ($48.00), from the Diné Weaving and Silver Co-op"
+    assert res.ref_ids == ["pc_13", "pc_07"]
+    # Nothing valid left: the search's order, both tools first, rule-based.
+    use(monkeypatch, {CuratorOut: CuratorOut(order=["pc_99"])})
+    res = curator.run(ctx)
+    assert res.extra["order"] == ["pc_07", "pc_13", "pc_12"]
+    assert res.steps[0].summary.en == "Rule-based order (an answer of the wrong shape): pc_07, pc_13, pc_12." and res.steps[0].rule_based
+
+
+def test_a_find_question_end_to_end_with_b12s_reasons(monkeypatch):
+    use_b12(monkeypatch, find_b12())
+    stp, finals, fake = run_support(monkeypatch, job(FIND_Q), find_answers())
+    p = finals[0]["payload"]
+    assert p["reply"]["en"] == ("The closest pieces in the catalog are: Pink and white floral beaded earrings ($45.00), from an Ojibwe beadwork "
+                                "co-op; and Red and grey wool mini weaving ($48.00), from the Diné Weaving and Silver Co-op.")
+    assert p["refIds"] == ["pc_13", "pc_07"]
+    w = next(c for c in fake.calls if c["output_format"] is WriterOut)["messages"][0]["content"]
+    assert "pick_1 matched because: Matches red: a piece." in w and "$45.00" not in w
+    blob = json.dumps(stp, ensure_ascii=False).lower()
+    assert FAKE_MARK.lower() not in blob and "anything like this" not in blob
+
+
+# =============================================================================================
+# T7 · the listing run
+
+LST = FIXTURE["listings"][0]
+LISTING = "lst_user_1"
+MAKERS = {m["id"]: m for m in FIXTURE["allMakers"]}
+COMMUNITIES = {c["id"]: c for c in FIXTURE["communities"]}
+START = {"stp": 11, "chk": 4, "apr": 2, "pc": 7, "blk": 1, "qst": 3}
+
+
+def listing_job(notes: str = LST["notes"], maker: str = "mkr_02", image: bytes | None = None) -> ListingJob:
+    com = COMMUNITIES[MAKERS[maker]["communityId"]]
+    return ListingJob(run_id=RUN_ID, listing_id=LISTING, maker_id=maker, notes=notes, lang="en", community={**com, "slug": "dine-weavers"},
+                      maker=MAKERS[maker], vocabulary=FIXTURE["vibeVocabulary"], id_tag=TAG, id_start=dict(START),
+                      image=image, image_type="image/png" if image else None, at=95500)
+
+
+def lister_out(**over) -> ListerOut:
+    base = dict(
+        title="Small red, grey and white wool weaving with a zigzag band",
+        summary="A small weaving, about 30 by 40 cm, in red, grey and white wool, with a zigzag band across the middle. About 20 hours on the loom.",
+        object="Wall weaving", materials=["wool yarn"], techniques=["handwoven"], motifs=["zigzag", "band"], colors=["red", "grey", "white"],
+        widthCm=30, heightCm=40, hours=20, leadTimeDays=0, oneOfAKind="not_stated",
+    )
+    base.update(over)
+    return ListerOut(**base)
+
+
+def listing_answers(over: dict[type, Any] | None = None) -> dict[type, Any]:
+    a: dict[type, Any] = {
+        ListerOut: lister_out(),
+        TaggerOut: TaggerOut(moods=["warm", "cozy"], occasions=["housewarming"], recipients=["for myself", "gift for mom"]),
+        CheckerOut: CheckerOut(protocol_ok=True, protocol_note="Names only the co-op's own craft.", facts_ok=True, facts_note="Every claim is in the notes."),
+    }
+    a.update(over or {})
+    return a
+
+
+def run_listing(monkeypatch, j: ListingJob, answers: dict[type, Any], b12: FakeB12 | None = None) -> tuple[list[dict], list[dict], FakeB12]:
+    fake_b12 = use_b12(monkeypatch, b12 or FakeB12())
+    use(monkeypatch, answers)
+    events = run_mod.listing_run(j)
+    stp, finals = check_run(events, LISTING)
+    return stp, finals, fake_b12
+
+
+def test_lst_01_three_checks_a_draft_in_cindia_drafts_and_a_publish_approval(monkeypatch):
+    stp, finals, fake = run_listing(monkeypatch, listing_job(), listing_answers())
+    assert agents_in_order(stp) == ["cindy", "lister", "tagger", "checker", "indexer", "cindy"]
+    assert stp[0]["summary"]["en"] == "Routing lst_user_1: draft, tag, check, then index." and "model" not in stp[0]
+    assert [f["type"] for f in finals] == ["listing.drafted", "listing.indexed", "approval.requested"]
+    d, ix, apr = (f["payload"] for f in finals)
+    assert [(c["checkId"], c["kind"], c["ok"]) for c in d["checks"]] == [
+        (f"chk_user_{TAG}_4", "protocol", True), (f"chk_user_{TAG}_5", "facts", True), (f"chk_user_{TAG}_6", "price", False)]
+    assert d["checks"][2]["note"]["en"] == "The notes give no price, so the maker sets one before it publishes."
+    assert d["facets"]["sizeCm"] == {"w": 30, "h": 40} and d["hours"] == 20 and d["facets"]["object"] == {"en": "wall weaving", "zh": "wall weaving"}
+    assert d["title"]["zh"] == d["title"]["en"]  # English only: no translated version
+    assert d["vibe"] == {"moods": ["warm", "cozy"], "occasions": ["housewarming"], "recipients": ["for myself", "gift for mom"]}
+    assert ix == {"listingId": LISTING, "pieceId": f"pc_user_{TAG}_7", "modelId": "cindia-embed-v1", "embedText": ix["embedText"],
+                  "index": "cindia-drafts", "point": {"x": 0.1234, "y": -0.3363}, "approx": True}
+    assert ix["embedText"].startswith("passage: wall weaving | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo)")
+    assert len(fake.drafts) == 1 and fake.drafts[0]["entry"]["status"] == "draft" and fake.drafts[0]["piece"]["id"] == ix["pieceId"]
+    a = apr
+    assert a["approvalId"] == f"apr_user_{TAG}_2"
+    assert a["approval"]["kind"] == "listing_publish" and a["approval"]["subjectIds"] == [LISTING] and "amountCents" not in a["approval"]
+    assert stp[-1]["kind"] == "handoff" and stp[-1]["summary"]["en"] == f"Asking the owner to approve publishing {LISTING}: apr_user_{TAG}_2."
+    assert not any(s["agentId"] == "describer" for s in stp)  # no image, so no Describer step
+
+
+def test_navajo_style_and_yei_turn_the_protocol_check_not_ok(monkeypatch):
+    clean = lister_out(title="Wool rug with a pattern", summary="A wool rug with a pattern.", widthCm=0, heightCm=0, hours=0)
+    stp, finals, _ = run_listing(monkeypatch, listing_job("Navajo style rug, Yei pattern"), listing_answers({ListerOut: clean}))
+    protocol = finals[0]["payload"]["checks"][0]
+    assert protocol["kind"] == "protocol" and protocol["ok"] is False
+    assert "Navajo style" in protocol["note"]["en"] and "yei" in protocol["note"]["en"].lower()
+    s = next(x for x in stp if x["agentId"] == "checker" and "Protocol" in x["summary"]["en"])
+    assert s["summary"]["en"].startswith("Protocol check failed (")
+
+
+def test_another_communitys_craft_fails_the_protocol_check_with_l26(monkeypatch):
+    out = lister_out(title="Ojibwe style beaded earrings", summary="Beaded earrings.", object="earrings", widthCm=0, heightCm=0, hours=0)
+    _, finals, _ = run_listing(monkeypatch, listing_job("Ojibwe style beaded earrings", maker="mkr_01"), listing_answers({ListerOut: out}))
+    protocol = finals[0]["payload"]["checks"][0]
+    assert protocol["ok"] is False and protocol["note"] == checker.L26
+    assert checker.L26["en"] == "Names another community's craft. A maker lists only their own community's work."
+
+
+def test_numbers_written_in_chinese_numerals_pass_the_facts_check(monkeypatch):
+    notes = "新的小幅羊毛编织，约三十乘四十厘米，织了二十个小时，红灰白三色，中间一条锯齿纹。"
+    assert {30.0, 40.0, 20.0} <= lister.numbers_in(notes)  # with 三色 and 一条 as 3 and 1
+    assert lister.zh_number("三百零五") == 305 and lister.zh_number("十五") == 15
+    _, finals, _ = run_listing(monkeypatch, listing_job(notes), listing_answers())
+    d = finals[0]["payload"]
+    assert d["checks"][1]["ok"] is True and d["facets"]["sizeCm"] == {"w": 30, "h": 40} and d["hours"] == 20
+    # A number the notes don't hold: the hours are dropped and the facts check fails, naming it.
+    bad = lister_out(hours=25, summary="About 30 by 40 cm, 25 hours on the loom.")
+    stp, finals, _ = run_listing(monkeypatch, listing_job(notes), listing_answers({ListerOut: bad}))
+    d = finals[0]["payload"]
+    assert "hours" not in d and d["checks"][1]["ok"] is False and "25" in d["checks"][1]["note"]["en"]
+    assert any(s["summary"]["en"] == "Dropped 1 numbers that aren't in the notes." for s in stp)
+
+
+def test_the_tagger_keeps_the_vocabulary_and_at_most_two_new_words():
+    out = TaggerOut(moods=["warm", "cozy", "sunny", "mystical", "bold"], occasions=["housewarming"], recipients=["gift for mom"])
+    vibe, new, dropped = tagger.check(out, FIXTURE["vibeVocabulary"], "com_dine")
+    assert vibe == {"moods": ["warm", "cozy", "sunny", "bold"], "occasions": ["housewarming"], "recipients": ["gift for mom"]}
+    assert new == 2 and dropped == 1  # "mystical" is a third new word and a stereotype word
+
+
+def test_a_listing_without_a_draft_fails_so_the_scripted_run_plays(monkeypatch):
+    with pytest.raises(run_mod.RunFailed) as err:
+        run_listing(monkeypatch, listing_job(), listing_answers({ListerOut: anthropic.APIConnectionError(request=REQ)}))
+    assert err.value.code == "upstream_error"
+
+
+def test_a_draft_elastic_didnt_take_has_no_listing_indexed(monkeypatch):
+    stp, finals, _ = run_listing(monkeypatch, listing_job(), listing_answers(), FakeB12(indexed=False))
+    assert [f["type"] for f in finals] == ["listing.drafted", "approval.requested"]
+    assert next(s for s in stp if s["agentId"] == "indexer")["summary"]["en"] == "Didn't index the draft (not connected): nothing is searchable."
+
+
+# =============================================================================================
+# T8 · the Designer and the storefront run
+
+STORE = "sto_01"
+
+
+def store_job() -> StorefrontJob:
+    return StorefrontJob(run_id=RUN_ID, storefront_id=STORE, community=COM_DINE, pieces=copy.deepcopy(FIXTURE["pieces"]), id_tag=TAG,
+                         id_start=dict(START), at=95500)
+
+
+def designer_out(**over) -> DesignerOut:
+    base = dict(blocks=["hero", "story", "pieces", "projects", "visit"], tagline="Wool weavings and stamped silver, made by hand",
+                storyTitle="About the co-op", processTitle="How it's made", pieceIds=["pc_07", "pc_01", "pc_13", "pc_99"])
+    base.update(over)
+    return DesignerOut(**base)
+
+
+def run_store(monkeypatch, out: Any) -> tuple[list[dict], list[dict]]:
+    use(monkeypatch, {DesignerOut: out})
+    return check_run(run_mod.storefront_run(store_job()), STORE)
+
+
+def test_the_designer_drafts_blocks_from_the_communitys_own_records(monkeypatch):
+    stp, finals = run_store(monkeypatch, designer_out())
+    assert agents_in_order(stp) == ["cindy", "designer"]
+    assert [f["type"] for f in finals] == ["storefront.drafted"]
+    blocks = finals[0]["payload"]["blocks"]
+    assert [b["blockId"] for b in blocks] == [f"blk_user_{TAG}_{n}" for n in range(1, 6)]
+    by = {b["kind"]: b["props"] for b in blocks}
+    assert by["hero"] == {"tagline": "Wool weavings and stamped silver, made by hand"}
+    assert by["story"] == {"title": "About the co-op", "body": COM_DINE["about"]["en"]}
+    assert by["pieces"] == {"pieceIds": ["pc_07", "pc_01"]}  # only the co-op's own pieces
+    assert by["projects"] == {"projectIds": ["prj_01"]}
+    assert by["visit"] == {"address": COM_DINE["place"]["en"], "hours": "Visits by arrangement"}
+    assert not re.search(r"\d", json.dumps(by["visit"]))  # never a street number, a phone or opening hours
+    texts = [s["summary"]["en"] for s in stp]
+    assert "Drafted 5 blocks: hero, story, pieces, project, visit." in texts and "Dropped 2 pieces that aren't the community's." in texts
+    tool = next(s for s in stp if s.get("toolName") == "community_page")
+    assert tool["agentId"] == "designer" and tool["summary"]["en"] == "Reading the page of com_dine and its 6 pieces."
+
+
+def test_a_tagline_with_a_stereotype_word_is_rejected(monkeypatch):
+    stp, finals = run_store(monkeypatch, designer_out(tagline="Authentic tribal weavings from ancient hands", blocks=["pieces"]))
+    blocks = finals[0]["payload"]["blocks"]
+    assert [b["kind"] for b in blocks] == ["hero", "story", "pieces", "visit"]  # the three it must have, then up to four
+    assert blocks[0]["props"] == {"tagline": COM_DINE["craft"]["en"]}
+    rule = next(s for s in stp if s["kind"] == "check" and s["agentId"] == "designer")
+    assert rule["summary"]["en"].startswith("The tagline failed the checks (") and "stereotype word" in rule["summary"]["en"]
+
+
+def test_a_storefront_without_a_draft_fails_so_the_scripted_run_plays(monkeypatch):
+    use(monkeypatch, {DesignerOut: anthropic.APITimeoutError(request=REQ)})
+    with pytest.raises(run_mod.RunFailed) as err:
+        run_mod.storefront_run(store_job())
+    assert err.value.code == "upstream_timeout"
+
+
+# =============================================================================================
+# T9 · the endpoints
+
+
+def support_body(**over) -> dict:
+    body = {"trigger": {"at": 95500, "type": "support.asked"}, "runId": RUN_ID, "idTag": TAG, "idStart": {"stp": 11, "apr": 2, "qst": 3},
+            "threadId": THREAD, "side": "buyer", "text": D04, "lang": "en", "contextIds": ["pc_01"], "records": records()}
+    body.update(over)
+    return body
+
+
+def listing_body(**over) -> dict:
+    j = listing_job()
+    body = {"trigger": {"at": 95500}, "runId": RUN_ID, "idTag": TAG, "idStart": dict(START), "listingId": LISTING, "makerId": j.maker_id, "notes": j.notes,
+            "lang": "en", "community": j.community, "maker": j.maker, "vibeVocabulary": FIXTURE["vibeVocabulary"]}
+    body.update(over)
+    return body
+
+
+def store_body(**over) -> dict:
+    body = {"trigger": {"at": 95500}, "runId": RUN_ID, "idTag": TAG, "idStart": dict(START), "storefrontId": STORE, "community": COM_DINE,
+            "pieces": FIXTURE["pieces"]}
+    body.update(over)
+    return body
+
+
+def error_of(r) -> str:
+    body = r.json()
+    assert set(body) == {"error"} and set(body["error"]) == {"code", "message"} and body["error"]["message"]
+    return body["error"]["code"]
+
+
+def test_the_support_endpoint_answers_with_valid_events(monkeypatch, client):
+    use(monkeypatch, d04_answers())
+    r = client.post("/api/b14/support", json=support_body())
+    assert r.status_code == 200 and set(r.json()) == {"events"}
+    stp, finals = check_run(r.json()["events"])
+    assert stp[0]["stepId"] == f"stp_user_{TAG}_11" and finals[0]["type"] == "support.answered"
+    assert set(finals[0]["payload"]["refIds"]) <= {"pc_01", "com_dine", "mkr_01", "pol_01"}
+
+
+def test_the_listing_and_storefront_endpoints_answer_with_valid_events(monkeypatch, client):
+    use_b12(monkeypatch, FakeB12())
+    use(monkeypatch, {**listing_answers(), DesignerOut: designer_out()})
+    r = client.post("/api/b14/listing", json=listing_body())
+    assert r.status_code == 200
+    _, finals = check_run(r.json()["events"], LISTING)
+    assert [f["type"] for f in finals] == ["listing.drafted", "listing.indexed", "approval.requested"]
+    r = client.post("/api/b14/storefront", json=store_body())
+    assert r.status_code == 200
+    _, finals = check_run(r.json()["events"], STORE)
+    assert finals[0]["type"] == "storefront.drafted"
+
+
+def test_every_endpoint_needs_the_anthropic_key(monkeypatch, client):
+    monkeypatch.setattr(server_config, "ANTHROPIC_API_KEY", None)
+    for path, body in (("/api/b14/support", support_body()), ("/api/b14/listing", listing_body()), ("/api/b14/storefront", store_body())):
+        r = client.post(path, json=body)
+        assert r.status_code == 503 and error_of(r) == "key_missing"
+        assert "ANTHROPIC_API_KEY" in r.json()["error"]["message"]
+
+
+@pytest.mark.parametrize(
+    "path,over",
+    [
+        ("/api/b14/support", {"text": "x" * 1001}),
+        ("/api/b14/support", {"text": "   "}),
+        ("/api/b14/support", {"idTag": "BAD!"}),
+        ("/api/b14/support", {"runId": "run_user_other_1"}),
+        ("/api/b14/support", {"idStart": {"stp": 0}}),
+        ("/api/b14/support", {"idStart": {"xyz": 3}}),
+        ("/api/b14/support", {"contextIds": ["pc_01", "DROP TABLE"]}),
+        ("/api/b14/support", {"side": "owner"}),
+        ("/api/b14/support", {"lang": "fr"}),
+        ("/api/b14/listing", {"notes": "x" * 2001}),
+        ("/api/b14/listing", {"makerId": "mkr_04"}),  # not one of the co-op's makers
+        ("/api/b14/listing", {"image": base64.b64encode(b"GIF89a" + b"0" * 10).decode()}),
+        ("/api/b14/listing", {"image": "not base64!"}),
+        ("/api/b14/storefront", {"storefrontId": "Sto 01"}),
+    ],
+)
+def test_requests_outside_the_contract_are_bad_requests(monkeypatch, client, path, over):
+    fake = use(monkeypatch, d04_answers())
+    body = {"/api/b14/support": support_body, "/api/b14/listing": listing_body, "/api/b14/storefront": store_body}[path](**over)
+    r = client.post(path, json=body)
+    assert r.status_code == 400 and error_of(r) == "bad_request"
+    assert fake.calls == []
+
+
+def test_the_size_limits(monkeypatch, client):
+    use(monkeypatch, d04_answers())
+    big = support_body(records={**records(), "pieces": [{"id": "pc_x", "story": {"en": "x" * 1000}}] * 2200})
+    r = client.post("/api/b14/support", json=big)
+    assert r.status_code == 400 and error_of(r) == "bad_request" and "2 MB" in r.json()["error"]["message"]
+    image = base64.b64encode(router_mod.PNG + b"0" * (4 * 1024 * 1024)).decode()
+    r = client.post("/api/b14/listing", json=listing_body(image=image))
+    assert r.status_code == 400 and "4 MB" in r.json()["error"]["message"]
+    assert router_mod._image(base64.b64encode(router_mod.JPEG + b"1234").decode())[1] == "image/jpeg"
+    assert router_mod._image("data:image/png;base64," + base64.b64encode(router_mod.PNG + b"1234").decode())[1] == "image/png"
+
+
+def test_a_third_run_at_once_is_busy(monkeypatch, client):
+    use(monkeypatch, d04_answers())
+    sem = threading.BoundedSemaphore(router_mod.MAX_RUNS)
+    monkeypatch.setattr(router_mod, "_runs", sem)
+    assert sem.acquire(blocking=False) and sem.acquire(blocking=False)
+    try:
+        r = client.post("/api/b14/support", json=support_body())
+        assert r.status_code == 503 and error_of(r) == "busy"
+    finally:
+        sem.release()
+        sem.release()
+    assert client.post("/api/b14/support", json=support_body()).status_code == 200
+
+
+@pytest.mark.parametrize("exc,status,code", [
+    (anthropic.APIConnectionError(request=REQ), 502, "upstream_error"),
+    (anthropic.APITimeoutError(request=REQ), 504, "upstream_timeout"),
+])
+def test_a_run_claude_never_answered_is_an_error_so_the_scripted_answer_plays(monkeypatch, client, exc, status, code):
+    use(monkeypatch, {cls: exc for cls in AGENT_OF})
+    for path, body in (("/api/b14/support", support_body()), ("/api/b14/listing", listing_body()), ("/api/b14/storefront", store_body())):
+        r = client.post(path, json=body)
+        assert r.status_code == status and error_of(r) == code, path
+
+
+def test_a_buyer_requests_extra_records_are_dropped_before_any_agent(monkeypatch, client):
+    seen: list[SupportJob] = []
+    monkeypatch.setattr(run_mod, "support_run", lambda j, **kw: seen.append(j) or [])
+    over = records(payouts=[{"id": "pay_001", "note": PERSON_MARK}])
+    r = client.post("/api/b14/support", json=support_body(records=over, contextIds=["pc_01", "ord_001"]))
+    assert r.status_code == 200 and r.json() == {"events": []}
+    recs = seen[0].records
+    assert set(recs) <= set(tools.BUYER_KEYS) | {"demoDate"}
+    assert [o["id"] for o in recs["orders"]] == ["ord_001"] and "buyerId" not in recs["orders"][0]
+    assert [m["id"] for m in recs["makers"]] == ["mkr_01"]
+    assert PERSON_MARK not in json.dumps(recs)
+
+
+def test_the_safety_sweep_finds_no_forbidden_event_in_any_run(monkeypatch, client):
+    use_b12(monkeypatch, find_b12())
+    runs = [
+        ("/api/b14/support", support_body(), d04_answers()),
+        ("/api/b14/support", support_body(text=MEANING_Q), {IntakeOut: intake_out(intents=["culture"]), StewardOut: StewardOut(status="unknown", sentence=0)}),
+        ("/api/b14/support", support_body(text="It arrived broken, refund me", contextIds=["pc_01", "ord_001"]), {IntakeOut: intake_out(needsPerson=True)}),
+        ("/api/b14/support", support_body(text=FIND_Q), find_answers()),
+        ("/api/b14/listing", listing_body(), listing_answers()),
+        ("/api/b14/storefront", store_body(), {DesignerOut: designer_out()}),
+    ]
+    for path, body, answers in runs:
+        use(monkeypatch, {**d04_answers(), **answers})
+        r = client.post(path, json=body)
+        assert r.status_code == 200, (path, r.json())
+        events = r.json()["events"]
+        assert not {e["type"] for e in events} & run_mod.FORBIDDEN_EVENTS
+        for e in events:
+            if e["type"] == "swarm.step":
+                s = json.dumps(e["payload"]["summary"], ensure_ascii=False)
+                assert FAKE_MARK.lower() not in s.lower()
+                if body.get("text"):
+                    assert body["text"][:20] not in s
+    forged = [{"type": t} for t in sorted(run_mod.FORBIDDEN_EVENTS)] + [{"type": "support.answered"}]
+    assert router_mod.sweep(forged) == [{"type": "support.answered"}]
+
+
+# =============================================================================================
+# Live calls (each skipped without the key)
 
 
 @pytest.mark.live
@@ -1350,3 +1928,36 @@ def test_live_intake_reads_the_d04_question():
     assert {"authenticity", "shipping"} <= set(res.intents)
     assert res.piece_ids == ["pc_01"] and res.lang == "en" and not res.needs_person
     assert res.date_asked == "2026-10-10"
+
+
+def _record_sentences() -> set[str]:
+    out: set[str] = set()
+    for c in FIXTURE["communities"]:
+        out |= {p["en"] for _, p in steward.numbered(c, None)}
+    for pc in FIXTURE["pieces"]:
+        out |= {p["en"] for _, p in steward.numbered(None, pc)}
+    return out
+
+
+@pytest.mark.live
+@needs_key("ANTHROPIC_API_KEY")
+def test_live_the_d04_question_through_the_endpoint(client):
+    """One real support run: the events validate, the reply cites only the IDs it was given, and any
+    quote in it is a records sentence, word for word."""
+    t0 = time.perf_counter()
+    r = client.post("/api/b14/support", json=support_body())
+    took = time.perf_counter() - t0
+    assert r.status_code == 200, r.json()
+    stp, finals = check_run(r.json()["events"])
+    assert took < 19.0
+    assert agents_in_order(stp)[:2] == ["intake", "cindy"] and stp[-1]["agentId"] == "writer"
+    assert finals[0]["type"] == "support.answered"
+    p = finals[0]["payload"]
+    given = {"pc_01", "com_dine", "mkr_01"} | {t["id"] for t in FIXTURE["policy"]} | {f"qst_user_{TAG}_3"}
+    assert set(p["refIds"]) <= given and "pc_01" in p["refIds"]
+    quotes = re.findall(r"“([^”]+)”", p["reply"]["en"])
+    assert all(q in _record_sentences() for q in quotes), quotes
+    if [f["type"] for f in finals] == ["support.answered"]:
+        assert L15_EN in p["reply"]["en"]
+        assert f"“{steward.split_en(NOTE['en'])[0]}”" in p["reply"]["en"]
+        assert "Sep 10" in p["reply"]["en"] and "Sep 14" in p["reply"]["en"]

@@ -12,9 +12,9 @@ What they share:
   filled by code. Every number, date, amount, name and quote in a reply is one of these.
 - `SpecialistResult`: what a specialist returns: its status, its facts, the IDs it used, a draft in
   both languages built by code from its facts, the steps it took, and anything the run's ending needs.
-- `specialist(name)`: the specialist's run function. `finder` and `curator` (T4, which call B12) fall
-  back to a stub that returns no candidates until their files exist, so the support run takes them
-  as they land, behind the same interface.
+- `specialist(name)`: the specialist's run function. `finder` and `curator` fall back to a stub that
+  says search isn't connected only if their files are missing (a cut), so the support run never breaks.
+- `ListingJob`, `ListingContext` and `StorefrontJob`: the listing and storefront runs' requests.
 - The placeholder helpers: find, strip and fill `{name}` placeholders, and spot a number or a date
   typed outside one.
 """
@@ -48,6 +48,51 @@ class SupportJob:
     lang: str  # "en" or "zh"
     context_ids: list[str]
     records: Any
+    id_tag: str
+    id_start: Any = 1
+    at: float = 0
+
+
+@dataclass
+class ListingJob:
+    """One person's listing request (`POST /api/b14/listing`), after the router's checks. The run's
+    thread is the listing ID."""
+
+    run_id: str
+    listing_id: str
+    maker_id: str
+    notes: str
+    lang: str
+    community: dict[str, Any]
+    maker: dict[str, Any]
+    vocabulary: dict[str, list[str]]
+    id_tag: str
+    id_start: Any = 1
+    image: Optional[bytes] = None
+    image_type: Optional[str] = None  # image/png or image/jpeg, from the magic bytes
+    at: float = 0
+
+
+@dataclass
+class ListingContext:
+    job: ListingJob
+    budget: Budget
+    ids: IdMint
+    box: Toolbox
+    # Filled in as the run goes: the Lister's draft, the Describer's note, the Tagger's vibe.
+    draft: Any = None
+    picture: Any = None
+    vibe: Any = None
+
+
+@dataclass
+class StorefrontJob:
+    """One storefront draft request (`POST /api/b14/storefront`). The run's thread is the storefront ID."""
+
+    run_id: str
+    storefront_id: str
+    community: dict[str, Any]
+    pieces: list[dict[str, Any]]
     id_tag: str
     id_start: Any = 1
     at: float = 0
@@ -102,6 +147,9 @@ class SupportContext:
     ids: IdMint
     intake: Any = None  # intake.IntakeResult
     results: dict[str, SpecialistResult] = field(default_factory=dict)
+    # Work the run starts from code ahead of the specialist that reads it (the Finder's
+    # elastic_agent call, started as soon as Intake says find), by name.
+    background: dict[str, Any] = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -197,7 +245,7 @@ Specialist = Callable[[SupportContext], SpecialistResult]
 
 
 def _finder_stub(ctx: SupportContext) -> SpecialistResult:
-    """Until T4's finder.py exists: no candidates, said plainly."""
+    """Only if finder.py is missing: no candidates, said plainly."""
     return SpecialistResult(
         agent_id="finder",
         status="unknown",
@@ -209,7 +257,7 @@ def _finder_stub(ctx: SupportContext) -> SpecialistResult:
 
 
 def _curator_stub(ctx: SupportContext) -> SpecialistResult:
-    """Until T4's curator.py exists: nothing to put in order, so no step."""
+    """Only if curator.py is missing: nothing to put in order, so no step."""
     return SpecialistResult(agent_id="curator", status="skipped", reason="unavailable", extra={"order": []})
 
 
