@@ -48,7 +48,7 @@ export function installSources(): void {
     delayMs: REQUEST_DEFAULTS.delayMs,
     timeoutFor: REQUEST_DEFAULTS.timeoutFor,
     log: (msg) => console.warn(`[cindia sources] ${msg}`),
-    timeline: () => player.getTimeline(),
+    timeline: () => (player.isPlaying() ? player.getTimeline() : null),
   });
   loadScripted("demo");
 }
