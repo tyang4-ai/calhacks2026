@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 01:01 PT
+UPDATED: 2026-10-25 01:03 PT
 
 # Status board
 
@@ -411,3 +411,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:55 PT · G3 approvals PASS (worktree rerun 3/3, confirm recheck PASS; the adversarial lens's FAIL is the tour's new order, a T8 item); committed, tag v2-approvals; the keyed v1 G5s stopped (rerun on the tour after G4v2) · status.md
 - 2026-10-25 00:57 PT · M-desktop fix round 1 done (B1-B7, M1, M2, M4, English-only specs, per-screen readable-text checks; 99 passed + 1 reload-hit spec 3/3 alone); its worktree G3 (now with the worktree's own API on 8001) and a two-lens recheck running; B14 Writer English only committed (d04 endpoint 6.35 s) · status.md
 - 2026-10-25 01:01 PT · B14 Clerk English only and its d04 answer fixed (the prompt made it say unknown to the whole two-part question): 134 non-live + 2 live tests pass, endpoint 6.87 s; committed · status.md
+- 2026-10-25 01:03 PT · dev server stopped at its 2-hour limit, restarted on 5173 (a fresh module cache also clears the ?t= store copies that broke store-importing specs) · status.md
