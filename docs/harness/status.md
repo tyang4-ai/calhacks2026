@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:42 PT
+UPDATED: 2026-10-24 23:43 PT
 
 # Status board
 
@@ -99,14 +99,14 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-search | V2 P0 | green | feature-lead | v2-search | |
 | M-buyer | V2 P0 | green (T0-T6) | feature-lead | v2-buyer | T7 after G4v2; F1, F2 in the polish queue |
 | F-support | V2 P0 | green | feature-lead | v2-support | |
-| F-process | V2 P0 | G3 verifier FAIL (screens F1-F4), fix round 1 | feature-lead | | lead wrote T0-T8 itself (no Agent tool) |
+| F-process | V2 P0 | fix round 1 done (38/38), worktree G3 and verifier recheck running | feature-lead | | lead wrote T0-T8 itself (no Agent tool) |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
-| M-approvals | V2 P0 | built, G3 queued (worktree) and verifier | feature-lead | | live two-screen spec runs (B13 T7 in place); OwnerInbox deleted |
-| M-desktop | V2 P0 | running | feature-lead | | T2, T3 first |
+| M-approvals | V2 P0 | G3 verifier FAIL (F1 toast over L20 and Cindy's line), fix round 1 | feature-lead | | worktree G3 3/3 PASS; live two-screen spec runs; OwnerInbox deleted |
+| M-desktop | V2 P0 | built, worktree G3 queued and verifier | feature-lead | | needs FlagState.nessieId in src/core/state.ts (integrator) |
 | F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | green | feature-lead | v2-watch | live spec skips until B15; F2 in the polish queue |
 | F-storefront | V2 P1 | running | feature-lead | | |
-| M-maker-statement | V2 P1 | running | feature-lead | | |
+| M-maker-statement | V2 P1 | built, worktree G3 queued and verifier | feature-lead | | compact layout under 600 px for Phase A's box |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
 | I2-tour | V3 | todo | integrator, data-smith | | |
 | I3-redesign | V4 | todo | integrator | | per design drop |
@@ -369,3 +369,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:41 PT · Gordon's art check: pc_27, pc_32, pc_35, pc_37, pc_38, pc_39, pc_48 back to placeholders (art --check 54 PASS, contact sheet rebuilt); committed · decisions.md
 - 2026-10-24 23:42 PT · Gordon's decisions recorded: English only (toggle hidden, polish round before G4v2, contracts by the integrator), fonts Source Sans 3 and Source Code Pro approved, CINDIA_HF_REPO set; Chinese checks dropped from Needs Gordon · decisions.md
 - 2026-10-24 23:42 PT · G3 watch PASS in the worktree; verifier's one blocking finding was Chinese-only, moot under English only; committed, tag v2-watch · artifacts/gates/G3-watch-wt-2324.md
+- 2026-10-24 23:43 PT · G3 approvals: worktree 3/3 PASS, verifier FAIL on F1 (the Toast covers L20 and Cindy's line at the end of a long detail), fix round 1 sent with F2-F4 and English only; M-desktop and M-maker-statement built; worktree queue: process rerun, maker-statement, desktop, T9 data with the search specs; verifier workflow for maker-statement, desktop and the process recheck · artifacts/gates/G3-approvals-verifier.md
