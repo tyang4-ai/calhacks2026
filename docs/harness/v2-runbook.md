@@ -78,8 +78,8 @@ The order below follows the architecture review (B1-1, B1-19, B1-20). Commit eac
 
 0. **R0, the re-skin (`docs/plans/R0-reskin.md`).** v1's studio becomes the Diné Weaving and Silver Co-op. Every number stays, and only names, words and art change.
    - Spawn its four agents at once, each with the SCOPE line its task in the plan gives: the data-smith (T1), the integrator (T2), a feature-lead (T3) and a backend-builder (T4). The SCOPEs don't overlap, and nothing else runs beside them, so this is the one step allowed past the cap of 3.
-   - When the data-smith reports, tell the backend-builder with SendMessage that the new `src/mock/` is in, because it rebuilds its fixtures from that data. Each agent runs its own scoped checks.
-   - When all four have reported, run R0's checks as `docs/v2/contracts.md` section 10 gives them: `npm run gate -- G2`, then `npm run gate -- G4` (v1's data and demo gates, with the expected strings updated to the new names), then `npm run test:smoke` and `npm run test:server`. Together they cover every check in the plan's Acceptance, and all must pass. Then run the old-names search from the plan's Acceptance, which must find nothing.
+   - When the data-smith reports, tell the backend-builder with SendMessage that the new `src/mock/` is in. It rebuilds the server fixtures from that data with a throwaway Vitest dump under `artifacts/r0/`, because `npm run export:mock` arrives only with I2-core T7. Don't run `export:mock` in this step. Step 1 runs it once I2-core is in. Each agent runs its own scoped checks.
+   - When all four have reported, run R0's checks as `docs/v2/contracts.md` section 10 gives them: `npm run check`, `npm run check:data`, `npm run test:smoke`, `npm run build`, `npm run test:demo` 3 times (v1's 60-second demo on the new names), `npm run test:offline` and `npm run test:server`, then the verifier's screenshot review. `scripts/gate.mjs` learns the time rule only in I2-core, so apply it yourself: each run's `artifacts/demo/report.json` must have `endedAtWallMs` at most its `durationMs` plus 15 seconds. Together they cover every check in the plan's Acceptance, and all must pass. Then run the old-names search from the plan's Acceptance, which must find nothing.
    - Log the plan's line in `decisions.md`: the v1 tests' expected names, titles and default languages follow the re-skinned data, and no assertion was removed.
    - Then one commit, `R0: re-skin to the Diné co-op`, holding all four agents' paths. Push the branch, then tag `v2-reskin` and record it in the Tags table. This is also the first v2 push, so check that the branch push went through.
    - A red check: send the failure to the agent that owns the file, two rounds at most. R0 can't be cut, because every later plan uses its names. Still red after two rounds: a fresh agent of the same role for one more round, then Needs Gordon.
@@ -121,7 +121,7 @@ Notes on the queue:
 **Upgrades,** as v1's R6, each with a backend-builder and the SCOPE its plan lists, then G5. Tags `demo-ok-b11` to `demo-ok-b16`.
 1. `B11-embed` first.
 2. Then `B13-live` and `B12-search`. Start B13 as early as the cap allows (V1 step 8 lets it start once I2-core is in), because its B08 owner-route task gates M-approvals' G3.
-3. Then `B16-bank-books`, once B13 is green or cut. It needs `NESSIE_KEY`.
+3. Then `B16-bank-books`, queued after B04 is live (its v1 G5 green, V0 step 8), because it reads B04's Nessie account. It needs `NESSIE_KEY`.
 4. Then `B14-swarm`.
 5. Then `B15-watch`. It crawls the sandbox market once the public site is up (D-deploy), and plays on its fixture until then.
 
@@ -129,11 +129,13 @@ Your own steps around the upgrades (builders can't install, publish or run serve
 - **B11, before T3:** `npm run export:mock`, then `python server/b11_embed/data.py --snapshot`, then install the training requirements with `.venv/bin/python -m pip install -r server/b11_embed/requirements-train.txt`, and check the torch build (V0 step 4).
 - **B11, T5's run:** confirm `huggingface.co` answers (V0 step 0). Run `python server/b11_embed/train.py --probe` in the foreground and read its peak memory and seconds per step. Then start `python server/b11_embed/train.py` with `run_in_background` and a 60-minute timeout. It counts as one agent, and nothing heavy runs beside it. It saves a checkpoint each epoch, so a killed run resumes.
 - **B11, after T5:** spawn the data-smith for `S3-catalog` task T9, which copies the real report into `src/mock/model.ts` and grades `unjudged.json`. Then run `python server/b11_embed/train.py --eval-only`, have T9 copy the report again, rerun `npm run export:mock` before B12's seed, and rerun G2b's data check.
-- **B11, after T8:** add `scripts/train-akbari.sh`, the one-line wrapper B11's plan gives, for Gordon's optional run at the lab.
+- **B11, after T8:** write `scripts/train-akbari.sh` yourself, one line that runs `server/b11_embed/train_akbari.sh "$@"`, because a backend-builder can't write `scripts/`. It's for Gordon's optional run at the lab.
+- **B11, after any VM rebuild:** run `python server/b11_embed/fetch_model.py`, which pulls the newest published model back.
 - **If Gordon trains on the Akbari machine instead** (`scripts/train-akbari.sh`, his own `HF_TOKEN`), run `python server/b11_embed/fetch_model.py` once he says his run is published, then S3's T9 as above. The model, `vectors.json` and the index must share one fingerprint, or B11 refuses them.
-- **B13, after T1:** install the module's packages, then publish it to the local server with `spacetime publish -s local cindia`, run the way `server/b13_spacetime/README.md` says. Never the CLI's Maincloud default.
+- **B13, after T1:** install the module's packages, then publish it to the local server with `spacetime publish -s local cindia`, run from `server/b13_spacetime/module/` the way `server/b13_spacetime/README.md` says. Never the CLI's Maincloud default.
 - **B13, once `save_token.py` exists (its T4):** run `python server/b13_spacetime/save_token.py`. It writes the publisher's token to `.env` as `SPACETIME_TOKEN` without printing it. Restart `npm run server` and confirm `GET /api/b13/status` reports `spacetime: true`.
 - **B13, after T5:** `POST /api/b13/seed` once, or let the adapter do it in live mode.
+- **B13, before every recorded demo:** `spacetime call -s local cindia clear_runs`, so no old run shows in the swarm view.
 - **B13's T7** (B08's owner screen at `/sell/approvals?screen=owner`) gates M-approvals' G3. Commit T7's files on their own once its tests pass, so `main` never holds M-approvals' owner spec without the adapter it needs.
 - **Before each G5 of B11 to B16:** rerun `npm run export:mock`.
 - **An upgrade whose service isn't reachable or whose key isn't set:** finish it against mocks, mark it `blocked` with the reason under Needs Gordon, and move on. The scripted source keeps the demo whole.
@@ -148,17 +150,18 @@ Your own steps around the upgrades (builders can't install, publish or run serve
 
 When `F-search`, `M-buyer`, `F-support`, `F-process`, `M-approvals`, `M-desktop`, `F-seller-hub`, `F-watch`, `F-storefront` and `M-maker-statement` are green or cut:
 1. Spawn `I2-tour` in three steps, one after the other, because each needs the one before (B1-26):
-   1. the integrator for task T2 (`beat.started.drawer` in the types, validation and state),
+   1. the integrator for task T2 (it checks I2-core's `beat.started` fields, the types, validation and state, and writes the tour's tables into `demo-script.md`),
    2. the data-smith for the timeline task (T1), with the SCOPE line the plan gives it,
-   3. the integrator for tasks T3 to T7.
+   3. the integrator for tasks T3 to T8.
    
-   While I2-tour runs, queue any other integrator request that touches `src/app/` or `tests/demo/` behind it.
+   From the first spawn until G4v2 passes, `test:demo` and `check:data` can be red, because the timeline and the stage change in steps. So no other gate runs in that window, and nothing from it is committed on its own. While I2-tour runs, queue any other integrator request that touches `src/app/` or `tests/demo/` behind it.
 2. **The contact sheet.** Before G4v2, send Gordon `artifacts/art/contact-sheet.png` with SendUserFile, if the tool exists, with one line: "Please look at the 54 piece drawings for two minutes and tell me if any reads as a copy, a sacred design or a cliché." `artifacts/` isn't committed, so this is the only way he sees it. Don't wait for his answer. If he flags a drawing later, the integrator redraws it and G4v2 reruns.
 3. Run **G4v2** with the gate skill, with no other agent active and no other Playwright run. Tag `demo-ok-v2`.
+4. **Right after G4v2,** start M-buyer's T7, which was queued for this moment: the integrator first removes `buyer.main`, `buyer-concierge-input` and `buyer-concierge-results` from the UI contract (M-buyer's contract change 6), then M-buyer's lead retires the phone flow and its five specs, then G3 for `buyer` again. It runs before any V4 round reruns G3.
 
 ## V4 · The design drops
 
-Only after G4v2 is green. One integrator at a time.
+Only after G4v2 is green (B1-26), because I3-redesign's SCOPE overlaps I2-tour's. One integrator at a time.
 
 The planning session runs the design lead through the Figma connector and pushes each drop to `main` under `design/`, with a commit named `design: drop N`. If Gordon runs a design session on his laptop instead, it pushes to branch `design`, and you copy the folder over with `git checkout origin/design -- design/`.
 1. On every heartbeat, pull and read `design/HANDOFF.md` for the drop number.

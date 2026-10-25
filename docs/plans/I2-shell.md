@@ -55,7 +55,7 @@ Old links redirect. `/demo` keeps playing the v1 story, with R0's names, on full
 
 | Slot | Props from the shell, beyond `surface` and `lang` |
 |---|---|
-| `shop.search.main` | `searchParams: { q, k }` from `?q=` and every `?k=`, with `k` an empty list when there's none |
+| `shop.search.main` | `searchParams: { q, k }` from `?q=` and every `?k=`, with `k` an empty list when there's none. On `/demo`, the stage's rule in "The stage, Phase A" |
 | `shop.piece.main`, `shop.piece.side` | `pieceId` |
 | `shop.community.main` | `communityId` |
 | `shop.projects.main` | `projectId`, undefined on the list |
@@ -96,7 +96,7 @@ Old links redirect. `/demo` keeps playing the v1 story, with R0's names, on full
 **Chrome on every page:**
 - **The top bar (`shell-topnav`):**
   - left: the word Cindia and the `SideSwitch` (`shell-side-shop` goes to `/shop`, `shell-side-sell` to `/sell/overview`). Maker pages count as Sell and store pages as Shop.
-  - right: L1 in small type, never hidden: "Demo. Every maker, community and story here is fictional. Nothing is for sale." Then Help (`shell-help`, which calls `openDrawer("support")`), Ask Cindy on Sell pages (`openDrawer("ask")`), and the language toggle.
+  - right: L1 in small type, never hidden: "Demo. Every maker, community and story here is fictional. Nothing is for sale." (演示版。这里的每位匠人、每个社区和每个故事都是虚构的。所有物品均不出售。) Then Help (`shell-help`, which calls `openDrawer("support")`), Ask Cindy on Sell pages (`openDrawer("ask")`), and the language toggle.
   - Every frame on the stage has its own top bar, so L1 shows in the tour too.
 - **The process bar** is a 64 px band under the top bar that holds the slot `process.bar`, or its placeholder `slot-process-bar`. The band has no test ID of its own. F-process renders `process-bar` inside the slot (B1-5, D1-4).
 - **`?process=<processId>`** on any route opens the overlay over the page, under the process bar:
@@ -113,7 +113,7 @@ Old links redirect. `/demo` keeps playing the v1 story, with R0's names, on full
 
 **The public build** (fix-plan 1.8, A2-2):
 - `src/app/site.ts` exports `PUBLIC_SITE`, true only when the build ran with `VITE_PUBLIC_SITE=1`. It's a plain flag, not a secret, and no other file reads it.
-- On that build, every slot gets `publicSite: true`. The features that sell show L6 where Pay was (M-buyer). Features never read `import.meta.env` themselves.
+- On that build, every slot gets `publicSite: true`. The features that sell show L6, "This is the public demo. Nothing here can be bought." (这是公开演示版。这里的物品都无法购买。), where Pay was (M-buyer). Features never read `import.meta.env` themselves.
 - On that build, the demo controls hide the Live switch, so the public site stays scripted.
 - Builds without the flag (localhost, every gate) keep the demo checkout and the Live switch.
 - On every build, `index.html` has `<meta name="robots" content="noindex">`, and `public/robots.txt` reads `User-agent: *` then `Disallow: /`.
@@ -133,7 +133,7 @@ Routes never use these boxes, so the V2 migrations build and test at full deskto
 - `SURFACE_START_LANG` gives `buyer`, `studio` and `store` English.
 - The maker surface starts in the maker's own `lang` from `src/mock/people.ts`, and English when a maker isn't found. R0 makes `mkr_01` to `mkr_03` English, so the maker page opens in English (fix-plan 1.1). Chinese stays a second interface language through the toggle.
 - `owner` keeps its entry, but its slot uses the Sell site's resolved language.
-- Every new string, L1 and L2 included, sits in `src/app/strings.ts` in both languages.
+- Every new string, L1 and L2 included, sits in `src/app/strings.ts` in both languages. L1 and L2 take their English and Chinese word for word from contracts section 12's table, which wins on wording. L2 reads "Demo: the Sell side is open so you can look around. In a real launch, only the co-op sees or approves anything here." (演示：卖家后台对所有人开放，方便您浏览。正式上线后，只有合作社能查看或批准这里的内容。)
 
 **The stage, Phase A:**
 - The stage is the kit's `PAGE_WIDTH` by `PAGE_HEIGHT` (1440 by 900), scaled to fit and letterboxed on paper.
@@ -142,6 +142,7 @@ Routes never use these boxes, so the V2 migrations build and test at full deskto
 - The stage passes each frame its page:
   - `shop-legacy` sets the legacy page,
   - `shop-home`, `shop-search`, `shop-piece` and `shop-receipt` set `ShopSurface`'s page (the piece from `store.buyer.openPieceId`, the order `ord_001`),
+  - on the search page, `shop.search.main` gets no `searchParams.q`, or only the latest query's own text (from `store.search.latestQueryId`) with its keywords, never any other text. F-search emits a `search.queried` for a `q` that differs from the latest query's text, so under this rule it never emits one on the stage,
   - `sell-*` set the Sell view,
   - `maker` sets `mkr_01`,
   - `store` sets `dine-weavers`.
@@ -160,7 +161,7 @@ The integrator does every task itself, in order.
 | T1 | Routes and redirects, the two navigators through `registerNavigator`, the slot props builder with `?ref=` and the route IDs, `/dev/kit` through `import.meta.glob`, the URL helpers for drawers and the process overlay, and `site.ts`, each with unit tests for its pure parts | src/app/routes.tsx, src/app/App.tsx, src/app/useDrawer.ts, src/app/useProcessParam.ts, src/app/navigators.ts, src/app/slotProps.ts, src/app/slotProps.test.ts, src/app/site.ts, src/app/site.test.ts | I2-core, I2-kit T1 | opus |
 | T2 | The four surfaces on `PageFrame`, each with its `drawer` prop: `ShopSurface` (with the `/shop/legacy` page), `SellSurface` with its header, L2, nav and view table, `MakerSurface`, `StoreSurface`. The legacy boxes. Retire `PhoneSurfaces.tsx` and `StudioSurface.tsx` once nothing imports them | src/app/surfaces/index.ts, src/app/surfaces/ShopSurface.tsx, src/app/surfaces/SellSurface.tsx, src/app/surfaces/MakerSurface.tsx, src/app/surfaces/StoreSurface.tsx, src/app/surfaces/LegacyBox.tsx, src/app/surfaces/views.ts, src/app/surfaces/PhoneSurfaces.tsx, src/app/surfaces/StudioSurface.tsx, src/app/studioInfo.ts | T1 | opus |
 | T3 | Chrome: the top bar with the switch, L1, Help, Ask Cindy and language, then the process bar band, the process overlay and the drawers. `Slot.tsx` forwards the whole props object and writes `data-slot-props`. The public build: `publicSite` on every slot and the Live switch hidden. The `noindex` tag and `robots.txt`. Strings for every new label in both languages, the slot placeholders included | src/app/chrome/AppChrome.tsx, src/app/chrome/ProcessOverlay.tsx, src/app/chrome/Drawers.tsx, src/app/strings.ts, src/app/lang.ts, src/app/Slot.tsx, src/app/featureLoader.ts, src/app/controls/DemoControls.tsx, index.html, public/robots.txt | T2 | sonnet |
-| T4 | The stage, Phase A: 1440 by 900, one frame per camera through `toTourCamera()`, `shop-legacy`, the pages per camera, the legacy boxes while the camera is a legacy one, `sell-catch`'s zoom inside the page frame, the stage navigator and its override with the clearing rule, the process overlay and the drawer in the shown frame. Keep video mode, start at the catch and the end card working on the v1 timeline | src/app/demo/DemoStage.tsx, src/app/demo/cameras.ts, src/app/demo/cameras.test.ts, src/app/demo/stageOverride.ts, src/app/demo/stageOverride.test.ts, src/app/demo/stage.module.css, src/app/demo/BeatLabel.tsx, src/app/stageScale.ts, src/app/demo/EndCard.tsx | T2, T3 | opus |
+| T4 | The stage, Phase A: 1440 by 900, one frame per camera through `toTourCamera()`, `shop-legacy`, the pages per camera with the search page's `searchParams` rule, the legacy boxes while the camera is a legacy one, `sell-catch`'s zoom inside the page frame, the stage navigator and its override with the clearing rule, the process overlay and the drawer in the shown frame. Keep video mode, start at the catch and the end card working on the v1 timeline | src/app/demo/DemoStage.tsx, src/app/demo/cameras.ts, src/app/demo/cameras.test.ts, src/app/demo/stageOverride.ts, src/app/demo/stageOverride.test.ts, src/app/demo/stage.module.css, src/app/demo/BeatLabel.tsx, src/app/stageScale.ts, src/app/demo/EndCard.tsx | T2, T3 | opus |
 | T5 | Smoke tests and the shared helpers (details below) | tests/smoke/routes.spec.ts, tests/smoke/shell.spec.ts, tests/smoke/lib.ts | T3 | sonnet |
 | T6 | Demo and offline tests for Phase A (details below) | tests/demo/beats.ts, tests/demo/harness.ts, tests/demo/demo.spec.ts, tests/demo/modes.spec.ts, tests/offline/offline.spec.ts | T4 | opus |
 | T7 | Run every v1 feature spec (`npm run test:feature -- <slug>` for all twelve). Don't edit `tests/features/`. List each failing spec in the report with its cause (a phone frame, `/owner`, a removed route), so the orchestrator routes it to M-buyer, M-approvals, M-maker-statement or M-desktop | none (report only) | T6 | sonnet |
@@ -182,10 +183,10 @@ The integrator does every task itself, in order.
 - The frames are `frame-buyer`, `frame-studio`, `frame-maker` and `frame-store`, at 1440 wide.
 - Each beat's camera goes through the Phase A mapping, imported from `src/core/featureTypes.ts` rather than copied, and the frame shown at full size is checked.
 - `readScreen` and the recorder look each test ID up inside the shown frame, never the first match in the document (B1-35). The beat label stays a page-level lookup.
-- The end-of-run check compares the run's real time with the timeline's `durationMs` plus 500 ms, not a fixed 60.5 s, so the same harness serves the tour (fix-plan 1.9).
+- `report.json` keeps the `durationMs` field that I2-core T7 added at the end of `playDemo()`. The end-of-run check is relative to it: the run's real time against that `durationMs` plus 500 ms, not a fixed 60.5 s, so the same harness serves the tour (fix-plan 1.9).
 - The real-time `beat.started` check allows 250 ms, because the cloud VM runs other agents' checks at the same time (B1-27). The player-clock check stays at 100 ms. The orchestrator logs both in `decisions.md` as a planned change.
 - `REQUIRED_KEYS` adds `b14-swarm: "anthropic"` and `b15-watch: "apify"`, typed as the five keys of `/api/health` (D2-7).
-- `REQUIRED_SERVICES` is new: `b11-embed`, `b12-search` and `b15-watch` need `model`, and `b13-live` needs `spacetime`. The harness reads `services` from `/api/health` beside `keys`. It doesn't wait for an adapter whose service is down, and G5 for that upgrade fails with a message naming the service.
+- `REQUIRED_SERVICES` is new: `b11-embed` and `b12-search` need `model`, and `b13-live` needs `spacetime`. `b15-watch` has no entry, because it doesn't wait on the model (B15-watch). The harness reads `services` from `/api/health` beside `keys`. It doesn't wait for an adapter whose service is down, and G5 for that upgrade fails with a message naming the service.
 - Every other v1 check stays: times, On screen IDs, figures, cut handling, live mode for G5.
 
 ## Acceptance
@@ -213,6 +214,8 @@ The integrator does every task itself, in order.
   - `artifacts/demo/report.json`'s `endedAtWallMs` is within the timeline's `durationMs` plus the gate's load allowance (fix-plan 1.9).
 - Given `/demo` paused in a Shop beat, when `shell-help` in the shown frame is clicked, then that frame's support drawer opens, the URL doesn't change, and the next `beat.started` closes it. A `navigate()` call or a kit `Link` click on `/demo` changes nothing.
 - Given `/demo?video=1` and `/demo?start=catch`, then they behave as in v1, on the desktop frames.
+- Given the stage on its search page, then `shop.search.main`'s `data-slot-props` hold no `q`, or the latest query's own text, and the store gains no `search.queried` with `source: "user"`.
+- Given a `test:demo` run, then `artifacts/demo/report.json` holds `durationMs` and `endedAtWallMs`, and the end-of-run check reads that `durationMs`.
 - Given `/maker/mkr_01` with the language on `auto`, then the maker page is in English, the maker's own `lang` after R0, and the toggle switches it to Chinese.
 - Given `/dev/kit`, then `dev-kit-gallery` shows every kit component with no console errors.
 - Given `seekToEvent(page, "beat.started", { beatId: "d07-catch" })`, then the player is paused at that event's `at`. Given an event the timeline lacks, then it throws an error naming the type and the match.

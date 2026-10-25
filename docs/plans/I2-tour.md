@@ -21,7 +21,7 @@ From the first spawn until G4v2 passes, `test:demo` and `check:data` can be red,
 3. **The seller minute, 120 to 180 s.** A maker's notes become a listing that our model embeds into the index. Then the money: the map, the month, the catch, approve and seal, close, Grace N.'s statement, and the buyer's receipt turning to "Paid to the maker".
 4. **Chapter 2, 180 to 205 s, for questions.** Surprise me, the proofs, the copy watch and the storefront.
 
-Gordon presents with `/demo?mode=present`, one beat at a time. The tests use `/demo`, which plays straight through, and the video uses `/demo?video=1`, which plays the spine. Every v1 finance figure stays exactly as it was. The process views open beside the page at the right moments, the reconcile and approvals views included (C-12), and the end card names the seats Cindia fills.
+Gordon presents with `/demo?mode=present`, one beat at a time. The tests use `/demo`, which plays straight through, and the video uses `/demo?video=1`, which plays the spine in under 3 minutes. Every v1 finance figure stays exactly as it was. The process views open beside the page at the right moments, the reconcile and approvals views included (C-12), and the end card names the seats Cindia fills.
 
 ## Read first
 
@@ -86,9 +86,9 @@ Times are seconds. The finance beats keep every v1 event, ID and payload, and mo
 | `p03-how` | 40.0 `beat.started` `pitch` |
 | `d01-vibe` | 60.0 `beat.started` `shop-home`. 60.2 `model.trained` and `proof.search_scored`, only when `model.ts`'s report exists, so the search line can name the model (A1-4). 60.4 `search.queried` `qry_01` (figure 11). 62.6 `search.answered`. 63.5 `beat.started` `shop-search`. 66.0 `search.mapped`, from the report's points, so only when it exists. 66.5 `beat.started` `shop-search`, process `search` |
 | `d03-piece` | 74.0 `beat.started` `shop-piece`. 74.3 `piece.opened` `pc_01`. 76.5 `split.shown` with v1's figure 1 payload. The gallery comparison line comes from S3's gallery split for `pc_01` (A1-10), so the payload doesn't change |
-| `d04-support` | 86.0 `beat.started` `shop-piece`, drawer `support`. 86.4 `support.asked` `thr_01`: the buyer's first `demoQuestions` entry, context `pc_01`. 87.6 to 95.5 `run_01`'s `swarm.step` events in order: intake, cindy, steward, the `check` step, clerk, writer (A1-7). 90.0 `beat.started` `shop-piece`, drawer `support`, process `swarm`. 96.0 `support.answered` |
+| `d04-support` | 86.0 `beat.started` `shop-piece`, drawer `support`. 86.4 `support.asked` `thr_01`: the buyer's first `demoQuestions` entry, "Did the maker weave this herself? Can it arrive by October 10?", context `pc_01`. 87.6 to 95.5 `run_01`'s `swarm.step` events in order: intake, cindy, steward, the `check` step, clerk, writer (A1-7). 90.0 `beat.started` `shop-piece`, drawer `support`, process `swarm`. 96.0 `support.answered` |
 | `d05-pay` | 104.0 `beat.started` `shop-piece`. v1's `d04-pay` events at +93.0 s: 104.3 `checkout.started`, 105.5 `card.tokenized` (now with `pieceId` `pc_01`, B1-34), 106.5 `order.placed` `ord_001`, 107.0 `receipt.updated` received. Plus 106.0 `project.funded` `ctb_01` (figure 13) and 107.0 `beat.started` `shop-piece`, process `checkout` |
-| `d15-listing` | 120.0 `beat.started` `sell-listings`. 120.3 `listing.requested` `lst_01`. 121.0 to 126.0 `run_02`'s `swarm.step` events (lister, tagger, checker, indexer). 122.0 `beat.started` `sell-listings`, process `swarm`. 126.5 `listing.drafted`. 127.0 `listing.indexed`, then one `data.synced` keyed `b13-live` with its payload from `src/mock/`, so `process-data-tables` has rows, then `beat.started` `sell-listings`, process `data`. 128.0 `approval.requested` `apr_04` (D1-13) |
+| `d15-listing` | 120.0 `beat.started` `sell-listings`. 120.3 `listing.requested` `lst_01`. 121.0 to 126.0 `run_02`'s `swarm.step` events (lister, tagger, checker, indexer). 122.0 `beat.started` `sell-listings`, process `swarm`. 126.5 `listing.drafted`. 127.0 `listing.indexed` (index `cindia-drafts`), whose piece `pc_55` joins the catalog only when `apr_04` is granted, then one `data.synced` keyed `b13-live` with its payload from `src/mock/`, so `process-data-tables` has rows, then `beat.started` `sell-listings`, process `data`. 128.0 `approval.requested` `apr_04` (D1-13) |
 | `d06-money` | 130.0 `beat.started` `sell-map`. v1's `d05-money` events at +115.0 s: 130.5 `mv_0001`, 131.5 `mv_0002`, 132.5 `mv_0003`, 133.5 `account.synced`. Plus 134.2 `mv_0101` and 134.8 `mv_0102`, built from S3's `demoFundMoves`, each with `refId` `ctb_01` and date `2026-09-01` (D1-37, D1-38) |
 | `d07-month` | 136.0 `beat.started` `sell-month`. v1's `d06-month` at +116.0 s: the month timeline shifted by `MONTH_SHIFT_MS` 136200, so 136.2 `month.started` and the month's records from 136.4 to 145.6, at 0.3 s a day. 142.0 `beat.started` `sell-month`, process `reconcile` |
 | `d08-catch` | 146.0 `beat.started` `sell-catch`. v1's `d07-catch` at +116.0 s: 146.3 the gallery's statement, 146.8 its deposit, 147.5 `flag.raised`, 149.0 `flag.explained`, 151.5 `agent.acted` (draft), 151.7 `followup.drafted` `fup_01`, 152.0 `approval.requested` `apr_01` |
@@ -102,7 +102,7 @@ Times are seconds. The finance beats keep every v1 event, ID and payload, and mo
 | `d16-store` | 200.0 `beat.started` `store`. No other events |
 
 - v1's concierge events (`d01-ask`) aren't in the tour. v1's `d02-story` `piece.opened` and `d03-split` `split.shown` move to 74.3 and 76.5, and `proof.scored` moves from 59.0 to 179.0.
-- `run_01` and `run_02` keep their step order and their gaps from `src/mock/swarm.ts`, scaled into the windows above when they don't fit.
+- `run_01` and `run_02` keep their step order and their times from `src/mock/swarm.ts`. S3 times them to fit the 87.6 to 95.5 s and 121.0 to 126.0 s windows, so nothing is scaled.
 
 ### The modes
 
@@ -118,11 +118,14 @@ Times are seconds. The finance beats keep every v1 event, ID and payload, and mo
 
 **`?start=<beatId>`** seeks to that beat's first event and plays from there, pausing at its end in presenter mode. An unknown beat ID is ignored. `?start=catch`, the `demo-start-at-catch` control and the `c` key all mean `?start=d08-catch` (contracts section 4), so v1's rewind card goes. Every time in these modes comes from the timeline's `beat.started` events, never from a constant.
 
-**Video mode, `/demo?video=1`** (Gordon records it):
+**Video mode, `/demo?video=1`** (Gordon records it). It stays under 3 minutes, Figma's limit:
 1. The cold open seeks to the last millisecond of `d08-catch` (153.999) without animation, so the flag, its evidence and the explanation are up on the `sell-catch` camera, and shows v1's line "The gallery paid $340 less than the contract says." for 5 seconds.
 2. Then it resets and plays the spine from `p01-what`, with no controls or beat label.
-3. At the end of `d12-receipt` (179.999) the player pauses, and the end card shows for 5 seconds. Chapter 2 isn't in the video, which runs about 3 minutes 10 seconds in all.
-4. `mode=present` and `?start=` are ignored in video mode.
+3. Each pitch card holds for 10 seconds instead of 20. Ten seconds after a pitch beat's first `beat.started` on the player clock, the player seeks to the next beat's first `beat.started` and plays on. The pitch beats carry no other events, so the seek skips nothing.
+4. The buyer and seller minutes, `d01-vibe` to `d12-receipt`, play at 1x.
+5. At the end of `d12-receipt` (179.999) the player pauses, and the end card shows for 5 seconds. Chapter 2 isn't in the video.
+6. That's about 2 minutes 40 seconds in all: 5 for the cold open, 30 for the three cards, 120 for the two minutes and 5 for the end card.
+7. `mode=present` and `?start=` are ignored in video mode.
 
 ### The pitch cards
 
@@ -155,7 +158,7 @@ The labels are in English, as the video is. Their Chinese goes beside them in `s
 | T2 | Check, without changing, the contract code the timeline needs, which I2-core owns (B1-38): `beat.started.process` and `drawer`, `demo.process` and `demo.drawer`, `pitch` in `TourCameraId`, `data` in `ProcessId`, and `data.synced` with its reducer. Add a unit test where I2-core left one out. Anything missing goes under needs, for the orchestrator to send back to I2-core. Then write the tour into `docs/common/demo-script.md`: the beat table and the events table above, under `## Beats`, with v1's sheet kept as `## v1 beats` until T7. Add the several-per-beat rule to `events.md`'s `beat.started` if I2-core's merge left it out | src/core/events.ts, src/core/featureTypes.ts, src/core/state.ts, src/core/validate.ts, src/core/validate.test.ts, src/core/reducers/small.ts, src/core/reducers.test.ts, docs/common/demo-script.md, docs/common/events.md | the features above, green or cut | sonnet (integrator) |
 | T1 | The data-smith: rewrite `src/mock/timelines/demo.ts` to the events table, building each event from S3's exports (`demoSearch`, `demoSurprise`, `swarmRuns`, `listings`, `scriptedScan`, `report`, `demoContribution`, `demoFundMoves`, the `data.synced` payload) and v1's records, as the v1 file already does. The tour's `search.queried` takes `demoSearch`'s query and adds `queryId` `qry_01` (D1-49). `MONTH_SHIFT_MS` becomes 136200, `BEATS` lists the tour's beats, and `DEMO_QUERY` keeps its name with figure 11's text. `month.ts` keeps its own times. Write `tests/data/demo-timeline.test.ts`, and move the demo halves of `timelines.test.ts` and `figures.test.ts` to the tour (below) | src/mock/timelines/demo.ts, src/mock/timelines/month.ts, src/mock/index.ts, tests/data/demo-timeline.test.ts, tests/data/timelines.test.ts, tests/data/figures.test.ts | T2 | opus (data-smith) |
 | T3 | The stage: a camera for every tour camera, `pitch` with `PitchCard.tsx` and `pitch.ts`, the drawer and the process per beat through the surfaces' props, the split layout, and a short title per beat in `BeatLabel.tsx`, numbered in tour order. Then remove the legacy cameras (`LegacyCameraId`, `LEGACY_CAMERA_IDS`, `LEGACY_CAMERA_TO_TOUR`, `toTourCamera()`, `shop-legacy`), the Phase A legacy boxes (`src/app/surfaces/LegacyBox.tsx` and the `legacy` prop on `SellSurface` and `MakerSurface`, B1-23), and `StudioView` wherever only `src/app/` still uses it, in favor of `SellView` | src/app/demo/DemoStage.tsx, src/app/demo/cameras.ts, src/app/demo/cameras.test.ts, src/app/demo/stage.module.css, src/app/demo/BeatLabel.tsx, src/app/demo/PitchCard.tsx, src/app/demo/pitch.ts, src/app/demo/useDemoTimeline.ts, src/app/chrome/ProcessOverlay.tsx, src/app/surfaces/LegacyBox.tsx, src/app/surfaces/SellSurface.tsx, src/app/surfaces/MakerSurface.tsx, src/app/surfaces/views.ts, src/core/featureTypes.ts, src/core/validate.ts | T1 | opus (integrator) |
-| T4 | The modes: plain `/demo` ending on the end card, presenter mode, `?start=<beatId>` with `catch` as `d08-catch`, video mode with its cold open at 153.999, and the end card, with its strings in both languages | src/app/demo/presenter.ts, src/app/demo/startAt.ts, src/app/demo/startAtCatch.ts, src/app/demo/videoMode.ts, src/app/demo/ColdOpen.tsx, src/app/demo/EndCard.tsx, src/app/controls/DemoControls.tsx, src/app/controls/playback.ts, src/app/strings.ts | T3 | opus (integrator) |
+| T4 | The modes: plain `/demo` ending on the end card, presenter mode, `?start=<beatId>` with `catch` as `d08-catch`, video mode with its cold open at 153.999 and its 10-second pitch cards, and the end card, with its strings in both languages | src/app/demo/presenter.ts, src/app/demo/startAt.ts, src/app/demo/startAtCatch.ts, src/app/demo/videoMode.ts, src/app/demo/ColdOpen.tsx, src/app/demo/EndCard.tsx, src/app/controls/DemoControls.tsx, src/app/controls/playback.ts, src/app/strings.ts | T3 | opus (integrator) |
 | T5 | Remove `/shop/legacy` from `routes.tsx` and the `legacy` page from `ShopSurface` (D1-42), but only when F-search fills `shop.home.main` and M-buyer fills `shop.piece.main` and `shop.receipt.main`. Otherwise keep the page, and say why in the report. Before removing it, grep `tests/features/` for `/shop/legacy`. M-buyer's phone-flow specs may still visit it, since M-buyer's last task deletes them after G4v2 (contracts section 11, B1-25): list them in the report. Any other spec on it keeps the page and goes under needs | src/app/routes.tsx, src/app/surfaces/ShopSurface.tsx | T3 | sonnet (integrator) |
 | T6 | The tests (below) | tests/demo/beats.ts, tests/demo/harness.ts, tests/demo/demo.spec.ts, tests/demo/modes.spec.ts, tests/offline/offline.spec.ts, tests/smoke/routes.spec.ts, tests/smoke/shell.spec.ts | T4, T5 | opus (integrator) |
 | T7 | The contracts: `demo-script.md` final, with T2's tables, the checks at each screenshot, the narration draft below, the modes, the pitch cards, the end card and the screenshot rules, and v1's sheet removed. `ui-contract.md`'s camera states final, with the Phase A mapping, the legacy boxes and the legacy page removed. Every change listed for `decisions.md` in the report | docs/common/demo-script.md, docs/common/ui-contract.md, docs/common/events.md | T6 | sonnet (integrator) |
@@ -189,14 +192,15 @@ T1's report gives the orchestrator the `decisions.md` entry: these checks move t
 
   | Key | Its keyed tour events |
   |---|---|
-  | `b11-embed` | `model.trained`, `proof.search_scored`, `search.mapped` |
+  | `b11-embed` | `search.mapped`, `model.trained`, `proof.search_scored` |
   | `b12-search` | `search.answered`, `surprise.drawn` |
-  | `b13-live` | `data.synced` |
-  | `b14-swarm` | `swarm.step`, `support.answered`, `listing.drafted`, `listing.indexed` |
+  | `b13-live` | none |
+  | `b14-swarm` | `swarm.step`, `support.answered`, `listing.drafted`, `listing.indexed`, `question.forwarded`, `question.answered` |
   | `b15-watch` | `watch.scanned`, `counterfeit.flagged`, `followup.drafted` |
-  | `b16-bank-books` | each tour event contracts section 5 (B16) keys to it |
+  | `b16-bank-books` | none |
 
-- `REQUIRED_KEYS` (`b14-swarm` anthropic, `b15-watch` apify) and `REQUIRED_SERVICES` (`model` for `b11-embed`, `b12-search` and `b15-watch`, `spacetime` for `b13-live`) stay as I2-shell T6 left them (B2-11, D1-23, D2-7), and `REQUIRED_KEYS` adds `b16-bank-books` nessie. T6 checks each row against its upgrade plan's Adapter section as it stands then, so a changed health rule (B15 without the model, C-6) updates its row.
+  `b13-live` and `b16-bank-books` get no entry. B16 keys no tour event (`B16-bank-books.md`, contracts section 3): its live twins of `flag.raised` and `money.moved` come through `start(emit)` after the scripted event is in the store, so the tour never waits on it. B13-live's adapter answers `produce()` with `[]` because no timeline event is keyed to it (`B13-live.md`). T6 checks that against the tour's `d15-listing` `data.synced`: if that event is still keyed `b13-live`, it would come back empty in live mode, so T6 gives it a `tourScripted` entry like the others and reports the change under needs.
+- `REQUIRED_KEYS`: `b14-swarm` anthropic, `b15-watch` apify and `b16-bank-books` nessie. `REQUIRED_SERVICES`: `model` for `b11-embed` and `b12-search`, and `spacetime` for `b13-live`. `b15-watch` needs no service, since it doesn't wait on the model (B15-watch, C-6). I2-shell T6 wrote the first two keys and the three services (B2-11, D1-23, D2-7), and T6 adds `b16-bank-books`. T6 checks each row against its upgrade plan's Adapter section as it stands then.
 - `cutFeatures()` reads `M-` rows too and maps each to its slugs (B1-24): M-buyer to `buyer`, M-approvals to `approvals`, M-maker-statement to `maker-statement`, and M-desktop to its nine folders. A cut migration's v1 version may still fill its slot, so its beats accept the slot filled or showing its placeholder, and the report lists the beat as cut.
 - `modes.spec.ts`: presenter mode, `?start=<beatId>` and `?start=catch`, the end card at the end of plain `/demo`, video mode and reset, at 8x where the player clock allows. Every time comes from the timeline's `beat.started` events or `seekToEvent()`, never typed (D1-34). Reset leaves the clock at 0, the store empty and the `pitch` camera up.
 - `offline.spec.ts`: the tour with every request beyond localhost blocked. It also fails on any `page.on("websocket")` whose URL `isLocal()` rejects, since `context.route` doesn't see WebSockets (D2-34).
@@ -276,6 +280,8 @@ The `d14-watch` line is A2's L25. The `d01-vibe` line is a pitch claim fix-plan 
 - Given `/demo?video=1`, then:
   - the cold open shows `d08-catch` and v1's line for 5 seconds,
   - the tour plays `p01-what` to `d12-receipt` with no controls or beat label,
+  - each pitch card shows for 10 seconds on the player clock, then the player seeks to the next beat's first `beat.started`,
+  - the buyer and seller minutes play at 1x, and the whole video runs under 3 minutes, about 2 minutes 40 seconds,
   - `demo-end-card` shows for 5 seconds after `d12-receipt`, with the seats line, the proof, the live and simulated sources with L29, L28 beside the search scores when they exist, L30 and the repo URL.
 - Given live mode in a G5, then each v2 source's tour events play scripted through allowed fallbacks, with no throw and no timeout, and each v1 source meets v1's rule.
 - Given `npm run check:data`, then `tests/data/demo-timeline.test.ts` passes, along with `timelines.test.ts` and `figures.test.ts` on the tour and every other v1 and G2b data test.
@@ -287,7 +293,7 @@ The `d14-watch` line is A2's L25. The `d01-vibe` line is a pitch claim fix-plan 
 - New features, and event types or test IDs beyond what contracts sections 3, 4 and 8 give. A gap goes under needs.
 - Changes inside `src/features/` and `tests/features/`. A beat that looks wrong because of a feature goes back to its lead.
 - Live runs inside the tour (fix-plan 1.9). Live mode answers people's own requests only.
-- `d17-ask-maker` (C-13), unless F-support and F-seller-hub both ship the ask-the-maker run. Then T2 adds its row to chapter 2 after `d16-store`, T1 its events, and `durationMs` grows by its length. Otherwise it stays a question Gordon clicks during Q&A, and nothing here changes.
+- `d17-ask-maker` (C-13), unless F-support and F-seller-hub both ship the ask-the-maker run. Then T2 adds its row to chapter 2 after `d16-store`, T1 its events (`run_07`, then `ans_01`'s `question.answered`, then `run_09`), and `durationMs` grows by its length. Otherwise it stays a question Gordon clicks during Q&A, and nothing here changes.
 - Gordon's own words for the cards and the narration, recording the video, and hosting it.
 
 ## Contract names this plan uses

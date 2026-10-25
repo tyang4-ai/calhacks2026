@@ -17,9 +17,9 @@ Every one of the 54 pieces, `pc_01` to `pc_54`, has an original illustration at 
 | Community | Pieces | What gets drawn |
 |---|---|---|
 | `com_dine`, the Diné Weaving and Silver Co-op | `pc_01` to `pc_12` | Wool weavings, and silver and turquoise jewelry |
-| `com_ojibwe` | `pc_13` to `pc_26` | Floral beadwork: earrings, pouches, barrettes |
-| `com_acoma` | `pc_27` to `pc_40` | Coil-built, hand-painted pottery |
-| `com_seminole` | `pc_41` to `pc_54` | Patchwork skirts, jackets and bags |
+| `com_ojibwe` | `pc_13` to `pc_26` | Floral beadwork: earrings, pouches and necklaces |
+| `com_acoma` | `pc_27` to `pc_40` | Coil-built, hand-painted pottery: jars, bowls and seed pots |
+| `com_seminole` | `pc_41` to `pc_54` | Patchwork skirts and jackets |
 
 Each drawing is:
 - in one consistent flat style,
@@ -55,14 +55,14 @@ The pages look finished before any Figma drop. A drop with better illustrations 
   - one object silhouette, centered, with soft flat shading,
   - a surface and a pattern from the tables below,
   - a thin stitch line along the edges, the brand's one recurring touch.
-- **Silhouette kinds,** picked by words in `facets.object.en` through a table in `scripts/lib/art/kinds.mjs`:
-  - Diné weaving: rug, small wall weaving, runner, sash belt,
-  - Diné silver and turquoise: cuff bracelet, ring, earrings, pendant necklace, bead necklace, belt buckle,
-  - Ojibwe beadwork: earrings, pouch, bag, barrette, medallion,
-  - Acoma pottery: jar, bowl, seed pot, vase,
-  - Seminole patchwork: skirt, jacket, vest, bag.
+- **Silhouette kinds,** picked by words in `facets.object.en` through a table in `scripts/lib/art/kinds.mjs`. These are the object words S3's pieces use, each a sourced form of its craft (S3-catalog):
+  - Diné weaving: wall weaving, rug,
+  - Diné silver and turquoise: earrings, ring, pendant necklace, cuff bracelet,
+  - Ojibwe beadwork: earrings, pouch, pendant necklace, bead necklace,
+  - Acoma pottery: jar, bowl, seed pot,
+  - Seminole patchwork: skirt, jacket.
 
-  An unmatched object falls back to a plain flat textile square. The run prints each fallback, so the table can grow.
+  No kind is drawn for a word outside this list. The unsourced ones (barrette, medallion, vase, vest, runner, belt buckle) and "bag" are gone. A sash belt is a sourced Diné form, but no piece uses it, so it has no kind. An unmatched object falls back to a plain flat textile square. The run prints each fallback, so a missing word shows up.
 - **Surfaces,** picked from `facets.techniques` and `facets.materials` through `scripts/lib/art/surfaces.mjs`, falling back by `communityId`:
   - woven: flat wool with plain bands, stripes, steps and diamonds,
   - silver: flat metal shading with one plain stone, an oval or a circle, in turquoise or coral,

@@ -22,25 +22,28 @@ Every v1 Sell view (money map, the month, the judge's scenario, the close, impac
 - `docs/common/glossary.md`: every label these views already use, plus community fund
 
 ## Interfaces
-- **Reads and emits** exactly what each feature does in v1. Two additions, both in money-map: it reads the new `money.moved` kinds, and it reads the project from `getById()` (title) for a `community_fund` party.
+- **Reads and emits** exactly what each feature does in v1. Three additions:
+  - money-map reads the new `money.moved` kinds,
+  - money-map reads the project from `getById()` (title) for a `community_fund` party,
+  - money-map and reconcile show "Checked against Nessie" wherever a `money.moved` or a `flag.raised` carries `nessieId` (B16, and B04 for its own moves). No other figure changes.
 - **Exports:** all nine `index.ts` files stay as they are. The slots don't change.
 - **The Phase A stage:** until I2-tour removes the legacy boxes, I2-shell shows the five v1 Sell views (`map`, `month`, `close`, `proof`, `dashboard`) in a 1192 by 744 box, v1's console view area, on the `/demo` stage only, so the v1 demo keeps playing. Routes never use that box, so this plan builds and tests at the full Sell frame, 1440 by 900.
-- **Source keys on the badges:** unchanged. If contracts section 3 gives B16 its own `SourceKey`, the reconcile and money-map panels add it.
+- **Source keys on the badges:** unchanged, except that the reconcile and money-map panels add `b16-bank-books`, B16's own `SourceKey` (contracts section 3).
 - **Test IDs:** every v1 one is kept. New internal ones in money-map: `money-map-node-community_fund-<projectId>` (a fund's node, from the existing `money-map-node-<key>` pattern) and the existing `money-map-thread-<moveId>` for `mv_0101` onward and for the milestone move.
-- **Labels:** v1's, plus "Community fund" for the new party (contracts section 11's glossary row).
+- **Labels:** v1's, plus "Community fund" for the new party (contracts section 11's glossary row), and "Checked against Nessie" (已与Nessie银行记录核对) for a move or a flag with `nessieId`.
 - **Fallout placeholders:** I2-core's fallout step (B1-1) left placeholder entries for the new party kinds, move kinds and source keys in `money-map/strings.ts` (`partyNames`, `moveKindNames`), `money-map/partyLayout.ts` (`FIXED`) and `proof/strings.ts` (`SOURCE_LABELS`). T0, T2 and T5 replace them with real labels and spots.
 
 ## Tasks
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T0 | UI strings (lead): the community fund node and the two new move kinds' labels in money-map, the v2 source labels in proof, and any desktop string another folder needs, English and Chinese side by side | src/features/money-map/strings.ts, src/features/reconcile/strings.ts, src/features/scenario/strings.ts, src/features/close/strings.ts, src/features/impact/strings.ts, src/features/proof/strings.ts, src/features/dashboard/strings.ts, src/features/ask-cindy/strings.ts, src/features/audit/strings.ts | none | lead |
+| T0 | UI strings (lead): the community fund node and the two new move kinds' labels in money-map, "Checked against Nessie" in money-map and reconcile, the v2 source labels in proof, and any desktop string another folder needs, English and Chinese side by side | src/features/money-map/strings.ts, src/features/reconcile/strings.ts, src/features/scenario/strings.ts, src/features/close/strings.ts, src/features/impact/strings.ts, src/features/proof/strings.ts, src/features/dashboard/strings.ts, src/features/ask-cindy/strings.ts, src/features/audit/strings.ts | none | lead |
 | T1 | Spec helper: re-export `seekToEvent` from `tests/smoke/lib.ts`, open a Sell view or drawer by its v2 route, check a test ID is inside `frame-studio` | tests/features/sell-views-lib.ts | none | sonnet |
 | T2 | Money map at desktop size, the community fund parties and the new move kinds | src/features/money-map/MoneyMap.tsx, src/features/money-map/partyLayout.ts, src/features/money-map/PartyNodes.tsx, src/features/money-map/MoveThreads.tsx, src/features/money-map/threadGroups.ts, src/features/money-map/AccountBalance.tsx, tests/features/money-map-balance.spec.ts, tests/features/money-map-flow.spec.ts, tests/features/money-map-nodes.spec.ts, tests/features/money-map-threads.spec.ts, tests/features/money-map-desktop.spec.ts | T0, T1 | opus |
 | T3 | The month and the scenario at desktop size, with the catch fitting the zoom | src/features/reconcile/CatchPanel.tsx, src/features/reconcile/EvidenceTrio.tsx, src/features/reconcile/HandledStrip.tsx, src/features/reconcile/MatchRow.tsx, src/features/reconcile/MonthTimeline.tsx, src/features/reconcile/ReconcileView.tsx, src/features/reconcile/matchLabels.ts, src/features/reconcile/recordRows.ts, src/features/scenario/DropZone.tsx, src/features/scenario/ScenarioPanel.tsx, src/features/scenario/ScenarioResults.tsx, src/features/scenario/useSample.ts, tests/features/reconcile-catch.spec.ts, tests/features/reconcile-flow.spec.ts, tests/features/reconcile-handled.spec.ts, tests/features/reconcile-matches.spec.ts, tests/features/reconcile-month.spec.ts, tests/features/scenario-drop.spec.ts, tests/features/scenario-lib.ts, tests/features/scenario-live.spec.ts, tests/features/scenario-sample.spec.ts | T0, T1 | opus |
 | T4 | The close and impact at desktop size | src/features/close/ClosePanel.tsx, src/features/close/CloseTotals.tsx, src/features/close/WorkbookCard.tsx, src/features/impact/CountUp.tsx, src/features/impact/EstimateNote.tsx, src/features/impact/ImpactNumbers.tsx, src/features/impact/ImpactPanel.tsx, tests/features/close-download.spec.ts, tests/features/close-panel.spec.ts, tests/features/impact-estimate.spec.ts, tests/features/impact-numbers.spec.ts | T0, T1 | sonnet |
 | T5 | Proof (now two thirds, beside F-search's side panel) and the dashboard at desktop size | src/features/proof/ErrorList.tsx, src/features/proof/ProofPanel.tsx, src/features/proof/Scoreboard.tsx, src/features/proof/SourceList.tsx, src/features/dashboard/Dashboard.tsx, src/features/dashboard/RevenueTile.tsx, src/features/dashboard/StatTile.tsx, tests/features/proof-errors.spec.ts, tests/features/proof-score.spec.ts, tests/features/proof-sources.spec.ts, tests/features/dashboard-tiles.spec.ts | T0, T1 | sonnet |
 | T6 | The Ask Cindy and audit drawers at the kit Drawer width | src/features/ask-cindy/AnswerCard.tsx, src/features/ask-cindy/AnswerChart.tsx, src/features/ask-cindy/AskDrawer.tsx, src/features/ask-cindy/AskInput.tsx, src/features/audit/AuditDrawer.tsx, src/features/audit/StartList.tsx, src/features/audit/TrailView.tsx, tests/features/ask-cindy-answer.spec.ts, tests/features/ask-cindy-ask.spec.ts, tests/features/audit-drawer.spec.ts, tests/features/audit-trail.spec.ts | T0, T1 | sonnet |
-| T7 | The sweep (lead): run all nine folders' specs and smoke together, fix seams between views, report | none (the nine `index.ts` files are unchanged) | T2 to T6 | lead |
+| T7 | The sweep (lead): B16's two live feature specs, then run all nine folders' specs and smoke together, fix seams between views, report | tests/features/money-map-live-bank.spec.ts, tests/features/reconcile-live-bank.spec.ts (the nine `index.ts` files are unchanged) | T2 to T6 | lead |
 
 **How the tasks fit:**
 - The lead writes T0 first.
@@ -61,12 +64,14 @@ Every v1 Sell view (money map, the month, the judge's scenario, the close, impac
   - `project_fund` moves (buyer to Cindia, then Cindia to the fund) with the kit `Thread` in the `in` tone,
   - a `milestone` move as one move, Cindia to the maker, drawn when it arrives after the owner grants the release, in the `in` tone (B1-42, D1-37). No buyer-to-Cindia thread and no pending thread for a milestone. Its ID is whatever contracts section 11 gives the grant's answer.
 - `PartyNodes` labels each fund with "Community fund" and the project's title.
+- A thread whose `money.moved` carries `nessieId` shows "Checked against Nessie" beside its amount, as words, so color never carries it.
 - Nothing about the six v1 moves or the balance changes.
 - `money-map-desktop.spec.ts` checks `d06-money`'s IDs, plus `money-map-thread-mv_0101` and `money-map-thread-mv_0102` when the timeline has them, inside the frame.
 
 **T3.** The month view gives reconcile two thirds and the scenario a third, as v1, on the wider frame.
 - `MonthTimeline` and `HandledStrip` stretch to the width without clipping the bundled, refund-netted and carried-over rows during the month beat. Late in `d07-month` the tour scales the Sell frame to 0.66 to show the reconcile process view beside it (C-12), so the rows must stay inside the frame at that scale too.
 - `CatchPanel` keeps `reconcile-flag`, the three evidence cards and `reconcile-explanation` in one compact box, at most 1060 by 660 px of frame. The `sell-catch` camera zooms to 1.35 on that box, so the whole of it still fits the 1440 by 900 stage.
+- When the flag's `flag.raised` carries `nessieId` (B16's live twin), `EvidenceTrio`'s bank card shows "Checked against Nessie" under its figures. The figures stay the payload's.
 - The scenario's drop zone and results fit their third.
 - `scenario-lib.ts` keeps its sample helpers, now on `/sell/month`.
 
@@ -100,6 +105,8 @@ Every spec opens `/sell/<view>` (or the drawer's query), moves the timeline with
 7. **Given** `/sell/close?drawer=ask`, **when** the owner asks the first canned question, **then** `ask-cindy-answer` and `ask-cindy-chart` fit inside the drawer with no horizontal scroll. **Given** `/sell/close?drawer=audit&ref=ord_001`, **then** the trail fits the drawer.
 8. **Given** scripted mode, **then** every one of these panels shows `simulated-badge`, as in v1.
 9. **Given** the Phase A demo and then the tour, **then** every v1 spec of the nine features passes on the `/sell` routes with event-anchored seeks and the re-skinned names from R0.
+10. **Given** live mode with `b16-bank-books` live, **when** a person grants `apr_05`, and when `/demo?start=d05-pay` plays, **then** each brings a `money.moved` twin with a `nessieId`, every event valid, and that move's thread shows "Checked against Nessie". This is `money-map-live-bank.spec.ts`. **Given** `/demo?start=d07-month` in live mode, **then** the flag's twin arrives with a `nessieId` and v1's figures, and the bank evidence card shows "Checked against Nessie". This is `reconcile-live-bank.spec.ts`. Both are B16's live feature specs, run as `npm run gate -- G5 b16-bank-books money-map-live-bank reconcile-live-bank`. Both skip with a named reason when `/api/health` doesn't list `b16` or `keys.nessie` is false, so G3 passes before B16 lands.
+11. **Given** a move or a flag without `nessieId`, **then** no "Checked against Nessie" shows on it.
 
 ## Out of scope
 - New views, new events, or any change to the figures. These views only move to the new frame.

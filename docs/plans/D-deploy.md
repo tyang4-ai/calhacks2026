@@ -47,8 +47,9 @@ Three things the build session can't do by itself, made ready so Gordon finishes
   Add any other route family `src/app/routes.tsx` serves. Never a rule for `/assets/`, `/images/`, `/market/`, `/robots.txt`, `/favicon.svg` or `/public-build.json`. `dist/` holds no top-level `404.html`, which would turn off Cloudflare Pages' own fallback to the root page for paths the file doesn't list.
 - **`scripts/make-market.mjs`** reads `artifacts/mock/mock.json` and writes `public/market/`:
   - `index.html`, which lists every listing with a plain link,
-  - one page per entry of `counterfeitCandidates` whose `url` is a path under `/market/` (`docs/v2/contracts.md` section 2), written at that path under `public/` (a path ending in `/` gets an `index.html`). Candidates on `example.com` or `example.org` get no page. Each page holds the title in its `<h1>`, the snippet as the first paragraph, the claim, an invented seller line, and a price if the data has one. Nothing comes from anywhere but the mock data.
-  - Every market page shows L1, then the line "A sandbox market made for testing Cindia's copy watch. These listings are fictional.", and carries `<meta name="robots" content="noindex">`. No script tags, no images, no fonts, no stylesheet links and no URL to another host. Inline CSS only, plain and readable.
+  - one page per entry of `counterfeitCandidates` whose `url` is a path under `/market/`, written at the candidate's own `url`: `/market/listing-01.html` to `/market/listing-04.html` in `cftId` order (S3-catalog, `docs/v2/contracts.md` section 2), so `public/market/listing-01.html` onward, never `public/market/<cftId>.html`. Candidates on `example.com` or `example.org` get no page. Nothing comes from anywhere but the mock data.
+  - Each listing page puts the listing inside `<main>`: the title in its `<h1>`, the snippet as the first paragraph, then the claim, an invented seller line, and a price if the data has one. B15's crawler reads the `h1`, the first paragraph and the text of `<main>` (B15-watch).
+  - Every market page carries `<meta name="robots" content="noindex">` and shows L1, then the line "A sandbox market made for testing Cindia's copy watch. These listings are fictional.", in a header above `<main>`, so the snippet stays the first paragraph inside it. No script tags, no images, no fonts, no stylesheet links and no URL to another host. Inline CSS only, plain and readable.
   - The claim-only listing names no maker and no community, exactly as its data reads.
   - The pages are committed, so the dev server and every build serve them too. Rerun the script whenever `src/mock/watch.ts` changes.
 - **`scripts/check-public.mjs`** checks a built `dist/` without a browser and prints one line per check:
@@ -89,7 +90,7 @@ T1 and T3 can run side by side. The integrator never starts a server and never r
 
 ## Acceptance
 
-- Given `artifacts/mock/mock.json`, when `node scripts/make-market.mjs` runs, then `public/market/` holds `index.html` and one page for each `counterfeitCandidates` entry whose `url` is under `/market/`, at that path, and `node --test scripts/make-market.test.mjs` exits 0. The test proves that each page shows L1 and the sandbox line, carries `noindex`, holds no script, image, font or stylesheet tag and no URL to another host, and that the claim-only listing names no maker.
+- Given `artifacts/mock/mock.json`, when `node scripts/make-market.mjs` runs, then `public/market/` holds `index.html` and one page for each `counterfeitCandidates` entry whose `url` is under `/market/`, at that path (`listing-01.html` to `listing-04.html`), and `node --test scripts/make-market.test.mjs` exits 0. The test proves that each page shows L1 and the sandbox line, carries `noindex`, holds its title in an `h1` and its snippet as the first paragraph inside `<main>`, holds no script, image, font or stylesheet tag and no URL to another host, and that the claim-only listing names no maker.
 - Given a clean checkout, when `npm run build:public` runs, then it exits 0, `node scripts/check-public.mjs` passes every check above, and `node --test scripts/check-public.test.mjs` exits 0.
 - Given the public build in `dist/`, when `node scripts/secrets-scan.mjs` runs, then it exits 0.
 - Given the cloud VM, when `node scripts/laptop-setup.mjs --dry-run` runs, then it exits 0, prints steps 1 to 9 in order with their commands, and runs none of them. The B11 and B13 commands it prints match their plans' "Orchestrator steps" and `server/b13_spacetime/README.md`.
@@ -107,7 +108,7 @@ From `docs/tech/cloudflare-pages/direct-upload.mdx`. Direct Upload can't switch 
 3. Enter a project name, drag the `dist` folder in, and select **Deploy site**. The site is at `https://<project name>.pages.dev`.
 4. Check the live site:
    - `/demo` plays, and its controls have no Live switch,
-   - `/shop/piece/pc_01` shows L6 ("Placeholder piece. It can't be bought, even in the demo.") where Pay was,
+   - `/shop/piece/pc_01` shows L6 ("This is the public demo. Nothing here can be bought.") where Pay was. Check it in the browser, because `check-public.mjs` reads the files in `dist/` and can't see the rendered page. In the browser console, `document.querySelector('[data-testid=buyer-pay-blocked]')` finds the element and `document.querySelector('[data-testid=buyer-pay-button]')` returns `null`. If the Pay button is there, don't share the site: delete the deployment and tell the build session,
    - `/market/` lists the sandbox listings,
    - `/robots.txt` disallows everything, and the page source of `/shop` holds the `noindex` tag.
 5. Send the site's URL in the build session's chat. It isn't a secret. The orchestrator writes it in `status.md` and restarts the API with it. Also add `PUBLIC_SITE_URL` with that URL to the cloud environment's variables, for later VM rebuilds, and to the laptop's `.env`.
@@ -131,5 +132,5 @@ From `docs/tech/cloudflare-pages/direct-upload.mdx`. Direct Upload can't switch 
 
 - Deploying from the session. The build session never uploads, logs in to Cloudflare or touches DNS. Gordon does.
 - A hosted live API. It stays in "Backend if time" (`docs/v2/fix-plan.md` section 1.5).
-- `robots.txt`, the `noindex` tag, L1, the missing Live switch and L6 in place of Pay on the public build. They come from I2-shell and M-buyer, and their own tests cover them. This plan only checks them, and writes no second `robots.txt`. The market pages carry their own `noindex` meta tag.
+- `robots.txt`, the `noindex` tag, L1, the missing Live switch and L6 in place of Pay on the public build. They come from I2-shell and M-buyer, and their own tests cover them. This plan only checks them (L6 by Gordon's browser check, since `check-public.mjs` can't render a page), and writes no second `robots.txt`. The market pages carry their own `noindex` meta tag.
 - Anything in `server/`. The laptop script calls `fetch_model.py` and the B13 commands as their plans define them.

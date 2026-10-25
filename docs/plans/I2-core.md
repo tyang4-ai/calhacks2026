@@ -58,7 +58,7 @@ type ScriptedRun = {
   side: "buyer" | "seller",
   threadId: string,                    // thr_01 onward, the listingId, the storefrontId, or thr_00 for a fallback
   trigger:
-    | { kind: "support", matches: string[], pieceId?: string }   // matches: normalized en and zh texts
+    | { kind: "support", matches: string[], pieceId?: string, makerId?: string }   // matches: normalized en and zh texts
     | { kind: "listing", listingId: string, notes: string }      // matched on the normalized notes
     | { kind: "storefront", storefrontId: string }
     | { kind: "question", questionId: string },                  // the "ask the maker" relay
@@ -76,6 +76,7 @@ type Policy = PolicyTopic[]
 
 - `ScriptedRun.final` is a list (B1-8, D1-12). The listing run ends with `listing.drafted`, `listing.indexed` and `approval.requested` `apr_04`. The watch scan carries `followup.drafted` `fup_02` before `approval.requested` `apr_03`.
 - `trigger.pieceId` names the piece a buyer run talks about. The responder plays that run only when the question's `contextIds` include it (A2-10).
+- `trigger.makerId` works the same way for a maker: the run plays only when the question's `contextIds` include that maker. So `run_04` and `run_10`, which name `mkr_01`, answer only on Grace N.'s pages, and the seller drawer anywhere else gets the fallback (S3-catalog).
 - `DemoSearch.query` has no `queryId`. The tour's timeline adds `qry_01` (D1-49).
 - `Policy` is the list of topics section 11 gives, never three `Text` fields (B1-9, D1-11). `pol_01` holds `{ transitDaysMin: 6, transitDaysMax: 10 }`.
 
@@ -83,13 +84,18 @@ type Policy = PolicyTopic[]
 - every new event type and payload in contracts sections 3 and 11, named here where this plan relies on them:
   - `question.forwarded` `{ questionId, threadId, makerId, pieceId, text, lang }` and `question.answered` `{ questionId, answerId, makerId, text, lang }`, the "ask the maker" loop (C-13),
   - two status events, because features never fetch: `data.synced` keyed `b13-live`, `{ tables: { table, rows, newest: { id, label }[] }[], screens, processes: { processId, status }[] }`, and `index.synced` keyed `b12-search`, `{ indexed, drafts, elastic, agentBuilder }`,
-  - `watch.scanned` gains `results: { title, url, snippet, similarity, verdict }[]`, with `verdict` one of `"possible_copy"`, `"claim_only"` and `"neither"`, so the watch lists every checked result and not only the hits,
+  - `watch.scanned` gains `results: { title, url, snippet, similarity: number | null, verdict }[]`, with `similarity` null when no model scored the result and `verdict` one of `"possible_copy"`, `"claim_only"` and `"neither"`, so the watch lists every checked result and not only the hits,
   - `storefront.requested` `{ storefrontId }` (D1-6),
+  - `storefront.published` `{ storefrontId, slug, blocks }`, with `blocks` as on `Storefront`, the owner's working copy at the moment she publishes. Its type and schema require all three, so the public page shows what she published (B1-43, F-storefront),
   - `card.tokenized` gains `pieceId` (B1-34),
+  - `split.shown` gains `compare?: { channelId: "ch_gallery", commissionBps, makerShareCents }`, what the maker would get through the gallery (figure 16),
+  - `search.answered` results gain `closeness?` (0 to 1), and the payload gains `closeMatches?`, `keywords?`, `filters?` and `keywordsBy?: "finder" | "rules"`,
+  - `listing.indexed` carries `index: "cindia-drafts" | "cindia-pieces"`, required, plus `point?: { x, y }` and `approx?`,
+  - `flag.raised` gains `nessieId?: string`, set only by B16,
   - `approval.requested` gains `approval?: InlineApproval`, where `InlineApproval` is `{ kind, subjectIds, amountCents?, overLimit, proposedBy: "cindy", summary: Text, decisionDate }`. `decisionDate` is there because the v1 `Approval` record has one (B1-15),
   - `search.mapped` gains `approx?: boolean`,
   - `beat.started` gains `process?: ProcessId` and `drawer?: "support" | "ask" | "audit"`. I2-core owns both fields and `demo.drawer`. I2-tour T2 only checks them (B1-38),
-- any other type section 3 adds gets its type, schema and reducer here too,
+- any other type or field section 3 adds gets its type, schema and reducer here too. The schemas take section 3's final fields, the optional ones above included, and T4's validation checks each one,
 - `SourceKey` with `b11-embed` to `b15-watch` and every other key section 3 lists, and `SOURCE_KEYS` with all of them,
 - `ProcessId` with `data` (11 processes) and `PROCESS_IDS`, in the order of section 4's process table,
 - `MoneyMoveKind` with `project_fund` and `milestone`, and `Party.kind` with `community_fund`,
@@ -120,10 +126,10 @@ Every record is keyed by its entity ID, and every entry also keeps `at`, the pla
 |---|---|
 | `search` | `queries`, `answers`, `maps` (each by `queryId`), `latestQueryId` |
 | `surprise` | `asks`, `draws` (by `surpriseId`), `latestSurpriseId` |
-| `support` | `threads` by `threadId`: `{ side, lang, contextIds, messages }`. A message is `{ kind: "asked" \| "answered" \| "escalated", eventId, at, ... }`, with the fields of its event. Plus `threadIds`, `latestThreadId`, and `questions` by `questionId`: `{ forwarded, answered }`, each its event's payload with `at`, or `null`. The maker page and the buyer's support thread both read `questions` |
+| `support` | `threads` by `threadId`: `{ side, lang, contextIds, messages }`. A message is `{ kind: "asked" \| "answered" \| "escalated", eventId, at, ... }`, with the fields of its event. Plus `threadIds`, `latestThreadId`, and `questions` by `questionId`: `{ forwarded, answered }`, each its event's payload with `eventId` (its event's `id`, as thread messages keep) and `at`, or `null`. The maker page and the buyer's support thread both read `questions` |
 | `swarm` | `runs` by `runId`: `{ threadId, stepIds, done, firstAt, lastAt }`. `steps` by `stepId`. `runIds`, `latestRunId` |
 | `listings` | `requests`, `drafts`, `indexed` (by `listingId`), `latestListingId` |
-| `storefront` | `requests`, `drafts` (the blocks) and `published` (the slug), each by `storefrontId` |
+| `storefront` | `requests`, `drafts` (the blocks) and `published`, each by `storefrontId`. A `published` entry is `{ slug, blocks, at }` from the newest `storefront.published` for that storefront, so the public page shows the blocks the owner published (B1-43) |
 | `projects` | `contributions` by `contributionId`, and `addedCents` by `projectId` (raised in this run, added to the entity's `raisedCents` on screen). `addedCents` is always the sum of that project's `contributions`, never a running increment, so a repeated `project.funded` counts once (B1-44) |
 | `wip` | `milestones` by `milestoneId`: `{ wipId, status: "reached" \| "paid", date, amountCents? }` |
 | `model` | `trained` and `scored`, each the payload or `null` |
@@ -135,6 +141,7 @@ Every record is keyed by its entity ID, and every entry also keeps `at`, the pla
 | `approvals` | each `ApprovalState` gains `approval?`, the inline object from `approval.requested`, stored as it arrives (D1-16). M-approvals, F-watch and F-seller-hub read it when `getById()` finds nothing |
 
 - Support messages are keyed by the event's own `id`, so a seek that replays the timeline never doubles a message.
+- Each `forwarded` and `answered` entry in `support.questions` keeps its event's `id` as `eventId`, as thread messages do. A paused player gives every answer the same `at`, so F-support orders the "ask the maker" loop by each entry's place in `log`, found through `eventId`, never by `at`.
 - A run's `done` turns true on its run's `support.answered`, `support.escalated`, `listing.drafted` or `storefront.drafted`. The run is found by `runId` where the payload has one, otherwise by thread: listing and storefront runs use the `listingId` or `storefrontId` as `threadId`.
 - Replaying the whole timeline twice gives the same `log`, the same counts and the same records.
 
@@ -160,6 +167,7 @@ Every record is keyed by its entity ID, and every entry also keeps `at`, the pla
   - each step 300 ms after the one before, the first at offset 0,
   - each `final` event 300 ms after the one before it, the first 300 ms after the last step,
   - `threadId` from the request, and every ID the person's run needs re-keyed through `answerId()`. The re-keying rules are in "The responders in detail".
+  - for a `question` run answering a person's own `question.answered`, her `text` takes the place of `ans_01`'s text wherever the run's reply quotes it, so `run_09` relays her words and never the scripted answer.
 
 ### The mock exports the responders read
 
@@ -272,7 +280,7 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
 T1's report ends with a coverage list: every heading, bullet group and table of contracts sections 1 to 12, each with the `docs/common/` file it went to. A part with no home is a `needs:` line, never a silent drop (D1-9).
 
 **The ID scheme** that `data-model.md` gains, as section 11 states it (D1-47):
-- **The tour and the scripted data:** `qry_01`, `srp_01`, `thr_00` (the fallback runs' placeholder thread), `thr_01` onward, `wsc_01`, `run_01` onward (one per scripted run, section 11's list), `stp_0001` onward, `chk_01` onward, `ctb_01` onward, `qst_01` onward (questions forwarded to a maker). `lst_` and `run_` are also record prefixes in `src/mock/`.
+- **The tour and the scripted data:** `qry_01`, `srp_01`, `thr_00` (the fallback runs' placeholder thread), `thr_01` onward, `wsc_01`, `run_01` onward (one per scripted run, section 11's list), `stp_0001` onward, `chk_01` onward, `ctb_01` onward, `qst_01` onward (questions forwarded to a maker), `ans_01` onward (a maker's scripted answers). `lst_` and `run_` are also record prefixes in `src/mock/`.
 - **A person's requests** (made by features, counting what's in the store): `qry_user_<n>`, `srp_user_<n>`, `thr_user_<n>`, `wsc_user_<n>`, `lst_user_<n>`, `ctb_user_<n>`, `ord_user_<n>`, and `ans_user_<n>` for a maker's answer on her page.
 - **Scripted answers to a person** (from `answerId()`): `run_user_<n>`, `stp_user_<n>`, `chk_user_<n>`, `pc_user_<n>`, `cft_user_<n>`, `fup_user_<n>`, `apr_user_<n>`, `mv_user_<n>`, `qst_user_<n>`, plus v1's `evt_reply_<n>` and `act_reply_<n>`.
 - **Live answers to a person:** the same prefixes with the page tag, `<prefix>_user_<tag>_<n>` (fix-plan 1.9).
@@ -337,7 +345,7 @@ SCOPE: src/mock/catalog.ts
 - `candidates` lists every candidate with `weight` as its raw weight divided by the total, so the weights sum to 1 (D1-35).
 
 **`support.asked`** (T5):
-- The first run in `swarmRuns` whose trigger is `support`, on the same side, with a `matches` entry equal to the normalized text, and whose `pieceId`, when set, is among the request's `contextIds`.
+- The first run in `swarmRuns` whose trigger is `support`, on the same side, with a `matches` entry equal to the normalized text, and whose `pieceId` and `makerId`, when set, are among the request's `contextIds`.
 - Otherwise `fallbackSupportRun`, whose reply is A2's L16 in the platform's scope C words, written by S3. A buyer who asks the tour's question on another piece's page gets that fallback and no `pc_01` reference (A2-10).
 - Through `planRun`, with the request's thread and re-keyed run, step and check IDs.
 
@@ -374,7 +382,7 @@ The output order is moods, then facet words (object, materials, techniques, moti
 - **A person's `wip.milestone_reached`** (date `2026-10-01`): `agent.acted` (a proposal, `act_reply_<n>`) and `approval.requested` `apr_05` for `wip_01`'s second milestone. Any other milestone gets only the `agent.acted` line.
 - **`approval.granted` on a `milestone_release`** (found through `getById()` or the stored inline approval): `wip.milestone_paid` and a `money.moved` of kind `milestone`, Cindia to the maker, `mv_user_<n>`, dated `2026-10-02`, for that milestone's share. v1's approvals still get nothing.
 - **`storefront.requested`:** the run whose trigger names the request's `storefrontId`, `run_03` for `sto_01`. Any other storefront gets no scripted draft, because the Designer drafts only the seller's own storefront (A2-22).
-- **A person's `question.answered`** (the maker's reply on her page): the run in `swarmRuns` whose `question` trigger names that question, through `planRun`, ending in the Writer's `support.answered` on the question's original thread.
+- **A person's `question.answered`** (the maker's reply on her page): the run in `swarmRuns` whose `question` trigger names that question, through `planRun`, ending in the Writer's `support.answered` on the question's original thread, with her own text in place of `ans_01`'s wherever the reply quotes it.
 
 ## Acceptance
 
@@ -384,7 +392,9 @@ The output order is moods, then facet words (object, materials, techniques, moti
 - Given two `project.funded` events with one `contributionId`, then `addedCents` counts it once.
 - Given two `data.synced` events, then `sync.data` holds the newer. The same holds for `index.synced` and `sync.index`.
 - Given a fake adapter whose `start(emit)` hands over an event with `at: 0`, then the store holds it with the player's time at arrival.
-- Given `question.forwarded` and then `question.answered` for one `questionId`, then `support.questions` holds both under that ID.
+- Given `question.forwarded` and then `question.answered` for one `questionId`, then `support.questions` holds both under that ID, each with its event's `id` as `eventId`.
+- Given two `storefront.published` events for `sto_01` with different `blocks`, then `storefront.published["sto_01"]` holds the newer one's `slug`, `blocks` and `at`. Given one without `blocks`, then `validateEvent()` returns a problem.
+- Given a valid payload with each optional field of section 3 set (`split.shown.compare`, a result's `closeness`, `closeMatches`, `keywordsBy`, `listing.indexed`'s `point` and `approx`, `flag.raised.nessieId`) and a `watch.scanned` result whose `similarity` is `null`, then `validateEvent()` returns no problem. Given a `listing.indexed` without `index`, or a `question.answered` without `answerId`, then it returns a problem.
 - Given a person's `checkout.started` on `pc_13` after the tour's checkout of `pc_01`, then `buyer.cards` holds both pieces' cards and the `pc_01` card is unchanged.
 - Given an invalid payload for each new type and each section 11 field, when `validateEvent()` checks it, then it returns at least one problem. Given a valid one, it returns none.
 - Given a fake adapter for `b14-swarm` that answers in 15 seconds, when its request plays in live mode, then its events are used. Given one for `b01-match` that answers in 9 seconds, then the scripted event plays. Both are tested with fake timers, for the registry and for a person's request through the responder.
@@ -404,6 +414,7 @@ The output order is moods, then facet words (object, materials, techniques, moti
 - Given T5, when a person's `search.queried` with figure 11's text, keywords and filters plays in scripted mode, then 1.2 seconds later `search.answered` carries `demoSearch.answer`'s results with the request's `queryId`. Given the same text with one chip removed or a lower price cap, then the answer comes from `scoreKeywords` with the filters applied.
 - Given T5, when a person asks a support question that matches no scripted run, then the first step arrives 1.2 seconds after the request, the steps arrive 300 ms apart, and the final `support.answered` comes from `fallbackSupportRun`, with a run ID `run_user_1` and step IDs from `stp_user_1`.
 - Given T5, when the tour's d04 question is asked with `contextIds: ["pc_20"]`, then the fallback answers and no reply names `pc_01`.
+- Given T5, when `run_04`'s seller question is asked with `contextIds: ["mkr_01"]`, then `run_04` answers. Given the same question with `contextIds: ["mkr_02"]` or none, then the fallback answers.
 - Given T5, when a support question and a listing request are planned within 1.2 seconds, then their run and step IDs don't overlap.
 - Given T5, when a person's `listing.requested` carries `lst_01`'s notes, then the run is `lst_01`'s, re-keyed to the person's `listingId`, and it ends with an `apr_user_<n>` whose `approval` names that listing.
 - Given T5, when a person's `watch.started` plays after the tour, then the hits are `cft_user_<n>`, the follow-up `fup_user_<n>` and the approval `apr_user_<n>`, and the tour's `cft_01` hit is unchanged.
@@ -411,6 +422,7 @@ The output order is moods, then facet words (object, materials, techniques, moti
 - Given T8, when a person opens `pc_13`, then `split.shown` carries `splits["pc_13"]`.
 - Given T8, when a person's `wip.milestone_reached` names `wip_01`'s second milestone and the owner grants `apr_05`, then `wip.milestone_paid` and a `money.moved` of kind `milestone` with ID `mv_user_1` follow.
 - Given T8, when a person's `storefront.requested` names `sto_01`, then `run_03`'s steps play and `storefront.drafted` follows.
+- Given T8, when a person's `question.answered` for `qst_01` carries her own text, then `run_09`'s `support.answered` quotes that text exactly and not `ans_01`'s.
 - Given `npm run check:scope -- src/core/ src/sources/`, then it exits 0.
 
 ## Out of scope
@@ -430,7 +442,7 @@ The output order is moods, then facet words (object, materials, techniques, moti
 ## Names this plan sets that the contracts should state
 
 `docs/v2/contracts.md` section 11 names some of these without detail. Each is settled here and goes into `docs/common/` through T1:
-- **Types:** the fields of `ScriptedRun` (with `trigger.pieceId`, the `listing` trigger's `notes` and the `question` trigger), `PlannedEvent`, `ModelReport`, `DemoSearch`, `DemoSurprise`, `ScriptedScan`, `PolicyTopic` and `Policy`, and `InlineApproval`.
+- **Types:** the fields of `ScriptedRun` (with `trigger.pieceId` and `trigger.makerId`, the `listing` trigger's `notes` and the `question` trigger), `PlannedEvent`, `ModelReport`, `DemoSearch`, `DemoSurprise`, `ScriptedScan`, `PolicyTopic` and `Policy`, and `InlineApproval`.
 - **Views and cameras:** `SellView` and `SELL_VIEWS`, `TourCameraId` (with `pitch` and `shop-legacy`), `LegacyCameraId`, `LEGACY_CAMERA_IDS`, `TOUR_CAMERA_IDS`, `CAMERA_IDS`, `LEGACY_CAMERA_TO_TOUR` and `toTourCamera()`.
 - **Navigation and slot props:** `registerNavigator(impl)` beside section 11's `nav.ts` exports, and `SlotProps.publicSite?`, which I2-shell asks for.
 - **Sources:** `timeoutFor()`, `pageTag()`, `answerId()`, `liveIdStart()`, `scoreKeywords()`, `drawSurprise()`, `planRun()` and `mulberry32()`, with the rules above.

@@ -94,6 +94,7 @@ Everything in it is fictional demo data from `src/mock/` and the events a sessio
   - `start(emit)`:
     - Makes the screen ID `scr_` plus `pageTag()` from `src/sources/ids.ts`, and the role from the route: `/shop` is `buyer`, `/sell` and `/maker` are `seller`, `/demo` is `tour`.
     - **Poll:** every 500 ms, one request at a time (a tick is skipped while one is in flight), `GET /api/b13/changes` with the last `seq`, aborting at 2 seconds. It emits each returned event that passes `validateEvent()` and is a `swarm.step` or `data.synced` with key `b13-live`, then keeps the new `seq`.
+    - **Steps from another page:** a person's thread and listing IDs carry no page tag (`thr_user_2`, `lst_user_1`), so two pages can share one. When a `swarm.step`'s `runId` carries another page's tag (`run_user_<tag>_<n>` with a tag that isn't this page's `pageTag()`), the adapter inserts that tag after `_user_` in the step's `threadId` before it emits the step, so `thr_user_2` becomes `thr_user_<tag>_2`. Those steps reach the swarm view, which groups by run, and never this page's own threads.
     - **Mirror:** it listens with `onEvent` from `src/core/store`, queues every `order.placed`, `approval.requested`, `approval.granted`, `approval.declined`, `listing.requested`, `listing.drafted` and `listing.indexed`, scripted, live or a person's, and once a second posts the queue to `POST /api/b13/record`, each event ID once per page load. So in live mode the database fills as the tour plays and as people use the platform, and every other screen sees it.
     - Returns a stop function that stops the poll and the mirror and keeps the sent-ID set for the page load.
   - `produce()` returns `[]`, because no timeline event is keyed `b13-live`.
@@ -128,6 +129,7 @@ One backend-builder does T1 to T7 in order. Each task adds its own tests to `tes
 
 - Given the local server and the published module, when B14's recorder calls `add_step` three times, then a screen polling `/api/b13/changes` gets three valid `swarm.step` events with key `b13-live`, in order, each within a second of the write.
 - Given two browsers on the build in live mode, when one asks the support drawer a question, then both see the same steps in the swarm view, and both get a `data.synced` whose `screens` is 2 and whose `steps` and `runs` rows went up.
+- Given that question on thread `thr_user_1` of the first page, and the second page with its own `thr_user_1`, then the second page's adapter emits those steps with `thr_user_<first page's tag>_1`, and the second page's own support thread shows none of them.
 - Given a person's checkout in live mode on one screen, then the other screen's `data.synced` shows one more `orders` row with origin `person`. This works with B14 down.
 - Given an anonymous request to SpacetimeDB's SQL endpoint, then it can't read any table, and an anonymous reducer call is refused.
 - Given SpacetimeDB stopped, when the swarm runs, then every bridge call returns at once without an error, the swarm's answer still arrives from B14's response, and `/api/b13/changes` keeps answering from its last snapshot.

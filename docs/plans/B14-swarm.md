@@ -102,7 +102,7 @@ The tour is always scripted (fix-plan 1.2). B14 answers people's own questions, 
     5. `checker`,
     6. `indexer`.
 
-    It ends in `listing.drafted`, then `listing.indexed` (the draft in `cindia-drafts`, with its `pieceId`, `modelId` and `embedText`), then an `approval.requested` of kind `listing_publish` with the `approval` object. B12 moves the draft into `cindia-pieces` when the owner approves.
+    It ends in `listing.drafted`, then `listing.indexed` (the draft, with `index: "cindia-drafts"`, its `pieceId`, `modelId` and `embedText`), then an `approval.requested` of kind `listing_publish` with the `approval` object. B12 moves the draft into `cindia-pieces` when the owner approves.
   - **Storefront,** with the storefront ID as its `threadId`: `cindy`, then `designer`. It ends in `storefront.drafted`. Publishing stays the owner's own `storefront.published`.
   - **No run ever emits** `approval.granted`, `approval.declined`, `followup.sent`, `payout.sent`, `money.moved` or `storefront.published`.
   - **Speed target:** a person's buyer question answered in under 9 seconds at the median, and every run inside 19.
@@ -119,6 +119,7 @@ The tour is always scripted (fix-plan 1.2). B14 answers people's own questions, 
     - **A person's `support.asked`:** post `/api/b14/support` with that side's records only (above), `runId`, `idTag` and `idStart`, and return the events.
     - **A person's `listing.requested`:** post `/api/b14/listing` with the listing, the maker, the community and the vibe vocabulary from `src/mock`.
     - **A person's `storefront.requested`:** post `/api/b14/storefront` with that storefront's community and pieces.
+    - **A person's `question.answered`** (the maker's reply on her page): `[]` at once, so the scripted relay run plays. The live loop back from the maker is in "Backend if time" (fix-plan 1.5), and there is no `/api/b14/question` route.
     - **The tour's keyed events** (`swarm.step`, `support.answered`, `listing.drafted`, `listing.indexed`, `question.forwarded` and `question.answered` of the scripted runs): `[]` at once, with no network call, so the tour plays scripted and on time in both modes. `ALLOWED_EMPTY_FALLBACKS` lists those types for `b14-swarm` (I2-tour T6).
     - Every fetch aborts at 19.5 seconds, under the registry's 20-second key timeout.
 
@@ -150,7 +151,7 @@ One backend-builder does these in order. Each task adds its own tests to `tests/
 - Given "What does the pattern on this rug mean?", when the swarm runs, then the Steward answers `unknown`, a `question.forwarded` goes to `pc_01`'s maker, and the reply is L14.
 - Given a complaint about a damaged piece, when the swarm runs, then it ends in `support.escalated` and an `approval.requested` of kind `support_action`, and nothing is refunded.
 - Given a buyer request with `contextIds: ["ord_001"]` that asks about `ord_002`, then no `ord_002` data or person's name is in any step or the reply.
-- Given `lst_01`'s notes, when `POST /api/b14/listing` runs, then it returns the steps, a `listing.drafted` with three checks (`price` not ok), a `listing.indexed` for a draft in `cindia-drafts`, and a `listing_publish` approval.
+- Given `lst_01`'s notes, when `POST /api/b14/listing` runs, then it returns the steps, a `listing.drafted` with three checks (`price` not ok), a `listing.indexed` with `index: "cindia-drafts"`, and a `listing_publish` approval.
 - Given any run, when its events are swept, then none is `approval.granted`, `approval.declined`, `followup.sent`, `payout.sent`, `money.moved` or `storefront.published`, and no summary holds model or person text.
 - Given a model ID other than `claude-haiku-5-5` or `claude-sonnet-5-5` anywhere in `server/` or the roster, then `npm run test:server` fails.
 - Given B13 running, when a person's support run happens, then its steps reach `/api/b13/changes` while the run is still going.
