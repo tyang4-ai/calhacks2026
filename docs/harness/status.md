@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:58 PT
+UPDATED: 2026-10-24 22:59 PT
 
 # Status board
 
@@ -102,8 +102,8 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | M-desktop | V2 P0 | running | feature-lead | | T2, T3 first |
 | F-seller-hub | V2 P0 | built, G3 queued (worktree) and verifier | feature-lead | | lead wrote T0-T7 itself; specs mock the HMR socket |
 | F-watch | V2 P1 | running | feature-lead | | |
-| F-storefront | V2 P1 | todo | feature-lead | | |
-| M-maker-statement | V2 P1 | todo | feature-lead | | |
+| F-storefront | V2 P1 | running | feature-lead | | |
+| M-maker-statement | V2 P1 | running | feature-lead | | |
 | D-deploy | V2 | built, verifiers PASS (2 lenses), fix round 1, then the worktree gate | integrator | | then Gordon uploads |
 | I2-tour | V3 | todo | integrator, data-smith | | |
 | I3-redesign | V4 | todo | integrator | | per design drop |
@@ -347,3 +347,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:55 PT · I2-art green (verifier PASS, smoke 123 in the buyer worktree run), tag v2-art; G3 buyer PASS in the worktree (feature 62, smoke 123) plus verifier PASS, tag v2-buyer; M-buyer T7 after G4v2 · artifacts/gates/G3-buyer-wt-2243.md
 - 2026-10-24 22:56 PT · B11 training done in 45.8 min (sha256 dee48137…, fingerprint f7181c7d…): recall@5 / MRR@10 keyword 0.790 / 0.875, base 0.711 / 0.763, Cindia's model 0.782 / 0.892, local hybrid 0.826 / 0.940; /api/health services.model true; next S3 T9 spawn 4 after data round 1 (both touch searchEval.ts and watch.ts), then --eval-only, T9 spawn 5, publish after T8 · artifacts/b11/train-run.out
 - 2026-10-24 22:58 PT · G3 process verifier FAIL on four clipping defects (F1-F4), fix round 1 sent to its lead; F-seller-hub built (30 specs), its verifier spawned and its worktree G3 queued after process (a lock now keeps worktree gates one at a time) · artifacts/gates/G3-process-verifier.md
+- 2026-10-24 22:59 PT · F-storefront and M-maker-statement leads spawned (all eleven V2 leads now spawned; target: features green or cut by about 1:30 AM so I2-tour can start) · status.md
