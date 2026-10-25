@@ -41,7 +41,7 @@ The cut follows the tour's video mode (`/demo?video=1`). If Gordon gives you a v
 | | 8 | `d12-receipt` | The buyer's receipt turns to "Paid to the maker", with Grace N.'s note |
 | End card | 5 | | The seats line, "Caught 4 of 4 planted errors", the search model's scores, L29 and L30 |
 
-The narration draft (one line per beat, for Gordon to rewrite) is under "The narration draft" in `docs/plans/I2-tour.md`.
+Gordon's voiceover script, timed to video mode, is `docs/v2/voiceover.md`. If he gives you a recording with an .srt, his timestamps win.
 
 ## 4. The product, and how to film it
 
