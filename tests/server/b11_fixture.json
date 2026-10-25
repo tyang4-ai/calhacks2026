@@ -1,0 +1,692 @@
+{
+ "_note": "B11 test fixture: three pieces, their communities and index entries, copied from artifacts/mock/mock.json (npm run export:mock). Fictional demo data only.",
+ "_generatedAt": "2026-10-25T03:39:02.936Z",
+ "pieces": [
+  {
+   "id": "pc_01",
+   "title": {
+    "en": "Small grey, red and black wool weaving",
+    "zh": "灰红黑三色小幅羊毛编织"
+   },
+   "makerId": "mkr_01",
+   "kind": "featured",
+   "hours": 26,
+   "materialsCents": 2200,
+   "priceCents": 18000,
+   "story": {
+    "en": "A small wool weaving in grey, red and black, with a stepped diamond at its center. About 30 by 40 cm, woven tight so it hangs flat.",
+    "zh": "一幅灰、红、黑三色的小幅羊毛编织，中央是一个阶梯菱形。约30×40厘米，织得紧密，挂起来平整服帖。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the yarn",
+      "zh": "整理毛线"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 17
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_01.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "wall weaving",
+     "zh": "壁挂编织"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven"
+    ],
+    "motifs": [
+     "diamond",
+     "step"
+    ],
+    "colors": [
+     "grey",
+     "red",
+     "black"
+    ],
+    "sizeCm": {
+     "w": 30,
+     "h": 40
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "warm",
+     "bold"
+    ],
+    "occasions": [
+     "birthday"
+    ],
+    "recipients": [
+     "gift for mom"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small wall weaving in grey, red and black with a stepped diamond at its center.",
+    "zh": "插图：一幅灰、红、黑三色的小幅壁挂编织，中央是一个阶梯菱形。"
+   }
+  },
+  {
+   "id": "pc_10",
+   "title": {
+    "en": "Silver and turquoise drop earrings",
+    "zh": "绿松石银坠耳环"
+   },
+   "makerId": "mkr_03",
+   "kind": "series",
+   "hours": 10,
+   "materialsCents": 900,
+   "priceCents": 8500,
+   "story": {
+    "en": "Each earring is a small turquoise stone in a plain silver setting, hanging from a short wire.",
+    "zh": "每只耳环是一颗嵌在素面银托里的小绿松石，挂在一段短短的耳钩下。"
+   },
+   "heritage": {
+    "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+    "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting and shaping the silver",
+      "zh": "裁切银料并塑形"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Setting the turquoise",
+      "zh": "镶嵌绿松石"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Fitting the ear wires",
+      "zh": "装耳钩"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Filing and polishing",
+      "zh": "锉磨抛光"
+     },
+     "hours": 3
+    }
+   ],
+   "image": "/images/pc_10.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "silver",
+     "turquoise"
+    ],
+    "techniques": [
+     "stone setting"
+    ],
+    "motifs": [],
+    "colors": [
+     "silver",
+     "turquoise"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "bright",
+     "elegant"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of drop earrings, each a small turquoise stone in a plain silver setting.",
+    "zh": "插图：一对坠耳环，每只是一颗嵌在素面银托里的小绿松石。"
+   }
+  },
+  {
+   "id": "pc_14",
+   "title": {
+    "en": "Red and green floral beaded earrings",
+    "zh": "红绿花卉串珠耳环"
+   },
+   "makerId": "mkr_04",
+   "kind": "series",
+   "hours": 6,
+   "materialsCents": 700,
+   "priceCents": 5500,
+   "story": {
+    "en": "A pair of beaded earrings, each with one red flower and two green leaves. About 5 cm long, with the beads stitched onto leather.",
+    "zh": "一对串珠耳环，每只上有一朵红花和两片绿叶。约5厘米长，珠子缝在皮革上。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_14.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "glass beads",
+     "leather"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower",
+     "leaf"
+    ],
+    "colors": [
+     "red",
+     "green"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "bright"
+    ],
+    "occasions": [
+     "birthday",
+     "holiday"
+    ],
+    "recipients": [
+     "gift for mom",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of beaded earrings, each with one red flower and two green leaves.",
+    "zh": "插图：一对串珠耳环，每只上有一朵红花和两片绿叶。"
+   }
+  }
+ ],
+ "communities": [
+  {
+   "id": "com_dine",
+   "name": {
+    "en": "Diné Weaving and Silver Co-op",
+    "zh": "纳瓦霍（Diné）编织与银饰合作社"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Diné (Navajo)",
+    "zh": "纳瓦霍（Diné）"
+   },
+   "place": {
+    "en": "Navajo Nation, Arizona, USA",
+    "zh": "美国亚利桑那州纳瓦霍保留区"
+   },
+   "craft": {
+    "en": "Wool weavings, silver and turquoise jewelry",
+    "zh": "羊毛编织与绿松石银饰"
+   },
+   "about": {
+    "en": "Diné (Navajo) weavers at the co-op weave wool on upright looms, and its smiths decorate silver with hand stamps and set turquoise in it. The co-op makes wall weavings, rugs, earrings, rings, pendant necklaces and cuff bracelets.",
+    "zh": "合作社的纳瓦霍（Diné）织工在立式织机上织羊毛，银匠用手工印模为银器压花，并在银饰上镶嵌绿松石。合作社制作壁挂编织、地毯、耳环、戒指、吊坠项链和手镯。"
+   },
+   "protocols": [
+    {
+     "en": "No ceremonial pieces or designs, such as Yei or sandpainting designs.",
+     "zh": "不收录仪式用品或仪式图案，例如Yei图案或沙画图案。"
+    },
+    {
+     "en": "No meanings for patterns. A pattern is described by its shapes and colors.",
+     "zh": "不解释图案的含义。图案只用形状和颜色来描述。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "The Navajo Nation, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由纳瓦霍（Diné）族依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of the Navajo Nation or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是纳瓦霍（Diné）族的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_01",
+   "makerIds": [
+    "mkr_01",
+    "mkr_02",
+    "mkr_03"
+   ],
+   "studioId": "std_dine",
+   "storefrontId": "sto_01",
+   "projectIds": [
+    "prj_01"
+   ],
+   "demo": true
+  },
+  {
+   "id": "com_ojibwe",
+   "name": {
+    "en": "An Ojibwe beadwork co-op",
+    "zh": "一个奥吉布瓦（Ojibwe）串珠合作社"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Ojibwe",
+    "zh": "奥吉布瓦（Ojibwe）"
+   },
+   "place": {
+    "en": "Minnesota, USA",
+    "zh": "美国明尼苏达州"
+   },
+   "craft": {
+    "en": "Floral beadwork: earrings, pouches and necklaces",
+    "zh": "花卉串珠：耳环、小包和项链"
+   },
+   "about": {
+    "en": "Ojibwe beadworkers at the co-op stitch glass seed beads onto cloth or leather, often in floral designs, and also weave beads on a loom. The co-op makes beaded earrings, pouches and necklaces.",
+    "zh": "合作社的奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠缝在布或皮革上，常做成花卉图案，也在织机上编串珠。合作社制作串珠耳环、小包和项链。"
+   },
+   "protocols": [
+    {
+     "en": "No regalia, such as bandolier bags or dance aprons.",
+     "zh": "不收录典礼服饰，例如斜挎珠饰袋或舞蹈围裙。"
+    },
+    {
+     "en": "No pipe or tobacco bags.",
+     "zh": "不收录烟斗袋或烟草袋。"
+    },
+    {
+     "en": "No meanings for flowers or plants.",
+     "zh": "不解释花卉或植物的含义。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "An Ojibwe tribe or band, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由某个奥吉布瓦（Ojibwe）部落或族群依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of an Ojibwe tribe or band or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是某个奥吉布瓦（Ojibwe）部落或族群的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_02",
+   "makerIds": [
+    "mkr_04",
+    "mkr_05",
+    "mkr_06",
+    "mkr_07",
+    "mkr_08"
+   ],
+   "storefrontId": "sto_02",
+   "projectIds": [
+    "prj_02"
+   ],
+   "demo": true
+  }
+ ],
+ "searchIndex": [
+  {
+   "pieceId": "pc_01",
+   "communityId": "com_dine",
+   "makerId": "mkr_01",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_01",
+   "pictureNote": {
+    "en": "Illustration of a small wall weaving in grey, red and black with a stepped diamond at its center.",
+    "zh": "插图：一幅灰、红、黑三色的小幅壁挂编织，中央是一个阶梯菱形。"
+   },
+   "embedText": "passage: wall weaving | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven | motifs: diamond, step | colors: grey, red, black | mood: warm, bold | for: birthday, gift for mom | A small wool weaving in grey, red and black, with a stepped diamond at its center.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_10",
+   "communityId": "com_dine",
+   "makerId": "mkr_03",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_03",
+   "pictureNote": {
+    "en": "Illustration of a pair of drop earrings, each a small turquoise stone in a plain silver setting.",
+    "zh": "插图：一对坠耳环，每只是一颗嵌在素面银托里的小绿松石。"
+   },
+   "embedText": "passage: earrings | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: silver, turquoise | techniques: stone setting | colors: silver, turquoise | mood: bright, elegant | for: holiday, gift for a sister, gift for a friend | Each earring is a small turquoise stone in a plain silver setting, hanging from a short wire.",
+   "salesThisMonth": 4,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_14",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_04",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_04",
+   "pictureNote": {
+    "en": "Illustration of a pair of beaded earrings, each with one red flower and two green leaves.",
+    "zh": "插图：一对串珠耳环，每只上有一朵红花和两片绿叶。"
+   },
+   "embedText": "passage: earrings | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, leather | techniques: beadwork, hand-stitched | motifs: flower, leaf | colors: red, green | mood: bold, bright | for: birthday, holiday, gift for mom, gift for a friend | A pair of beaded earrings, each with one red flower and two green leaves.",
+   "salesThisMonth": 3,
+   "status": "active"
+  }
+ ],
+ "searchEval": [],
+ "keywordAliases": {
+  "mom": "gift for mom",
+  "mother": "gift for mom",
+  "mum": "gift for mom",
+  "dad": "gift for dad",
+  "father": "gift for dad"
+ },
+ "vibeVocabulary": {
+  "moods": [
+   "warm",
+   "bold",
+   "calm",
+   "bright",
+   "cheerful",
+   "quiet",
+   "earthy",
+   "playful",
+   "elegant",
+   "soft"
+  ],
+  "occasions": [
+   "birthday",
+   "housewarming",
+   "thank you",
+   "holiday",
+   "everyday"
+  ],
+  "recipients": [
+   "gift for mom",
+   "gift for dad",
+   "gift for a friend",
+   "gift for a sister",
+   "for myself"
+  ]
+ },
+ "contentRules": {
+  "bannedObjects": [
+   "yei",
+   "yeibichai",
+   "sandpainting",
+   "sand painting",
+   "whirling log",
+   "whirling-log",
+   "katsina",
+   "kachina",
+   "naja",
+   "squash blossom",
+   "sacred",
+   "ceremonial",
+   "ceremony",
+   "prayer",
+   "medicine",
+   "pipe",
+   "tobacco bag",
+   "mask",
+   "drum",
+   "rattle",
+   "dreamcatcher",
+   "dream catcher",
+   "totem",
+   "headdress",
+   "regalia",
+   "bandolier bag",
+   "dance apron",
+   "jingle dress",
+   "bow guard",
+   "costume",
+   "feather",
+   "eagle",
+   "ivory",
+   "bone",
+   "whalebone",
+   "baleen",
+   "sealskin",
+   "fur",
+   "shell",
+   "quill",
+   "沙画",
+   "克奇纳",
+   "卡奇纳",
+   "神圣",
+   "仪式",
+   "祭祀",
+   "药包",
+   "烟斗",
+   "烟草袋",
+   "面具",
+   "手鼓",
+   "摇铃",
+   "捕梦网",
+   "图腾",
+   "头饰",
+   "典礼服饰",
+   "斜挎珠饰袋",
+   "舞蹈围裙",
+   "叮当裙",
+   "护臂",
+   "戏服",
+   "羽毛",
+   "鹰羽",
+   "象牙",
+   "鲸骨",
+   "鲸须",
+   "海豹皮",
+   "毛皮",
+   "皮草",
+   "贝壳",
+   "豪猪刺"
+  ],
+  "stereotypeWords": [
+   "exotic",
+   "tribal",
+   "primitive",
+   "ethnic",
+   "mystical",
+   "spiritual",
+   "shamanic",
+   "sacred",
+   "ceremonial",
+   "spirit",
+   "totem",
+   "boho",
+   "native-inspired",
+   "authentic",
+   "ancient",
+   "timeless",
+   "warrior",
+   "princess",
+   "chief",
+   "powwow",
+   "smudge",
+   "healing",
+   "energy",
+   "Aztec",
+   "Inca"
+  ],
+  "meaningWords": [
+   "symbolizes",
+   "represents",
+   "protects",
+   "brings luck",
+   "象征",
+   "寓意"
+  ],
+  "accusingWords": [
+   "fraud",
+   "scam",
+   "illegal",
+   "fake",
+   "counterfeit",
+   "knockoff",
+   "copy",
+   "stolen",
+   "infringe",
+   "violate",
+   "假冒",
+   "仿冒",
+   "冒充",
+   "山寨",
+   "盗版",
+   "侵权",
+   "欺诈",
+   "违法"
+  ],
+  "peopleNames": {
+   "com_dine": [
+    "Diné",
+    "Navajo",
+    "纳瓦霍"
+   ],
+   "com_ojibwe": [
+    "Ojibwe",
+    "Ojibwa",
+    "Chippewa",
+    "Anishinaabe",
+    "奥吉布瓦"
+   ],
+   "com_acoma": [
+    "Acoma",
+    "Pueblo",
+    "阿科马"
+   ],
+   "com_seminole": [
+    "Seminole",
+    "塞米诺尔"
+   ],
+   "general": [
+    "Native American",
+    "Indigenous",
+    "Native",
+    "Indian",
+    "美洲原住民",
+    "原住民",
+    "土著"
+   ]
+  },
+  "allowedHosts": [
+   "example.com",
+   "example.org"
+  ]
+ },
+ "demoSearch": {
+  "query": {
+   "text": "a warm, bold gift for my mom. she loves red wool. under $200",
+   "keywords": [
+    "warm",
+    "bold",
+    "red",
+    "wool",
+    "gift for mom",
+    "under $200"
+   ],
+   "lang": "en",
+   "filters": {
+    "maxPriceCents": 20000
+   }
+  }
+ }
+}

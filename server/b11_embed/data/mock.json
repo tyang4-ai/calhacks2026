@@ -1,0 +1,6913 @@
+{
+ "_about": "The keys B11 uses from artifacts/mock/mock.json, written by python server/b11_embed/data.py --snapshot. Every line is fictional demo data from src/mock/.",
+ "_generatedAt": "2026-10-25T03:47:59.330Z",
+ "pieces": [
+  {
+   "id": "pc_01",
+   "title": {
+    "en": "Small grey, red and black wool weaving",
+    "zh": "灰红黑三色小幅羊毛编织"
+   },
+   "makerId": "mkr_01",
+   "kind": "featured",
+   "hours": 26,
+   "materialsCents": 2200,
+   "priceCents": 18000,
+   "story": {
+    "en": "A small wool weaving in grey, red and black, with a stepped diamond at its center. About 30 by 40 cm, woven tight so it hangs flat.",
+    "zh": "一幅灰、红、黑三色的小幅羊毛编织，中央是一个阶梯菱形。约30×40厘米，织得紧密，挂起来平整服帖。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the yarn",
+      "zh": "整理毛线"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 17
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_01.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "wall weaving",
+     "zh": "壁挂编织"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven"
+    ],
+    "motifs": [
+     "diamond",
+     "step"
+    ],
+    "colors": [
+     "grey",
+     "red",
+     "black"
+    ],
+    "sizeCm": {
+     "w": 30,
+     "h": 40
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "warm",
+     "bold"
+    ],
+    "occasions": [
+     "birthday"
+    ],
+    "recipients": [
+     "gift for mom"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small wall weaving in grey, red and black with a stepped diamond at its center.",
+    "zh": "插图：一幅灰、红、黑三色的小幅壁挂编织，中央是一个阶梯菱形。"
+   }
+  },
+  {
+   "id": "pc_02",
+   "title": {
+    "en": "Stamped silver earrings",
+    "zh": "压花银耳环"
+   },
+   "makerId": "mkr_02",
+   "kind": "series",
+   "hours": 9,
+   "materialsCents": 800,
+   "priceCents": 6500,
+   "story": {
+    "en": "A pair of small silver ovals, each stamped with a ring of dots. Light enough to wear every day.",
+    "zh": "一对小巧的椭圆形银耳环，每只都压印着一圈圆点。分量很轻，适合天天佩戴。"
+   },
+   "heritage": {
+    "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+    "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting and shaping the silver",
+      "zh": "裁切银料并塑形"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Stamping the design",
+      "zh": "压印花纹"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Fitting the ear wires",
+      "zh": "装耳钩"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Filing and polishing",
+      "zh": "锉磨抛光"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_02.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "silver"
+    ],
+    "techniques": [
+     "hand-stamped"
+    ],
+    "motifs": [
+     "dot"
+    ],
+    "colors": [
+     "silver"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "elegant",
+     "quiet"
+    ],
+    "occasions": [
+     "everyday"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of small oval silver earrings, each stamped with a ring of dots.",
+    "zh": "插图：一对小巧的椭圆形银耳环，每只都压印着一圈圆点。"
+   }
+  },
+  {
+   "id": "pc_03",
+   "title": {
+    "en": "Brown, white and grey wool rug",
+    "zh": "棕白灰三色羊毛地毯"
+   },
+   "makerId": "mkr_03",
+   "kind": "featured",
+   "hours": 160,
+   "materialsCents": 9500,
+   "priceCents": 120000,
+   "story": {
+    "en": "A rug in undyed brown, white and grey wool, with bands of small diamonds across it. About 75 by 120 cm.",
+    "zh": "一块用未经染色的棕、白、灰三色羊毛织成的地毯，横贯几道小菱形纹带。约75×120厘米。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Spinning the wool",
+      "zh": "纺毛线"
+     },
+     "hours": 30
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 112
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 8
+    }
+   ],
+   "image": "/images/pc_03.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "rug",
+     "zh": "地毯"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven",
+     "hand-spun"
+    ],
+    "motifs": [
+     "band",
+     "diamond"
+    ],
+    "colors": [
+     "brown",
+     "white",
+     "grey"
+    ],
+    "sizeCm": {
+     "w": 75,
+     "h": 120
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "earthy",
+     "calm",
+     "warm"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a rug in brown, white and grey wool with bands of small diamonds across it.",
+    "zh": "插图：一块棕、白、灰三色的羊毛地毯，横贯几道小菱形纹带。"
+   }
+  },
+  {
+   "id": "pc_04",
+   "title": {
+    "en": "Red, black and white wool rug with stepped diamonds",
+    "zh": "红黑白三色阶梯菱形羊毛地毯"
+   },
+   "makerId": "mkr_01",
+   "kind": "featured",
+   "hours": 130,
+   "materialsCents": 8000,
+   "priceCents": 95000,
+   "story": {
+    "en": "Three stepped diamonds in red and black on a white ground. About 60 by 100 cm, with even, tight edges.",
+    "zh": "白色底上织着三个红黑两色的阶梯菱形。约60×100厘米，边缘匀整紧实。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the yarn",
+      "zh": "整理毛线"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Dyeing the yarn",
+      "zh": "染线"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 98
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 6
+    }
+   ],
+   "image": "/images/pc_04.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "rug",
+     "zh": "地毯"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven",
+     "hand-dyed"
+    ],
+    "motifs": [
+     "diamond",
+     "step"
+    ],
+    "colors": [
+     "red",
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 60,
+     "h": 100
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "warm"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for dad"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a rug with three red and black stepped diamonds on a white ground.",
+    "zh": "插图：一块白底地毯，织着三个红黑两色的阶梯菱形。"
+   }
+  },
+  {
+   "id": "pc_05",
+   "title": {
+    "en": "Indigo and white striped wool weaving",
+    "zh": "靛蓝白条纹羊毛编织"
+   },
+   "makerId": "mkr_02",
+   "kind": "featured",
+   "hours": 110,
+   "materialsCents": 7000,
+   "priceCents": 80000,
+   "story": {
+    "en": "Wide and narrow stripes in indigo blue and natural white. About 60 by 90 cm, for a wall or across a bench.",
+    "zh": "靛蓝与本白的宽窄条纹相间。约60×90厘米，可以挂在墙上，也可以搭在长凳上。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Spinning the wool",
+      "zh": "纺毛线"
+     },
+     "hours": 20
+    },
+    {
+     "step": {
+      "en": "Dyeing the yarn",
+      "zh": "染线"
+     },
+     "hours": 12
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 64
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 6
+    }
+   ],
+   "image": "/images/pc_05.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "wall weaving",
+     "zh": "壁挂编织"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven",
+     "hand-spun",
+     "hand-dyed"
+    ],
+    "motifs": [
+     "stripe"
+    ],
+    "colors": [
+     "indigo",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 60,
+     "h": 90
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "elegant"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a weaving with wide and narrow stripes in indigo blue and white.",
+    "zh": "插图：一幅靛蓝与白色宽窄条纹相间的编织。"
+   }
+  },
+  {
+   "id": "pc_06",
+   "title": {
+    "en": "Grey and white zigzag wool weaving",
+    "zh": "灰白锯齿纹羊毛编织"
+   },
+   "makerId": "mkr_03",
+   "kind": "featured",
+   "hours": 60,
+   "materialsCents": 4500,
+   "priceCents": 45000,
+   "story": {
+    "en": "Grey and white bands that bend into zigzags across the weaving. About 45 by 60 cm.",
+    "zh": "灰白两色的纹带横穿整幅织物，折成一道道锯齿。约45×60厘米。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the yarn",
+      "zh": "整理毛线"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 47
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 4
+    }
+   ],
+   "image": "/images/pc_06.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "wall weaving",
+     "zh": "壁挂编织"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven"
+    ],
+    "motifs": [
+     "zigzag",
+     "band"
+    ],
+    "colors": [
+     "grey",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 45,
+     "h": 60
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "playful"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a weaving with grey and white bands that bend into zigzags.",
+    "zh": "插图：一幅编织，灰白两色的纹带折成一道道锯齿。"
+   }
+  },
+  {
+   "id": "pc_07",
+   "title": {
+    "en": "Red and grey wool mini weaving",
+    "zh": "红灰双色迷你羊毛编织"
+   },
+   "makerId": "mkr_02",
+   "kind": "series",
+   "hours": 6,
+   "materialsCents": 600,
+   "priceCents": 4800,
+   "story": {
+    "en": "A palm-sized weaving in red and grey, about 15 by 15 cm, for a shelf or a desk.",
+    "zh": "一幅巴掌大小的红灰双色编织，约15×15厘米，适合摆在书架或书桌上。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the yarn",
+      "zh": "整理毛线"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 1
+    }
+   ],
+   "image": "/images/pc_07.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "wall weaving",
+     "zh": "壁挂编织"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven"
+    ],
+    "motifs": [
+     "stripe"
+    ],
+    "colors": [
+     "red",
+     "grey"
+    ],
+    "sizeCm": {
+     "w": 15,
+     "h": 15
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "warm",
+     "cheerful"
+    ],
+    "occasions": [
+     "birthday",
+     "thank you"
+    ],
+    "recipients": [
+     "gift for mom",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a palm-sized weaving in red and grey stripes.",
+    "zh": "插图：一幅巴掌大小的红灰条纹编织。"
+   }
+  },
+  {
+   "id": "pc_08",
+   "title": {
+    "en": "Thin silver ring with stamped chevrons",
+    "zh": "压印人字纹细银戒"
+   },
+   "makerId": "mkr_03",
+   "kind": "series",
+   "hours": 4,
+   "materialsCents": 500,
+   "priceCents": 3800,
+   "story": {
+    "en": "A narrow silver band stamped all the way around with small chevrons.",
+    "zh": "一枚细窄的银戒，整圈压印着小小的人字纹。"
+   },
+   "heritage": {
+    "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+    "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting and shaping the silver",
+      "zh": "裁切银料并塑形"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Stamping the design",
+      "zh": "压印花纹"
+     },
+     "hours": 1.5
+    },
+    {
+     "step": {
+      "en": "Soldering",
+      "zh": "焊接"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Filing and polishing",
+      "zh": "锉磨抛光"
+     },
+     "hours": 1
+    }
+   ],
+   "image": "/images/pc_08.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "ring",
+     "zh": "戒指"
+    },
+    "materials": [
+     "silver"
+    ],
+    "techniques": [
+     "hand-stamped",
+     "soldered"
+    ],
+    "motifs": [
+     "chevron"
+    ],
+    "colors": [
+     "silver"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "quiet",
+     "elegant"
+    ],
+    "occasions": [
+     "everyday"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a thin silver ring stamped all the way around with small chevrons.",
+    "zh": "插图：一枚细银戒，整圈压印着小小的人字纹。"
+   }
+  },
+  {
+   "id": "pc_09",
+   "title": {
+    "en": "Silver and turquoise pendant necklace",
+    "zh": "绿松石银吊坠项链"
+   },
+   "makerId": "mkr_01",
+   "kind": "series",
+   "hours": 14,
+   "materialsCents": 1200,
+   "priceCents": 12000,
+   "story": {
+    "en": "One small oval of turquoise set in silver with a stamped border, on a silver chain.",
+    "zh": "一颗小小的椭圆形绿松石，镶在带压花边框的银托里，配一条银链。"
+   },
+   "heritage": {
+    "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+    "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting and shaping the silver",
+      "zh": "裁切银料并塑形"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Stamping the design",
+      "zh": "压印花纹"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Setting the turquoise",
+      "zh": "镶嵌绿松石"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Filing and polishing",
+      "zh": "锉磨抛光"
+     },
+     "hours": 4
+    }
+   ],
+   "image": "/images/pc_09.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "pendant necklace",
+     "zh": "吊坠项链"
+    },
+    "materials": [
+     "silver",
+     "turquoise"
+    ],
+    "techniques": [
+     "hand-stamped",
+     "stone setting"
+    ],
+    "motifs": [
+     "line"
+    ],
+    "colors": [
+     "silver",
+     "turquoise"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "elegant",
+     "calm"
+    ],
+    "occasions": [
+     "birthday",
+     "holiday"
+    ],
+    "recipients": [
+     "gift for mom",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a silver pendant with one small oval turquoise stone inside a stamped border, on a silver chain.",
+    "zh": "插图：一枚带压花边框的银吊坠，镶着一颗小椭圆形绿松石，配一条银链。"
+   }
+  },
+  {
+   "id": "pc_10",
+   "title": {
+    "en": "Silver and turquoise drop earrings",
+    "zh": "绿松石银坠耳环"
+   },
+   "makerId": "mkr_03",
+   "kind": "series",
+   "hours": 10,
+   "materialsCents": 900,
+   "priceCents": 8500,
+   "story": {
+    "en": "Each earring is a small turquoise stone in a plain silver setting, hanging from a short wire.",
+    "zh": "每只耳环是一颗嵌在素面银托里的小绿松石，挂在一段短短的耳钩下。"
+   },
+   "heritage": {
+    "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+    "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting and shaping the silver",
+      "zh": "裁切银料并塑形"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Setting the turquoise",
+      "zh": "镶嵌绿松石"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Fitting the ear wires",
+      "zh": "装耳钩"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Filing and polishing",
+      "zh": "锉磨抛光"
+     },
+     "hours": 3
+    }
+   ],
+   "image": "/images/pc_10.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "silver",
+     "turquoise"
+    ],
+    "techniques": [
+     "stone setting"
+    ],
+    "motifs": [],
+    "colors": [
+     "silver",
+     "turquoise"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "bright",
+     "elegant"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of drop earrings, each a small turquoise stone in a plain silver setting.",
+    "zh": "插图：一对坠耳环，每只是一颗嵌在素面银托里的小绿松石。"
+   }
+  },
+  {
+   "id": "pc_11",
+   "title": {
+    "en": "Red and white wool weaving",
+    "zh": "红白双色羊毛编织"
+   },
+   "makerId": "mkr_02",
+   "kind": "featured",
+   "hours": 24,
+   "materialsCents": 2100,
+   "priceCents": 17500,
+   "story": {
+    "en": "Red and white stripes with a band of red diamonds through the middle. About 30 by 40 cm.",
+    "zh": "红白相间的条纹，中间横贯一道红色菱形纹带。约30×40厘米。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the yarn",
+      "zh": "整理毛线"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Dyeing the yarn",
+      "zh": "染线"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 14
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_11.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "wall weaving",
+     "zh": "壁挂编织"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven",
+     "hand-dyed"
+    ],
+    "motifs": [
+     "stripe",
+     "diamond"
+    ],
+    "colors": [
+     "red",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 30,
+     "h": 40
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "bright"
+    ],
+    "occasions": [
+     "housewarming",
+     "birthday"
+    ],
+    "recipients": [
+     "gift for mom"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a weaving in red and white stripes with a band of red diamonds through the middle.",
+    "zh": "插图：一幅红白条纹编织，中间横贯一道红色菱形纹带。"
+   }
+  },
+  {
+   "id": "pc_12",
+   "title": {
+    "en": "Narrow stamped silver cuff bracelet",
+    "zh": "压花细银手镯"
+   },
+   "makerId": "mkr_01",
+   "kind": "series",
+   "hours": 11,
+   "materialsCents": 1000,
+   "priceCents": 9500,
+   "story": {
+    "en": "A narrow silver cuff stamped with small dots and lines, to wear alone or with others.",
+    "zh": "一只细窄的开口银手镯，压印着小圆点和线条，可以单戴，也可以和别的手镯叠戴。"
+   },
+   "heritage": {
+    "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+    "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting and shaping the silver",
+      "zh": "裁切银料并塑形"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Stamping the design",
+      "zh": "压印花纹"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Soldering",
+      "zh": "焊接"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Filing and polishing",
+      "zh": "锉磨抛光"
+     },
+     "hours": 3
+    }
+   ],
+   "image": "/images/pc_12.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "cuff bracelet",
+     "zh": "手镯"
+    },
+    "materials": [
+     "silver"
+    ],
+    "techniques": [
+     "hand-stamped",
+     "soldered"
+    ],
+    "motifs": [
+     "dot",
+     "line"
+    ],
+    "colors": [
+     "silver"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "elegant"
+    ],
+    "occasions": [
+     "everyday"
+    ],
+    "recipients": [
+     "gift for dad",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a narrow silver cuff stamped with small dots and lines.",
+    "zh": "插图：一只细窄的银手镯，压印着小圆点和线条。"
+   }
+  },
+  {
+   "id": "pc_13",
+   "title": {
+    "en": "Pink and white floral beaded earrings",
+    "zh": "粉白花卉串珠耳环"
+   },
+   "makerId": "mkr_04",
+   "kind": "series",
+   "hours": 5,
+   "materialsCents": 600,
+   "priceCents": 4500,
+   "story": {
+    "en": "A pair of beaded earrings with small pink and white flowers on green stems. Each earring is about 4 cm long, with the beads stitched onto a leather backing.",
+    "zh": "一对串珠耳环，绿色花茎上缀着粉色和白色的小花。每只约4厘米长，珠子缝在皮革衬底上。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 3.5
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_13.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "glass beads",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower",
+     "bud"
+    ],
+    "colors": [
+     "pink",
+     "white",
+     "green"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "soft",
+     "cheerful"
+    ],
+    "occasions": [
+     "birthday",
+     "everyday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of beaded earrings with small pink and white flowers on green stems.",
+    "zh": "插图：一对串珠耳环，绿色花茎上缀着粉白两色的小花。"
+   }
+  },
+  {
+   "id": "pc_14",
+   "title": {
+    "en": "Red and green floral beaded earrings",
+    "zh": "红绿花卉串珠耳环"
+   },
+   "makerId": "mkr_04",
+   "kind": "series",
+   "hours": 6,
+   "materialsCents": 700,
+   "priceCents": 5500,
+   "story": {
+    "en": "A pair of beaded earrings, each with one red flower and two green leaves. About 5 cm long, with the beads stitched onto leather.",
+    "zh": "一对串珠耳环，每只上有一朵红花和两片绿叶。约5厘米长，珠子缝在皮革上。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_14.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "glass beads",
+     "leather"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower",
+     "leaf"
+    ],
+    "colors": [
+     "red",
+     "green"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "bright"
+    ],
+    "occasions": [
+     "birthday",
+     "holiday"
+    ],
+    "recipients": [
+     "gift for mom",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of beaded earrings, each with one red flower and two green leaves.",
+    "zh": "插图：一对串珠耳环，每只上有一朵红花和两片绿叶。"
+   }
+  },
+  {
+   "id": "pc_15",
+   "title": {
+    "en": "Blue and yellow floral beaded pouch",
+    "zh": "蓝黄花卉串珠小包"
+   },
+   "makerId": "mkr_04",
+   "kind": "series",
+   "hours": 14,
+   "materialsCents": 1200,
+   "priceCents": 9500,
+   "story": {
+    "en": "A small flat pouch of black cloth with blue and yellow beaded flowers on a curving vine. About 10 by 13 cm, with a flap that folds over the top.",
+    "zh": "一只黑布小扁包，弯曲的藤蔓上缀着蓝色和黄色的串珠花朵。约10×13厘米，顶部有翻盖。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 3
+    }
+   ],
+   "image": "/images/pc_15.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "pouch",
+     "zh": "小包"
+    },
+    "materials": [
+     "glass beads",
+     "cloth",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower",
+     "vine"
+    ],
+    "colors": [
+     "blue",
+     "yellow",
+     "black"
+    ],
+    "sizeCm": {
+     "w": 10,
+     "h": 13
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "bright",
+     "cheerful"
+    ],
+    "occasions": [
+     "birthday",
+     "thank you"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small black pouch with blue and yellow beaded flowers on a curving vine.",
+    "zh": "插图：一只黑色小包，弯曲的藤蔓上缀着蓝黄两色的串珠花朵。"
+   }
+  },
+  {
+   "id": "pc_16",
+   "title": {
+    "en": "Purple and green beaded leaf earrings",
+    "zh": "紫绿叶片串珠耳环"
+   },
+   "makerId": "mkr_05",
+   "kind": "series",
+   "hours": 4,
+   "materialsCents": 500,
+   "priceCents": 4000,
+   "story": {
+    "en": "A pair of small earrings, each a green beaded leaf with a purple edge. About 3 cm long and light to wear.",
+    "zh": "一对小耳环，每只是一片镶紫边的绿色串珠叶子。约3厘米长，戴着很轻。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 2.5
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_16.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "glass beads",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "leaf"
+    ],
+    "colors": [
+     "purple",
+     "green"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "elegant"
+    ],
+    "occasions": [
+     "everyday"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of small beaded earrings shaped like green leaves with purple edges.",
+    "zh": "插图：一对叶片形的小串珠耳环，绿色叶子镶着紫边。"
+   }
+  },
+  {
+   "id": "pc_17",
+   "title": {
+    "en": "Large black pouch with red and pink beaded flowers",
+    "zh": "红粉花卉串珠黑色大包"
+   },
+   "makerId": "mkr_05",
+   "kind": "featured",
+   "hours": 48,
+   "materialsCents": 4500,
+   "priceCents": 42000,
+   "story": {
+    "en": "A large pouch of black cloth covered with red and pink beaded flowers, green leaves and vines. About 18 by 22 cm, backed with leather and edged in green beads.",
+    "zh": "一只黑布大包，布满红色和粉色的串珠花朵、绿叶和藤蔓。约18×22厘米，背面衬皮革，边缘缀绿色珠子。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 38
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 6
+    }
+   ],
+   "image": "/images/pc_17.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "pouch",
+     "zh": "小包"
+    },
+    "materials": [
+     "glass beads",
+     "cloth",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower",
+     "leaf",
+     "vine"
+    ],
+    "colors": [
+     "black",
+     "red",
+     "pink",
+     "green"
+    ],
+    "sizeCm": {
+     "w": 18,
+     "h": 22
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "elegant"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a large black pouch covered with red and pink beaded flowers, leaves and vines.",
+    "zh": "插图：一只黑色大包，布满红粉两色的串珠花朵、叶子和藤蔓。"
+   }
+  },
+  {
+   "id": "pc_18",
+   "title": {
+    "en": "Blue and white beaded berry earrings",
+    "zh": "蓝白浆果串珠耳环"
+   },
+   "makerId": "mkr_05",
+   "kind": "series",
+   "hours": 4,
+   "materialsCents": 500,
+   "priceCents": 3800,
+   "story": {
+    "en": "A pair of earrings with clusters of blue and white beaded berries on short green stems. About 4 cm long.",
+    "zh": "一对耳环，短短的绿色茎上缀着一簇簇蓝白两色的串珠浆果。约4厘米长。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 2.5
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_18.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "glass beads",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "berry"
+    ],
+    "colors": [
+     "blue",
+     "white",
+     "green"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "cheerful",
+     "playful"
+    ],
+    "occasions": [
+     "everyday",
+     "thank you"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of earrings with clusters of blue and white beaded berries.",
+    "zh": "插图：一对耳环，缀着一簇簇蓝白两色的串珠浆果。"
+   }
+  },
+  {
+   "id": "pc_19",
+   "title": {
+    "en": "Orange and yellow floral beaded pouch",
+    "zh": "橙黄花卉串珠小包"
+   },
+   "makerId": "mkr_06",
+   "kind": "series",
+   "hours": 12,
+   "materialsCents": 1000,
+   "priceCents": 8500,
+   "story": {
+    "en": "A small brown leather pouch with orange and yellow beaded flowers and buds across the front. About 9 by 12 cm, sized for cards or coins.",
+    "zh": "一只棕色小皮包，正面缀着橙色和黄色的串珠花朵与花苞。约9×12厘米，大小适合放卡片或硬币。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 3
+    }
+   ],
+   "image": "/images/pc_19.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "pouch",
+     "zh": "小包"
+    },
+    "materials": [
+     "glass beads",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower",
+     "bud"
+    ],
+    "colors": [
+     "orange",
+     "yellow",
+     "brown"
+    ],
+    "sizeCm": {
+     "w": 9,
+     "h": 12
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "warm",
+     "cheerful"
+    ],
+    "occasions": [
+     "thank you",
+     "birthday"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small brown leather pouch with orange and yellow beaded flowers and buds.",
+    "zh": "插图：一只棕色小皮包，缀着橙黄两色的串珠花朵和花苞。"
+   }
+  },
+  {
+   "id": "pc_20",
+   "title": {
+    "en": "Green and white beaded leaf pendant necklace",
+    "zh": "绿白叶片串珠吊坠项链"
+   },
+   "makerId": "mkr_06",
+   "kind": "series",
+   "hours": 8,
+   "materialsCents": 800,
+   "priceCents": 7800,
+   "story": {
+    "en": "A beaded pendant of two green leaves on a white vine, hung on a strand of small white beads. The pendant is about 5 cm across.",
+    "zh": "一枚串珠吊坠，白色藤蔓上有两片绿叶，挂在一串白色小珠上。吊坠宽约5厘米。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 1
+    }
+   ],
+   "image": "/images/pc_20.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "pendant necklace",
+     "zh": "吊坠项链"
+    },
+    "materials": [
+     "glass beads",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "leaf",
+     "vine"
+    ],
+    "colors": [
+     "green",
+     "white"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "soft"
+    ],
+    "occasions": [
+     "everyday",
+     "birthday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a beaded pendant necklace with two green leaves on a white vine.",
+    "zh": "插图：一条串珠吊坠项链，白色藤蔓上有两片绿叶。"
+   }
+  },
+  {
+   "id": "pc_21",
+   "title": {
+    "en": "Red, black and white loom-beaded necklace",
+    "zh": "红黑白织机串珠项链"
+   },
+   "makerId": "mkr_06",
+   "kind": "featured",
+   "hours": 40,
+   "materialsCents": 2800,
+   "priceCents": 24000,
+   "story": {
+    "en": "A flat necklace of glass beads woven on a loom, with a row of small red flowers on a black and white band. About 46 cm long and 2 cm wide.",
+    "zh": "一条在织机上编成的玻璃珠扁项链，黑白相间的珠带上排着一行红色小花。约46厘米长、2厘米宽。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Weaving the beads on a loom",
+      "zh": "在织机上编串珠"
+     },
+     "hours": 34
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 3
+    }
+   ],
+   "image": "/images/pc_21.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "bead necklace",
+     "zh": "串珠项链"
+    },
+    "materials": [
+     "glass beads",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "loom-woven"
+    ],
+    "motifs": [
+     "flower"
+    ],
+    "colors": [
+     "red",
+     "black",
+     "white"
+    ],
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "elegant"
+    ],
+    "occasions": [
+     "holiday",
+     "birthday"
+    ],
+    "recipients": [
+     "gift for mom",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a flat loom-beaded necklace with small red flowers on a black and white band.",
+    "zh": "插图：一条织机串珠扁项链，黑白珠带上排着一行红色小花。"
+   }
+  },
+  {
+   "id": "pc_22",
+   "title": {
+    "en": "Small yellow and blue beaded flower earrings",
+    "zh": "黄蓝小花串珠耳环"
+   },
+   "makerId": "mkr_07",
+   "kind": "series",
+   "hours": 3,
+   "materialsCents": 400,
+   "priceCents": 3500,
+   "story": {
+    "en": "A pair of small round earrings, each a yellow beaded flower with a blue center. About 2.5 cm across.",
+    "zh": "一对小圆耳环，每只是一朵黄色串珠花，花心是蓝色。直径约2.5厘米。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 1.5
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_22.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "glass beads",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower"
+    ],
+    "colors": [
+     "yellow",
+     "blue"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "bright",
+     "playful"
+    ],
+    "occasions": [
+     "birthday",
+     "everyday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of small round earrings, each a yellow beaded flower with a blue center.",
+    "zh": "插图：一对小圆耳环，每只是一朵蓝色花心的黄色串珠花。"
+   }
+  },
+  {
+   "id": "pc_23",
+   "title": {
+    "en": "Pink and green beaded flower pendant necklace",
+    "zh": "粉绿花朵串珠吊坠项链"
+   },
+   "makerId": "mkr_07",
+   "kind": "series",
+   "hours": 9,
+   "materialsCents": 900,
+   "priceCents": 9200,
+   "story": {
+    "en": "A beaded pendant of one pink flower with green leaves, hung on a strand of small green beads. The pendant is about 6 cm across.",
+    "zh": "一枚串珠吊坠，一朵粉色花配着绿叶，挂在一串绿色小珠上。吊坠宽约6厘米。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 1
+    }
+   ],
+   "image": "/images/pc_23.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "pendant necklace",
+     "zh": "吊坠项链"
+    },
+    "materials": [
+     "glass beads",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower",
+     "leaf"
+    ],
+    "colors": [
+     "pink",
+     "green"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "soft",
+     "cheerful"
+    ],
+    "occasions": [
+     "birthday",
+     "thank you"
+    ],
+    "recipients": [
+     "gift for mom",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a beaded pendant necklace with one pink flower and green leaves.",
+    "zh": "插图：一条串珠吊坠项链，一朵粉色花配着绿叶。"
+   }
+  },
+  {
+   "id": "pc_24",
+   "title": {
+    "en": "Cream pouch with blue and purple beaded vines",
+    "zh": "蓝紫藤蔓串珠米色小包"
+   },
+   "makerId": "mkr_07",
+   "kind": "featured",
+   "hours": 36,
+   "materialsCents": 3000,
+   "priceCents": 31000,
+   "story": {
+    "en": "A pouch of cream cloth with blue and purple beaded vines, leaves and berries. About 15 by 18 cm, backed with leather.",
+    "zh": "一只米色布包，缀着蓝色和紫色的串珠藤蔓、叶子和浆果。约15×18厘米，背面衬皮革。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 28
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 5
+    }
+   ],
+   "image": "/images/pc_24.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "pouch",
+     "zh": "小包"
+    },
+    "materials": [
+     "glass beads",
+     "cloth",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "vine",
+     "leaf",
+     "berry"
+    ],
+    "colors": [
+     "cream",
+     "blue",
+     "purple"
+    ],
+    "sizeCm": {
+     "w": 15,
+     "h": 18
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "elegant"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a cream pouch with blue and purple beaded vines, leaves and berries.",
+    "zh": "插图：一只米色小包，缀着蓝紫两色的串珠藤蔓、叶子和浆果。"
+   }
+  },
+  {
+   "id": "pc_25",
+   "title": {
+    "en": "Brown leather pouch with green and yellow beaded leaves",
+    "zh": "绿黄叶片串珠棕色皮包"
+   },
+   "makerId": "mkr_08",
+   "kind": "featured",
+   "hours": 30,
+   "materialsCents": 2600,
+   "priceCents": 28000,
+   "story": {
+    "en": "A brown leather pouch with a spray of green and yellow beaded leaves on the flap. About 14 by 16 cm, edged in small yellow beads.",
+    "zh": "一只棕色皮包，翻盖上缀着一簇绿色和黄色的串珠叶子。约14×16厘米，边缘缀黄色小珠。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 22
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 6
+    }
+   ],
+   "image": "/images/pc_25.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "pouch",
+     "zh": "小包"
+    },
+    "materials": [
+     "leather",
+     "glass beads",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "leaf"
+    ],
+    "colors": [
+     "brown",
+     "green",
+     "yellow"
+    ],
+    "sizeCm": {
+     "w": 14,
+     "h": 16
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "earthy",
+     "calm"
+    ],
+    "occasions": [
+     "holiday",
+     "thank you"
+    ],
+    "recipients": [
+     "gift for dad",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a brown leather pouch with green and yellow beaded leaves on the flap.",
+    "zh": "插图：一只棕色皮包，翻盖上缀着绿黄两色的串珠叶子。"
+   }
+  },
+  {
+   "id": "pc_26",
+   "title": {
+    "en": "Small red and blue floral beaded pouch",
+    "zh": "红蓝花卉串珠小包"
+   },
+   "makerId": "mkr_08",
+   "kind": "series",
+   "hours": 10,
+   "materialsCents": 900,
+   "priceCents": 6800,
+   "story": {
+    "en": "A small pouch of black cloth with red and blue beaded flowers and berries. About 8 by 10 cm, with a flap.",
+    "zh": "一只黑布小包，缀着红色和蓝色的串珠花朵与浆果。约8×10厘米，带翻盖。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 7
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_26.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "pouch",
+     "zh": "小包"
+    },
+    "materials": [
+     "glass beads",
+     "cloth",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower",
+     "berry"
+    ],
+    "colors": [
+     "red",
+     "blue",
+     "black"
+    ],
+    "sizeCm": {
+     "w": 8,
+     "h": 10
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "cheerful",
+     "bright"
+    ],
+    "occasions": [
+     "birthday",
+     "everyday"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small black pouch with red and blue beaded flowers and berries.",
+    "zh": "插图：一只黑色小包，缀着红蓝两色的串珠花朵和浆果。"
+   }
+  },
+  {
+   "id": "pc_27",
+   "title": {
+    "en": "Small black and white geometric jar",
+    "zh": "黑白几何纹小陶罐"
+   },
+   "makerId": "mkr_09",
+   "kind": "series",
+   "hours": 18,
+   "materialsCents": 1500,
+   "priceCents": 26000,
+   "story": {
+    "en": "A small jar with a white slip, painted in black with geometric bands of fine lines. About 12 cm tall.",
+    "zh": "一只施白色泥浆的小陶罐，用黑色绘出由细线组成的几何纹带。约12厘米高。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_27.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "jar",
+     "zh": "陶罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "geometric",
+     "fine line",
+     "band"
+    ],
+    "colors": [
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 11,
+     "h": 12
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "elegant"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small white jar painted with black geometric bands of fine lines.",
+    "zh": "插图：一只白色小陶罐，绘有黑色细线几何纹带。"
+   }
+  },
+  {
+   "id": "pc_28",
+   "title": {
+    "en": "Wide black and orange stepped bowl",
+    "zh": "黑橙阶梯纹宽口陶碗"
+   },
+   "makerId": "mkr_09",
+   "kind": "featured",
+   "hours": 34,
+   "materialsCents": 2500,
+   "priceCents": 52000,
+   "story": {
+    "en": "A wide, shallow bowl with a white slip and black and orange steps painted around the rim. About 24 cm across.",
+    "zh": "一只宽口浅陶碗，施白色泥浆，碗口一圈绘有黑橙两色的阶梯纹。直径约24厘米。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the clay",
+      "zh": "备陶土"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 4
+    }
+   ],
+   "image": "/images/pc_28.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "bowl",
+     "zh": "陶碗"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "step",
+     "band"
+    ],
+    "colors": [
+     "black",
+     "orange",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 24,
+     "h": 9
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "warm",
+     "earthy"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a wide, shallow white bowl with black and orange steps around the rim.",
+    "zh": "插图：一只白色宽口浅碗，碗口一圈是黑橙两色的阶梯纹。"
+   }
+  },
+  {
+   "id": "pc_29",
+   "title": {
+    "en": "Small orange and white dotted seed pot",
+    "zh": "橙白圆点小种子罐"
+   },
+   "makerId": "mkr_09",
+   "kind": "series",
+   "hours": 7,
+   "materialsCents": 600,
+   "priceCents": 9500,
+   "story": {
+    "en": "A small round seed pot with a narrow opening, painted with rows of orange dots on white slip. About 7 cm across.",
+    "zh": "一只小巧的圆形种子罐，开口窄小，白色泥浆上绘着一排排橙色圆点。直径约7厘米。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 1.5
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_29.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "seed pot",
+     "zh": "种子罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "dot"
+    ],
+    "colors": [
+     "orange",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 7,
+     "h": 6
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "cheerful",
+     "warm"
+    ],
+    "occasions": [
+     "birthday",
+     "thank you"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small round seed pot with rows of orange dots on white.",
+    "zh": "插图：一只小圆种子罐，白底上绘着一排排橙色圆点。"
+   }
+  },
+  {
+   "id": "pc_30",
+   "title": {
+    "en": "Small black and orange seed pot",
+    "zh": "黑橙小种子罐"
+   },
+   "makerId": "mkr_10",
+   "kind": "series",
+   "hours": 10,
+   "materialsCents": 800,
+   "priceCents": 14500,
+   "story": {
+    "en": "A small seed pot with a white slip, painted in black and orange with geometric fine lines. About 9 cm across.",
+    "zh": "一只施白色泥浆的小种子罐，用黑色和橙色绘出几何细线纹。直径约9厘米。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 1
+    }
+   ],
+   "image": "/images/pc_30.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "seed pot",
+     "zh": "种子罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "geometric",
+     "fine line"
+    ],
+    "colors": [
+     "black",
+     "orange",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 9,
+     "h": 7
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "warm",
+     "bold"
+    ],
+    "occasions": [
+     "birthday"
+    ],
+    "recipients": [
+     "gift for mom"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small white seed pot painted with black and orange geometric fine lines.",
+    "zh": "插图：一只白色小种子罐，绘有黑橙两色的几何细线纹。"
+   }
+  },
+  {
+   "id": "pc_31",
+   "title": {
+    "en": "Small black and white stepped seed pot",
+    "zh": "黑白阶梯纹小种子罐"
+   },
+   "makerId": "mkr_10",
+   "kind": "series",
+   "hours": 6,
+   "materialsCents": 500,
+   "priceCents": 7200,
+   "story": {
+    "en": "A small seed pot with a band of black steps painted on white slip. About 7 cm across.",
+    "zh": "一只小种子罐，白色泥浆上绘着一道黑色阶梯纹带。直径约7厘米。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 1.5
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 1.5
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_31.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "seed pot",
+     "zh": "种子罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "step",
+     "band"
+    ],
+    "colors": [
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 7,
+     "h": 6
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "quiet"
+    ],
+    "occasions": [
+     "birthday",
+     "everyday"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small white seed pot with a band of black steps.",
+    "zh": "插图：一只白色小种子罐，绘有一道黑色阶梯纹带。"
+   }
+  },
+  {
+   "id": "pc_32",
+   "title": {
+    "en": "Orange and black geometric jar",
+    "zh": "橙黑几何纹陶罐"
+   },
+   "makerId": "mkr_10",
+   "kind": "series",
+   "hours": 22,
+   "materialsCents": 1800,
+   "priceCents": 32000,
+   "story": {
+    "en": "A jar with a white slip and orange and black geometric bands from shoulder to base. About 15 cm tall.",
+    "zh": "一只施白色泥浆的陶罐，从肩部到底部绘有橙黑两色的几何纹带。约15厘米高。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_32.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "jar",
+     "zh": "陶罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "geometric",
+     "band"
+    ],
+    "colors": [
+     "orange",
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 14,
+     "h": 15
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "earthy"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for dad"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a white jar with orange and black geometric bands.",
+    "zh": "插图：一只白色陶罐，绘有橙黑两色的几何纹带。"
+   }
+  },
+  {
+   "id": "pc_33",
+   "title": {
+    "en": "Black and white fine-line bowl",
+    "zh": "黑白细线纹陶碗"
+   },
+   "makerId": "mkr_11",
+   "kind": "featured",
+   "hours": 40,
+   "materialsCents": 3000,
+   "priceCents": 65000,
+   "story": {
+    "en": "A deep bowl with a white slip, painted inside and out with black fine lines. About 20 cm across.",
+    "zh": "一只施白色泥浆的深陶碗，里外都用黑色绘满细线纹。直径约20厘米。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the clay",
+      "zh": "备陶土"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 12
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 14
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 4
+    }
+   ],
+   "image": "/images/pc_33.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "bowl",
+     "zh": "陶碗"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "fine line"
+    ],
+    "colors": [
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 20,
+     "h": 11
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "elegant",
+     "quiet"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a deep white bowl covered with black fine lines.",
+    "zh": "插图：一只白色深碗，绘满黑色细线纹。"
+   }
+  },
+  {
+   "id": "pc_34",
+   "title": {
+    "en": "Small orange and black banded seed pot",
+    "zh": "橙黑纹带小种子罐"
+   },
+   "makerId": "mkr_11",
+   "kind": "series",
+   "hours": 8,
+   "materialsCents": 700,
+   "priceCents": 11000,
+   "story": {
+    "en": "A small seed pot with two black bands and one orange band painted on white slip. About 8 cm across.",
+    "zh": "一只小种子罐，白色泥浆上绘着两道黑色纹带和一道橙色纹带。直径约8厘米。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 1.5
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_34.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "seed pot",
+     "zh": "种子罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "band"
+    ],
+    "colors": [
+     "orange",
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 8,
+     "h": 6
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "earthy",
+     "warm"
+    ],
+    "occasions": [
+     "thank you",
+     "housewarming"
+    ],
+    "recipients": [
+     "gift for dad",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small white seed pot with black and orange bands.",
+    "zh": "插图：一只白色小种子罐，绘有黑色和橙色纹带。"
+   }
+  },
+  {
+   "id": "pc_35",
+   "title": {
+    "en": "Black, orange and white geometric jar",
+    "zh": "黑橙白几何纹陶罐"
+   },
+   "makerId": "mkr_11",
+   "kind": "series",
+   "hours": 16,
+   "materialsCents": 1400,
+   "priceCents": 24000,
+   "story": {
+    "en": "A jar with a white slip and black and orange geometric shapes painted around the body. About 13 cm tall.",
+    "zh": "一只施白色泥浆的陶罐，器身一圈绘着黑橙两色的几何图形。约13厘米高。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_35.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "jar",
+     "zh": "陶罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "geometric"
+    ],
+    "colors": [
+     "black",
+     "orange",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 12,
+     "h": 13
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "bright"
+    ],
+    "occasions": [
+     "housewarming",
+     "holiday"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a white jar with black and orange geometric shapes around the body.",
+    "zh": "插图：一只白色陶罐，器身一圈是黑橙两色的几何图形。"
+   }
+  },
+  {
+   "id": "pc_36",
+   "title": {
+    "en": "Small orange and white dotted bowl",
+    "zh": "橙白圆点小陶碗"
+   },
+   "makerId": "mkr_12",
+   "kind": "series",
+   "hours": 10,
+   "materialsCents": 900,
+   "priceCents": 13500,
+   "story": {
+    "en": "A small bowl with a white slip and a ring of orange dots painted below the rim. About 12 cm across.",
+    "zh": "一只施白色泥浆的小陶碗，碗口下方绘着一圈橙色圆点。直径约12厘米。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 1
+    }
+   ],
+   "image": "/images/pc_36.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "bowl",
+     "zh": "陶碗"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "dot"
+    ],
+    "colors": [
+     "orange",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 12,
+     "h": 6
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "soft",
+     "cheerful"
+    ],
+    "occasions": [
+     "everyday",
+     "thank you"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "gift for mom"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small white bowl with a ring of orange dots below the rim.",
+    "zh": "插图：一只白色小碗，碗口下方是一圈橙色圆点。"
+   }
+  },
+  {
+   "id": "pc_37",
+   "title": {
+    "en": "Small black and white fine-line seed pot",
+    "zh": "黑白细线纹小种子罐"
+   },
+   "makerId": "mkr_12",
+   "kind": "series",
+   "hours": 7,
+   "materialsCents": 600,
+   "priceCents": 8800,
+   "story": {
+    "en": "A small seed pot with a white slip and black fine lines painted from the opening down. About 7 cm across.",
+    "zh": "一只施白色泥浆的小种子罐，从开口向下绘着黑色细线纹。直径约7厘米。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 1.5
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_37.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "seed pot",
+     "zh": "种子罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "fine line"
+    ],
+    "colors": [
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 7,
+     "h": 6
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "quiet",
+     "calm"
+    ],
+    "occasions": [
+     "everyday",
+     "thank you"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small white seed pot with black fine lines from the opening down.",
+    "zh": "插图：一只白色小种子罐，从开口向下绘着黑色细线纹。"
+   }
+  },
+  {
+   "id": "pc_38",
+   "title": {
+    "en": "Black and orange geometric jar with fine lines",
+    "zh": "黑橙几何细线纹陶罐"
+   },
+   "makerId": "mkr_12",
+   "kind": "featured",
+   "hours": 48,
+   "materialsCents": 3500,
+   "priceCents": 78000,
+   "story": {
+    "en": "A jar with a white slip, painted with black and orange geometric shapes and fine lines from rim to base. About 20 cm tall.",
+    "zh": "一只施白色泥浆的陶罐，从口沿到底部绘满黑橙两色的几何图形和细线纹。约20厘米高。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the clay",
+      "zh": "备陶土"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 14
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 18
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 4
+    }
+   ],
+   "image": "/images/pc_38.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "jar",
+     "zh": "陶罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "geometric",
+     "fine line"
+    ],
+    "colors": [
+     "black",
+     "orange",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 18,
+     "h": 20
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "elegant"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a white jar painted with black and orange geometric shapes and fine lines.",
+    "zh": "插图：一只白色陶罐，绘满黑橙两色的几何图形和细线纹。"
+   }
+  },
+  {
+   "id": "pc_39",
+   "title": {
+    "en": "Large black and white stepped jar",
+    "zh": "黑白阶梯纹大陶罐"
+   },
+   "makerId": "mkr_13",
+   "kind": "featured",
+   "hours": 120,
+   "materialsCents": 9000,
+   "priceCents": 240000,
+   "story": {
+    "en": "A large jar with thin walls and a white slip, painted with black steps and fine lines. About 30 cm tall.",
+    "zh": "一只薄壁大陶罐，施白色泥浆，绘有黑色阶梯纹和细线纹。约30厘米高。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the clay",
+      "zh": "备陶土"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 36
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 20
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 46
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 10
+    }
+   ],
+   "image": "/images/pc_39.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "jar",
+     "zh": "陶罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "step",
+     "fine line"
+    ],
+    "colors": [
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 28,
+     "h": 30
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "elegant"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a large white jar painted with black steps and fine lines.",
+    "zh": "插图：一只白色大陶罐，绘有黑色阶梯纹和细线纹。"
+   }
+  },
+  {
+   "id": "pc_40",
+   "title": {
+    "en": "Tiny white seed pot with black dots",
+    "zh": "黑点白色迷你种子罐"
+   },
+   "makerId": "mkr_13",
+   "kind": "series",
+   "hours": 4,
+   "materialsCents": 400,
+   "priceCents": 4500,
+   "story": {
+    "en": "A tiny seed pot with a white slip and small black dots around the opening. About 4 cm across, small enough for a shelf or a windowsill.",
+    "zh": "一只迷你种子罐，施白色泥浆，开口一圈点着黑色小圆点。直径约4厘米，小到可以放在书架或窗台上。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_40.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "seed pot",
+     "zh": "种子罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "dot"
+    ],
+    "colors": [
+     "white",
+     "black"
+    ],
+    "sizeCm": {
+     "w": 4,
+     "h": 4
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "quiet",
+     "playful"
+    ],
+    "occasions": [
+     "everyday",
+     "thank you"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a tiny white seed pot with small black dots around the opening.",
+    "zh": "插图：一只白色迷你种子罐，开口一圈是黑色小圆点。"
+   }
+  },
+  {
+   "id": "pc_41",
+   "title": {
+    "en": "Black jacket with red, yellow and white patchwork bands",
+    "zh": "红黄白拼布条带黑色夹克"
+   },
+   "makerId": "mkr_14",
+   "kind": "featured",
+   "hours": 60,
+   "materialsCents": 6000,
+   "priceCents": 68000,
+   "story": {
+    "en": "A black cotton jacket with three bands of red, yellow and white patchwork across the back and sleeves. Rickrack runs between the bands, and it fits a women's medium.",
+    "zh": "一件黑色棉质夹克，背部和袖子上横着三道红、黄、白三色的拼布条带。条带之间缝有波浪花边，适合女士中码。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 14
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 16
+    },
+    {
+     "step": {
+      "en": "Sewing the jacket",
+      "zh": "缝制夹克"
+     },
+     "hours": 18
+    },
+    {
+     "step": {
+      "en": "Adding rickrack",
+      "zh": "缝上波浪花边"
+     },
+     "hours": 6
+    }
+   ],
+   "image": "/images/pc_41.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "jacket",
+     "zh": "夹克"
+    },
+    "materials": [
+     "cotton",
+     "thread",
+     "rickrack"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "band",
+     "square",
+     "zigzag"
+    ],
+    "colors": [
+     "black",
+     "red",
+     "yellow",
+     "white"
+    ],
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "bright"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a black jacket with red, yellow and white patchwork bands across the back and sleeves.",
+    "zh": "插图：一件黑色夹克，背部和袖子上是红黄白三色拼布条带。"
+   }
+  },
+  {
+   "id": "pc_42",
+   "title": {
+    "en": "Blue and white geometric patchwork skirt",
+    "zh": "蓝白几何拼布裙"
+   },
+   "makerId": "mkr_14",
+   "kind": "series",
+   "hours": 30,
+   "materialsCents": 3500,
+   "priceCents": 32000,
+   "story": {
+    "en": "A long cotton skirt with two bands of blue and white geometric patchwork, pieced from small squares and triangles. It fits a women's medium and is about 90 cm long.",
+    "zh": "一条棉质长裙，缝有两道蓝白两色的几何拼布条带，由小方块和三角形拼成。适合女士中码，约90厘米长。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Sewing the skirt",
+      "zh": "缝制裙子"
+     },
+     "hours": 8
+    }
+   ],
+   "image": "/images/pc_42.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "skirt",
+     "zh": "裙子"
+    },
+    "materials": [
+     "cotton",
+     "thread"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "geometric",
+     "square",
+     "triangle"
+    ],
+    "colors": [
+     "blue",
+     "white"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "bright"
+    ],
+    "occasions": [
+     "everyday",
+     "holiday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a long skirt with two blue and white patchwork bands of squares and triangles.",
+    "zh": "插图：一条长裙，缝有两道由方块和三角形拼成的蓝白拼布条带。"
+   }
+  },
+  {
+   "id": "pc_43",
+   "title": {
+    "en": "Red, yellow and black patchwork skirt",
+    "zh": "红黄黑拼布裙"
+   },
+   "makerId": "mkr_14",
+   "kind": "series",
+   "hours": 22,
+   "materialsCents": 2400,
+   "priceCents": 19500,
+   "story": {
+    "en": "A cotton skirt with one wide band of red, yellow and black patchwork in stripes and zigzags, edged with rickrack. It fits a women's small to medium and is about 80 cm long.",
+    "zh": "一条棉质裙子，缝有一道宽宽的红、黄、黑三色拼布条带，由条纹和锯齿纹组成，边上缀着波浪花边。适合女士小码到中码，约80厘米长。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Sewing the skirt",
+      "zh": "缝制裙子"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Adding rickrack",
+      "zh": "缝上波浪花边"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_43.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "skirt",
+     "zh": "裙子"
+    },
+    "materials": [
+     "cotton",
+     "rickrack"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "stripe",
+     "zigzag"
+    ],
+    "colors": [
+     "red",
+     "yellow",
+     "black"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "warm",
+     "bright"
+    ],
+    "occasions": [
+     "birthday",
+     "holiday"
+    ],
+    "recipients": [
+     "gift for mom"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a skirt with a wide red, yellow and black patchwork band of stripes and zigzags.",
+    "zh": "插图：一条裙子，缝有一道由条纹和锯齿纹组成的红黄黑宽拼布条带。"
+   }
+  },
+  {
+   "id": "pc_44",
+   "title": {
+    "en": "Green jacket with yellow and white patchwork diamonds",
+    "zh": "黄白菱形拼布绿色夹克"
+   },
+   "makerId": "mkr_14",
+   "kind": "series",
+   "hours": 40,
+   "materialsCents": 4500,
+   "priceCents": 46000,
+   "story": {
+    "en": "A green cotton jacket with two yellow and white patchwork bands of small diamonds. It fits a men's large.",
+    "zh": "一件绿色棉质夹克，缝有两道由小菱形组成的黄白拼布条带。适合男士大码。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 9
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Sewing the jacket",
+      "zh": "缝制夹克"
+     },
+     "hours": 12
+    }
+   ],
+   "image": "/images/pc_44.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "jacket",
+     "zh": "夹克"
+    },
+    "materials": [
+     "cotton",
+     "thread"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "diamond",
+     "band"
+    ],
+    "colors": [
+     "green",
+     "yellow",
+     "white"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "bright",
+     "cheerful"
+    ],
+    "occasions": [
+     "holiday",
+     "birthday"
+    ],
+    "recipients": [
+     "gift for dad",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a green jacket with two yellow and white patchwork bands of small diamonds.",
+    "zh": "插图：一件绿色夹克，缝有两道由小菱形组成的黄白拼布条带。"
+   }
+  },
+  {
+   "id": "pc_45",
+   "title": {
+    "en": "Purple and yellow geometric patchwork skirt",
+    "zh": "紫黄几何拼布裙"
+   },
+   "makerId": "mkr_15",
+   "kind": "series",
+   "hours": 32,
+   "materialsCents": 3600,
+   "priceCents": 34000,
+   "story": {
+    "en": "A long cotton skirt with three narrow bands of purple and yellow geometric patchwork. It fits a women's large and is about 95 cm long.",
+    "zh": "一条棉质长裙，缝有三道窄窄的紫黄两色几何拼布条带。适合女士大码，约95厘米长。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 9
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Sewing the skirt",
+      "zh": "缝制裙子"
+     },
+     "hours": 8
+    }
+   ],
+   "image": "/images/pc_45.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "skirt",
+     "zh": "裙子"
+    },
+    "materials": [
+     "cotton",
+     "thread"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "geometric",
+     "band",
+     "triangle"
+    ],
+    "colors": [
+     "purple",
+     "yellow"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "bright",
+     "playful"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a long skirt with three narrow purple and yellow patchwork bands.",
+    "zh": "插图：一条长裙，缝有三道窄窄的紫黄拼布条带。"
+   }
+  },
+  {
+   "id": "pc_46",
+   "title": {
+    "en": "Navy jacket with orange and white patchwork bands",
+    "zh": "橙白拼布条带藏青夹克"
+   },
+   "makerId": "mkr_15",
+   "kind": "featured",
+   "hours": 64,
+   "materialsCents": 6500,
+   "priceCents": 72000,
+   "story": {
+    "en": "A navy cotton jacket with four bands of orange and white patchwork in zigzags and squares, with rickrack between them. It fits a women's large.",
+    "zh": "一件藏青色棉质夹克，缝有四道由锯齿纹和方块组成的橙白拼布条带，条带之间缝有波浪花边。适合女士大码。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 18
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 14
+    },
+    {
+     "step": {
+      "en": "Sewing the jacket",
+      "zh": "缝制夹克"
+     },
+     "hours": 16
+    },
+    {
+     "step": {
+      "en": "Adding rickrack",
+      "zh": "缝上波浪花边"
+     },
+     "hours": 6
+    }
+   ],
+   "image": "/images/pc_46.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "jacket",
+     "zh": "夹克"
+    },
+    "materials": [
+     "cotton",
+     "thread",
+     "rickrack"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "zigzag",
+     "square",
+     "band"
+    ],
+    "colors": [
+     "navy",
+     "orange",
+     "white"
+    ],
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "elegant"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a navy jacket with four orange and white patchwork bands.",
+    "zh": "插图：一件藏青色夹克，缝有四道橙白拼布条带。"
+   }
+  },
+  {
+   "id": "pc_47",
+   "title": {
+    "en": "Teal and black striped patchwork skirt",
+    "zh": "青绿黑条纹拼布裙"
+   },
+   "makerId": "mkr_15",
+   "kind": "series",
+   "hours": 26,
+   "materialsCents": 3000,
+   "priceCents": 28000,
+   "story": {
+    "en": "A cotton skirt with bands of teal and black patchwork stripes between plain teal panels. It fits a women's medium and is about 85 cm long.",
+    "zh": "一条棉质裙子，素色青绿布面之间缝有青绿与黑色的拼布条纹带。适合女士中码，约85厘米长。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 7
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Sewing the skirt",
+      "zh": "缝制裙子"
+     },
+     "hours": 7
+    }
+   ],
+   "image": "/images/pc_47.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "skirt",
+     "zh": "裙子"
+    },
+    "materials": [
+     "cotton",
+     "thread"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "stripe",
+     "band"
+    ],
+    "colors": [
+     "teal",
+     "black"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "elegant"
+    ],
+    "occasions": [
+     "everyday"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a skirt with teal and black patchwork stripe bands.",
+    "zh": "插图：一条裙子，缝有青绿与黑色的拼布条纹带。"
+   }
+  },
+  {
+   "id": "pc_48",
+   "title": {
+    "en": "Red and white geometric patchwork jacket",
+    "zh": "红白几何拼布夹克"
+   },
+   "makerId": "mkr_15",
+   "kind": "series",
+   "hours": 42,
+   "materialsCents": 4800,
+   "priceCents": 48000,
+   "story": {
+    "en": "A white cotton jacket with red geometric patchwork bands of triangles and squares on the front and back. It fits a men's medium.",
+    "zh": "一件白色棉质夹克，前后都缝有由三角形和方块组成的红色几何拼布条带。适合男士中码。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 9
+    },
+    {
+     "step": {
+      "en": "Sewing the jacket",
+      "zh": "缝制夹克"
+     },
+     "hours": 12
+    }
+   ],
+   "image": "/images/pc_48.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "jacket",
+     "zh": "夹克"
+    },
+    "materials": [
+     "cotton",
+     "thread"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "geometric",
+     "triangle",
+     "square"
+    ],
+    "colors": [
+     "red",
+     "white"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "bright"
+    ],
+    "occasions": [
+     "holiday",
+     "birthday"
+    ],
+    "recipients": [
+     "gift for dad",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a white jacket with red patchwork bands of triangles and squares.",
+    "zh": "插图：一件白色夹克，缝有由三角形和方块组成的红色拼布条带。"
+   }
+  },
+  {
+   "id": "pc_49",
+   "title": {
+    "en": "Long black skirt with red, blue and yellow patchwork bands",
+    "zh": "红蓝黄拼布条带黑色长裙"
+   },
+   "makerId": "mkr_16",
+   "kind": "featured",
+   "hours": 56,
+   "materialsCents": 5500,
+   "priceCents": 58000,
+   "story": {
+    "en": "A long black cotton skirt with five bands of red, blue and yellow patchwork, each pieced in squares, diamonds or zigzags. Rickrack edges every band, and the skirt is about 100 cm long.",
+    "zh": "一条黑色棉质长裙，缝有五道红、蓝、黄三色拼布条带，每道由方块、菱形或锯齿纹拼成。每道条带都缀着波浪花边，裙长约100厘米。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 14
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 14
+    },
+    {
+     "step": {
+      "en": "Sewing the skirt",
+      "zh": "缝制裙子"
+     },
+     "hours": 12
+    },
+    {
+     "step": {
+      "en": "Adding rickrack",
+      "zh": "缝上波浪花边"
+     },
+     "hours": 8
+    }
+   ],
+   "image": "/images/pc_49.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "skirt",
+     "zh": "裙子"
+    },
+    "materials": [
+     "cotton",
+     "thread",
+     "rickrack"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "band",
+     "square",
+     "diamond",
+     "zigzag"
+    ],
+    "colors": [
+     "black",
+     "red",
+     "blue",
+     "yellow"
+    ],
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "cheerful"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a long black skirt with five red, blue and yellow patchwork bands.",
+    "zh": "插图：一条黑色长裙，缝有五道红蓝黄拼布条带。"
+   }
+  },
+  {
+   "id": "pc_50",
+   "title": {
+    "en": "Child's yellow and blue patchwork jacket",
+    "zh": "黄蓝儿童拼布夹克"
+   },
+   "makerId": "mkr_16",
+   "kind": "series",
+   "hours": 16,
+   "materialsCents": 1600,
+   "priceCents": 16500,
+   "story": {
+    "en": "A child's yellow cotton jacket with one band of blue and white patchwork squares across the chest. It fits ages 4 to 5.",
+    "zh": "一件黄色儿童棉质夹克，胸前横着一道蓝白方块拼布条带。适合4到5岁。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Sewing the jacket",
+      "zh": "缝制夹克"
+     },
+     "hours": 5
+    }
+   ],
+   "image": "/images/pc_50.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "jacket",
+     "zh": "夹克"
+    },
+    "materials": [
+     "cotton",
+     "thread"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "square",
+     "band"
+    ],
+    "colors": [
+     "yellow",
+     "blue",
+     "white"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "cheerful",
+     "playful"
+    ],
+    "occasions": [
+     "birthday"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a child's yellow jacket with a blue and white patchwork band across the chest.",
+    "zh": "插图：一件黄色儿童夹克，胸前是一道蓝白拼布条带。"
+   }
+  },
+  {
+   "id": "pc_51",
+   "title": {
+    "en": "Green and orange geometric patchwork skirt",
+    "zh": "绿橙几何拼布裙"
+   },
+   "makerId": "mkr_16",
+   "kind": "series",
+   "hours": 28,
+   "materialsCents": 3200,
+   "priceCents": 30000,
+   "story": {
+    "en": "A cotton skirt with two bands of green and orange geometric patchwork in small triangles. It fits a women's small and is about 80 cm long.",
+    "zh": "一条棉质裙子，缝有两道由小三角形组成的绿橙几何拼布条带。适合女士小码，约80厘米长。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Sewing the skirt",
+      "zh": "缝制裙子"
+     },
+     "hours": 7
+    }
+   ],
+   "image": "/images/pc_51.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "skirt",
+     "zh": "裙子"
+    },
+    "materials": [
+     "cotton",
+     "thread"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "geometric",
+     "triangle"
+    ],
+    "colors": [
+     "green",
+     "orange"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "earthy",
+     "cheerful"
+    ],
+    "occasions": [
+     "everyday",
+     "holiday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a skirt with two green and orange patchwork bands of small triangles.",
+    "zh": "插图：一条裙子，缝有两道由小三角形组成的绿橙拼布条带。"
+   }
+  },
+  {
+   "id": "pc_52",
+   "title": {
+    "en": "Red jacket with black and yellow patchwork bands",
+    "zh": "黑黄拼布条带红色夹克"
+   },
+   "makerId": "mkr_17",
+   "kind": "featured",
+   "hours": 70,
+   "materialsCents": 7000,
+   "priceCents": 84000,
+   "story": {
+    "en": "A red cotton jacket with black and yellow patchwork bands of diamonds and zigzags on the body and sleeves. Rickrack runs along each band, and it fits a men's large.",
+    "zh": "一件红色棉质夹克，衣身和袖子上缝有由菱形和锯齿纹组成的黑黄拼布条带。每道条带边都缀着波浪花边，适合男士大码。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 8
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 18
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 18
+    },
+    {
+     "step": {
+      "en": "Sewing the jacket",
+      "zh": "缝制夹克"
+     },
+     "hours": 18
+    },
+    {
+     "step": {
+      "en": "Adding rickrack",
+      "zh": "缝上波浪花边"
+     },
+     "hours": 8
+    }
+   ],
+   "image": "/images/pc_52.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "jacket",
+     "zh": "夹克"
+    },
+    "materials": [
+     "cotton",
+     "thread",
+     "rickrack"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "diamond",
+     "zigzag",
+     "band"
+    ],
+    "colors": [
+     "red",
+     "black",
+     "yellow"
+    ],
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "warm"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "gift for dad",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a red jacket with black and yellow patchwork bands on the body and sleeves.",
+    "zh": "插图：一件红色夹克，衣身和袖子上是黑黄拼布条带。"
+   }
+  },
+  {
+   "id": "pc_53",
+   "title": {
+    "en": "Pink and white zigzag patchwork skirt",
+    "zh": "粉白锯齿纹拼布裙"
+   },
+   "makerId": "mkr_17",
+   "kind": "series",
+   "hours": 24,
+   "materialsCents": 2800,
+   "priceCents": 26000,
+   "story": {
+    "en": "A cotton skirt with one band of pink and white zigzag patchwork between two pink stripes. It fits a women's medium and is about 85 cm long.",
+    "zh": "一条棉质裙子，两道粉色条纹之间缝有一道粉白锯齿纹拼布条带。适合女士中码，约85厘米长。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Cutting and turning the bands",
+      "zh": "裁开长条并转向排列"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Sewing the skirt",
+      "zh": "缝制裙子"
+     },
+     "hours": 7
+    }
+   ],
+   "image": "/images/pc_53.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "skirt",
+     "zh": "裙子"
+    },
+    "materials": [
+     "cotton",
+     "thread"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "zigzag",
+     "stripe"
+    ],
+    "colors": [
+     "pink",
+     "white"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "soft",
+     "cheerful"
+    ],
+    "occasions": [
+     "birthday",
+     "everyday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "gift for mom"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a skirt with a pink and white zigzag patchwork band between two pink stripes.",
+    "zh": "插图：一条裙子，两道粉色条纹之间是一道粉白锯齿纹拼布条带。"
+   }
+  },
+  {
+   "id": "pc_54",
+   "title": {
+    "en": "Child's blue and yellow patchwork skirt",
+    "zh": "蓝黄儿童拼布裙"
+   },
+   "makerId": "mkr_17",
+   "kind": "series",
+   "hours": 6,
+   "materialsCents": 700,
+   "priceCents": 5800,
+   "story": {
+    "en": "A small child's cotton skirt with one narrow band of blue and yellow patchwork squares. It fits ages 2 to 3.",
+    "zh": "一条儿童小棉裙，缝有一道窄窄的蓝黄方块拼布条带。适合2到3岁。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 1.5
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 1.5
+    },
+    {
+     "step": {
+      "en": "Sewing the skirt",
+      "zh": "缝制裙子"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_54.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "skirt",
+     "zh": "裙子"
+    },
+    "materials": [
+     "cotton",
+     "thread"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "square",
+     "band"
+    ],
+    "colors": [
+     "blue",
+     "yellow"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 14
+   },
+   "vibe": {
+    "moods": [
+     "cheerful",
+     "playful"
+    ],
+    "occasions": [
+     "birthday"
+    ],
+    "recipients": [
+     "gift for a friend",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small child's skirt with a narrow blue and yellow patchwork band of squares.",
+    "zh": "插图：一条儿童小裙，缝有一道窄窄的蓝黄方块拼布条带。"
+   }
+  }
+ ],
+ "communities": [
+  {
+   "id": "com_dine",
+   "name": {
+    "en": "Diné Weaving and Silver Co-op",
+    "zh": "纳瓦霍（Diné）编织与银饰合作社"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Diné (Navajo)",
+    "zh": "纳瓦霍（Diné）"
+   },
+   "place": {
+    "en": "Navajo Nation, Arizona, USA",
+    "zh": "美国亚利桑那州纳瓦霍保留区"
+   },
+   "craft": {
+    "en": "Wool weavings, silver and turquoise jewelry",
+    "zh": "羊毛编织与绿松石银饰"
+   },
+   "about": {
+    "en": "Diné (Navajo) weavers at the co-op weave wool on upright looms, and its smiths decorate silver with hand stamps and set turquoise in it. The co-op makes wall weavings, rugs, earrings, rings, pendant necklaces and cuff bracelets.",
+    "zh": "合作社的纳瓦霍（Diné）织工在立式织机上织羊毛，银匠用手工印模为银器压花，并在银饰上镶嵌绿松石。合作社制作壁挂编织、地毯、耳环、戒指、吊坠项链和手镯。"
+   },
+   "protocols": [
+    {
+     "en": "No ceremonial pieces or designs, such as Yei or sandpainting designs.",
+     "zh": "不收录仪式用品或仪式图案，例如Yei图案或沙画图案。"
+    },
+    {
+     "en": "No meanings for patterns. A pattern is described by its shapes and colors.",
+     "zh": "不解释图案的含义。图案只用形状和颜色来描述。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "The Navajo Nation, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由纳瓦霍（Diné）族依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of the Navajo Nation or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是纳瓦霍（Diné）族的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_01",
+   "makerIds": [
+    "mkr_01",
+    "mkr_02",
+    "mkr_03"
+   ],
+   "studioId": "std_dine",
+   "storefrontId": "sto_01",
+   "projectIds": [
+    "prj_01"
+   ],
+   "demo": true
+  },
+  {
+   "id": "com_ojibwe",
+   "name": {
+    "en": "An Ojibwe beadwork co-op",
+    "zh": "一个奥吉布瓦（Ojibwe）串珠合作社"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Ojibwe",
+    "zh": "奥吉布瓦（Ojibwe）"
+   },
+   "place": {
+    "en": "Minnesota, USA",
+    "zh": "美国明尼苏达州"
+   },
+   "craft": {
+    "en": "Floral beadwork: earrings, pouches and necklaces",
+    "zh": "花卉串珠：耳环、小包和项链"
+   },
+   "about": {
+    "en": "Ojibwe beadworkers at the co-op stitch glass seed beads onto cloth or leather, often in floral designs, and also weave beads on a loom. The co-op makes beaded earrings, pouches and necklaces.",
+    "zh": "合作社的奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠缝在布或皮革上，常做成花卉图案，也在织机上编串珠。合作社制作串珠耳环、小包和项链。"
+   },
+   "protocols": [
+    {
+     "en": "No regalia, such as bandolier bags or dance aprons.",
+     "zh": "不收录典礼服饰，例如斜挎珠饰袋或舞蹈围裙。"
+    },
+    {
+     "en": "No pipe or tobacco bags.",
+     "zh": "不收录烟斗袋或烟草袋。"
+    },
+    {
+     "en": "No meanings for flowers or plants.",
+     "zh": "不解释花卉或植物的含义。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "An Ojibwe tribe or band, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由某个奥吉布瓦（Ojibwe）部落或族群依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of an Ojibwe tribe or band or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是某个奥吉布瓦（Ojibwe）部落或族群的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_02",
+   "makerIds": [
+    "mkr_04",
+    "mkr_05",
+    "mkr_06",
+    "mkr_07",
+    "mkr_08"
+   ],
+   "storefrontId": "sto_02",
+   "projectIds": [
+    "prj_02"
+   ],
+   "demo": true
+  },
+  {
+   "id": "com_acoma",
+   "name": {
+    "en": "An Acoma pottery studio",
+    "zh": "一个阿科马（Acoma）陶艺坊"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Acoma Pueblo",
+    "zh": "阿科马（Acoma）"
+   },
+   "place": {
+    "en": "New Mexico, USA",
+    "zh": "美国新墨西哥州"
+   },
+   "craft": {
+    "en": "Coil-built, hand-painted pottery",
+    "zh": "手工盘筑、手绘的陶器"
+   },
+   "about": {
+    "en": "Acoma potters at the studio coil their pots by hand with thin walls, cover them with a white slip, polish them with a smooth stone and paint them with a yucca brush. The studio makes jars, bowls and seed pots in black, orange and white.",
+    "zh": "陶艺坊的阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，用光滑的石头打磨，再用yucca（丝兰）笔绘制。陶艺坊制作黑、橙、白三色的陶罐、陶碗和种子罐。"
+   },
+   "protocols": [
+    {
+     "en": "No ceremonial pottery or designs.",
+     "zh": "不收录仪式用陶器或仪式图案。"
+    },
+    {
+     "en": "No named designs and no meanings for designs.",
+     "zh": "不使用有名称的图案，也不解释图案的含义。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "The Pueblo of Acoma, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由阿科马（Acoma）普韦布洛依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of the Pueblo of Acoma or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是阿科马（Acoma）普韦布洛的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_03",
+   "makerIds": [
+    "mkr_09",
+    "mkr_10",
+    "mkr_11",
+    "mkr_12",
+    "mkr_13"
+   ],
+   "storefrontId": "sto_03",
+   "projectIds": [
+    "prj_03"
+   ],
+   "demo": true
+  },
+  {
+   "id": "com_seminole",
+   "name": {
+    "en": "A Seminole patchwork co-op",
+    "zh": "一个塞米诺尔（Seminole）拼布合作社"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Seminole",
+    "zh": "塞米诺尔（Seminole）"
+   },
+   "place": {
+    "en": "Florida, USA",
+    "zh": "美国佛罗里达州"
+   },
+   "craft": {
+    "en": "Patchwork skirts and jackets",
+    "zh": "拼布裙和拼布夹克"
+   },
+   "about": {
+    "en": "Seminole sewers at the co-op sew strips of cloth into long bands on sewing machines, then cut the bands and piece them back together in rows. The co-op makes patchwork skirts and jackets, including children's sizes.",
+    "zh": "合作社的塞米诺尔（Seminole）缝纫匠人用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。合作社制作拼布裙和拼布夹克，也有儿童尺码。"
+   },
+   "protocols": [
+    {
+     "en": "No named patchwork designs and no meanings for them.",
+     "zh": "不使用有名称的拼布图案，也不解释其含义。"
+    },
+    {
+     "en": "Nothing sold as a costume.",
+     "zh": "任何作品都不作为戏服出售。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "The Seminole Tribe of Florida, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由佛罗里达州塞米诺尔（Seminole）部落依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of the Seminole Tribe of Florida or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是佛罗里达州塞米诺尔（Seminole）部落的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_04",
+   "makerIds": [
+    "mkr_14",
+    "mkr_15",
+    "mkr_16",
+    "mkr_17"
+   ],
+   "storefrontId": "sto_04",
+   "projectIds": [
+    "prj_04"
+   ],
+   "demo": true
+  }
+ ],
+ "searchIndex": [
+  {
+   "pieceId": "pc_01",
+   "communityId": "com_dine",
+   "makerId": "mkr_01",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_01",
+   "pictureNote": {
+    "en": "Illustration of a small wall weaving in grey, red and black with a stepped diamond at its center.",
+    "zh": "插图：一幅灰、红、黑三色的小幅壁挂编织，中央是一个阶梯菱形。"
+   },
+   "embedText": "passage: wall weaving | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven | motifs: diamond, step | colors: grey, red, black | mood: warm, bold | for: birthday, gift for mom | A small wool weaving in grey, red and black, with a stepped diamond at its center.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_02",
+   "communityId": "com_dine",
+   "makerId": "mkr_02",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_02",
+   "pictureNote": {
+    "en": "Illustration of a pair of small oval silver earrings, each stamped with a ring of dots.",
+    "zh": "插图：一对小巧的椭圆形银耳环，每只都压印着一圈圆点。"
+   },
+   "embedText": "passage: earrings | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: silver | techniques: hand-stamped | motifs: dot | colors: silver | mood: elegant, quiet | for: everyday, gift for a friend, gift for a sister | A pair of small silver ovals, each stamped with a ring of dots.",
+   "salesThisMonth": 5,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_03",
+   "communityId": "com_dine",
+   "makerId": "mkr_03",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_03",
+   "pictureNote": {
+    "en": "Illustration of a rug in brown, white and grey wool with bands of small diamonds across it.",
+    "zh": "插图：一块棕、白、灰三色的羊毛地毯，横贯几道小菱形纹带。"
+   },
+   "embedText": "passage: rug | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven, hand-spun | motifs: band, diamond | colors: brown, white, grey | mood: earthy, calm, warm | for: housewarming, for myself | A rug in undyed brown, white and grey wool, with bands of small diamonds across it.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_04",
+   "communityId": "com_dine",
+   "makerId": "mkr_01",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_01",
+   "pictureNote": {
+    "en": "Illustration of a rug with three red and black stepped diamonds on a white ground.",
+    "zh": "插图：一块白底地毯，织着三个红黑两色的阶梯菱形。"
+   },
+   "embedText": "passage: rug | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven, hand-dyed | motifs: diamond, step | colors: red, black, white | mood: bold, warm | for: housewarming, for myself, gift for dad | Three stepped diamonds in red and black on a white ground.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_05",
+   "communityId": "com_dine",
+   "makerId": "mkr_02",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_02",
+   "pictureNote": {
+    "en": "Illustration of a weaving with wide and narrow stripes in indigo blue and white.",
+    "zh": "插图：一幅靛蓝与白色宽窄条纹相间的编织。"
+   },
+   "embedText": "passage: wall weaving | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven, hand-spun, hand-dyed | motifs: stripe | colors: indigo, white | mood: calm, elegant | for: housewarming, for myself | Wide and narrow stripes in indigo blue and natural white.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_06",
+   "communityId": "com_dine",
+   "makerId": "mkr_03",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_03",
+   "pictureNote": {
+    "en": "Illustration of a weaving with grey and white bands that bend into zigzags.",
+    "zh": "插图：一幅编织，灰白两色的纹带折成一道道锯齿。"
+   },
+   "embedText": "passage: wall weaving | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven | motifs: zigzag, band | colors: grey, white | mood: calm, playful | for: housewarming, for myself, gift for a friend | Grey and white bands that bend into zigzags across the weaving.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_07",
+   "communityId": "com_dine",
+   "makerId": "mkr_02",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_02",
+   "pictureNote": {
+    "en": "Illustration of a palm-sized weaving in red and grey stripes.",
+    "zh": "插图：一幅巴掌大小的红灰条纹编织。"
+   },
+   "embedText": "passage: wall weaving | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven | motifs: stripe | colors: red, grey | mood: warm, cheerful | for: birthday, thank you, gift for mom, gift for a friend | A palm-sized weaving in red and grey, about 15 by 15 cm, for a shelf or a desk.",
+   "salesThisMonth": 4,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_08",
+   "communityId": "com_dine",
+   "makerId": "mkr_03",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_03",
+   "pictureNote": {
+    "en": "Illustration of a thin silver ring stamped all the way around with small chevrons.",
+    "zh": "插图：一枚细银戒，整圈压印着小小的人字纹。"
+   },
+   "embedText": "passage: ring | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: silver | techniques: hand-stamped, soldered | motifs: chevron | colors: silver | mood: quiet, elegant | for: everyday, for myself, gift for a friend | A narrow silver band stamped all the way around with small chevrons.",
+   "salesThisMonth": 3,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_09",
+   "communityId": "com_dine",
+   "makerId": "mkr_01",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_01",
+   "pictureNote": {
+    "en": "Illustration of a silver pendant with one small oval turquoise stone inside a stamped border, on a silver chain.",
+    "zh": "插图：一枚带压花边框的银吊坠，镶着一颗小椭圆形绿松石，配一条银链。"
+   },
+   "embedText": "passage: pendant necklace | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: silver, turquoise | techniques: hand-stamped, stone setting | motifs: line | colors: silver, turquoise | mood: elegant, calm | for: birthday, holiday, gift for mom, gift for a sister | One small oval of turquoise set in silver with a stamped border, on a silver chain.",
+   "salesThisMonth": 4,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_10",
+   "communityId": "com_dine",
+   "makerId": "mkr_03",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_03",
+   "pictureNote": {
+    "en": "Illustration of a pair of drop earrings, each a small turquoise stone in a plain silver setting.",
+    "zh": "插图：一对坠耳环，每只是一颗嵌在素面银托里的小绿松石。"
+   },
+   "embedText": "passage: earrings | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: silver, turquoise | techniques: stone setting | colors: silver, turquoise | mood: bright, elegant | for: holiday, gift for a sister, gift for a friend | Each earring is a small turquoise stone in a plain silver setting, hanging from a short wire.",
+   "salesThisMonth": 4,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_11",
+   "communityId": "com_dine",
+   "makerId": "mkr_02",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_02",
+   "pictureNote": {
+    "en": "Illustration of a weaving in red and white stripes with a band of red diamonds through the middle.",
+    "zh": "插图：一幅红白条纹编织，中间横贯一道红色菱形纹带。"
+   },
+   "embedText": "passage: wall weaving | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven, hand-dyed | motifs: stripe, diamond | colors: red, white | mood: bold, bright | for: housewarming, birthday, gift for mom | Red and white stripes with a band of red diamonds through the middle.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_12",
+   "communityId": "com_dine",
+   "makerId": "mkr_01",
+   "storefrontSlug": "dine-weavers",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_01",
+   "pictureNote": {
+    "en": "Illustration of a narrow silver cuff stamped with small dots and lines.",
+    "zh": "插图：一只细窄的银手镯，压印着小圆点和线条。"
+   },
+   "embedText": "passage: cuff bracelet | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: silver | techniques: hand-stamped, soldered | motifs: dot, line | colors: silver | mood: bold, elegant | for: everyday, gift for dad, for myself | A narrow silver cuff stamped with small dots and lines, to wear alone or with others.",
+   "salesThisMonth": 3,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_13",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_04",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_04",
+   "pictureNote": {
+    "en": "Illustration of a pair of beaded earrings with small pink and white flowers on green stems.",
+    "zh": "插图：一对串珠耳环，绿色花茎上缀着粉白两色的小花。"
+   },
+   "embedText": "passage: earrings | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, leather, thread | techniques: beadwork, hand-stitched | motifs: flower, bud | colors: pink, white, green | mood: soft, cheerful | for: birthday, everyday, gift for a sister, gift for a friend | A pair of beaded earrings with small pink and white flowers on green stems.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_14",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_04",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_04",
+   "pictureNote": {
+    "en": "Illustration of a pair of beaded earrings, each with one red flower and two green leaves.",
+    "zh": "插图：一对串珠耳环，每只上有一朵红花和两片绿叶。"
+   },
+   "embedText": "passage: earrings | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, leather | techniques: beadwork, hand-stitched | motifs: flower, leaf | colors: red, green | mood: bold, bright | for: birthday, holiday, gift for mom, gift for a friend | A pair of beaded earrings, each with one red flower and two green leaves.",
+   "salesThisMonth": 3,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_15",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_04",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_04",
+   "pictureNote": {
+    "en": "Illustration of a small black pouch with blue and yellow beaded flowers on a curving vine.",
+    "zh": "插图：一只黑色小包，弯曲的藤蔓上缀着蓝黄两色的串珠花朵。"
+   },
+   "embedText": "passage: pouch | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, cloth, thread | techniques: beadwork, hand-stitched | motifs: flower, vine | colors: blue, yellow, black | mood: bright, cheerful | for: birthday, thank you, gift for a friend, gift for a sister | A small flat pouch of black cloth with blue and yellow beaded flowers on a curving vine.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_16",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_05",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_05",
+   "pictureNote": {
+    "en": "Illustration of a pair of small beaded earrings shaped like green leaves with purple edges.",
+    "zh": "插图：一对叶片形的小串珠耳环，绿色叶子镶着紫边。"
+   },
+   "embedText": "passage: earrings | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, leather, thread | techniques: beadwork, hand-stitched | motifs: leaf | colors: purple, green | mood: calm, elegant | for: everyday, for myself, gift for a friend | A pair of small earrings, each a green beaded leaf with a purple edge.",
+   "salesThisMonth": 4,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_17",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_05",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_05",
+   "pictureNote": {
+    "en": "Illustration of a large black pouch covered with red and pink beaded flowers, leaves and vines.",
+    "zh": "插图：一只黑色大包，布满红粉两色的串珠花朵、叶子和藤蔓。"
+   },
+   "embedText": "passage: pouch | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, cloth, leather, thread | techniques: beadwork, hand-stitched | motifs: flower, leaf, vine | colors: black, red, pink, green | mood: bold, elegant | for: holiday, for myself | A large pouch of black cloth covered with red and pink beaded flowers, green leaves and vines.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_18",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_05",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_05",
+   "pictureNote": {
+    "en": "Illustration of a pair of earrings with clusters of blue and white beaded berries.",
+    "zh": "插图：一对耳环，缀着一簇簇蓝白两色的串珠浆果。"
+   },
+   "embedText": "passage: earrings | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, leather, thread | techniques: beadwork, hand-stitched | motifs: berry | colors: blue, white, green | mood: cheerful, playful | for: everyday, thank you, gift for a friend, for myself | A pair of earrings with clusters of blue and white beaded berries on short green stems.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_19",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_06",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_06",
+   "pictureNote": {
+    "en": "Illustration of a small brown leather pouch with orange and yellow beaded flowers and buds.",
+    "zh": "插图：一只棕色小皮包，缀着橙黄两色的串珠花朵和花苞。"
+   },
+   "embedText": "passage: pouch | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, leather, thread | techniques: beadwork, hand-stitched | motifs: flower, bud | colors: orange, yellow, brown | mood: warm, cheerful | for: thank you, birthday, gift for a friend, gift for a sister | A small brown leather pouch with orange and yellow beaded flowers and buds across the front.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_20",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_06",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_06",
+   "pictureNote": {
+    "en": "Illustration of a beaded pendant necklace with two green leaves on a white vine.",
+    "zh": "插图：一条串珠吊坠项链，白色藤蔓上有两片绿叶。"
+   },
+   "embedText": "passage: pendant necklace | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, leather, thread | techniques: beadwork, hand-stitched | motifs: leaf, vine | colors: green, white | mood: calm, soft | for: everyday, birthday, gift for a sister, for myself | A beaded pendant of two green leaves on a white vine, hung on a strand of small white beads.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_21",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_06",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_06",
+   "pictureNote": {
+    "en": "Illustration of a flat loom-beaded necklace with small red flowers on a black and white band.",
+    "zh": "插图：一条织机串珠扁项链，黑白珠带上排着一行红色小花。"
+   },
+   "embedText": "passage: bead necklace | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, thread | techniques: beadwork, loom-woven | motifs: flower | colors: red, black, white | mood: bold, elegant | for: holiday, birthday, gift for mom, for myself | A flat necklace of glass beads woven on a loom, with a row of small red flowers on a black and white band.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_22",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_07",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_07",
+   "pictureNote": {
+    "en": "Illustration of a pair of small round earrings, each a yellow beaded flower with a blue center.",
+    "zh": "插图：一对小圆耳环，每只是一朵蓝色花心的黄色串珠花。"
+   },
+   "embedText": "passage: earrings | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, leather, thread | techniques: beadwork, hand-stitched | motifs: flower | colors: yellow, blue | mood: bright, playful | for: birthday, everyday, gift for a sister, gift for a friend | A pair of small round earrings, each a yellow beaded flower with a blue center.",
+   "salesThisMonth": 5,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_23",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_07",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_07",
+   "pictureNote": {
+    "en": "Illustration of a beaded pendant necklace with one pink flower and green leaves.",
+    "zh": "插图：一条串珠吊坠项链，一朵粉色花配着绿叶。"
+   },
+   "embedText": "passage: pendant necklace | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, leather, thread | techniques: beadwork, hand-stitched | motifs: flower, leaf | colors: pink, green | mood: soft, cheerful | for: birthday, thank you, gift for mom, gift for a sister | A beaded pendant of one pink flower with green leaves, hung on a strand of small green beads.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_24",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_07",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_07",
+   "pictureNote": {
+    "en": "Illustration of a cream pouch with blue and purple beaded vines, leaves and berries.",
+    "zh": "插图：一只米色小包，缀着蓝紫两色的串珠藤蔓、叶子和浆果。"
+   },
+   "embedText": "passage: pouch | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, cloth, leather, thread | techniques: beadwork, hand-stitched | motifs: vine, leaf, berry | colors: cream, blue, purple | mood: calm, elegant | for: holiday, for myself, gift for a sister | A pouch of cream cloth with blue and purple beaded vines, leaves and berries.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_25",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_08",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_08",
+   "pictureNote": {
+    "en": "Illustration of a brown leather pouch with green and yellow beaded leaves on the flap.",
+    "zh": "插图：一只棕色皮包，翻盖上缀着绿黄两色的串珠叶子。"
+   },
+   "embedText": "passage: pouch | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: leather, glass beads, thread | techniques: beadwork, hand-stitched | motifs: leaf | colors: brown, green, yellow | mood: earthy, calm | for: holiday, thank you, gift for dad, for myself | A brown leather pouch with a spray of green and yellow beaded leaves on the flap.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_26",
+   "communityId": "com_ojibwe",
+   "makerId": "mkr_08",
+   "storefrontSlug": "ojibwe-beadwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_08",
+   "pictureNote": {
+    "en": "Illustration of a small black pouch with red and blue beaded flowers and berries.",
+    "zh": "插图：一只黑色小包，缀着红蓝两色的串珠花朵和浆果。"
+   },
+   "embedText": "passage: pouch | craft: Floral beadwork: earrings, pouches and necklaces, Ojibwe | materials: glass beads, cloth, thread | techniques: beadwork, hand-stitched | motifs: flower, berry | colors: red, blue, black | mood: cheerful, bright | for: birthday, everyday, gift for a friend, gift for a sister | A small pouch of black cloth with red and blue beaded flowers and berries.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_27",
+   "communityId": "com_acoma",
+   "makerId": "mkr_09",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_09",
+   "pictureNote": {
+    "en": "Illustration of a small white jar painted with black geometric bands of fine lines.",
+    "zh": "插图：一只白色小陶罐，绘有黑色细线几何纹带。"
+   },
+   "embedText": "passage: jar | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: geometric, fine line, band | colors: black, white | mood: calm, elegant | for: housewarming, for myself, gift for a friend | A small jar with a white slip, painted in black with geometric bands of fine lines.",
+   "salesThisMonth": 4,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_28",
+   "communityId": "com_acoma",
+   "makerId": "mkr_09",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_09",
+   "pictureNote": {
+    "en": "Illustration of a wide, shallow white bowl with black and orange steps around the rim.",
+    "zh": "插图：一只白色宽口浅碗，碗口一圈是黑橙两色的阶梯纹。"
+   },
+   "embedText": "passage: bowl | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: step, band | colors: black, orange, white | mood: warm, earthy | for: housewarming, for myself | A wide, shallow bowl with a white slip and black and orange steps painted around the rim.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_29",
+   "communityId": "com_acoma",
+   "makerId": "mkr_09",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_09",
+   "pictureNote": {
+    "en": "Illustration of a small round seed pot with rows of orange dots on white.",
+    "zh": "插图：一只小圆种子罐，白底上绘着一排排橙色圆点。"
+   },
+   "embedText": "passage: seed pot | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: dot | colors: orange, white | mood: cheerful, warm | for: birthday, thank you, gift for a friend, gift for a sister | A small round seed pot with a narrow opening, painted with rows of orange dots on white slip.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_30",
+   "communityId": "com_acoma",
+   "makerId": "mkr_10",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_10",
+   "pictureNote": {
+    "en": "Illustration of a small white seed pot painted with black and orange geometric fine lines.",
+    "zh": "插图：一只白色小种子罐，绘有黑橙两色的几何细线纹。"
+   },
+   "embedText": "passage: seed pot | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: geometric, fine line | colors: black, orange, white | mood: warm, bold | for: birthday, gift for mom | A small seed pot with a white slip, painted in black and orange with geometric fine lines.",
+   "salesThisMonth": 3,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_31",
+   "communityId": "com_acoma",
+   "makerId": "mkr_10",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_10",
+   "pictureNote": {
+    "en": "Illustration of a small white seed pot with a band of black steps.",
+    "zh": "插图：一只白色小种子罐，绘有一道黑色阶梯纹带。"
+   },
+   "embedText": "passage: seed pot | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: step, band | colors: black, white | mood: calm, quiet | for: birthday, everyday, gift for a friend, for myself | A small seed pot with a band of black steps painted on white slip.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_32",
+   "communityId": "com_acoma",
+   "makerId": "mkr_10",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_10",
+   "pictureNote": {
+    "en": "Illustration of a white jar with orange and black geometric bands.",
+    "zh": "插图：一只白色陶罐，绘有橙黑两色的几何纹带。"
+   },
+   "embedText": "passage: jar | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: geometric, band | colors: orange, black, white | mood: bold, earthy | for: housewarming, for myself, gift for dad | A jar with a white slip and orange and black geometric bands from shoulder to base.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_33",
+   "communityId": "com_acoma",
+   "makerId": "mkr_11",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_11",
+   "pictureNote": {
+    "en": "Illustration of a deep white bowl covered with black fine lines.",
+    "zh": "插图：一只白色深碗，绘满黑色细线纹。"
+   },
+   "embedText": "passage: bowl | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: fine line | colors: black, white | mood: calm, elegant, quiet | for: housewarming, for myself | A deep bowl with a white slip, painted inside and out with black fine lines.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_34",
+   "communityId": "com_acoma",
+   "makerId": "mkr_11",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_11",
+   "pictureNote": {
+    "en": "Illustration of a small white seed pot with black and orange bands.",
+    "zh": "插图：一只白色小种子罐，绘有黑色和橙色纹带。"
+   },
+   "embedText": "passage: seed pot | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: band | colors: orange, black, white | mood: earthy, warm | for: thank you, housewarming, gift for dad, gift for a friend | A small seed pot with two black bands and one orange band painted on white slip.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_35",
+   "communityId": "com_acoma",
+   "makerId": "mkr_11",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_11",
+   "pictureNote": {
+    "en": "Illustration of a white jar with black and orange geometric shapes around the body.",
+    "zh": "插图：一只白色陶罐，器身一圈是黑橙两色的几何图形。"
+   },
+   "embedText": "passage: jar | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: geometric | colors: black, orange, white | mood: bold, bright | for: housewarming, holiday, gift for a friend, for myself | A jar with a white slip and black and orange geometric shapes painted around the body.",
+   "salesThisMonth": 5,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_36",
+   "communityId": "com_acoma",
+   "makerId": "mkr_12",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_12",
+   "pictureNote": {
+    "en": "Illustration of a small white bowl with a ring of orange dots below the rim.",
+    "zh": "插图：一只白色小碗，碗口下方是一圈橙色圆点。"
+   },
+   "embedText": "passage: bowl | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: dot | colors: orange, white | mood: soft, cheerful | for: everyday, thank you, gift for a sister, gift for mom | A small bowl with a white slip and a ring of orange dots painted below the rim.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_37",
+   "communityId": "com_acoma",
+   "makerId": "mkr_12",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_12",
+   "pictureNote": {
+    "en": "Illustration of a small white seed pot with black fine lines from the opening down.",
+    "zh": "插图：一只白色小种子罐，从开口向下绘着黑色细线纹。"
+   },
+   "embedText": "passage: seed pot | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: fine line | colors: black, white | mood: quiet, calm | for: everyday, thank you, for myself, gift for a friend | A small seed pot with a white slip and black fine lines painted from the opening down.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_38",
+   "communityId": "com_acoma",
+   "makerId": "mkr_12",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_12",
+   "pictureNote": {
+    "en": "Illustration of a white jar painted with black and orange geometric shapes and fine lines.",
+    "zh": "插图：一只白色陶罐，绘满黑橙两色的几何图形和细线纹。"
+   },
+   "embedText": "passage: jar | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: geometric, fine line | colors: black, orange, white | mood: bold, elegant | for: housewarming, for myself | A jar with a white slip, painted with black and orange geometric shapes and fine lines from rim to base.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_39",
+   "communityId": "com_acoma",
+   "makerId": "mkr_13",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_13",
+   "pictureNote": {
+    "en": "Illustration of a large white jar painted with black steps and fine lines.",
+    "zh": "插图：一只白色大陶罐，绘有黑色阶梯纹和细线纹。"
+   },
+   "embedText": "passage: jar | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: step, fine line | colors: black, white | mood: calm, elegant | for: housewarming, for myself | A large jar with thin walls and a white slip, painted with black steps and fine lines.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_40",
+   "communityId": "com_acoma",
+   "makerId": "mkr_13",
+   "storefrontSlug": "acoma-pottery",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_13",
+   "pictureNote": {
+    "en": "Illustration of a tiny white seed pot with small black dots around the opening.",
+    "zh": "插图：一只白色迷你种子罐，开口一圈是黑色小圆点。"
+   },
+   "embedText": "passage: seed pot | craft: Coil-built, hand-painted pottery, Acoma Pueblo | materials: clay, slip, paint | techniques: coil-built, stone-polished, hand-painted | motifs: dot | colors: white, black | mood: quiet, playful | for: everyday, thank you, gift for a friend, for myself | A tiny seed pot with a white slip and small black dots around the opening.",
+   "salesThisMonth": 3,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_41",
+   "communityId": "com_seminole",
+   "makerId": "mkr_14",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_14",
+   "pictureNote": {
+    "en": "Illustration of a black jacket with red, yellow and white patchwork bands across the back and sleeves.",
+    "zh": "插图：一件黑色夹克，背部和袖子上是红黄白三色拼布条带。"
+   },
+   "embedText": "passage: jacket | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread, rickrack | techniques: patchwork, machine-sewn | motifs: band, square, zigzag | colors: black, red, yellow, white | mood: bold, bright | for: holiday, for myself | A black cotton jacket with three bands of red, yellow and white patchwork across the back and sleeves.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_42",
+   "communityId": "com_seminole",
+   "makerId": "mkr_14",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_14",
+   "pictureNote": {
+    "en": "Illustration of a long skirt with two blue and white patchwork bands of squares and triangles.",
+    "zh": "插图：一条长裙，缝有两道由方块和三角形拼成的蓝白拼布条带。"
+   },
+   "embedText": "passage: skirt | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread | techniques: patchwork, machine-sewn | motifs: geometric, square, triangle | colors: blue, white | mood: calm, bright | for: everyday, holiday, gift for a sister, for myself | A long cotton skirt with two bands of blue and white geometric patchwork, pieced from small squares and triangles.",
+   "salesThisMonth": 3,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_43",
+   "communityId": "com_seminole",
+   "makerId": "mkr_14",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_14",
+   "pictureNote": {
+    "en": "Illustration of a skirt with a wide red, yellow and black patchwork band of stripes and zigzags.",
+    "zh": "插图：一条裙子，缝有一道由条纹和锯齿纹组成的红黄黑宽拼布条带。"
+   },
+   "embedText": "passage: skirt | craft: Patchwork skirts and jackets, Seminole | materials: cotton, rickrack | techniques: patchwork, machine-sewn | motifs: stripe, zigzag | colors: red, yellow, black | mood: warm, bright | for: birthday, holiday, gift for mom | A cotton skirt with one wide band of red, yellow and black patchwork in stripes and zigzags, edged with rickrack.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_44",
+   "communityId": "com_seminole",
+   "makerId": "mkr_14",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_14",
+   "pictureNote": {
+    "en": "Illustration of a green jacket with two yellow and white patchwork bands of small diamonds.",
+    "zh": "插图：一件绿色夹克，缝有两道由小菱形组成的黄白拼布条带。"
+   },
+   "embedText": "passage: jacket | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread | techniques: patchwork, machine-sewn | motifs: diamond, band | colors: green, yellow, white | mood: bright, cheerful | for: holiday, birthday, gift for dad, for myself | A green cotton jacket with two yellow and white patchwork bands of small diamonds.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_45",
+   "communityId": "com_seminole",
+   "makerId": "mkr_15",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_15",
+   "pictureNote": {
+    "en": "Illustration of a long skirt with three narrow purple and yellow patchwork bands.",
+    "zh": "插图：一条长裙，缝有三道窄窄的紫黄拼布条带。"
+   },
+   "embedText": "passage: skirt | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread | techniques: patchwork, machine-sewn | motifs: geometric, band, triangle | colors: purple, yellow | mood: bright, playful | for: holiday, gift for a sister, for myself | A long cotton skirt with three narrow bands of purple and yellow geometric patchwork.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_46",
+   "communityId": "com_seminole",
+   "makerId": "mkr_15",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_15",
+   "pictureNote": {
+    "en": "Illustration of a navy jacket with four orange and white patchwork bands.",
+    "zh": "插图：一件藏青色夹克，缝有四道橙白拼布条带。"
+   },
+   "embedText": "passage: jacket | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread, rickrack | techniques: patchwork, machine-sewn | motifs: zigzag, square, band | colors: navy, orange, white | mood: bold, elegant | for: holiday, for myself | A navy cotton jacket with four bands of orange and white patchwork in zigzags and squares, with rickrack between them.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_47",
+   "communityId": "com_seminole",
+   "makerId": "mkr_15",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_15",
+   "pictureNote": {
+    "en": "Illustration of a skirt with teal and black patchwork stripe bands.",
+    "zh": "插图：一条裙子，缝有青绿与黑色的拼布条纹带。"
+   },
+   "embedText": "passage: skirt | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread | techniques: patchwork, machine-sewn | motifs: stripe, band | colors: teal, black | mood: calm, elegant | for: everyday, gift for a friend, for myself | A cotton skirt with bands of teal and black patchwork stripes between plain teal panels.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_48",
+   "communityId": "com_seminole",
+   "makerId": "mkr_15",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_15",
+   "pictureNote": {
+    "en": "Illustration of a white jacket with red patchwork bands of triangles and squares.",
+    "zh": "插图：一件白色夹克，缝有由三角形和方块组成的红色拼布条带。"
+   },
+   "embedText": "passage: jacket | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread | techniques: patchwork, machine-sewn | motifs: geometric, triangle, square | colors: red, white | mood: bold, bright | for: holiday, birthday, gift for dad, for myself | A white cotton jacket with red geometric patchwork bands of triangles and squares on the front and back.",
+   "salesThisMonth": 4,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_49",
+   "communityId": "com_seminole",
+   "makerId": "mkr_16",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_16",
+   "pictureNote": {
+    "en": "Illustration of a long black skirt with five red, blue and yellow patchwork bands.",
+    "zh": "插图：一条黑色长裙，缝有五道红蓝黄拼布条带。"
+   },
+   "embedText": "passage: skirt | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread, rickrack | techniques: patchwork, machine-sewn | motifs: band, square, diamond, zigzag | colors: black, red, blue, yellow | mood: bold, cheerful | for: holiday, for myself | A long black cotton skirt with five bands of red, blue and yellow patchwork, each pieced in squares, diamonds or zigzags.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_50",
+   "communityId": "com_seminole",
+   "makerId": "mkr_16",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_16",
+   "pictureNote": {
+    "en": "Illustration of a child's yellow jacket with a blue and white patchwork band across the chest.",
+    "zh": "插图：一件黄色儿童夹克，胸前是一道蓝白拼布条带。"
+   },
+   "embedText": "passage: jacket | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread | techniques: patchwork, machine-sewn | motifs: square, band | colors: yellow, blue, white | mood: cheerful, playful | for: birthday, gift for a friend, gift for a sister | A child's yellow cotton jacket with one band of blue and white patchwork squares across the chest.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_51",
+   "communityId": "com_seminole",
+   "makerId": "mkr_16",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_16",
+   "pictureNote": {
+    "en": "Illustration of a skirt with two green and orange patchwork bands of small triangles.",
+    "zh": "插图：一条裙子，缝有两道由小三角形组成的绿橙拼布条带。"
+   },
+   "embedText": "passage: skirt | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread | techniques: patchwork, machine-sewn | motifs: geometric, triangle | colors: green, orange | mood: earthy, cheerful | for: everyday, holiday, gift for a sister, for myself | A cotton skirt with two bands of green and orange geometric patchwork in small triangles.",
+   "salesThisMonth": 1,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_52",
+   "communityId": "com_seminole",
+   "makerId": "mkr_17",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_17",
+   "pictureNote": {
+    "en": "Illustration of a red jacket with black and yellow patchwork bands on the body and sleeves.",
+    "zh": "插图：一件红色夹克，衣身和袖子上是黑黄拼布条带。"
+   },
+   "embedText": "passage: jacket | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread, rickrack | techniques: patchwork, machine-sewn | motifs: diamond, zigzag, band | colors: red, black, yellow | mood: bold, warm | for: holiday, gift for dad, for myself | A red cotton jacket with black and yellow patchwork bands of diamonds and zigzags on the body and sleeves.",
+   "salesThisMonth": 0,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_53",
+   "communityId": "com_seminole",
+   "makerId": "mkr_17",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_17",
+   "pictureNote": {
+    "en": "Illustration of a skirt with a pink and white zigzag patchwork band between two pink stripes.",
+    "zh": "插图：一条裙子，两道粉色条纹之间是一道粉白锯齿纹拼布条带。"
+   },
+   "embedText": "passage: skirt | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread | techniques: patchwork, machine-sewn | motifs: zigzag, stripe | colors: pink, white | mood: soft, cheerful | for: birthday, everyday, gift for a sister, gift for mom | A cotton skirt with one band of pink and white zigzag patchwork between two pink stripes.",
+   "salesThisMonth": 2,
+   "status": "active"
+  },
+  {
+   "pieceId": "pc_54",
+   "communityId": "com_seminole",
+   "makerId": "mkr_17",
+   "storefrontSlug": "seminole-patchwork",
+   "provenance": {
+    "facts": "maker",
+    "culture": "community",
+    "vibe": "agent:tagger",
+    "picture": "agent:describer"
+   },
+   "approvedBy": "mkr_17",
+   "pictureNote": {
+    "en": "Illustration of a small child's skirt with a narrow blue and yellow patchwork band of squares.",
+    "zh": "插图：一条儿童小裙，缝有一道窄窄的蓝黄方块拼布条带。"
+   },
+   "embedText": "passage: skirt | craft: Patchwork skirts and jackets, Seminole | materials: cotton, thread | techniques: patchwork, machine-sewn | motifs: square, band | colors: blue, yellow | mood: cheerful, playful | for: birthday, gift for a friend, gift for a sister | A small child's cotton skirt with one narrow band of blue and yellow patchwork squares.",
+   "salesThisMonth": 3,
+   "status": "active"
+  }
+ ],
+ "searchEval": [],
+ "keywordAliases": {
+  "mom": "gift for mom",
+  "mother": "gift for mom",
+  "mum": "gift for mom",
+  "dad": "gift for dad",
+  "father": "gift for dad"
+ },
+ "vibeVocabulary": {
+  "moods": [
+   "warm",
+   "bold",
+   "calm",
+   "bright",
+   "cheerful",
+   "quiet",
+   "earthy",
+   "playful",
+   "elegant",
+   "soft"
+  ],
+  "occasions": [
+   "birthday",
+   "housewarming",
+   "thank you",
+   "holiday",
+   "everyday"
+  ],
+  "recipients": [
+   "gift for mom",
+   "gift for dad",
+   "gift for a friend",
+   "gift for a sister",
+   "for myself"
+  ]
+ },
+ "contentRules": {
+  "bannedObjects": [
+   "yei",
+   "yeibichai",
+   "sandpainting",
+   "sand painting",
+   "whirling log",
+   "whirling-log",
+   "katsina",
+   "kachina",
+   "naja",
+   "squash blossom",
+   "sacred",
+   "ceremonial",
+   "ceremony",
+   "prayer",
+   "medicine",
+   "pipe",
+   "tobacco bag",
+   "mask",
+   "drum",
+   "rattle",
+   "dreamcatcher",
+   "dream catcher",
+   "totem",
+   "headdress",
+   "regalia",
+   "bandolier bag",
+   "dance apron",
+   "jingle dress",
+   "bow guard",
+   "costume",
+   "feather",
+   "eagle",
+   "ivory",
+   "bone",
+   "whalebone",
+   "baleen",
+   "sealskin",
+   "fur",
+   "shell",
+   "quill",
+   "沙画",
+   "克奇纳",
+   "卡奇纳",
+   "神圣",
+   "仪式",
+   "祭祀",
+   "药包",
+   "烟斗",
+   "烟草袋",
+   "面具",
+   "手鼓",
+   "摇铃",
+   "捕梦网",
+   "图腾",
+   "头饰",
+   "典礼服饰",
+   "斜挎珠饰袋",
+   "舞蹈围裙",
+   "叮当裙",
+   "护臂",
+   "戏服",
+   "羽毛",
+   "鹰羽",
+   "象牙",
+   "鲸骨",
+   "鲸须",
+   "海豹皮",
+   "毛皮",
+   "皮草",
+   "贝壳",
+   "豪猪刺"
+  ],
+  "stereotypeWords": [
+   "exotic",
+   "tribal",
+   "primitive",
+   "ethnic",
+   "mystical",
+   "spiritual",
+   "shamanic",
+   "sacred",
+   "ceremonial",
+   "spirit",
+   "totem",
+   "boho",
+   "native-inspired",
+   "authentic",
+   "ancient",
+   "timeless",
+   "warrior",
+   "princess",
+   "chief",
+   "powwow",
+   "smudge",
+   "healing",
+   "energy",
+   "Aztec",
+   "Inca"
+  ],
+  "meaningWords": [
+   "symbolizes",
+   "represents",
+   "protects",
+   "brings luck",
+   "象征",
+   "寓意"
+  ],
+  "accusingWords": [
+   "fraud",
+   "scam",
+   "illegal",
+   "fake",
+   "counterfeit",
+   "knockoff",
+   "copy",
+   "stolen",
+   "infringe",
+   "violate",
+   "假冒",
+   "仿冒",
+   "冒充",
+   "山寨",
+   "盗版",
+   "侵权",
+   "欺诈",
+   "违法"
+  ],
+  "peopleNames": {
+   "com_dine": [
+    "Diné",
+    "Navajo",
+    "纳瓦霍"
+   ],
+   "com_ojibwe": [
+    "Ojibwe",
+    "Ojibwa",
+    "Chippewa",
+    "Anishinaabe",
+    "奥吉布瓦"
+   ],
+   "com_acoma": [
+    "Acoma",
+    "Pueblo",
+    "阿科马"
+   ],
+   "com_seminole": [
+    "Seminole",
+    "塞米诺尔"
+   ],
+   "general": [
+    "Native American",
+    "Indigenous",
+    "Native",
+    "Indian",
+    "美洲原住民",
+    "原住民",
+    "土著"
+   ]
+  },
+  "allowedHosts": [
+   "example.com",
+   "example.org"
+  ]
+ },
+ "demoSearch": {
+  "query": {
+   "text": "a warm, bold gift for my mom. she loves red wool. under $200",
+   "keywords": [
+    "warm",
+    "bold",
+    "red",
+    "wool",
+    "gift for mom",
+    "under $200"
+   ],
+   "lang": "en",
+   "filters": {
+    "maxPriceCents": 20000
+   }
+  },
+  "answer": {
+   "results": [],
+   "engine": "keyword_scripted"
+  }
+ }
+}
