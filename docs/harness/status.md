@@ -3,7 +3,7 @@ NEXT: V1 steps 2 and 3 (S3 T1 stubs, I2-kit, I2-art T0; keyed v1 G5s in a worktr
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 20:55 PT
+UPDATED: 2026-10-24 20:58 PT
 
 # Status board
 
@@ -38,6 +38,7 @@ v1 (desktop session, history):
 | G5 | B01 PASS | Oct 24 4:43 AM | `artifacts/gates/G5-0443.md`, `artifacts/gates/G5-b01-verifier.md` (FAIL fixed by the live-source check) | demo-ok-b01 |
 | R0 | PASS | Oct 24 6:46 PM | `artifacts/gates/R0-1836.md`, `artifacts/gates/R0-verifier-screens.md`, `-numbers.md`, `-words.md` (first run `R0-1828.md` FAIL: d10 held line out of frame, fixed) | v2-reskin |
 | core | PASS | Oct 24 7:58 PM | `artifacts/gates/core-1940.md` (first run `core-1935.md`: smoke source count and B09's 4 s budget, fixed), `artifacts/gates/core-verifier-code.md`, `-docs.md`, `-server.md` | v2-core |
+| G5 b09 | PASS | Oct 24 8:23 PM | `/home/user/cindia-g5/artifacts/gates/G5-2023.md` (worktree), `artifacts/gates/G5-b09-verifier.md` | demo-ok-b09 |
 | G6 | | | | |
 
 ## Features
@@ -71,7 +72,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B06-workbook | green | live at 44.6 s | demo-ok-b06 | G5 13/13, verifier PASS |
 | B07-ask | built and committed, awaiting key | | | server 31 mocked passed + 1 live skipped; G5 needs ANTHROPIC_API_KEY plus an ask-cindy-live spec |
 | B08-approvals | green | live, scripted grant allowed | demo-ok-b08 | G5 13/13, verifier PASS |
-| B09-concierge | built and committed, awaiting key | | | server 36 mocked passed + 1 live skipped; G5 needs ANTHROPIC_API_KEY |
+| B09-concierge | green | live, first live answer at 2.4 s (d01 ends 4.0 s) | demo-ok-b09 | v2 cloud G5 13/13 (worktree at v2-core plus the prefetch), verifier PASS; catalog limited to the co-op's twelve |
 | B10-derived | green | live at 8.3 s | demo-ok-b10 | G5 13/13, verifier PASS |
 
 ## v2 Features
@@ -290,3 +291,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 20:47 PT · B13 T1 done: module packages installed (spacetimedb 2.13.0, typescript 5.9.3), published to the local server as cindia (--yes=skip-login), test_b13_live 10 passed; committed; B13 second spawn (T7 first, then T2-T6) spawned · status.md
 - 2026-10-24 20:53 PT · B11 T1-T2 committed (54 passed, the passage rule rebuilds all 54 embedTexts); B11 T4 code and T6 spawned · status.md
 - 2026-10-24 20:55 PT · I2-kit T2-T4 done (components, Badge variants, KitGallery, seal date fits; check 738, smoke 123/123); worktree G5s: B09 PASS 13/13 (verifier running), B04 12/13 (modes.spec frame timing in a live run), B02 12/13 (live offline run), B07 stopped mid-run: load average 13.8 from parallel Playwright runs made the timing checks flaky, so B04, B02 and B07 rerun in a quiet window · artifacts/gates in /home/user/cindia-g5
+- 2026-10-24 20:58 PT · G5 b09-concierge PASS 13/13, verifier PASS; B09 prefetch and the co-op catalog filter committed; tag demo-ok-b09 · artifacts/gates/G5-b09-verifier.md

@@ -5,10 +5,25 @@
 // The next scripted beat opens pc_01, so a timeline answer without pc_01 returns [] and the curated
 // set plays; a buyer's own request skips that check. Anything missing, invalid or failed throws or
 // returns [], and the registry plays the scripted answer.
+//
+// Prefetch: the timeline plays its scripted concierge.asked 1.5 s before the keyed answer, and the
+// Haiku call takes about 2 s. In live mode start() watches the store's event stream for that scripted
+// request and posts its query at once, when the keyed answer for the same query is still ahead on the
+// player clock (so a seek past the answer posts nothing). produce() for the keyed answer then awaits
+// that request instead of starting its own. The timeline's requests are kept per player epoch and
+// query, and dropped when the epoch changes (a load, reset or seek) or the adapter stops, so a reset
+// never serves an earlier run's request. Scripted mode never starts the adapter, and the watcher
+// checks the mode too.
 import type { CindiaEvent, Payloads } from "../../core/events";
+import { player, type Timeline } from "../../core/player";
+import type { Mode } from "../../core/state";
+import { getState, onEvent } from "../../core/store";
 import type { Lang } from "../../core/types";
 import { validateEvent } from "../../core/validate";
 import { pieces } from "../../mock/catalog";
+
+// The server's prompt reads "the twelve catalog pieces": the co-op's, now that the catalog holds four communities.
+const coopPieces = pieces.filter((p) => p.communityId === "com_dine");
 import { makers } from "../../mock/people";
 import type { LiveAdapter } from "../types";
 
@@ -18,6 +33,31 @@ const HEALTH_TIMEOUT_MS = 3000;
 const KEY = "b09-concierge" as const;
 /** The piece the demo's next scripted beat opens. */
 const DEMO_PIECE = "pc_01";
+/** The timeline's answer carries no language, so its query is posted in English. */
+const TIMELINE_LANG: Lang = "en";
+
+/** What the adapter reads from the store and the player. Tests pass their own. */
+export interface ConciergeDeps {
+  /** Every event the store applied (onEvent in src/core/store.ts). Returns an unsubscribe. */
+  onEvent: (listener: (e: CindiaEvent) => void) => () => void;
+  mode: () => Mode;
+  /** The player's epoch: counts loads, resets and seeks. */
+  epoch: () => number;
+  /** The player clock. */
+  now: () => number;
+  /** The loaded timeline, where the keyed answer to a scripted request is found. */
+  timeline: () => Timeline | null;
+}
+
+const appDeps: ConciergeDeps = {
+  onEvent,
+  mode: () => getState().mode,
+  epoch: () => player.epoch(),
+  now: () => player.now(),
+  timeline: () => player.getTimeline(),
+};
+
+type Answer = Promise<CindiaEvent[]>;
 
 async function fetchJson(url: string, init: RequestInit, timeoutMs: number): Promise<unknown> {
   const ctrl = new AbortController();
@@ -34,7 +74,7 @@ async function fetchJson(url: string, init: RequestInit, timeoutMs: number): Pro
 /** The catalog as the server reads it: each piece's own fields plus its maker's name. */
 function catalog() {
   const names = new Map(makers.map((m) => [m.id, m.name]));
-  return pieces.map((p) => ({
+  return coopPieces.map((p) => ({
     id: p.id,
     title: p.title,
     makerId: p.makerId,
@@ -47,15 +87,10 @@ function catalog() {
   }));
 }
 
-/** One call per query and page load, so seeking back never calls Claude again. A failure is forgotten. */
-const cache = new Map<string, Promise<CindiaEvent[]>>();
-
-function ask(trigger: CindiaEvent, query: string, lang: Lang): Promise<CindiaEvent[]> {
-  const cacheKey = `${lang}\u0000${query}`;
-  const hit = cache.get(cacheKey);
-  if (hit) return hit;
+/** One POST /api/b09/concierge. Gives up at 7.5 seconds. */
+function post(trigger: CindiaEvent, query: string, lang: Lang): Answer {
   const body = { trigger, query, lang, catalog: catalog() };
-  const p = fetchJson(
+  return fetchJson(
     "/api/b09/concierge",
     { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) },
     FETCH_TIMEOUT_MS,
@@ -64,16 +99,11 @@ function ask(trigger: CindiaEvent, query: string, lang: Lang): Promise<CindiaEve
     if (!Array.isArray(events)) throw new Error("b09 answered without events");
     return events as CindiaEvent[];
   });
-  cache.set(cacheKey, p);
-  p.catch(() => {
-    if (cache.get(cacheKey) === p) cache.delete(cacheKey);
-  });
-  return p;
 }
 
 /** The valid live concierge.answered for this query, timed to the trigger, or []. */
 function answerFor(trigger: CindiaEvent, query: string, events: CindiaEvent[], needDemoPiece: boolean): CindiaEvent[] {
-  const ids = new Set(pieces.map((p) => p.id));
+  const ids = new Set(coopPieces.map((p) => p.id));
   const found = events.find((e) => {
     if (!e || e.type !== "concierge.answered" || validateEvent(e).length > 0) return false;
     const p = e.payload as Payloads["concierge.answered"];
@@ -84,30 +114,103 @@ function answerFor(trigger: CindiaEvent, query: string, events: CindiaEvent[], n
   return found ? [{ ...found, at: trigger.at, source: "live" as const, key: KEY }] : [];
 }
 
-const adapter: LiveAdapter = {
-  key: KEY,
+export function createConciergeAdapter(overrides: Partial<ConciergeDeps> = {}): LiveAdapter {
+  const deps: ConciergeDeps = { ...appDeps, ...overrides };
 
-  async health() {
-    const body = (await fetchJson("/api/health", {}, HEALTH_TIMEOUT_MS)) as {
-      routers?: unknown;
-      keys?: { anthropic?: unknown };
-    };
-    return Array.isArray(body.routers) && body.routers.includes("b09") && body.keys?.anthropic === true;
-  },
+  /** A buyer's own requests: one call per query and page load, so asking again never calls Claude again. A failure is forgotten. */
+  const own = new Map<string, Answer>();
+  function askOwn(trigger: CindiaEvent, query: string, lang: Lang): Answer {
+    const cacheKey = `${lang}\u0000${query}`;
+    const hit = own.get(cacheKey);
+    if (hit) return hit;
+    const p = post(trigger, query, lang);
+    own.set(cacheKey, p);
+    p.catch(() => {
+      if (own.get(cacheKey) === p) own.delete(cacheKey);
+    });
+    return p;
+  }
 
-  async produce(event) {
-    if (event.type === "concierge.answered" && event.source === "scripted") {
-      // The demo timeline's answer: the next beat opens pc_01, so the live picks must include it.
-      const query = (event.payload as Payloads["concierge.answered"]).query;
-      return answerFor(event, query, await ask(event, query, "en"), true);
+  /**
+   * The timeline's requests, one per query in the current epoch. A failed one stays until the epoch
+   * changes, so a prefetch that failed early plays the scripted answer on time instead of retrying.
+   */
+  const timed = new Map<string, Answer>();
+  let timedEpoch = deps.epoch();
+  function timelineAsk(trigger: CindiaEvent, query: string): Answer {
+    const epoch = deps.epoch();
+    if (epoch !== timedEpoch) {
+      timed.clear();
+      timedEpoch = epoch;
     }
-    if (event.type === "concierge.asked" && event.source === "user") {
-      // A buyer's own request: whatever three pieces Claude picks for it.
-      const q = event.payload as Payloads["concierge.asked"];
-      return answerFor(event, q.query, await ask(event, q.query, q.lang), false);
-    }
-    return [];
-  },
-};
+    const cacheKey = `${epoch}\u0000${query}`;
+    const hit = timed.get(cacheKey);
+    if (hit) return hit;
+    const p = post(trigger, query, TIMELINE_LANG);
+    // Handled here too, so a prefetch nobody awaits (a reset came first) never logs an unhandled rejection.
+    p.catch(() => undefined);
+    timed.set(cacheKey, p);
+    return p;
+  }
+
+  /** The timeline's keyed answer to a scripted request at `from`, while it is still ahead on the player clock. */
+  function upcomingAnswer(query: string, from: number): CindiaEvent | undefined {
+    const now = deps.now();
+    return deps.timeline()?.events.find(
+      (e) =>
+        e.type === "concierge.answered" &&
+        e.key === KEY &&
+        e.source === "scripted" &&
+        e.at >= from &&
+        e.at > now &&
+        (e.payload as Payloads["concierge.answered"]).query === query,
+    );
+  }
+
+  /** A scripted concierge.asked in live mode posts the query its keyed answer will need. */
+  function prefetch(e: CindiaEvent): void {
+    if (e.type !== "concierge.asked" || e.source !== "scripted" || deps.mode() !== "live") return;
+    const query = (e.payload as Payloads["concierge.asked"]).query;
+    const answer = upcomingAnswer(query, e.at);
+    if (answer) void timelineAsk(answer, query);
+  }
+
+  return {
+    key: KEY,
+
+    async health() {
+      const body = (await fetchJson("/api/health", {}, HEALTH_TIMEOUT_MS)) as {
+        routers?: unknown;
+        keys?: { anthropic?: unknown };
+      };
+      return Array.isArray(body.routers) && body.routers.includes("b09") && body.keys?.anthropic === true;
+    },
+
+    async produce(event) {
+      if (event.type === "concierge.answered" && event.source === "scripted") {
+        // The demo timeline's answer: the next beat opens pc_01, so the live picks must include it.
+        // The request is usually in flight already, started by the scripted concierge.asked.
+        const query = (event.payload as Payloads["concierge.answered"]).query;
+        return answerFor(event, query, await timelineAsk(event, query), true);
+      }
+      if (event.type === "concierge.asked" && event.source === "user") {
+        // A buyer's own request: whatever three pieces Claude picks for it.
+        const q = event.payload as Payloads["concierge.asked"];
+        return answerFor(event, q.query, await askOwn(event, q.query, q.lang), false);
+      }
+      return [];
+    },
+
+    start() {
+      const off = deps.onEvent(prefetch);
+      return () => {
+        off();
+        timed.clear();
+      };
+    },
+  };
+}
+
+const adapter: LiveAdapter = createConciergeAdapter();
 
 export default adapter;

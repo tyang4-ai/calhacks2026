@@ -10,6 +10,9 @@ import type { CindiaState } from "../../core/state";
 import { emit, useCindia } from "../../core/store";
 import type { Piece } from "../../core/types";
 import { getById, pieces } from "../../mock";
+
+// The v1 gift finder shows the co-op's twelve pieces; the catalog now holds all four communities.
+const coopPieces = pieces.filter((p) => p.communityId === "com_dine");
 import { Money } from "../../ui/Money";
 import { UI_MS, useReducedMotion } from "../../ui/motion";
 import { tr, ui, type Lang } from "./strings";
@@ -55,7 +58,7 @@ export function CuratedGrid({ lang }: CuratedGridProps) {
           aria-hidden="true"
           style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--c-space-8)" }}
         >
-          {pieces.map((p) => (
+          {coopPieces.map((p) => (
             <motion.img
               key={p.id}
               layoutId={layoutKey(p.id)}
