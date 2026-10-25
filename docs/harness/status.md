@@ -3,7 +3,7 @@ NEXT: V1 steps 2 and 3 (S3 T1 stubs, I2-kit, I2-art T0; keyed v1 G5s in a worktr
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 19:58 PT
+UPDATED: 2026-10-24 19:59 PT
 
 # Status board
 
@@ -80,10 +80,10 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 |---|---|---|---|---|---|
 | R0-reskin | V1 step 0 | green | data-smith, integrator, feature-lead, backend-builder | v2-reskin | gate 11/11 checks, 3 verifiers PASS (screens, numbers, words) |
 | I2-core | V1 | first spawn green | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
-| I2-kit | V1 | todo | integrator | | |
+| I2-kit | V1 | running | integrator | | T1 frames running; T2-T4 next spawn |
 | I2-shell | V1 | todo | integrator | | |
-| S3-catalog | V1 | todo | data-smith | | |
-| I2-art | V1 | todo | integrator | | T0 placeholders before G1b |
+| S3-catalog | V1 | running | data-smith | | T1 stubs running |
+| I2-art | V1 | running | integrator | | T0 placeholders running |
 | F-search | V2 P0 | todo | feature-lead | | |
 | M-buyer | V2 P0 | todo | feature-lead | | |
 | F-support | V2 P0 | todo | feature-lead | | |
@@ -260,3 +260,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 19:30 PT · I2-core T6/T7 done: config reads CINDIA_ANTHROPIC_API_KEY, health keys anthropic, nessie, elastic, apify, hf all true, services spacetime true, model false; torch 2.14.1+cpu; export:mock works; test:server red only on B02's live test (Sonnet 7.9 s vs its 6 s budget), B09 live 1 of 4 over 4 s; backend-builder fixing both; API restarted with the new server.mjs flags · status.md
 - 2026-10-24 19:41 PT · core gate: check, smoke 22/22, demo (endedAtWallMs 60013 vs 60000 + 15000), server 237 + 1 skipped with B09 live timing out once; B09's Claude timeout raised to 5 s (contract change), server 238 passed + 1 skipped · artifacts/gates/core-1940.md
 - 2026-10-24 19:58 PT · core verifiers PASS (code, docs, server; workflow of 3); minors queued for I2-core's second spawn (log order with two status events, surprise weight tolerance before T5, timeoutFor location, durationMs in the Player interface, apr kinds in data-model, B14 key wording, G0 port 3000) · artifacts/gates/core-verifier-*.md
+- 2026-10-24 19:59 PT · v2-core recorded; export:mock 63 exports; spawned scribe (8 PM pass), S3 T1 stubs, I2-kit T1, I2-art T0; keyed v1 G5s (B04 rerun, B02, B07, B09) running in a worktree at c54ff6c · decisions.md
