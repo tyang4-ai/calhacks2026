@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:24 PT
+UPDATED: 2026-10-25 00:27 PT
 
 # Status board
 
@@ -217,7 +217,7 @@ Each item names the default already in use, so the build never waits.
 | Oct 24 11:25 PM | Upload the public site (about 5 minutes, from Windows, tonight and again after the freeze): `git pull`, `npm ci`, `npm run build:public` (must end "build:public: PASS"; if it says the rendered checks were skipped, run `npx playwright install chromium` and build again); check `dist\public-build.json` says `"publicSite": true`; never upload a plain `npm run build`. Cloudflare: Workers & Pages > Create application > Get started > Drag and drop your files, name the project, drag `dist` in, Deploy. On the live site check `/demo` has no Live switch, `/shop/piece/pc_01` shows L6 instead of Pay, `/market/` lists 4 listings and both `/market/listing-01.html` and `/market/listing-01` open, `/robots.txt` disallows all, `/shop` source has noindex. Paste the URL in this session's chat and add `PUBLIC_SITE_URL` to the cloud environment and the laptop's `.env`. After the freeze: rebuild and Create a new deployment (Production). Full steps: `docs/plans/D-deploy.md` Gordon's steps | Not uploaded; B15's watch stays scripted until `PUBLIC_SITE_URL` is set |
 | Oct 24 11:25 PM | Demo laptop, Saturday night on a good network: put the keys in `.env`, run `node scripts/laptop-setup.mjs` until `/api/health` reads all true, then rehearse as `docs/plans/D-deploy.md` says (presenter mode, Live off then on, the scripted fallback with the API closed). Step 5 pulls the model from the private Hugging Face repo Fireclaw2396/cindia-embed (published 11:57 PM, revision 5ad57138…), so the laptop's `.env` needs `HF_TOKEN` and `CINDIA_HF_REPO` | Not run |
 | Oct 24 10:28 PM | ~~I2-art: the two-minute look at the contact sheet~~ Done 11:40 PM: pc_27, pc_32, pc_35, pc_37, pc_38, pc_39 and pc_48 back to placeholders, the other 47 kept (decisions.md) | Done |
-| Oct 24 8:20 PM | Scribe's Devpost skeleton (`docs/devpost/devpost.md`, 14 `[GORDON: ...]` items listed in `sponsors/README.md`): write your sections; check the Figma prize names on Devpost; set the three Figma files to "Anyone with the link" | Drafts and placeholders |
+| Oct 24 8:20 PM | Scribe's Devpost skeleton (`docs/devpost/devpost.md`, 14 `[GORDON: ...]` items listed in `sponsors/README.md`): write your sections; check the Figma prize names on Devpost; ~~set the three Figma files to "Anyone with the link"~~ (done, checked 12:35 AM per design/HANDOFF.md) | Drafts and placeholders |
 | Oct 24 2:01 AM | ~~`.env` is missing~~ Resolved in the cloud at 7:30 PM: `/api/health` reads anthropic, nessie, elastic, apify and hf all true from the cloud environment. On the Windows laptop, `.env` is still needed for live mode (D-deploy's laptop script) | Live keys in the cloud |
 
 ## Demo notes for Gordon
@@ -399,3 +399,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:22 PT · G3 desktop2 in the worktree: check:scope and every feature spec PASS, smoke 122/123 (a 502 from the main API mid-reload after the m key; environmental); desktop reruns after its fix round; keyed v1 G5s (b04, b02, b07) queued on a worktree API on 8001 · artifacts/gates/G3-desktop2-wt-0013.md
 - 2026-10-25 00:22 PT · merged the video brief's final pitch text (approved by Gordon; tagline "Made by hand. Paid in full.") for I2-tour T4 · docs/v2/video-brief.md
 - 2026-10-25 00:24 PT · I2-tour T1 done (the tour timeline: 234 events, 31 beat.started, durationMs 220000; check:data 300; demo-timeline.test 56); I2-tour T3-T7 integrator spawned (stage, modes, tests, contracts, with English only step 1, the final pitch text and the fallback entries); a backend-builder fixes b09-concierge.test.ts (it read v1's concierge events) and places b11-embed.test.ts · status.md
+- 2026-10-25 00:27 PT · B09 and B11 adapter tests committed (B09's builds its own v1 concierge fixture, so it passes before and after the tour; B11's 7 cases placed); merged the planning session's design/HANDOFF.md update: still drop 3, the Figma files are shared · design/HANDOFF.md
