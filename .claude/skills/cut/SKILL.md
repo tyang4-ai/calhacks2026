@@ -14,9 +14,10 @@ The plan is `$ARGUMENTS`.
    - If it never went green, there is no restore point, and its files were never committed.
 2. **Stop its agents.** If its lead or builder is still running, stop it with TaskStop.
 3. **Set the work aside.** Move its current files to `artifacts/cut/<plan id>-<HHMM>/`. For a feature that's `src/features/<slug>/` and `tests/features/<slug>-*`, for every slug a migration plan owns. For an upgrade, the files in its plan's `SCOPE`. Moving keeps the work and leaves nothing for a restore to overwrite.
+   - For `B13-live`, once its T7 is committed, leave `src/sources/live/b08-approvals.ts` and `src/sources/live/b08-approvals.test.ts` in place, because M-approvals' owner screen needs them. Copy them into that folder instead, then drop any uncommitted change to them with `git restore -- src/sources/live/b08-approvals.ts src/sources/live/b08-approvals.test.ts`.
 4. **Restore,** only when there is a restore point, with the command from `conventions.md` and the tag or its SHA as the source:
    - Feature: `git restore --source <tag or sha> -- src/features/<slug>/ tests/features/<slug>-*`, once per slug
-   - Upgrade: the same command with the files in its plan's `SCOPE`
+   - Upgrade: the same command with the files step 3 moved
    With no restore point, skip this step. The feature is simply gone from the site.
 5. **Record** in `docs/harness/status.md`: mark its row `CUT`, add one line to Cut and simulated saying what's missing, for the README and Devpost, and add a Log line.
 6. **Tell the others.** If a running lead depends on it, send that lead a message with SendMessage: what was cut and what to do instead. A cut `M-` plan also has to be set aside in the demo (`cutFeatures()` in `tests/demo/beats.ts` reads `M-` rows as their slugs).

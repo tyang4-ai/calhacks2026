@@ -330,7 +330,7 @@ The tour keeps each run's step order and gaps (`I2-tour.md`), so the two tour ru
   7. `clerk` tool `policy`, 8. `clerk` tool `arrival_window` (code the run calls for the Clerk, contracts section 6), 9. `clerk` result: an order on `2026-09-01` ships within `pc_01`'s `leadTimeDays` and arrives in `pol_01`'s window, well before Oct 10, with the dates computed, never typed,
   10. `writer` reply.
   
-  The reply is L15 word for word, in English and Chinese as contracts section 12 gives it, then the arrival dates. L15's English: "The co-op attests that Grace N. wove this herself. That's the co-op's record. Cindia hasn't checked it independently." `refIds` `pc_01`, `com_dine`, `mkr_01`, `pol_01`.
+  The reply is L15 word for word from contracts section 12, then the arrival dates, in English and Chinese: "The co-op attests that Grace N. wove this herself. That's the co-op's record. Cindia hasn't checked it independently." / 合作社证明这件作品由 Grace N. 亲手织成。这是合作社的记录。Cindia尚未独立核实。 `refIds` `pc_01`, `com_dine`, `mkr_01`, `pol_01`.
 - **`run_02`** (the d15 listing, A1-14): `cindy` route, `lister` result (the draft), `tagger` result (vibe words from the closed list), three `checker` check steps, `indexer` result (the draft embedded into `cindia-drafts`). The final events:
   1. `listing.drafted`: title and summary in both languages, the Chinese marked as the Lister's translation (L27), `facets` and `vibe` drawn only from the notes (`oneOfAKind` and `leadTimeDays` left out, D1-26), `hours: 20` from the notes, and three checks:
      - `chk_01` protocol, ok: "Names only the co-op's own craft. Nothing from the kept-out list.",

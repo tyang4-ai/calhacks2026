@@ -415,10 +415,11 @@ The output order is moods, then facet words (any of object, materials, technique
 - Given `ELASTIC_URL` set and `ELASTIC_AUTH=proxy` with no key, then `keys.elastic` is `true` and `elastic_headers()` returns `{}`.
 - Given a test not marked `live`, then every key in `config` is a fake value and neither `*_AUTH` flag is set.
 - Given a router that imports a missing module, then the server starts and the log names that module.
-- Given `npm run export:mock`, then `artifacts/mock/mock.json` exists, has `pieces` and `_generatedAt`, no port opened, and the script exits 0 on Windows and Linux.
+- Given `npm run export:mock`, then `artifacts/mock/mock.json` exists, has `pieces`, `_generatedAt` and every other non-function export under its own name, no port opened, and the script exits 0 on Windows and Linux. Once S3-catalog exports them, `allApprovals` holds `apr_01` to `apr_05` and `allFollowUps` holds `fup_01` and `fup_02`.
 - Given a v2 key's value in the process environment and in a tracked file, when `node scripts/secrets-scan.mjs` runs, then it names the file and the variable, never the value, and exits 1. Given a fake `apify_api_`, `hf_` or JWT string in a tracked file, then it does the same.
 - Given `npm run gate -- G1b`, then its report shows the tour's time from `report.json` against `durationMs` plus 15 seconds, and Playwright's whole-run time only for information. Given a `report.json` older than the run, then the time check fails.
 - Given `npm run gate -- G3` with two slugs, then `check:scope` and `test:feature` cover both.
+- Given `npm run test:feature -- tests/features/support-live.spec.ts`, then exactly that file runs. Given `npm run test:feature -- support`, then every `tests/features/support-*.spec.ts` runs. Given a bare name that matches no spec, such as `support-live`, then it exits 1 and names the argument. Given `npm run gate -- G5 b14-swarm tests/features/support-live.spec.ts`, then the report shows that spec's run.
 - Given T5, when a person's `search.queried` with figure 11's text, keywords and filters plays in scripted mode, then 1.2 seconds later `search.answered` carries `demoSearch.answer`'s results with the request's `queryId`. Given the same text with one chip removed or a lower price cap, then the answer comes from `scoreKeywords` with the filters applied.
 - Given T5, when a person asks a support question that matches no scripted run, then the first step arrives 1.2 seconds after the request, the steps arrive 300 ms apart, and the final `support.answered` comes from `fallbackSupportRun`, with a run ID `run_user_1` and step IDs from `stp_user_1`.
 - Given T5, when the tour's d04 question is asked with `contextIds: ["pc_20"]`, then the fallback answers and no reply names `pc_01`.
@@ -426,11 +427,13 @@ The output order is moods, then facet words (any of object, materials, technique
 - Given T5, when a support question and a listing request are planned within 1.2 seconds, then their run and step IDs don't overlap.
 - Given T5, when a person's `listing.requested` carries `lst_01`'s notes, then the run is `lst_01`'s, re-keyed to the person's `listingId`, and it ends with an `apr_user_<n>` whose `approval` names that listing.
 - Given T5, when a person's `watch.started` plays after the tour, then the hits are `cft_user_<n>`, the follow-up `fup_user_<n>` and the approval `apr_user_<n>`, and the tour's `cft_01` hit is unchanged.
-- Given T5, when `drawSurprise` runs twice with the same seed and inputs, then it returns the same piece, and the candidates' weights sum to 1.
+- Given T5, when `drawSurprise` runs twice with the same seed and inputs, then it returns the same piece, and the candidates' weights sum to 1. Given `pure_random`, no keyword, or a keyword that matches nothing, then the candidates are every piece in `pieceId` order, weighted by the asked method.
 - Given T8, when a person opens `pc_13`, then `split.shown` carries `splits["pc_13"]`.
 - Given T8, when a person's `wip.milestone_reached` names `wip_01`'s second milestone and the owner grants `apr_05`, then `wip.milestone_paid` and a `money.moved` of kind `milestone` with ID `mv_user_1` follow.
 - Given T8, when a person's `storefront.requested` names `sto_01`, then `run_03`'s steps play and `storefront.drafted` follows.
 - Given T8, when a person's `question.answered` for `qst_01` carries her own text, then `run_09`'s `support.answered` quotes that text exactly and not `ans_01`'s.
+- Given T5 and T8 on a fresh store, when a person asks `run_07`'s meaning question with `contextIds: ["pc_01"]`, then its `question.forwarded` carries `qst_user_1` on the request's thread. When a person's `question.answered` for `qst_user_1` follows with her own text, then `run_09`'s relay, re-keyed, ends in a `support.answered` on that same thread that quotes her text exactly.
+- Given T8, when a person's `storefront.requested` names `sto_01`, then every block in its `storefront.drafted` has a `blk_user_<n>` ID.
 - Given `npm run check:scope -- src/core/ src/sources/`, then it exits 0.
 
 ## Out of scope
@@ -457,5 +460,5 @@ The output order is moods, then facet words (any of object, materials, technique
 - **Store:** the shapes in "The store keys", `support.questions`, `sync`, `buyer.checkouts` and `buyer.cards`, and `approval?` on each approval.
 - **IDs:** `qst_01` onward, `qst_user_<n>` and `ans_user_<n>`, following the prefixes FX7 settled.
 - **Server:** `ALLOWED_MODELS`, `CLAUDE_BASE_URL`, `elastic_headers()`, `apify_headers()`, `spacetime_headers()`, `spacetime_reachable()`, `model_present()`, `needs_service()` and the autouse fake-key fixture.
-- **Scripts:** the shape of `artifacts/mock/mock.json`, the extra paths on `secrets-scan.mjs`, several slugs on `test:feature` and G3, and live specs after the slug on G5 for `b11` to `b16`.
+- **Scripts:** the shape of `artifacts/mock/mock.json`, the extra paths on `secrets-scan.mjs`, slugs or spec paths on `test:feature`, several slugs on G3, and live spec paths after the slug on G5 for `b11` to `b16`.
 - **The gate's time rule:** `endedAtWallMs` at most `durationMs` plus 15 seconds, read from `report.json`.
