@@ -1,5 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<clipPath id="c1"><path d="M246 227h308v410h-308Z"/></clipPath>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<path d="M252 223L400 121L548 223" fill="none" stroke="#5A5249" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="400" cy="121" r="7" fill="#5A5249"/>
+<g clip-path="url(#c1)">
+<rect x="246" y="227" width="308" height="410" fill="#8F8C87"/>
+<path d="M246 241L554 241L554 250L246 250Z" fill="#1F1C1A"/><path d="M246 614L554 614L554 623L246 623Z" fill="#1F1C1A"/>
+<path d="M422 288L422 314L443 314L443 340L465 340L465 366L486 366L486 393L508 393L508 419L529 419L529 445L508 445L508 471L486 471L486 498L465 498L465 524L443 524L443 550L422 550L422 576L378 576L378 550L357 550L357 524L335 524L335 498L314 498L314 471L292 471L292 445L271 445L271 419L292 419L292 393L314 393L314 366L335 366L335 340L357 340L357 314L378 314L378 288Z" fill="#1F1C1A"/><path d="M419 324L419 348L439 348L439 372L458 372L458 396L478 396L478 420L497 420L497 444L478 444L478 468L458 468L458 492L439 492L439 516L419 516L419 540L381 540L381 516L361 516L361 492L342 492L342 468L322 468L322 444L303 444L303 420L322 420L322 396L342 396L342 372L361 372L361 348L381 348L381 324Z" fill="#B3362C"/><path d="M416 360L416 380L432 380L432 401L448 401L448 422L465 422L465 442L448 442L448 463L432 463L432 484L416 484L416 504L384 504L384 484L368 484L368 463L352 463L352 442L335 442L335 422L352 422L352 401L368 401L368 380L384 380L384 360Z" fill="#8F8C87"/><path d="M400 396L432 432L400 468L368 432Z" fill="#1F1C1A"/>
+<rect x="523" y="227" width="31" height="410" fill="#1C1A17" fill-opacity="0.06"/>
+</g>
+<path d="M246 227h308v410h-308Z" fill="none" stroke="#37322D" stroke-width="3" stroke-linejoin="round"/>
+<rect x="220" y="215" width="360" height="14" rx="7" fill="#625B52"/>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>

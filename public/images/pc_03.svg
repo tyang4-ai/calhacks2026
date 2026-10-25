@@ -1,5 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<clipPath id="c1"><path d="M225 120h350v560h-350Z"/></clipPath>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<g clip-path="url(#c1)">
+<rect x="225" y="120" width="350" height="560" fill="#6B4A33"/>
+<path d="M225 139L575 139L575 151L225 151Z" fill="#8F8C87"/><path d="M225 649L575 649L575 661L225 661Z" fill="#8F8C87"/>
+<path d="M225 221L575 221L575 299L225 299Z" fill="#FBF9F4"/><path d="M225 221L575 221L575 224L225 224Z" fill="#8F8C87"/><path d="M225 296L575 296L575 299L225 299Z" fill="#8F8C87"/><path d="M260 239L281 260L260 281L239 260ZM400 239L421 260L400 281L379 260ZM540 239L561 260L540 281L519 260Z" fill="#8F8C87"/><path d="M330 239L351 260L330 281L309 260ZM470 239L491 260L470 281L449 260Z" fill="#6B4A33"/><path d="M225 361L575 361L575 439L225 439Z" fill="#FBF9F4"/><path d="M225 361L575 361L575 364L225 364Z" fill="#8F8C87"/><path d="M225 436L575 436L575 439L225 439Z" fill="#8F8C87"/><path d="M260 379L281 400L260 421L239 400ZM400 379L421 400L400 421L379 400ZM540 379L561 400L540 421L519 400Z" fill="#8F8C87"/><path d="M330 379L351 400L330 421L309 400ZM470 379L491 400L470 421L449 400Z" fill="#6B4A33"/><path d="M225 501L575 501L575 579L225 579Z" fill="#FBF9F4"/><path d="M225 501L575 501L575 504L225 504Z" fill="#8F8C87"/><path d="M225 576L575 576L575 579L225 579Z" fill="#8F8C87"/><path d="M260 519L281 540L260 561L239 540ZM400 519L421 540L400 561L379 540ZM540 519L561 540L540 561L519 540Z" fill="#8F8C87"/><path d="M330 519L351 540L330 561L309 540ZM470 519L491 540L470 561L449 540Z" fill="#6B4A33"/>
+<rect x="540" y="120" width="35" height="560" fill="#1C1A17" fill-opacity="0.06"/>
+</g>
+<path d="M225 120h350v560h-350Z" fill="none" stroke="#644D3C" stroke-width="3" stroke-linejoin="round"/>
+<path d="M225 120l-14 -12M225 120l-5 -17M225 120l-17 -4M575 120l14 -12M575 120l5 -17M575 120l17 -4M225 680l-14 12M225 680l-5 17M225 680l-17 4M575 680l14 12M575 680l5 17M575 680l17 4" fill="none" stroke="#644D3C" stroke-width="3.5" stroke-linecap="round"/>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>

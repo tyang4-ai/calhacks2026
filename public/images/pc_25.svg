@@ -1,5 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<clipPath id="c1"><path d="M238 204H562Q580 204 580 222V558Q580 616 522 616H278Q220 616 220 558V222Q220 204 238 204Z"/></clipPath>
+<clipPath id="c2"><path d="M233 199H567Q585 199 585 217V295Q515 361 400 369Q285 361 215 295V217Q215 199 233 199Z"/></clipPath>
+<pattern id="beads" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M0 0h11v11H0zM1.2 5.5a4.3 4.3 0 1 0 8.6 0a4.3 4.3 0 1 0-8.6 0z" fill="#1C1A17" fill-opacity="0.2" fill-rule="evenodd"/><circle cx="4" cy="4" r="1.3" fill="#FFFFFF" fill-opacity="0.4"/></pattern>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<path d="M238 204H562Q580 204 580 222V558Q580 616 522 616H278Q220 616 220 558V222Q220 204 238 204Z" fill="#6B4A33"/>
+<g clip-path="url(#c1)">
+<rect x="210" y="194" width="380" height="432" fill="url(#beads)"/>
+<path d="M465 184Q540 410 465 636L620 636L620 184Z" fill="#1C1A17" fill-opacity="0.1"/>
+</g>
+<path d="M238 204H562Q580 204 580 222V558Q580 616 522 616H278Q220 616 220 558V222Q220 204 238 204Z" fill="none" stroke="#473426" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M222 328V558Q222 614 278 614H522Q578 614 578 558V328" fill="none" stroke="#E7B92F" stroke-width="9" stroke-linecap="round" stroke-dasharray="0 13"/>
+<path d="M233 199H567Q585 199 585 217V295Q515 361 400 369Q285 361 215 295V217Q215 199 233 199Z" fill="#654631"/>
+<g clip-path="url(#c2)">
+<g transform="translate(400 331) rotate(-142)"><path d="M0 0Q37 -28 82 0Q37 28 0 0Z" fill="#4C7C45" stroke="#3E5F37" stroke-width="2"/><path d="M6.5 0L64 0" fill="none" stroke="#3D5D36" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(400 331) rotate(-90)"><path d="M0 0Q37 -28 82 0Q37 28 0 0Z" fill="#E7B92F" stroke="#AA8928" stroke-width="2"/><path d="M6.5 0L64 0" fill="none" stroke="#A68627" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(400 331) rotate(-38)"><path d="M0 0Q37 -28 82 0Q37 28 0 0Z" fill="#4C7C45" stroke="#3E5F37" stroke-width="2"/><path d="M6.5 0L64 0" fill="none" stroke="#3D5D36" stroke-width="2" stroke-linecap="round"/></g>
+<rect x="210" y="194" width="380" height="216" fill="url(#beads)"/>
+<path d="M465 184Q540 286 465 389L620 389L620 184Z" fill="#1C1A17" fill-opacity="0.1"/>
+</g>
+<path d="M215 295Q285 367 400 375Q515 367 585 295" fill="none" stroke="#1C1A17" stroke-opacity="0.18" stroke-width="5"/>
+<path d="M233 199H567Q585 199 585 217V295Q515 361 400 369Q285 361 215 295V217Q215 199 233 199Z" fill="none" stroke="#443225" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M219 295Q285 357 400 365Q515 357 581 295" fill="none" stroke="#E7B92F" stroke-width="9" stroke-linecap="round" stroke-dasharray="0 13"/>
+<circle cx="400" cy="373" r="13" fill="#E7B92F" stroke="#A08127" stroke-width="2.5"/>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>

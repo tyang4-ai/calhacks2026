@@ -1,5 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<clipPath id="c1"><path d="M232 264h336v336h-336Z"/></clipPath>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<path d="M238 260L400 170L562 260" fill="none" stroke="#5A5249" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="400" cy="170" r="7" fill="#5A5249"/>
+<g clip-path="url(#c1)">
+<rect x="232" y="264" width="336" height="336" fill="#B3362C"/>
+<path d="M232 264L568 264L568 320L232 320ZM232 352L568 352L568 367L232 367ZM232 382L568 382L568 415L232 415ZM232 426L568 426L568 438L232 438ZM232 449L568 449L568 482L232 482ZM232 497L568 497L568 512L232 512ZM232 544L568 544L568 600L232 600Z" fill="#B3362C"/><path d="M232 320L568 320L568 352L232 352ZM232 367L568 367L568 382L232 382ZM232 415L568 415L568 426L232 426ZM232 438L568 438L568 449L232 449ZM232 482L568 482L568 497L232 497ZM232 512L568 512L568 544L232 544Z" fill="#8F8C87"/>
+<rect x="534" y="264" width="34" height="336" fill="#1C1A17" fill-opacity="0.06"/>
+</g>
+<path d="M232 264h336v336h-336Z" fill="none" stroke="#8F4138" stroke-width="3" stroke-linejoin="round"/>
+<rect x="206" y="252" width="388" height="14" rx="7" fill="#674E45"/>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>

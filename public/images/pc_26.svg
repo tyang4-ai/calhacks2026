@@ -1,5 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<clipPath id="c1"><path d="M257 211H543Q559 211 559 227V558Q559 609 508 609H292Q241 609 241 558V227Q241 211 257 211Z"/></clipPath>
+<clipPath id="c2"><path d="M252 206H548Q564 206 564 222V298Q502 362 400 370Q298 362 236 298V222Q236 206 252 206Z"/></clipPath>
+<pattern id="beads" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M0 0h11v11H0zM1.2 5.5a4.3 4.3 0 1 0 8.6 0a4.3 4.3 0 1 0-8.6 0z" fill="#1C1A17" fill-opacity="0.2" fill-rule="evenodd"/><circle cx="4" cy="4" r="1.3" fill="#FFFFFF" fill-opacity="0.4"/></pattern>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<path d="M257 211H543Q559 211 559 227V558Q559 609 508 609H292Q241 609 241 558V227Q241 211 257 211Z" fill="#1F1C1A"/>
+<g clip-path="url(#c1)">
+<path d="M400 585C398 572 387 533 387 507C387 481 398 442 400 429" fill="none" stroke="#2F5EA3" stroke-width="8.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M400 585C396 577 388 551 376 534C363 517 334 492 325 484" fill="none" stroke="#2F5EA3" stroke-width="8.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M400 585C404 576 412 548 424 530C437 512 466 484 475 475" fill="none" stroke="#2F5EA3" stroke-width="8.4" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="346" cy="531" r="13" fill="#B3362C" stroke="#862E26" stroke-width="2"/><circle cx="342" cy="527" r="3" fill="#FFFFFF" fill-opacity="0.55"/><circle cx="336" cy="549" r="13" fill="#B3362C" stroke="#862E26" stroke-width="2"/><circle cx="331" cy="545" r="3" fill="#FFFFFF" fill-opacity="0.55"/><circle cx="357" cy="549" r="13" fill="#B3362C" stroke="#862E26" stroke-width="2"/><circle cx="353" cy="545" r="3" fill="#FFFFFF" fill-opacity="0.55"/><circle cx="454" cy="527" r="13" fill="#2F5EA3" stroke="#294A79" stroke-width="2"/><circle cx="449" cy="523" r="3" fill="#FFFFFF" fill-opacity="0.55"/><circle cx="443" cy="545" r="13" fill="#2F5EA3" stroke="#294A79" stroke-width="2"/><circle cx="438" cy="540" r="3" fill="#FFFFFF" fill-opacity="0.55"/><circle cx="464" cy="545" r="13" fill="#2F5EA3" stroke="#294A79" stroke-width="2"/><circle cx="460" cy="540" r="3" fill="#FFFFFF" fill-opacity="0.55"/>
+<circle cx="424" cy="446" r="23" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="391" cy="457" r="23" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="370" cy="429" r="23" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="391" cy="401" r="23" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="424" cy="411" r="23" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="400" cy="429" r="17" fill="#2F5EA3" stroke="#294A79" stroke-width="2"/><circle cx="350" cy="486" r="20" fill="#2F5EA3" stroke="#2A4B7C" stroke-width="2"/><circle cx="331" cy="508" r="20" fill="#2F5EA3" stroke="#2A4B7C" stroke-width="2"/><circle cx="304" cy="497" r="20" fill="#2F5EA3" stroke="#2A4B7C" stroke-width="2"/><circle cx="306" cy="467" r="20" fill="#2F5EA3" stroke="#2A4B7C" stroke-width="2"/><circle cx="335" cy="461" r="20" fill="#2F5EA3" stroke="#2A4B7C" stroke-width="2"/><circle cx="325" cy="484" r="14" fill="#B3362C" stroke="#862E26" stroke-width="2"/><circle cx="493" cy="492" r="20" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="464" cy="498" r="20" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="450" cy="472" r="20" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="470" cy="451" r="20" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="497" cy="463" r="20" fill="#B3362C" stroke="#892E26" stroke-width="2"/><circle cx="475" cy="475" r="14" fill="#2F5EA3" stroke="#294A79" stroke-width="2"/>
+<rect x="231" y="201" width="339" height="418" fill="url(#beads)"/>
+<path d="M457 191Q524 410 457 629L599 629L599 191Z" fill="#1C1A17" fill-opacity="0.1"/>
+</g>
+<path d="M257 211H543Q559 211 559 227V558Q559 609 508 609H292Q241 609 241 558V227Q241 211 257 211Z" fill="none" stroke="#1E1B19" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M243 330V558Q243 607 292 607H508Q557 607 557 558V330" fill="none" stroke="#B3362C" stroke-width="9" stroke-linecap="round" stroke-dasharray="0 13"/>
+<path d="M252 206H548Q564 206 564 222V298Q502 362 400 370Q298 362 236 298V222Q236 206 252 206Z" fill="#1F1C1A"/>
+<g clip-path="url(#c2)">
+<rect x="231" y="201" width="339" height="209" fill="url(#beads)"/>
+<path d="M457 191Q524 291 457 390L599 390L599 191Z" fill="#1C1A17" fill-opacity="0.1"/>
+</g>
+<path d="M236 298Q298 368 400 376Q502 368 564 298" fill="none" stroke="#1C1A17" stroke-opacity="0.18" stroke-width="5"/>
+<path d="M252 206H548Q564 206 564 222V298Q502 362 400 370Q298 362 236 298V222Q236 206 252 206Z" fill="none" stroke="#1E1B19" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M240 298Q298 358 400 366Q502 358 560 298" fill="none" stroke="#B3362C" stroke-width="9" stroke-linecap="round" stroke-dasharray="0 13"/>
+<circle cx="400" cy="374" r="13" fill="#B3362C" stroke="#7E2C25" stroke-width="2.5"/>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>

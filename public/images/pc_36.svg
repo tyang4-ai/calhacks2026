@@ -1,5 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<path id="s1" d="M170 291L176 276L182 271L189 266L195 262L202 259L208 257L214 254L221 252L227 250L234 248L240 246L246 245L253 243L259 242L266 240L272 239L278 238L285 237L291 236L298 235L304 234L310 234L317 233L323 232L330 232L336 231L342 231L349 230L355 230L362 230L368 229L374 229L381 229L387 229L394 229L400 229L406 229L413 229L419 229L426 229L432 229L438 230L445 230L451 230L458 231L464 231L470 232L477 232L483 233L490 234L496 234L502 235L509 236L515 237L522 238L528 239L534 240L541 242L547 243L554 245L560 246L566 248L573 250L579 252L586 254L592 257L598 259L605 262L611 266L618 271L624 276L630 291L630 291L624 351L618 376L611 396L605 411L598 425L592 437L586 448L579 457L573 466L566 474L560 482L554 489L547 495L541 500L534 506L528 510L522 515L515 519L509 522L502 525L496 528L490 531L483 533L477 535L470 537L464 538L458 540L451 541L445 542L438 543L432 544L426 544L419 545L413 545L406 545L400 545L394 545L387 545L381 545L374 544L368 544L362 543L355 542L349 541L342 540L336 538L330 537L323 535L317 533L310 531L304 528L298 525L291 522L285 519L278 515L272 510L266 506L259 500L253 495L246 489L240 482L234 474L227 466L221 457L214 448L208 437L202 425L195 411L189 396L182 376L176 351L170 291Z"/>
+<clipPath id="c1"><use href="#s1"/></clipPath>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<ellipse cx="400" cy="533" rx="166" ry="31" fill="#D8D0C0"/>
+<use href="#s1" fill="#FBF9F4"/>
+<g clip-path="url(#c1)">
+<path d="M243 480L245 485L249 491L255 496L264 501L276 506L289 510L305 514L322 517L340 519L359 521L380 522L400 522L420 522L441 521L460 519L478 517L495 514L511 510L524 506L536 501L545 496L551 491L555 485L557 480L650 581L150 581Z" fill="#D2672A"/>
+<path d="M243 480L245 485L249 491L255 496L264 501L276 506L289 510L305 514L322 517L340 519L359 521L380 522L400 522L420 522L441 521L460 519L478 517L495 514L511 510L524 506L536 501L545 496L551 491L555 485L557 480" fill="none" stroke="#D2672A" stroke-width="4"/>
+<ellipse cx="172" cy="326" rx="0.7" ry="9" fill="#D2672A"/><ellipse cx="176" cy="334" rx="1.8" ry="9" fill="#D2672A"/><ellipse cx="185" cy="342" rx="3" ry="9" fill="#D2672A"/><ellipse cx="197" cy="350" rx="4.1" ry="9" fill="#D2672A"/><ellipse cx="213" cy="357" rx="5.2" ry="9" fill="#D2672A"/><ellipse cx="233" cy="364" rx="6.1" ry="9" fill="#D2672A"/><ellipse cx="256" cy="369" rx="7" ry="9" fill="#D2672A"/><ellipse cx="281" cy="374" rx="7.7" ry="9" fill="#D2672A"/><ellipse cx="309" cy="378" rx="8.3" ry="9" fill="#D2672A"/><ellipse cx="338" cy="381" rx="8.7" ry="9" fill="#D2672A"/><circle cx="369" cy="383" r="9" fill="#D2672A"/><circle cx="400" cy="383" r="9" fill="#D2672A"/><circle cx="431" cy="383" r="9" fill="#D2672A"/><ellipse cx="462" cy="381" rx="8.7" ry="9" fill="#D2672A"/><ellipse cx="491" cy="378" rx="8.3" ry="9" fill="#D2672A"/><ellipse cx="519" cy="374" rx="7.7" ry="9" fill="#D2672A"/><ellipse cx="544" cy="369" rx="7" ry="9" fill="#D2672A"/><ellipse cx="567" cy="364" rx="6.1" ry="9" fill="#D2672A"/><ellipse cx="587" cy="357" rx="5.2" ry="9" fill="#D2672A"/><ellipse cx="603" cy="350" rx="4.1" ry="9" fill="#D2672A"/><ellipse cx="615" cy="342" rx="3" ry="9" fill="#D2672A"/><ellipse cx="624" cy="334" rx="1.8" ry="9" fill="#D2672A"/><ellipse cx="628" cy="326" rx="0.7" ry="9" fill="#D2672A"/>
+<path d="M483 209Q580 406 483 604L670 604L670 209Z" fill="#1C1A17" fill-opacity="0.11"/>
+<ellipse cx="271" cy="388" rx="18" ry="60" fill="#FFFFFF" fill-opacity="0.26"/>
+</g>
+<ellipse cx="400" cy="291" rx="228" ry="61" fill="#DCDAD5"/>
+<path d="M176 291A224 59 0 0 1 624 291" fill="none" stroke="#1C1A17" stroke-opacity="0.12" stroke-width="10"/>
+<ellipse cx="400" cy="291" rx="228" ry="61" fill="none" stroke="#D2672A" stroke-width="4"/>
+<use href="#s1" fill="none" stroke="#928C85" stroke-width="3" stroke-linejoin="round"/>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>

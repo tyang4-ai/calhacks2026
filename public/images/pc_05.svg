@@ -1,5 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<clipPath id="c1"><path d="M243 197h313v470h-313Z"/></clipPath>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<path d="M249 193L400 87L551 193" fill="none" stroke="#5A5249" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="400" cy="87" r="7" fill="#5A5249"/>
+<g clip-path="url(#c1)">
+<rect x="243" y="197" width="313" height="470" fill="#2D3768"/>
+<path d="M243 197L557 197L557 231L243 231ZM243 265L557 265L557 292L243 292ZM243 368L557 368L557 496L243 496ZM243 572L557 572L557 599L243 599ZM243 633L557 633L557 667L243 667Z" fill="#2D3768"/><path d="M243 231L557 231L557 265L243 265ZM243 292L557 292L557 368L243 368ZM243 496L557 496L557 572L243 572ZM243 599L557 599L557 633L243 633Z" fill="#FBF9F4"/>
+<rect x="525" y="197" width="31" height="470" fill="#1C1A17" fill-opacity="0.06"/>
+</g>
+<path d="M243 197h313v470h-313Z" fill="none" stroke="#3F425C" stroke-width="3" stroke-linejoin="round"/>
+<rect x="217" y="185" width="365" height="14" rx="7" fill="#534E4E"/>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>

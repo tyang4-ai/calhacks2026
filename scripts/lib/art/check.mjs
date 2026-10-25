@@ -6,13 +6,83 @@
 //     live inside text), no on* event attribute, and no reference outside the file: an href that
 //     isn't "#id", a url() that isn't "#id", an @import, a URL scheme, or an XML namespace other
 //     than the two SVG ones.
-// From T2 on, it also checks that patterns.mjs exports only the pattern names allowed (the plan's
-// "Patterns" list). That check lands with T2, when patterns.mjs exists.
+// It also checks that patterns.mjs exports only the pattern names allowed (the plan's "Patterns"
+// list): its PATTERN_NAMES and the keys of PATTERNS are each in ALLOWED_PATTERNS and agree, the
+// module exports nothing beyond its known names (so no builder slips in as a separate export), and
+// every motif word maps only to listed patterns.
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { ROOT, rel } from '../common.mjs';
 import { IMAGES_DIR, MOCK_JSON, PIECE_IDS, imagePath } from './paths.mjs';
 import { XmlError, parseXml } from './xml.mjs';
+
+/**
+ * The pattern builders the illustrations may have (I2-art "Patterns"): plain geometry, plus the five
+ * floral builders used only on com_ojibwe floral beadwork. Nothing from "Never drawn" is here.
+ */
+export const ALLOWED_PATTERNS = Object.freeze([
+  'stripes',
+  'bands',
+  'steps',
+  'diamonds',
+  'triangles',
+  'squares',
+  'zigzags',
+  'chevrons',
+  'arcs',
+  'checks',
+  'dots',
+  'fineLines',
+  'flowers',
+  'leaves',
+  'vines',
+  'berries',
+  'buds',
+]);
+const ALLOWED_FLORAL = ['flowers', 'leaves', 'vines', 'berries', 'buds'];
+/** Everything patterns.mjs may export. */
+const PATTERN_MODULE_EXPORTS = ['FLORAL_PATTERNS', 'MOTIF_PATTERNS', 'PATTERNS', 'PATTERN_NAMES', 'patternsFor'];
+const PATTERNS_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), 'patterns.mjs');
+
+/** Problems with patterns.mjs's exported pattern list. An empty list means it passes. */
+export async function checkPatternList() {
+  const file = rel(PATTERNS_FILE);
+  if (!fs.existsSync(PATTERNS_FILE)) return [{ file, message: 'file is missing' }];
+  let mod;
+  try {
+    mod = await import(pathToFileURL(PATTERNS_FILE).href);
+  } catch (err) {
+    return [{ file, message: `does not load: ${err.message}` }];
+  }
+  const problems = [];
+  const flag = (message) => problems.push({ file, message });
+  for (const name of Object.keys(mod)) {
+    if (!PATTERN_MODULE_EXPORTS.includes(name)) flag(`exports ${name}, which is not one of ${PATTERN_MODULE_EXPORTS.join(', ')}`);
+  }
+  const names = mod.PATTERN_NAMES;
+  if (!Array.isArray(names)) {
+    flag('PATTERN_NAMES is not an array');
+    return problems;
+  }
+  for (const name of names) if (!ALLOWED_PATTERNS.includes(name)) flag(`PATTERN_NAMES has "${name}", which is not an allowed pattern`);
+  const builders = mod.PATTERNS && typeof mod.PATTERNS === 'object' ? Object.keys(mod.PATTERNS) : null;
+  if (!builders) flag('PATTERNS is not an object');
+  else {
+    for (const name of builders) {
+      if (!ALLOWED_PATTERNS.includes(name)) flag(`PATTERNS has a builder "${name}", which is not an allowed pattern`);
+      if (typeof mod.PATTERNS[name] !== 'function') flag(`PATTERNS.${name} is not a function`);
+    }
+    const a = builders.toSorted().join(',');
+    const b = names.toSorted().join(',');
+    if (a !== b) flag(`PATTERN_NAMES (${b}) and the keys of PATTERNS (${a}) disagree`);
+  }
+  for (const name of mod.FLORAL_PATTERNS ?? []) if (!ALLOWED_FLORAL.includes(name)) flag(`FLORAL_PATTERNS has "${name}", which is not a floral pattern`);
+  for (const [word, mapped] of Object.entries(mod.MOTIF_PATTERNS ?? {})) {
+    for (const name of mapped) if (!names.includes(name)) flag(`motif "${word}" maps to "${name}", which is not in PATTERN_NAMES`);
+  }
+  return problems;
+}
 
 /** "Under 30 KB": 30,000 is below both 30 KB (30,000) and 30 KiB (30,720), so a pass is a pass either way. */
 export const MAX_BYTES = 30_000;
@@ -131,10 +201,10 @@ function mockImagePaths() {
   return { files, notes, problems };
 }
 
-/** Runs every check. Returns { checked, notes, problems: [{ file, message }] }. */
-export function checkAll() {
+/** Runs every check. Resolves to { checked, notes, problems: [{ file, message }] }. */
+export async function checkAll() {
   const mock = mockImagePaths();
-  const problems = [...mock.problems];
+  const problems = [...mock.problems, ...(await checkPatternList())];
   const files = [...new Set([...PIECE_IDS.map(imagePath), ...mock.files])];
   for (const file of files) {
     for (const message of checkSvgFile(file)) problems.push({ file: rel(file), message });

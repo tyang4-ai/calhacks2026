@@ -1,5 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<clipPath id="c1"><path d="M400 394C432 428 506 489 506 566A106 106 0 0 1 294 566C294 489 368 428 400 394Z"/></clipPath>
+<pattern id="beads" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M0 0h11v11H0zM1.2 5.5a4.3 4.3 0 1 0 8.6 0a4.3 4.3 0 1 0-8.6 0z" fill="#1C1A17" fill-opacity="0.2" fill-rule="evenodd"/><circle cx="4" cy="4" r="1.3" fill="#FFFFFF" fill-opacity="0.4"/></pattern>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<path d="M262 96C265 122 267 208 280 250C293 292 318 329 338 350C358 371 390 373 400 378C410 373 442 371 462 350C482 329 507 292 520 250C533 208 535 122 538 96" fill="none" stroke="#93676F" stroke-width="2"/>
+<path d="M262 96C265 122 267 208 280 250C293 292 318 329 338 350C358 371 390 373 400 378C410 373 442 371 462 350C482 329 507 292 520 250C533 208 535 122 538 96" fill="none" stroke="#E39AAA" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 13"/>
+<path d="M262 96C265 122 267 208 280 250C293 292 318 329 338 350C358 371 390 373 400 378C410 373 442 371 462 350C482 329 507 292 520 250C533 208 535 122 538 96" fill="none" stroke="#4C7C45" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 13" stroke-dashoffset="6.5"/>
+<path d="M400 394C432 428 506 489 506 566A106 106 0 0 1 294 566C294 489 368 428 400 394Z" fill="#C39A6B"/>
+<g clip-path="url(#c1)">
+<path d="M400 652C401 643 405 614 405 595C405 575 401 547 400 537" fill="none" stroke="#4C7C45" stroke-width="6.7" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(400 608) rotate(-30)"><path d="M0 0Q30 -24 67 0Q30 24 0 0Z" fill="#4C7C45" stroke="#3E5F37" stroke-width="2"/><path d="M5.4 0L52 0" fill="none" stroke="#3D5D36" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(400 608) rotate(210)"><path d="M0 0Q30 -24 67 0Q30 24 0 0Z" fill="#4C7C45" stroke="#3E5F37" stroke-width="2"/><path d="M5.4 0L52 0" fill="none" stroke="#3D5D36" stroke-width="2" stroke-linecap="round"/></g>
+<circle cx="424" cy="551" r="22" fill="#E39AAA" stroke="#AB7681" stroke-width="2"/><circle cx="394" cy="565" r="22" fill="#E39AAA" stroke="#AB7681" stroke-width="2"/><circle cx="372" cy="540" r="22" fill="#E39AAA" stroke="#AB7681" stroke-width="2"/><circle cx="389" cy="511" r="22" fill="#E39AAA" stroke="#AB7681" stroke-width="2"/><circle cx="421" cy="518" r="22" fill="#E39AAA" stroke="#AB7681" stroke-width="2"/><circle cx="400" cy="537" r="16" fill="#9D6D77" stroke="#76545A" stroke-width="2"/>
+<rect x="280" y="380" width="240" height="310" fill="url(#beads)"/>
+<path d="M438 374Q483 533 438 692L546 692L546 374Z" fill="#1C1A17" fill-opacity="0.12"/>
+</g>
+<path d="M400 394C432 428 506 489 506 566A106 106 0 0 1 294 566C294 489 368 428 400 394Z" fill="none" stroke="#786045" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M400 394C432 428 506 489 506 566A106 106 0 0 1 294 566C294 489 368 428 400 394Z" fill="none" stroke="#4C7C45" stroke-width="9" stroke-linecap="round" stroke-dasharray="0 13"/>
+<circle cx="400" cy="388" r="12" fill="#4C7C45" stroke="#3B5A35" stroke-width="2"/>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>

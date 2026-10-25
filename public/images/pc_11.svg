@@ -1,5 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<clipPath id="c1"><path d="M246 227h308v410h-308Z"/></clipPath>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<path d="M252 223L400 121L548 223" fill="none" stroke="#5A5249" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="400" cy="121" r="7" fill="#5A5249"/>
+<g clip-path="url(#c1)">
+<rect x="246" y="227" width="308" height="410" fill="#B3362C"/>
+<path d="M246 227L554 227L554 237L246 237ZM246 246L554 246L554 294L246 294ZM246 307L554 307L554 355L246 355ZM246 365L554 365L554 375L246 375Z" fill="#B3362C"/><path d="M246 237L554 237L554 246L246 246ZM246 294L554 294L554 307L246 307ZM246 355L554 355L554 365L246 365Z" fill="#FBF9F4"/>
+<path d="M246 489L554 489L554 499L246 499ZM246 509L554 509L554 557L246 557ZM246 570L554 570L554 618L246 618ZM246 627L554 627L554 637L246 637Z" fill="#B3362C"/><path d="M246 499L554 499L554 509L246 509ZM246 557L554 557L554 570L246 570ZM246 618L554 618L554 627L246 627Z" fill="#FBF9F4"/>
+<path d="M246 387L554 387L554 477L246 477Z" fill="#FBF9F4"/><path d="M246 387L554 387L554 390L246 390Z" fill="#B3362C"/><path d="M246 474L554 474L554 477L246 477Z" fill="#B3362C"/>
+<path d="M277 405L304 432L277 459L249 432ZM338 405L366 432L338 459L311 432ZM400 405L427 432L400 459L373 432ZM462 405L489 432L462 459L434 432ZM523 405L551 432L523 459L496 432Z" fill="#B3362C"/>
+<rect x="523" y="227" width="31" height="410" fill="#1C1A17" fill-opacity="0.06"/>
+</g>
+<path d="M246 227h308v410h-308Z" fill="none" stroke="#8F4138" stroke-width="3" stroke-linejoin="round"/>
+<rect x="220" y="215" width="360" height="14" rx="7" fill="#674E45"/>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>

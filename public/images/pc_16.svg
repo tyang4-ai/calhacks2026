@@ -1,5 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
-  <rect width="800" height="800" fill="#EDE4D3"/>
-  <rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
-  <rect x="240" y="240" width="320" height="320" rx="32" fill="#F6F1E7" stroke="#D9CFBF" stroke-width="4"/>
+<defs>
+<clipPath id="c1"><path d="M290 284C388 330 386 478 290 540C194 478 192 330 290 284Z"/></clipPath>
+<pattern id="beads" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M0 0h11v11H0zM1.2 5.5a4.3 4.3 0 1 0 8.6 0a4.3 4.3 0 1 0-8.6 0z" fill="#1C1A17" fill-opacity="0.2" fill-rule="evenodd"/><circle cx="4" cy="4" r="1.3" fill="#FFFFFF" fill-opacity="0.4"/></pattern>
+<g id="ear">
+<path d="M290 262L290 236C290 178 352 174 350 232" fill="none" stroke="#9E9D9D" stroke-width="5" stroke-linecap="round"/>
+<circle cx="290" cy="268" r="9" fill="none" stroke="#9E9D9D" stroke-width="4"/>
+<circle cx="290" cy="282" r="9" fill="#6A4790"/>
+<path d="M290 284C388 330 386 478 290 540C194 478 192 330 290 284Z" fill="#4C7C45"/>
+<g clip-path="url(#c1)">
+<path d="M290 300L290 528M290 387L336 361M290 387L244 361M290 433L336 407M290 433L244 407M290 479L336 453M290 479L244 453" fill="none" stroke="#3D5D36" stroke-width="4" stroke-linecap="round"/>
+<rect x="180" y="270" width="220" height="290" fill="url(#beads)"/>
+<path d="M317 264Q348 412 317 560L404 560L404 264Z" fill="#1C1A17" fill-opacity="0.12"/>
+</g>
+<path d="M290 284C388 330 386 478 290 540C194 478 192 330 290 284Z" fill="none" stroke="#365030" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M290 284C388 330 386 478 290 540C194 478 192 330 290 284Z" fill="none" stroke="#6A4790" stroke-width="9" stroke-linecap="round" stroke-dasharray="0 13"/>
+</g>
+</defs>
+<rect width="800" height="800" fill="#EDE4D3"/>
+<g transform="translate(400 465) scale(1.3) translate(-400 -400)">
+<use href="#ear"/>
+<use href="#ear" transform="translate(220 0)"/>
+</g>
+<rect x="24" y="24" width="752" height="752" fill="none" stroke="#5A5249" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 14"/>
 </svg>
