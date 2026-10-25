@@ -7,9 +7,17 @@ import { approvalsReducer } from "./approvals";
 import { askReducer } from "./ask";
 import { buyerReducer } from "./buyer";
 import { closeReducer } from "./close";
+import { listingsReducer } from "./listings";
+import { logReducer } from "./log";
+import { modelReducer } from "./model";
 import { moneyReducer } from "./money";
 import { monthReducer } from "./month";
-import { demoReducer, impactReducer, proofReducer, scenarioReducer } from "./small";
+import { projectsReducer } from "./projects";
+import { searchReducer } from "./search";
+import { demoReducer, impactReducer, proofReducer, scenarioReducer, surpriseReducer, syncReducer, wipReducer } from "./small";
+import { storefrontReducer } from "./storefront";
+import { supportReducer, swarmReducer } from "./support";
+import { watchReducer } from "./watch";
 
 export function rootReducer(state: CindiaState, e: CindiaEvent): CindiaState {
   const next: CindiaState = {
@@ -25,6 +33,18 @@ export function rootReducer(state: CindiaState, e: CindiaEvent): CindiaState {
     impact: impactReducer(state.impact, e),
     demo: demoReducer(state.demo, e),
     scenario: scenarioReducer(state.scenario, e),
+    search: searchReducer(state.search, e),
+    surprise: surpriseReducer(state.surprise, e),
+    support: supportReducer(state.support, e),
+    swarm: swarmReducer(state.swarm, e),
+    listings: listingsReducer(state.listings, e),
+    storefront: storefrontReducer(state.storefront, e),
+    projects: projectsReducer(state.projects, e),
+    wip: wipReducer(state.wip, e),
+    model: modelReducer(state.model, e),
+    watch: watchReducer(state.watch, e),
+    sync: syncReducer(state.sync, e),
+    log: logReducer(state.log, e),
   };
   // Every scripted or live event that carries a key records which source delivered it.
   if (e.key && e.source !== "user" && state.sources[e.key] !== e.source) {

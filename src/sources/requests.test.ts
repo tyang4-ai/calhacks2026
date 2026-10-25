@@ -4,7 +4,7 @@ import { createPlayer } from "../core/player";
 import { emit, getState, onEvent, reset } from "../core/store";
 import { sample } from "../core/testFixtures";
 import { createResponder, normalizeQuestion, OWN_FILE_NOTE, type MockAnswers } from "./requests";
-import type { LiveAdapter } from "./types";
+import { timeoutFor, type LiveAdapter } from "./types";
 
 const mock: MockAnswers = {
   curatedSet: {
@@ -39,7 +39,7 @@ function responder(adapter?: LiveAdapter) {
     now: () => player.now(),
     epoch: () => player.epoch(),
     delayMs: 1200,
-    timeoutMs: 8000,
+    timeoutFor,
     log,
   });
   return { r, log };
@@ -209,6 +209,93 @@ describe("requests from people", () => {
     await vi.advanceTimersByTimeAsync(0);
     expect(produce).toHaveBeenCalledTimes(1);
     r.dispose();
+  });
+
+  it("gives a person's b14-swarm request 20 seconds: a live answer at 15 seconds is used", async () => {
+    const reply = {
+      id: "evt_live_1402",
+      type: "support.answered" as const,
+      at: 0,
+      source: "live" as const,
+      key: "b14-swarm" as const,
+      payload: { threadId: "thr_user_1", runId: "run_user_k3x9qa_1", agentId: "writer", reply: { en: "Live reply", zh: "实时回答" }, refIds: [] },
+    };
+    const slow: LiveAdapter = {
+      key: "b14-swarm",
+      health: async () => true,
+      produce: () => new Promise((resolve) => setTimeout(() => resolve([reply]), 15000)),
+    };
+    const { r, log } = responder(slow);
+    player.seek(30000);
+    emit(userEvent("support.asked", { threadId: "thr_user_1", side: "buyer", text: "Who made this?", lang: "en", contextIds: ["pc_01"] }));
+    await vi.advanceTimersByTimeAsync(14999);
+    expect(getState().support.threads.thr_user_1.messages.map((m) => m.kind)).toEqual(["asked"]);
+    await vi.advanceTimersByTimeAsync(1);
+    const t = getState().support.threads.thr_user_1;
+    expect(t.messages.map((m) => m.kind)).toEqual(["asked", "answered"]);
+    // The live answer arrives at the player's time, like every answer to a person.
+    expect(t.messages[1].at).toBe(30000);
+    expect(getState().sources["b14-swarm"]).toBe("live");
+    expect(log).not.toHaveBeenCalled();
+    r.dispose();
+  });
+
+  it("gives a person's b07-ask request the default 8 seconds: a live answer at 9 seconds is too late, so the scripted one plays", async () => {
+    const late: LiveAdapter = {
+      key: "b07-ask",
+      health: async () => true,
+      produce: () =>
+        new Promise((resolve) =>
+          setTimeout(
+            () =>
+              resolve([
+                {
+                  id: "evt_live_0702",
+                  type: "ask.answered",
+                  at: 0,
+                  source: "live",
+                  key: "b07-ask",
+                  payload: { questionId: "ask_user_7", answer: { en: "Too late", zh: "太迟" }, refIds: [] },
+                },
+              ]),
+            9000,
+          ),
+        ),
+    };
+    const { r, log } = responder(late);
+    emit(userEvent("ask.asked", { questionId: "ask_user_7", text: "Which piece earned the most this month?", lang: "en" }));
+    await vi.advanceTimersByTimeAsync(7999);
+    expect(getState().ask.answers.ask_user_7).toBeUndefined();
+    await vi.advanceTimersByTimeAsync(1);
+    expect(getState().ask.answers.ask_user_7.answer.en).toBe("The brown, white and grey rug.");
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(getState().ask.answers.ask_user_7.answer.en).toBe("The brown, white and grey rug.");
+    expect(getState().sources["b07-ask"]).toBe("scripted");
+    expect(log.mock.calls.join(" ")).toMatch(/timeout after 8000 ms/);
+    r.dispose();
+  });
+
+  it("asks the adapter for the request's own key", async () => {
+    const seen: number[] = [];
+    const r2 = createResponder({
+      emit,
+      getState,
+      onEvent: () => () => {},
+      adapterFor: (k) => (k === "b15-watch" ? { key: k, health: async () => true, produce: async () => [] } : undefined),
+      mock: () => mock,
+      now: () => player.now(),
+      epoch: () => player.epoch(),
+      delayMs: 1200,
+      timeoutFor: (k) => {
+        const ms = timeoutFor(k);
+        seen.push(ms);
+        return ms;
+      },
+      log: () => {},
+    });
+    await r2.handle(userEvent("watch.started", { scanId: "wsc_user_1", makerId: "mkr_01", queries: ["Grace N. weaving"] }));
+    expect(seen).toEqual([60000]);
+    r2.dispose();
   });
 
   it("matches questions after trimming, lowercasing and removing punctuation", () => {

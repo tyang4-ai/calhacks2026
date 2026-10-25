@@ -672,6 +672,8 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
     sources,
     cut: [...cut],
     endedAtWallMs: Math.round(run.endWall - run.startWall!),
+    // The player's own length for the timeline that played, so the gate's time rule never guesses it.
+    durationMs: await page.evaluate(() => window.__cindia!.player.durationMs()),
     beats: results,
   };
   fs.writeFileSync(path.join(dir, "report.json"), JSON.stringify(report, null, 2));

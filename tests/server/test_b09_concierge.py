@@ -205,13 +205,29 @@ def test_request_follows_the_2026_10_21_api(client, with_key, monkeypatch):
         assert banned not in kw
     assert kw.get("thinking") is None or kw["thinking"].get("type") != "enabled"
     assert all(m["role"] == "user" for m in kw["messages"])  # no prefilled assistant turn
-    assert 0 < kw["timeout"] <= 4.0
+    assert 0 < kw["timeout"] <= 5.0
     prompt = kw["messages"][0]["content"]
     for pid in CATALOG_IDS:
         assert pid in prompt
     for needle in (DEMO_QUERY, "Price limit: under $200.00", "$180.00", "Small grey, red and black wool weaving", "Grace N.", "26"):
         assert needle in prompt, needle
     assert FAKE_KEY not in prompt
+
+
+def test_prompt_marks_each_piece_against_the_price_limit(client, with_key, monkeypatch):
+    fake = use_fake(monkeypatch, answer_with(*GOOD))
+    assert client.post(URL, json=body()).status_code == 200
+    rows = [json.loads(line) for line in fake.messages.calls[0]["messages"][0]["content"].splitlines() if line.startswith("{")]
+    assert {r["id"] for r in rows} == CATALOG_IDS
+    for r in rows:
+        assert r["within_price_limit"] is (PRICES[r["id"]] < 20000), r["id"]
+
+
+def test_prompt_without_a_limit_has_no_marks(client, with_key, monkeypatch):
+    fake = use_fake(monkeypatch, answer_with(*GOOD))
+    assert client.post(URL, json=body(query="something with water and fish")).status_code == 200
+    prompt = fake.messages.calls[0]["messages"][0]["content"]
+    assert "within_price_limit" not in prompt and "Price limit" not in prompt
 
 
 def test_user_request_without_a_limit(client, with_key, monkeypatch):
@@ -375,7 +391,15 @@ def test_sdk_request_on_the_wire(client, with_key, monkeypatch):
         assert banned not in wire
     assert wire.get("thinking", {}).get("type") != "enabled"
     assert wire["output_config"]["format"]["type"] == "json_schema"
+    assert 0 < wire["max_tokens"] <= 400
     assert [m["role"] for m in wire["messages"]] == ["user"]
+
+
+def test_client_uses_the_base_url_timeout_and_no_retries():
+    c = b09_concierge.make_client()  # the autouse fixture's fake key: building the client calls nothing
+    assert str(c.base_url).rstrip("/") == server_config.CLAUDE_BASE_URL
+    assert c.max_retries == 0
+    assert c.timeout == b09_concierge.CLAUDE_TIMEOUT_S <= 5.0
 
 
 def test_sdk_malformed_text_is_invalid_model_output(client, with_key, monkeypatch):

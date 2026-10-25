@@ -1,10 +1,12 @@
 // The sources registry. It finds live adapters in src/sources/live/ with import.meta.glob, starts
 // and stops them with the mode, and in live mode lets an adapter replace the scripted event for its key.
+// produce() gets each key's own timeout (timeoutFor), and events an adapter pushes through
+// start(emit) take `at` from the player clock as they arrive, here and nowhere else.
 import { SOURCE_KEYS, type CindiaEvent, type SourceKey } from "../core/events";
-import type { DispatchOptions } from "../core/player";
+import { player, type DispatchOptions } from "../core/player";
 import type { CindiaState, Mode } from "../core/state";
 import { emit as storeEmit, getState as storeGetState, subscribe as storeSubscribe } from "../core/store";
-import { PRODUCE_TIMEOUT_MS, type LiveAdapter } from "./types";
+import { PRODUCE_TIMEOUT_MS, timeoutFor as defaultTimeoutFor, type LiveAdapter } from "./types";
 
 export type { LiveAdapter } from "./types";
 
@@ -13,7 +15,12 @@ export interface RegistryDeps {
   emit: (e: CindiaEvent) => void;
   getState: () => CindiaState;
   subscribe: (l: () => void) => () => void;
+  /** How long health() gets. */
   timeoutMs: number;
+  /** How long produce() gets, per key. */
+  timeoutFor: (key: SourceKey) => number;
+  /** The player clock, for the `at` of events pushed through start(emit). */
+  now: () => number;
   log: (msg: string) => void;
 }
 
@@ -73,6 +80,8 @@ export function createRegistry(overrides: Partial<RegistryDeps> = {}): Registry 
     getState: storeGetState,
     subscribe: storeSubscribe,
     timeoutMs: PRODUCE_TIMEOUT_MS,
+    timeoutFor: defaultTimeoutFor,
+    now: () => player.now(),
     log: (msg) => console.warn(`[cindia sources] ${msg}`),
     ...overrides,
   };
@@ -97,7 +106,8 @@ export function createRegistry(overrides: Partial<RegistryDeps> = {}): Registry 
     for (const a of byKey.values()) {
       if (!a.start || !health[a.key] || stops.has(a.key)) continue;
       try {
-        const stop = a.start((e) => deps.emit(asLive(e, a.key)));
+        // Streamed events light up when they land: their `at` is the player clock at arrival.
+        const stop = a.start((e) => deps.emit({ ...asLive(e, a.key), at: Math.round(deps.now()) }));
         stops.set(a.key, stop);
       } catch (err) {
         deps.log(`${a.key} start() failed: ${String(err)}`);
@@ -168,7 +178,7 @@ export function createRegistry(overrides: Partial<RegistryDeps> = {}): Registry 
       return;
     }
     try {
-      const out = await withTimeout(adapter.produce(e, deps.getState()), deps.timeoutMs);
+      const out = await withTimeout(adapter.produce(e, deps.getState()), deps.timeoutFor(adapter.key));
       if (!Array.isArray(out) || out.length === 0) {
         deps.log(`${adapter.key} returned nothing for ${e.type}, playing the scripted event`);
         deps.emit(e);

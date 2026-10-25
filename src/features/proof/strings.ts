@@ -134,4 +134,11 @@ export const SOURCE_LABELS: Record<SourceKey, Text> = {
   "b08-approvals": { en: "Approvals on the manager's phone", zh: "负责人手机上的审批" },
   "b09-concierge": { en: "Gift finder", zh: "选购助手" },
   "b10-derived": { en: "Price split, receipts, statements and impact", zh: "价格拆分、收据、结算单与影响" },
+  // v2 placeholders (I2-core fallout). Plain names so the loop over SOURCE_KEYS never meets a gap.
+  "b11-embed": { en: "Search model", zh: "搜索模型" },
+  "b12-search": { en: "Vibe search", zh: "感觉搜索" },
+  "b13-live": { en: "Live shared state between screens", zh: "屏幕之间的实时共享状态" },
+  "b14-swarm": { en: "Cindy's agent swarm", zh: "Cindy的智能体团队" },
+  "b15-watch": { en: "Copy watch", zh: "仿冒监测" },
+  "b16-bank-books": { en: "Bank account and books", zh: "银行账户与账本" },
 };

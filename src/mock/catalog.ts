@@ -4,7 +4,7 @@
 // materials and one plain detail about colors or size, with no lineage, hardship or meaning, and
 // never a claim that a real person made it. Process steps are physical work only (A2 R13). Images
 // are the placeholders under public/images/ until I2-art draws them.
-import type { Piece, ProcessStep, Text } from "../core/types";
+import type { Facets, Piece, ProcessStep, Text, Vibe } from "../core/types";
 
 // The two craft lines (A2 R12). One line per craft, the same on every piece of that craft, with no
 // per-piece extra and no meaning. These are the only statements about the real crafts.
@@ -40,6 +40,25 @@ function proc(...steps: [Text, number][]): ProcessStep[] {
   return steps.map(([step, hours]) => ({ step, hours }));
 }
 
+// Minimal v2 fields (I2-core FO2): each piece's object, no word lists yet, and an empty vibe. Every
+// piece is already made, so it is one of a kind with no lead time. S3-catalog T5 replaces these.
+const OBJ = {
+  weaving: { en: "weaving", zh: "编织" },
+  rug: { en: "rug", zh: "地毯" },
+  earrings: { en: "earrings", zh: "耳环" },
+  ring: { en: "ring", zh: "戒指" },
+  pendant: { en: "pendant necklace", zh: "吊坠项链" },
+  cuff: { en: "cuff bracelet", zh: "手镯" },
+} satisfies Record<string, Text>;
+
+function made(object: Text): Facets {
+  return { object, materials: [], techniques: [], motifs: [], colors: [], oneOfAKind: true, leadTimeDays: 0 };
+}
+
+function noVibe(): Vibe {
+  return { moods: [], occasions: [], recipients: [] };
+}
+
 export const pieces: Piece[] = [
   {
     id: "pc_01",
@@ -56,6 +75,10 @@ export const pieces: Piece[] = [
     heritage: WEAVING,
     process: proc([S.yarn, 4], [S.warp, 3], [S.weave, 17], [S.finish, 2]),
     image: "/images/pc_01.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.weaving),
+    vibe: noVibe(),
+    imageAlt: { en: "Small grey, red and black wool weaving", zh: "灰红黑三色小幅羊毛编织" },
   },
   {
     id: "pc_02",
@@ -72,6 +95,10 @@ export const pieces: Piece[] = [
     heritage: SILVER,
     process: proc([S.cut, 3], [S.stamp, 3], [S.wires, 1], [S.file, 2]),
     image: "/images/pc_02.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.earrings),
+    vibe: noVibe(),
+    imageAlt: { en: "Stamped silver earrings", zh: "压花银耳环" },
   },
   {
     id: "pc_03",
@@ -88,6 +115,10 @@ export const pieces: Piece[] = [
     heritage: WEAVING,
     process: proc([S.spin, 30], [S.warp, 10], [S.weave, 112], [S.finish, 8]),
     image: "/images/pc_03.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.rug),
+    vibe: noVibe(),
+    imageAlt: { en: "Brown, white and grey wool rug", zh: "棕白灰三色羊毛地毯" },
   },
   {
     id: "pc_04",
@@ -104,6 +135,10 @@ export const pieces: Piece[] = [
     heritage: WEAVING,
     process: proc([S.yarn, 6], [S.dye, 10], [S.warp, 10], [S.weave, 98], [S.finish, 6]),
     image: "/images/pc_04.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.rug),
+    vibe: noVibe(),
+    imageAlt: { en: "Red, black and white wool rug with stepped diamonds", zh: "红黑白三色阶梯菱形羊毛地毯" },
   },
   {
     id: "pc_05",
@@ -120,6 +155,10 @@ export const pieces: Piece[] = [
     heritage: WEAVING,
     process: proc([S.spin, 20], [S.dye, 12], [S.warp, 8], [S.weave, 64], [S.finish, 6]),
     image: "/images/pc_05.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.weaving),
+    vibe: noVibe(),
+    imageAlt: { en: "Indigo and white striped wool weaving", zh: "靛蓝白条纹羊毛编织" },
   },
   {
     id: "pc_06",
@@ -136,6 +175,10 @@ export const pieces: Piece[] = [
     heritage: WEAVING,
     process: proc([S.yarn, 4], [S.warp, 5], [S.weave, 47], [S.finish, 4]),
     image: "/images/pc_06.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.weaving),
+    vibe: noVibe(),
+    imageAlt: { en: "Grey and white zigzag wool weaving", zh: "灰白锯齿纹羊毛编织" },
   },
   {
     id: "pc_07",
@@ -152,6 +195,10 @@ export const pieces: Piece[] = [
     heritage: WEAVING,
     process: proc([S.yarn, 1], [S.warp, 1], [S.weave, 3], [S.finish, 1]),
     image: "/images/pc_07.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.weaving),
+    vibe: noVibe(),
+    imageAlt: { en: "Red and grey wool mini weaving", zh: "红灰双色迷你羊毛编织" },
   },
   {
     id: "pc_08",
@@ -168,6 +215,10 @@ export const pieces: Piece[] = [
     heritage: SILVER,
     process: proc([S.cut, 1], [S.stamp, 1.5], [S.solder, 0.5], [S.file, 1]),
     image: "/images/pc_08.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.ring),
+    vibe: noVibe(),
+    imageAlt: { en: "Thin silver ring with stamped chevrons", zh: "压印人字纹细银戒" },
   },
   {
     id: "pc_09",
@@ -184,6 +235,10 @@ export const pieces: Piece[] = [
     heritage: SILVER,
     process: proc([S.cut, 3], [S.stamp, 3], [S.set, 4], [S.file, 4]),
     image: "/images/pc_09.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.pendant),
+    vibe: noVibe(),
+    imageAlt: { en: "Silver and turquoise pendant necklace", zh: "绿松石银吊坠项链" },
   },
   {
     id: "pc_10",
@@ -200,6 +255,10 @@ export const pieces: Piece[] = [
     heritage: SILVER,
     process: proc([S.cut, 2], [S.set, 4], [S.wires, 1], [S.file, 3]),
     image: "/images/pc_10.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.earrings),
+    vibe: noVibe(),
+    imageAlt: { en: "Silver and turquoise drop earrings", zh: "绿松石银坠耳环" },
   },
   {
     id: "pc_11",
@@ -216,6 +275,10 @@ export const pieces: Piece[] = [
     heritage: WEAVING,
     process: proc([S.yarn, 2], [S.dye, 3], [S.warp, 3], [S.weave, 14], [S.finish, 2]),
     image: "/images/pc_11.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.weaving),
+    vibe: noVibe(),
+    imageAlt: { en: "Red and white wool weaving", zh: "红白双色羊毛编织" },
   },
   {
     id: "pc_12",
@@ -232,6 +295,10 @@ export const pieces: Piece[] = [
     heritage: SILVER,
     process: proc([S.cut, 3], [S.stamp, 4], [S.solder, 1], [S.file, 3]),
     image: "/images/pc_12.svg",
+    communityId: "com_dine",
+    facets: made(OBJ.cuff),
+    vibe: noVibe(),
+    imageAlt: { en: "Narrow stamped silver cuff bracelet", zh: "压花细银手镯" },
   },
 ];
 

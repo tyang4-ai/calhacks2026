@@ -1,9 +1,9 @@
 STAGE: V2
-NEXT: V0 step 8 (B04 G5), then V1 step 1 (I2-core)
+NEXT: V1 steps 2 and 3 (S3 T1 stubs, I2-kit, I2-art T0; keyed v1 G5s in a worktree), then I2-core T5/T8 and S3 spawn 2
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 18:55 PT
+UPDATED: 2026-10-24 19:58 PT
 
 # Status board
 
@@ -37,6 +37,7 @@ v1 (desktop session, history):
 | G4 | PASS | Oct 24 4:15 AM | `artifacts/gates/G4-0415.md` 5/5 (60 s runs, strict demo test), `artifacts/gates/G4-verifier-r2.md` PASS (round 1 FAIL: `G4-verifier.md`) | demo-ok-1 |
 | G5 | B01 PASS | Oct 24 4:43 AM | `artifacts/gates/G5-0443.md`, `artifacts/gates/G5-b01-verifier.md` (FAIL fixed by the live-source check) | demo-ok-b01 |
 | R0 | PASS | Oct 24 6:46 PM | `artifacts/gates/R0-1836.md`, `artifacts/gates/R0-verifier-screens.md`, `-numbers.md`, `-words.md` (first run `R0-1828.md` FAIL: d10 held line out of frame, fixed) | v2-reskin |
+| core | PASS | Oct 24 7:58 PM | `artifacts/gates/core-1940.md` (first run `core-1935.md`: smoke source count and B09's 4 s budget, fixed), `artifacts/gates/core-verifier-code.md`, `-docs.md`, `-server.md` | v2-core |
 | G6 | | | | |
 
 ## Features
@@ -65,7 +66,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B01-match | green | yes, live at 20.5 s, no fallback | demo-ok-b01 | G5 13/13 (round 1 added the live-source check) |
 | B02-explain | built and committed, awaiting key | | | server 136 passed (18 mocked + 1 live skipped); G5 needs ANTHROPIC_API_KEY |
 | B03-proof | green | live at 59.0 s | demo-ok-b03 | G5 13/13, verifier PASS |
-| B04-bank | built and committed, awaiting key | | | server 25 mocked passed + 2 live skipped; G5 needs NESSIE_KEY; integrator adding allowed money.moved fallbacks |
+| B04-bank | G5 12/13, rerun queued | live sale and payouts on Nessie (sandbox) | | v2 cloud G5 Oct 24 6:55 PM: server 232, contract 25, live pre-smoke 2 passed, scripted 3/3 + offline, live runs 2 and 3 and offline pass; live run 1 missed d04's receipt status because Nessie's first sale took 1,755 ms (later ~800 ms). One rerun at the next quiet moment (after the core gate) |
 | B05-scenario | green | TestClient flow tests (no timeline events) | demo-ok-b05 | G5 13/13, verifier PASS |
 | B06-workbook | green | live at 44.6 s | demo-ok-b06 | G5 13/13, verifier PASS |
 | B07-ask | built and committed, awaiting key | | | server 31 mocked passed + 1 live skipped; G5 needs ANTHROPIC_API_KEY plus an ask-cindy-live spec |
@@ -78,7 +79,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | Plan | Wave | State | Lead | Last green tag | Notes |
 |---|---|---|---|---|---|
 | R0-reskin | V1 step 0 | green | data-smith, integrator, feature-lead, backend-builder | v2-reskin | gate 11/11 checks, 3 verifiers PASS (screens, numbers, words) |
-| I2-core | V1 | todo | integrator | | with fallout FO1, FO2 |
+| I2-core | V1 | first spawn green | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
 | I2-kit | V1 | todo | integrator | | |
 | I2-shell | V1 | todo | integrator | | |
 | S3-catalog | V1 | todo | data-smith | | |
@@ -163,7 +164,7 @@ Each item names the default already in use, so the build never waits.
 | Since | Question | Default in use |
 |---|---|---|
 | Oct 24 6:16 PM | R0: check the Chinese of the co-op's place (美国亚利桑那州纳瓦霍保留区) and the twelve Chinese piece stories in `src/mock/catalog.ts`, plus the Chinese of L1, L2, L4 and L15 (fix-plan section 7) | The data-smith's Chinese, as written |
-| Oct 24 2:01 AM | `.env` is missing, so there's no `ANTHROPIC_API_KEY` or `NESSIE_KEY`. Copy `C:\dev\secrets\cindia.env` to `.env` | The upgrades that need these keys stay scripted: B02, B07, B09 (Anthropic) and B04 (Nessie) are blocked; B01, B03, B05, B06, B08, B10 run without keys |
+| Oct 24 2:01 AM | ~~`.env` is missing~~ Resolved in the cloud at 7:30 PM: `/api/health` reads anthropic, nessie, elastic, apify and hf all true from the cloud environment. On the Windows laptop, `.env` is still needed for live mode (D-deploy's laptop script) | Live keys in the cloud |
 
 ## Demo notes for Gordon
 
@@ -252,3 +253,9 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 18:31 PT · R0 gate run 1 FAIL: test:demo 3/3 and offline fail at d10 (maker-statement-held $95.00 out of the phone frame: English titles wrap); scenario-live bad-file race fixed (pre-existing); orchestrator fixed StatementLines to one-line titles · artifacts/gates/R0-1828.md
 - 2026-10-24 18:46 PT · R0 gate run 2: check, check:data 78, smoke 22/22, build, test:demo 3/3 (endedAtWallMs 60002, 60011, 60012 ≤ 75000), offline, server 232 passed + 3 skipped, old-names grep 0; all feature specs 150/151 (impact-numbers count-up flakes 1 in 4 on the VM, timing, not R0; noted for M-desktop) · artifacts/gates/R0-1836.md
 - 2026-10-24 18:55 PT · R0 verifiers PASS: screens, numbers, words (workflow of 3); minors queued (owner wording in EndCard/BeatLabel for I2-core/I2-tour, Grace N. twice on d02 for M-buyer, buy_01 name for S3, stale sponsor notes for the scribe, seal date wrap at d08) · artifacts/gates/R0-verifier-*.md
+- 2026-10-24 19:00 PT · I2-core T1 (docs/common) integrator spawned during B04's G5 (docs only) · decisions.md
+- 2026-10-24 19:07 PT · B04 G5 (v1 rules) 12/13: live run 1 of 3 missed d04's buyer-receipt-status (Nessie's first sale 1,755 ms vs ~800 ms after); rerun once at the next quiet moment; I2-core T2-T4 and T6-T7 integrators spawned · artifacts/gates/G5-1855.md
+- 2026-10-24 19:24 PT · I2-core T1 done (docs/common; check:data needs the events.md count 32 to 59 in timelines.test.ts, routed to FO2) · decisions.md
+- 2026-10-24 19:30 PT · I2-core T6/T7 done: config reads CINDIA_ANTHROPIC_API_KEY, health keys anthropic, nessie, elastic, apify, hf all true, services spacetime true, model false; torch 2.14.1+cpu; export:mock works; test:server red only on B02's live test (Sonnet 7.9 s vs its 6 s budget), B09 live 1 of 4 over 4 s; backend-builder fixing both; API restarted with the new server.mjs flags · status.md
+- 2026-10-24 19:41 PT · core gate: check, smoke 22/22, demo (endedAtWallMs 60013 vs 60000 + 15000), server 237 + 1 skipped with B09 live timing out once; B09's Claude timeout raised to 5 s (contract change), server 238 passed + 1 skipped · artifacts/gates/core-1940.md
+- 2026-10-24 19:58 PT · core verifiers PASS (code, docs, server; workflow of 3); minors queued for I2-core's second spawn (log order with two status events, surprise weight tolerance before T5, timeoutFor location, durationMs in the Player interface, apr kinds in data-model, B14 key wording, G0 port 3000) · artifacts/gates/core-verifier-*.md

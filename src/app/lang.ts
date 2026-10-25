@@ -8,6 +8,7 @@ export const SURFACE_START_LANG: Record<SurfaceId, "en" | "zh"> = {
   studio: "en",
   owner: "en",
   maker: "en",
+  store: "en",
 };
 
 export function resolveLang(setting: LangSetting, surface: SurfaceId): "en" | "zh" {

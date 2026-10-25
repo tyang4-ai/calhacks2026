@@ -24,7 +24,7 @@ import { startVideo, stopVideo, subscribeVideoPhase, videoPhase } from "./videoM
 
 /** The elements studio-catch zooms to: the flag and its evidence, inside frame-studio. */
 const FOCUS_IDS = ["reconcile-flag", "reconcile-evidence-contract", "reconcile-evidence-statement", "reconcile-evidence-bank", "reconcile-explanation"];
-const Z: Record<SurfaceId, number> = { studio: 1, buyer: 2, owner: 2, maker: 3 };
+const Z: Record<SurfaceId, number> = { studio: 1, buyer: 2, owner: 2, maker: 3, store: 1 };
 
 /** The point studio-catch centers on, in the studio frame's own pixels, or null when the flag isn't there. */
 function measureFocus(frame: HTMLElement | null): Focus | null {
@@ -61,7 +61,7 @@ function measureFocus(frame: HTMLElement | null): Focus | null {
 
 /** Places the four frames for the camera, imperatively on every player and store change, so the surfaces never re-render for a move. */
 function CameraRig({ camera, surfaces }: { camera: CameraId; surfaces: Record<SurfaceId, ReactNode> }) {
-  const refs = useRef<Record<SurfaceId, HTMLDivElement | null>>({ studio: null, buyer: null, owner: null, maker: null });
+  const refs = useRef<Record<SurfaceId, HTMLDivElement | null>>({ studio: null, buyer: null, owner: null, maker: null, store: null });
   const cameraRef = useRef(camera);
   const reducedRef = useRef(false);
   const applyRef = useRef<() => void>(() => {});
@@ -175,6 +175,8 @@ export function DemoStage() {
     buyer: <BuyerSurface />,
     owner: <OwnerSurface />,
     maker: <MakerSurface makerId="mkr_01" />,
+    // Placeholder: the store frame stays empty and hidden until I2-shell T4 gives it a page.
+    store: null,
   };
 
   return (

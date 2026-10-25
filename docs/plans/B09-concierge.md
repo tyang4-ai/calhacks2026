@@ -19,7 +19,7 @@ The gift finder's three picks come from Claude reading the catalog, with a reaso
 
 ## Interfaces
 
-- **Endpoint:** `POST /api/b09/concierge`. Needs `ANTHROPIC_API_KEY`. `claude-haiku-5-5` with a 4-second timeout, because it opens the demo.
+- **Endpoint:** `POST /api/b09/concierge`. Needs `ANTHROPIC_API_KEY`. `claude-haiku-5-5` with a 5-second timeout (4 until Oct 24, 7:45 PM, see decisions.md), because it opens the demo.
 - **Structured answer** through `client.messages.parse()`: exactly three picks, each `{ piece_id, reason_en, reason_zh }`. Each reason is one plain sentence about the piece itself: the maker, the craft, the motif or the hours.
 - **Server checks:** every `piece_id` is in the catalog, the three are different, and a price limit in the query holds. A failed check is `invalid_model_output`.
 - **Replaces:** the keyed `concierge.answered` in the demo timeline.

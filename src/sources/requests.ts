@@ -12,7 +12,7 @@ import type { CindiaState } from "../core/state";
 import type { Text } from "../core/types";
 import type { ChartSpec } from "../core/events";
 import { asLive, withTimeout } from "./registry";
-import { PRODUCE_TIMEOUT_MS, REPLY_DELAY_MS, type LiveAdapter } from "./types";
+import { REPLY_DELAY_MS, timeoutFor, type LiveAdapter } from "./types";
 
 /** The mock exports the responder reads (S2 writes them in src/mock/). */
 export interface MockAnswers {
@@ -39,7 +39,8 @@ export interface ResponderDeps {
   /** The player's epoch. A pending answer is dropped when it changes. */
   epoch: () => number;
   delayMs: number;
-  timeoutMs: number;
+  /** How long the live adapter's produce() gets, per key (timeoutFor in types.ts). */
+  timeoutFor: (key: SourceKey) => number;
   log: (msg: string) => void;
 }
 
@@ -172,7 +173,7 @@ export function createResponder(deps: ResponderDeps): Responder {
 
     if (adapter) {
       try {
-        const out = await withTimeout(adapter.produce(req, deps.getState()), deps.timeoutMs);
+        const out = await withTimeout(adapter.produce(req, deps.getState()), deps.timeoutFor(key));
         if (Array.isArray(out) && out.length > 0) {
           for (const e of out) deliver(asLive(e, key), epoch);
           return;
@@ -199,4 +200,4 @@ export function createResponder(deps: ResponderDeps): Responder {
   };
 }
 
-export const REQUEST_DEFAULTS = { delayMs: REPLY_DELAY_MS, timeoutMs: PRODUCE_TIMEOUT_MS };
+export const REQUEST_DEFAULTS = { delayMs: REPLY_DELAY_MS, timeoutFor };

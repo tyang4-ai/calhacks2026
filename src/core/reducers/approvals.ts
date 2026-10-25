@@ -1,5 +1,5 @@
 import type { ApprovalsState, ApprovalState, FollowUpState } from "../state";
-import { addId, areaReducer, put } from "./util";
+import { addId, areaReducer, copy, put } from "./util";
 
 function blank(approvalId: string): ApprovalState {
   return { approvalId, status: "pending", requested: false };
@@ -9,8 +9,10 @@ export const approvalsReducer = areaReducer<ApprovalsState>({
   "approval.requested": (s, e) => {
     const id = e.payload.approvalId;
     const prev = s.items[id] ?? blank(id);
-    // A request never reopens an approval that has already been decided.
-    const items = put(s.items, id, { ...prev, requested: true });
+    // A request never reopens an approval that has already been decided. An inline approval (one
+    // that isn't in src/mock/) is stored as it arrives.
+    const approval = e.payload.approval ? copy(e.payload.approval) : prev.approval;
+    const items = put(s.items, id, { ...prev, requested: true, ...(approval ? { approval } : {}) });
     const approvalIds = addId(s.approvalIds, id);
     return items === s.items && approvalIds === s.approvalIds ? s : { ...s, items, approvalIds };
   },

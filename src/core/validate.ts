@@ -1,7 +1,8 @@
 // validateEvent(e) checks an event's envelope, type and payload against docs/common/events.md,
 // with no schema library. It returns a list of problems, empty when the event is valid.
 import { CAMERA_IDS } from "./featureTypes";
-import { EVENT_TYPES, SOURCE_KEYS, type EventType } from "./events";
+import { EVENT_TYPES, PROCESS_IDS, SOURCE_KEYS, type EventType } from "./events";
+import { APPROVAL_KINDS } from "./types";
 
 type Spec =
   | "string"
@@ -12,16 +13,47 @@ type Spec =
   | "date"
   | "party"
   | "chart"
-  | { enum: readonly (string | boolean)[] }
+  | { enum: readonly (string | number | boolean)[] }
   | { array: Spec }
   | { object: Fields }
-  | { record: Spec };
+  | { record: Spec }
+  | { nullable: Spec }
+  | { anyOf: readonly Spec[] };
 
 /** Field name to spec. A name ending in "?" is optional. */
 type Fields = Record<string, Spec>;
 
 const LANG = { enum: ["en", "zh"] } as const;
-const PARTY_KINDS = ["buyer", "cindia", "card_network", "studio", "maker", "gallery", "processor", "supplier"] as const;
+const PARTY_KINDS = ["buyer", "cindia", "card_network", "studio", "maker", "gallery", "processor", "supplier", "community_fund"] as const;
+const MODELS = { enum: ["claude-haiku-5-5", "claude-sonnet-5-5"] } as const;
+const SIDE = { enum: ["buyer", "seller"] } as const;
+const VERDICT = { enum: ["possible_copy", "claim_only", "neither"] } as const;
+const SURPRISE_METHOD = { enum: ["keyword_random", "pure_random", "fair_random"] } as const;
+const POINT: Spec = { object: { x: "number", y: "number" } };
+const STRINGS: Spec = { array: "string" };
+const FILTERS: Spec = { object: { "maxPriceCents?": "int", "communityIds?": STRINGS } };
+const VIBE: Spec = { object: { moods: STRINGS, occasions: STRINGS, recipients: STRINGS } };
+const SIZE: Spec = { object: { w: "number", h: "number" } };
+const BLOCKS: Spec = {
+  array: {
+    object: {
+      blockId: "string",
+      kind: { enum: ["hero", "story", "pieces", "process", "projects", "visit"] },
+      props: { record: { anyOf: ["string", STRINGS] } },
+    },
+  },
+};
+const INLINE_APPROVAL: Spec = {
+  object: {
+    kind: { enum: APPROVAL_KINDS },
+    subjectIds: STRINGS,
+    "amountCents?": "int",
+    overLimit: "boolean",
+    proposedBy: { enum: ["cindy"] },
+    summary: "text",
+    decisionDate: "date",
+  },
+};
 
 const SCHEMAS: Record<EventType, Fields> = {
   "concierge.asked": { query: "string", lang: LANG },
@@ -34,9 +66,10 @@ const SCHEMAS: Record<EventType, Fields> = {
     platformFeeCents: "int",
     materialsCents: "int",
     makerShareCents: "int",
+    "compare?": { object: { channelId: { enum: ["ch_gallery"] }, commissionBps: "int", makerShareCents: "int" } },
   },
   "checkout.started": { pieceId: "string", grossCents: "int" },
-  "card.tokenized": { token: "string", brand: { enum: ["visa"] }, last4: "string" },
+  "card.tokenized": { token: "string", brand: { enum: ["visa"] }, last4: "string", "pieceId?": "string" },
   "order.placed": {
     orderId: "string",
     pieceId: "string",
@@ -54,7 +87,7 @@ const SCHEMAS: Record<EventType, Fields> = {
   },
   "money.moved": {
     moveId: "string",
-    kind: { enum: ["sale", "fee", "settlement", "payout_in", "materials", "maker_pay", "refund"] },
+    kind: { enum: ["sale", "fee", "settlement", "payout_in", "materials", "maker_pay", "refund", "project_fund", "milestone"] },
     from: "party",
     to: "party",
     amountCents: "int",
@@ -82,6 +115,7 @@ const SCHEMAS: Record<EventType, Fields> = {
     expectedCents: "int",
     actualCents: "int",
     deltaCents: "int",
+    "nessieId?": "string",
   },
   "flag.explained": { flagId: "string", trustRecordId: "string", explanation: "text" },
   "ledger.posted": { entryIds: { array: "string" } },
@@ -98,7 +132,7 @@ const SCHEMAS: Record<EventType, Fields> = {
     text: "text",
     "refId?": "string",
   },
-  "approval.requested": { approvalId: "string" },
+  "approval.requested": { approvalId: "string", "approval?": INLINE_APPROVAL },
   "approval.granted": { approvalId: "string", by: { enum: ["own_01"] }, date: "date" },
   "approval.declined": { approvalId: "string", by: { enum: ["own_01"] }, reason: "text" },
   "followup.drafted": { followUpId: "string", approvalId: "string", to: "text", subject: "text", body: "text" },
@@ -134,11 +168,157 @@ const SCHEMAS: Record<EventType, Fields> = {
     "recordIds?": { array: "string" },
     "content?": "string",
   },
-  "beat.started": { beatId: "string", camera: { enum: CAMERA_IDS } },
+  "beat.started": {
+    beatId: "string",
+    camera: { enum: CAMERA_IDS },
+    "process?": { enum: PROCESS_IDS },
+    "drawer?": { enum: ["support", "ask", "audit"] },
+  },
+  "search.queried": { queryId: "string", text: "string", keywords: STRINGS, lang: LANG, "filters?": FILTERS },
+  "search.answered": {
+    queryId: "string",
+    results: {
+      array: {
+        object: { pieceId: "string", score: "number", "closeness?": "number", matched: STRINGS, reason: "text" },
+      },
+    },
+    "closeMatches?": "boolean",
+    engine: { enum: ["elastic_hybrid", "local_hybrid", "keyword_scripted"] },
+    "modelId?": "string",
+    "keywords?": STRINGS,
+    "filters?": FILTERS,
+    "keywordsBy?": { enum: ["finder", "rules"] },
+  },
+  "search.mapped": {
+    queryId: "string",
+    modelId: "string",
+    points: { array: { object: { pieceId: "string", x: "number", y: "number" } } },
+    query: POINT,
+    method: { enum: ["pca"] },
+    "approx?": "boolean",
+  },
+  "surprise.asked": { surpriseId: "string", "keyword?": "string", method: SURPRISE_METHOD, seed: "int" },
+  "surprise.drawn": {
+    surpriseId: "string",
+    pieceId: "string",
+    method: SURPRISE_METHOD,
+    seed: "int",
+    candidates: { array: { object: { pieceId: "string", weight: "number" } } },
+  },
+  "support.asked": { threadId: "string", side: SIDE, text: "string", lang: LANG, contextIds: STRINGS },
+  "swarm.step": {
+    runId: "string",
+    threadId: "string",
+    stepId: "string",
+    agentId: "string",
+    kind: { enum: ["route", "call", "tool", "result", "check", "handoff", "reply"] },
+    summary: "text",
+    "toolName?": "string",
+    ms: "number",
+    "model?": MODELS,
+  },
+  "support.answered": {
+    threadId: "string",
+    runId: "string",
+    agentId: "string",
+    reply: "text",
+    refIds: STRINGS,
+    "approvalIds?": STRINGS,
+  },
+  "support.escalated": { threadId: "string", runId: "string", reason: "text", approvalId: "string" },
+  "question.forwarded": { questionId: "string", threadId: "string", makerId: "string", pieceId: "string", text: "string", lang: LANG },
+  "question.answered": { questionId: "string", answerId: "string", makerId: "string", text: "string", lang: LANG },
+  "listing.requested": { listingId: "string", makerId: "string", notes: "string", lang: LANG },
+  "listing.drafted": {
+    listingId: "string",
+    makerId: "string",
+    title: "text",
+    summary: "text",
+    facets: {
+      object: {
+        object: "text",
+        materials: STRINGS,
+        techniques: STRINGS,
+        motifs: STRINGS,
+        colors: STRINGS,
+        "sizeCm?": SIZE,
+        "oneOfAKind?": "boolean",
+        "leadTimeDays?": "int",
+      },
+    },
+    "hours?": "number",
+    vibe: VIBE,
+    checks: {
+      array: { object: { checkId: "string", kind: { enum: ["protocol", "facts", "price"] }, ok: "boolean", note: "text" } },
+    },
+  },
+  "listing.indexed": {
+    listingId: "string",
+    pieceId: "string",
+    modelId: "string",
+    embedText: "string",
+    index: { enum: ["cindia-drafts", "cindia-pieces"] },
+    "point?": POINT,
+    "approx?": "boolean",
+  },
+  "storefront.requested": { storefrontId: "string" },
+  "storefront.drafted": { storefrontId: "string", blocks: BLOCKS },
+  "storefront.published": { storefrontId: "string", slug: "string", blocks: BLOCKS },
+  "project.funded": { contributionId: "string", projectId: "string", amountCents: "int", buyerId: "string", "orderId?": "string" },
+  "wip.milestone_reached": { wipId: "string", milestoneId: "string", date: "date" },
+  "wip.milestone_paid": { wipId: "string", milestoneId: "string", amountCents: "int", date: "date" },
+  "model.trained": { modelId: "string", baseModel: "string", pairs: "int", epochs: "int", dims: "int", "hubUrl?": "string" },
+  "proof.search_scored": {
+    modelId: "string",
+    k: { enum: [5] },
+    queries: "int",
+    systems: {
+      array: { object: { system: { enum: ["keyword", "base", "custom", "hybrid"] }, recallAtK: "number", mrr: "number" } },
+    },
+  },
+  "watch.started": { scanId: "string", makerId: "string", queries: STRINGS },
+  "watch.scanned": {
+    scanId: "string",
+    engine: { enum: ["apify", "scripted"] },
+    candidates: "int",
+    results: {
+      array: { object: { title: "string", url: "string", snippet: "string", similarity: { nullable: "number" }, verdict: VERDICT } },
+    },
+  },
+  "counterfeit.flagged": {
+    cftId: "string",
+    scanId: "string",
+    pieceId: "string",
+    url: "string",
+    title: "string",
+    snippet: "string",
+    similarity: "number",
+    claim: "text",
+  },
+  "data.synced": {
+    tables: {
+      array: {
+        object: {
+          table: { enum: ["catalog", "listings", "orders", "approvals", "runs", "steps", "processes", "screens"] },
+          rows: "int",
+          newest: { array: { object: { id: "string", label: "string" } } },
+        },
+      },
+    },
+    screens: "int",
+    processes: { array: { object: { processId: { enum: PROCESS_IDS }, status: { enum: ["idle", "working", "done", "attention"] } } } },
+  },
+  "index.synced": { indexed: "int", drafts: "int", elastic: "boolean", agentBuilder: "boolean" },
 };
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_CONTENT = 200 * 1024;
+/** search.answered carries at most 12 results. */
+const MAX_RESULTS = 12;
+/** data.synced carries at most three newest rows per table. */
+const MAX_NEWEST = 3;
+/** Payload weights are raw weights over their total, so they sum to 1 up to rounding. */
+const WEIGHT_TOLERANCE = 0.001;
 
 function isObj(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
@@ -220,7 +400,20 @@ function checkSpec(v: unknown, spec: Spec, path: string, out: string[]): void {
     }
   }
   if ("enum" in spec) {
-    if (!spec.enum.includes(v as string)) out.push(`${path}: expected one of ${spec.enum.join(", ")}, got ${String(v)}`);
+    if (!spec.enum.includes(v as never)) out.push(`${path}: expected one of ${spec.enum.join(", ")}, got ${String(v)}`);
+    return;
+  }
+  if ("nullable" in spec) {
+    if (v !== null) checkSpec(v, spec.nullable, path, out);
+    return;
+  }
+  if ("anyOf" in spec) {
+    const fits = spec.anyOf.some((s) => {
+      const probe: string[] = [];
+      checkSpec(v, s, path, probe);
+      return probe.length === 0;
+    });
+    if (!fits) out.push(`${path}: matches none of the allowed shapes, got ${describe(v)}`);
     return;
   }
   if ("array" in spec) {
@@ -283,8 +476,45 @@ export function validateEvent(e: unknown): string[] {
     if (type === "scenario.loaded" && typeof p.content === "string" && p.content.length > MAX_CONTENT) {
       out.push(`${label}.payload.content: more than 200 KB`);
     }
+    if (type === "search.answered" && Array.isArray(p.results)) {
+      if (p.results.length > MAX_RESULTS) out.push(`${label}.payload.results: more than ${MAX_RESULTS} results`);
+      p.results.forEach((r: unknown, i: number) => {
+        if (!isObj(r)) return;
+        inUnitRange(r.score, `${label}.payload.results[${i}].score`, out);
+        inUnitRange(r.closeness, `${label}.payload.results[${i}].closeness`, out);
+      });
+    }
+    if (type === "surprise.drawn" && Array.isArray(p.candidates) && p.candidates.length > 0) {
+      const cands = p.candidates.filter(isObj);
+      cands.forEach((c, i) => inUnitRange(c.weight, `${label}.payload.candidates[${i}].weight`, out));
+      const total = cands.reduce((sum, c) => sum + (typeof c.weight === "number" ? c.weight : 0), 0);
+      if (Math.abs(total - 1) > WEIGHT_TOLERANCE) out.push(`${label}.payload.candidates: weights sum to ${total}, expected 1`);
+      if (typeof p.pieceId === "string" && !cands.some((c) => c.pieceId === p.pieceId)) {
+        out.push(`${label}.payload.pieceId: not one of the candidates`);
+      }
+    }
+    if (type === "proof.search_scored" && Array.isArray(p.systems)) {
+      p.systems.forEach((sys: unknown, i: number) => {
+        if (!isObj(sys)) return;
+        inUnitRange(sys.recallAtK, `${label}.payload.systems[${i}].recallAtK`, out);
+        inUnitRange(sys.mrr, `${label}.payload.systems[${i}].mrr`, out);
+      });
+    }
+    if (type === "swarm.step" && typeof p.ms === "number" && p.ms < 0) out.push(`${label}.payload.ms: expected 0 or more`);
+    if (type === "data.synced" && Array.isArray(p.tables)) {
+      p.tables.forEach((t: unknown, i: number) => {
+        if (isObj(t) && Array.isArray(t.newest) && t.newest.length > MAX_NEWEST) {
+          out.push(`${label}.payload.tables[${i}].newest: more than ${MAX_NEWEST} rows`);
+        }
+      });
+    }
   }
   return out;
+}
+
+/** A number from 0 to 1, when present. */
+function inUnitRange(v: unknown, path: string, out: string[]): void {
+  if (typeof v === "number" && (v < 0 || v > 1)) out.push(`${path}: expected a number from 0 to 1, got ${v}`);
 }
 
 /** Validates a list of events. Returns every problem, each prefixed with the event's index. */

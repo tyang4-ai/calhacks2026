@@ -1,6 +1,6 @@
 // The camera states from ui-contract.md as poses: where each frame sits on the 1600 by 900 stage,
 // at what scale and opacity. Pure functions, so the stage and the unit test share them.
-import type { CameraId, StudioView, SurfaceId } from "../../core/featureTypes";
+import { LEGACY_CAMERA_IDS, type CameraId, type LegacyCameraId, type StudioView, type SurfaceId, type TourCameraId } from "../../core/featureTypes";
 import { CONSOLE_HEIGHT, CONSOLE_WIDTH } from "../../ui/ConsoleFrame";
 import { PHONE_HEIGHT, PHONE_WIDTH } from "../../ui/PhoneFrame";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stageScale";
@@ -37,12 +37,14 @@ export interface Focus {
 }
 
 export const MOVE_MS = 600;
-export const SURFACES: readonly SurfaceId[] = ["studio", "buyer", "owner", "maker"];
+export const SURFACES: readonly SurfaceId[] = ["studio", "buyer", "owner", "maker", "store"];
 export const FRAME_SIZE: Record<SurfaceId, { w: number; h: number }> = {
   buyer: { w: PHONE_WIDTH, h: PHONE_HEIGHT },
   studio: { w: CONSOLE_WIDTH, h: CONSOLE_HEIGHT },
   owner: { w: PHONE_WIDTH, h: PHONE_HEIGHT },
   maker: { w: PHONE_WIDTH, h: PHONE_HEIGHT },
+  // Placeholder until I2-shell T4 gives the store its page frame.
+  store: { w: CONSOLE_WIDTH, h: CONSOLE_HEIGHT },
 };
 
 /** How strongly the studio is dimmed behind the maker phone. */
@@ -104,21 +106,44 @@ export function cameraPose(camera: CameraId, focus: Focus | null = null): Camera
   const [soStudio, soOwner] = pair(CONSOLE_WIDTH * 0.9, PHONE_WIDTH * 0.8);
   const ownerOff = hidden(at(soOwner, 0.8));
   const makerOff = hidden(at(MID_X, 0.9));
+  const storeOff = hidden(at(MID_X, 1));
   switch (camera) {
     case "buyer":
     case "receipt":
-      return { buyer: buyerCenter, studio: hidden(at(bsStudio, 0.85)), owner: ownerOff, maker: makerOff };
+      return { buyer: buyerCenter, studio: hidden(at(bsStudio, 0.85)), owner: ownerOff, maker: makerOff, store: storeOff };
     case "buyer-studio":
-      return { buyer: at(bsBuyer, 0.9), studio: at(bsStudio, 0.85), owner: ownerOff, maker: makerOff };
+      return { buyer: at(bsBuyer, 0.9), studio: at(bsStudio, 0.85), owner: ownerOff, maker: makerOff, store: storeOff };
     case "studio-month":
     case "studio-close":
-      return { buyer: hidden(at(bsBuyer, 0.9)), studio: studioCenter, owner: ownerOff, maker: makerOff };
+      return { buyer: hidden(at(bsBuyer, 0.9)), studio: studioCenter, owner: ownerOff, maker: makerOff, store: storeOff };
     case "studio-catch":
-      return { buyer: hidden(at(bsBuyer, 0.9)), studio: catchPose(focus), owner: ownerOff, maker: makerOff };
+      return { buyer: hidden(at(bsBuyer, 0.9)), studio: catchPose(focus), owner: ownerOff, maker: makerOff, store: storeOff };
     case "studio-owner":
-      return { buyer: hidden(at(bsBuyer, 0.9)), studio: at(soStudio, 0.9), owner: at(soOwner, 0.8), maker: makerOff };
+      return { buyer: hidden(at(bsBuyer, 0.9)), studio: at(soStudio, 0.9), owner: at(soOwner, 0.8), maker: makerOff, store: storeOff };
     case "maker":
-      return { buyer: hidden(buyerCenter), studio: at(MID_X, 0.85, DIMMED), owner: ownerOff, maker: at(MID_X, 1) };
+      return { buyer: hidden(buyerCenter), studio: at(MID_X, 0.85, DIMMED), owner: ownerOff, maker: at(MID_X, 1), store: storeOff };
+    // The tour's cameras: placeholder poses on v1's frames until I2-shell T4 writes the real ones.
+    case "shop-home":
+    case "shop-search":
+    case "shop-piece":
+    case "shop-receipt":
+    case "shop-legacy":
+      return cameraPose("buyer", focus);
+    case "sell-map":
+    case "sell-month":
+    case "sell-approvals":
+    case "sell-close":
+    case "sell-proof":
+    case "sell-watch":
+    case "sell-listings":
+    case "sell-storefront":
+      return cameraPose("studio-month", focus);
+    case "sell-catch":
+      return cameraPose("studio-catch", focus);
+    case "store":
+      return { buyer: hidden(buyerCenter), studio: hidden(studioCenter), owner: ownerOff, maker: makerOff, store: at(MID_X, 1) };
+    case "pitch":
+      return { buyer: hidden(buyerCenter), studio: hidden(studioCenter), owner: ownerOff, maker: makerOff, store: storeOff };
   }
 }
 
@@ -128,9 +153,20 @@ export function visibleSurfaces(camera: CameraId): SurfaceId[] {
   return SURFACES.filter((s) => pose[s].opacity > 0);
 }
 
+/** Placeholder studio views for the tour's Sell cameras, until I2-shell T4. A view outside v1's five keeps the last one. */
+const TOUR_CAMERA_VIEW: Partial<Record<TourCameraId, StudioView>> = {
+  "sell-map": "map",
+  "sell-month": "month",
+  "sell-catch": "month",
+  "sell-approvals": "month",
+  "sell-close": "close",
+  "sell-proof": "proof",
+};
+
 /** The studio view a camera puts up, or null when the studio isn't shown. */
 export function cameraView(camera: CameraId): StudioView | null {
-  return CAMERA_VIEW[camera];
+  if ((LEGACY_CAMERA_IDS as readonly string[]).includes(camera)) return CAMERA_VIEW[camera as LegacyCameraId];
+  return TOUR_CAMERA_VIEW[camera as TourCameraId] ?? null;
 }
 
 /** Ease-in-out cubic, for camera moves. */

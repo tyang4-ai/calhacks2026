@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CAMERA_IDS } from "../../core/featureTypes";
+import { LEGACY_CAMERA_IDS } from "../../core/featureTypes";
 import { CATCH_SCALE, cameraPose, catchPose, createCameraMotion, FRAME_SIZE, MOVE_MS, SURFACES, visibleSurfaces } from "./cameras";
 
 const fits = (cx: number, cy: number, w: number, h: number) => cx - w / 2 >= -0.5 && cx + w / 2 <= 1600.5 && cy - h / 2 >= -0.5 && cy + h / 2 <= 900.5;
@@ -27,7 +27,7 @@ describe("camera poses", () => {
   });
 
   it("keeps every visible frame inside the stage, except the zoomed studio", () => {
-    for (const cam of CAMERA_IDS) {
+    for (const cam of LEGACY_CAMERA_IDS) {
       if (cam === "studio-catch") continue;
       const pose = cameraPose(cam);
       for (const s of SURFACES) {

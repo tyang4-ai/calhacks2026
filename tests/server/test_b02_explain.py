@@ -329,10 +329,22 @@ def test_sdk_request_on_the_wire(client, with_key, monkeypatch):
     assert len(sent) == 1
     wire = sent[0]
     assert wire["model"] == "claude-sonnet-5-5"
-    for banned in ("temperature", "top_p", "top_k", "thinking"):
+    for banned in ("temperature", "top_p", "top_k"):
         assert banned not in wire
+    # Sonnet 5.5 rejects thinking "disabled", so B02 sends "between_tools": no up-front thinking,
+    # and with no tools no thinking at all. Never "enabled", and nothing else.
+    assert wire["thinking"] == {"type": "between_tools"}
     assert wire["output_config"]["format"]["type"] == "json_schema"
+    assert wire["output_config"]["effort"] == "low"
+    assert 0 < wire["max_tokens"] <= 700
     assert [m["role"] for m in wire["messages"]] == ["user"]
+
+
+def test_client_uses_the_base_url_timeout_and_no_retries():
+    c = b02_explain.make_client()  # the autouse fixture's fake key: building the client calls nothing
+    assert str(c.base_url).rstrip("/") == server_config.CLAUDE_BASE_URL
+    assert c.max_retries == 0
+    assert c.timeout == b02_explain.CLAUDE_TIMEOUT_S <= 6.0
 
 
 # --- one real call ------------------------------------------------------------------------------

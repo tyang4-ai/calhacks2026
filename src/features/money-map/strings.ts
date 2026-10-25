@@ -41,6 +41,8 @@ export const partyNames: Record<Party["kind"], Str> = {
   gallery: { en: "Gallery", zh: "画廊" },
   processor: { en: "Card processor", zh: "收单机构" },
   supplier: { en: "Supplier", zh: "供应商" },
+  /** v2 placeholder (I2-core fallout). Local. */
+  community_fund: { en: "Community fund", zh: "社区基金" },
 };
 
 /**
@@ -55,6 +57,9 @@ export const moveKindNames: Record<MoneyMoveKind, Str> = {
   materials: { en: "Materials", zh: "材料费" },
   maker_pay: { en: "Maker payout", zh: "匠人结算" },
   refund: { en: "Refund", zh: "退款" },
+  /** v2 placeholders (I2-core fallout). Local. */
+  project_fund: { en: "Project funding", zh: "项目出资" },
+  milestone: { en: "Milestone payment", zh: "里程碑付款" },
 };
 
 /** Glossary: Cindia fee. Shown with what Cindia kept from a sale. */

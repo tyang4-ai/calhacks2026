@@ -35,6 +35,45 @@ export function addIds(ids: string[], more: string[]): string[] {
   return out;
 }
 
+/** A deep copy of a payload, so the store never shares nested arrays or objects with an event. */
+export function copy<T>(v: T): T {
+  return structuredClone(v);
+}
+
+/**
+ * The newest of two stamped records: next replaces prev unless prev fired later on the player clock.
+ * The same payload again keeps prev and its `at`.
+ */
+export function newest<P extends object>(prev: (P & { at: number }) | undefined | null, payload: P, at: number): P & { at: number } {
+  if (prev && at < prev.at && !samePayload(prev, payload)) return prev;
+  return stamped(prev ?? undefined, payload, at);
+}
+
+/** True when a stamped record holds exactly this payload (its `at` left out). */
+function samePayload(prev: object & { at: number }, payload: object): boolean {
+  // deepEqual skips keys whose value is undefined, so this compares everything but `at`.
+  return deepEqual({ ...prev, at: undefined }, payload);
+}
+
+/**
+ * A payload with `at` for the store. A repeat of the same payload keeps the earlier `at`, so a
+ * duplicate never restamps a record. A changed payload takes the new event's `at`.
+ */
+export function stamped<P extends object>(prev: (P & { at: number }) | undefined, payload: P, at: number): P & { at: number } {
+  if (prev && samePayload(prev, payload)) return { ...payload, at: prev.at };
+  return { ...payload, at };
+}
+
+/**
+ * The ID to keep as "latest": a new record that fired at or after the current latest on the player
+ * clock. A repeat of a record already in the store (isNew false) never takes over.
+ */
+export function latestAt(currentId: string | null, currentAt: number | undefined, id: string, at: number, isNew = true): string {
+  if (currentId === null || currentAt === undefined) return id;
+  if (!isNew) return currentId;
+  return at >= currentAt ? id : currentId;
+}
+
 /** Returns prev when next has the same values, so a repeated event changes nothing. */
 export function same<S>(prev: S, next: S): S {
   return deepEqual(prev, next) ? prev : next;

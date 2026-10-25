@@ -6,7 +6,7 @@ exactly three picks, each with one plain sentence in English and Chinese about t
 - Needs ANTHROPIC_API_KEY, read only through server/config.py. Without it: 503 key_missing.
 - claude-haiku-5-5 through client.messages.parse() with the ConciergePicks model as output_format,
   because this call opens the demo. No temperature, top_p, top_k, thinking "enabled" or prefill.
-- One call, a 4-second deadline and no retries.
+- One call, a 5-second deadline and no retries.
 - The server checks Claude's answer before using it: three picks, three different piece IDs, every
   one in the catalog, and every one within a price limit stated in the query. A failed check, or an
   answer that doesn't parse, is 502 invalid_model_output, and the scripted curated set plays.
@@ -36,8 +36,10 @@ log = logging.getLogger("cindia")
 
 KEY = "b09-concierge"
 MODEL = config.MODEL_FAST  # claude-haiku-5-5
-CLAUDE_TIMEOUT_S = 4.0
-MAX_TOKENS = 700
+CLAUDE_TIMEOUT_S = 5.0
+# Haiku answers at roughly 180 tokens a second after a wait of 1 to 2.7 seconds, so the three
+# short picks (240 to 280 tokens) fit the 5-second timeout. 400 couldn't finish on a slow start.
+MAX_TOKENS = 400
 
 # evt_live_ plus a number, unique within the server process. B09's numbers start at 900001 so they
 # never meet another router's counter.
@@ -155,9 +157,9 @@ SYSTEM_PROMPT = """You are Cindy, the gift finder on Cindia, a platform where bu
 Rules:
 - Pick exactly three different pieces, best match first. Use only piece IDs from the catalog, exactly as written.
 - If the request names a price limit, every pick must be within it. Each piece's price is given in US dollars.
-- Each reason is one plain sentence about the piece itself: its maker, the craft, the motif, or the hours of work. Use only facts from the catalog. Never invent a name, a number or a story.
-- reason_en is English. reason_zh is natural Simplified Chinese, not a word-for-word translation.
-- Keep each reason under 25 words or 40 characters. No marketing language and no exclamation marks.
+- Each reason is one short, plain sentence about the piece itself: its maker, the craft, the motif, or the hours of work. Use only facts from the catalog. Never invent a name, a number or a story.
+- reason_en is English, 10 words at most. reason_zh is natural Simplified Chinese, 20 characters at most, not a word-for-word translation.
+- Don't repeat the price or the size. No marketing language and no exclamation marks.
 - Never say what a design or pattern means, and never use a nation's name as a product word.
 """
 
@@ -171,25 +173,32 @@ def _hours(h: float) -> str:
 
 
 def build_prompt(req: ConciergeRequest) -> str:
-    """The user turn: the request, any price limit, and one compact line per piece."""
+    """The user turn: the request, any price limit, and one compact line per piece. With a limit,
+    each piece says whether it's within it, so a red rug over budget isn't picked for "red wool"."""
+    limit = price_limit(req.query)
     rows = []
     for p in req.catalog:
-        row = {
+        row: dict[str, Any] = {
             "id": p.id,
             "title_en": p.title.en,
             "title_zh": p.title.zh,
             "price": _usd(p.priceCents),
-            "maker_en": p.maker.en if p.maker else p.makerId,
-            "maker_zh": p.maker.zh if p.maker else p.makerId,
-            "hours": _hours(p.hours),
-            "story_en": p.story.en,
         }
+        if limit is not None:
+            row["within_price_limit"] = within_limit(p.priceCents, limit)
+        row.update(
+            {
+                "maker_en": p.maker.en if p.maker else p.makerId,
+                "maker_zh": p.maker.zh if p.maker else p.makerId,
+                "hours": _hours(p.hours),
+                "story_en": p.story.en,
+            }
+        )
         rows.append(json.dumps(row, ensure_ascii=False))
-    limit = price_limit(req.query)
     lines = [f"The buyer's request ({req.lang}): {req.query}"]
     if limit is not None:
         cap, strict = limit
-        lines.append(f"Price limit: {'under' if strict else 'at most'} {_usd(cap)}.")
+        lines.append(f"Price limit: {'under' if strict else 'at most'} {_usd(cap)}. Pick only pieces with within_price_limit true.")
     lines.append("")
     lines.append(f"The catalog, {len(rows)} pieces, one JSON object per line:")
     lines.extend(rows)
@@ -206,7 +215,9 @@ def make_client():
     """An Anthropic client holding the key from server/config.py. No retries inside a request."""
     from anthropic import Anthropic
 
-    return Anthropic(api_key=config.ANTHROPIC_API_KEY, timeout=CLAUDE_TIMEOUT_S, max_retries=0)
+    return Anthropic(
+        api_key=config.ANTHROPIC_API_KEY, base_url=config.CLAUDE_BASE_URL, timeout=CLAUDE_TIMEOUT_S, max_retries=0
+    )
 
 
 def _call_claude(client: Any, prompt: str) -> Any:

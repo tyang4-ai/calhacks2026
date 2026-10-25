@@ -21,6 +21,7 @@ STATUS = {
     "upstream_timeout": 504,
     "upstream_error": 502,
     "invalid_model_output": 502,
+    "busy": 503,
     "internal": 500,
 }
 

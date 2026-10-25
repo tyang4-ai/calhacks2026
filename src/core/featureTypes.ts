@@ -1,7 +1,12 @@
 // Feature module types from docs/common/ui-contract.md. Features import these from src/core/.
 import type { ComponentType } from "react";
+import type { ProcessId } from "./events";
 
-export type SurfaceId = "buyer" | "studio" | "owner" | "maker";
+/**
+ * The surfaces. `owner` stays a SurfaceId so the approvals feature can tell where it renders, but in
+ * v2 it has no frame or route of its own: owner.main renders as the Sell site's approvals view.
+ */
+export type SurfaceId = "buyer" | "studio" | "owner" | "maker" | "store";
 
 export type SlotId =
   | "buyer.main"
@@ -15,7 +20,27 @@ export type SlotId =
   | "studio.drawer.ask"
   | "studio.drawer.audit"
   | "owner.main"
-  | "maker.main";
+  | "maker.main"
+  | "process.bar"
+  | "process.view"
+  | "shop.home.main"
+  | "shop.home.communities"
+  | "shop.search.main"
+  | "shop.piece.main"
+  | "shop.piece.side"
+  | "shop.community.main"
+  | "shop.projects.main"
+  | "shop.receipt.main"
+  | "shop.drawer.support"
+  | "store.main"
+  | "studio.overview.main"
+  | "studio.listings.main"
+  | "studio.storefront.main"
+  | "studio.projects.main"
+  | "studio.proof.side"
+  | "studio.watch.main"
+  | "studio.drawer.support"
+  | "maker.side";
 
 export const SLOT_IDS: readonly SlotId[] = [
   "buyer.main",
@@ -30,16 +55,52 @@ export const SLOT_IDS: readonly SlotId[] = [
   "studio.drawer.audit",
   "owner.main",
   "maker.main",
+  "process.bar",
+  "process.view",
+  "shop.home.main",
+  "shop.home.communities",
+  "shop.search.main",
+  "shop.piece.main",
+  "shop.piece.side",
+  "shop.community.main",
+  "shop.projects.main",
+  "shop.receipt.main",
+  "shop.drawer.support",
+  "store.main",
+  "studio.overview.main",
+  "studio.listings.main",
+  "studio.storefront.main",
+  "studio.projects.main",
+  "studio.proof.side",
+  "studio.watch.main",
+  "studio.drawer.support",
+  "maker.side",
 ];
 
 export interface SlotProps {
   surface: SurfaceId;
   /** Already resolved by the shell. Features never read the store's lang. */
   lang: "en" | "zh";
-  /** The maker surface only: from /maker/:makerId, and mkr_01 on /demo. */
+  /** The maker page (from /maker/:makerId, mkr_01 on /demo), and studio.drawer.support on a maker page. */
   makerId?: string;
-  /** The audit drawer only: from ?drawer=audit&ref=<entity id>. */
+  /** The audit drawer (?drawer=audit&ref=<entity id>), and owner.main from /sell/approvals?ref=<approvalId>. */
   refId?: string;
+  /** process.bar (the open process) and process.view. */
+  processId?: ProcessId;
+  /** The piece page, and shop.drawer.support while a piece page is open. */
+  pieceId?: string;
+  communityId?: string;
+  /** A prj_ or a wip_ ID on /shop/projects/:id. */
+  projectId?: string;
+  /** The receipt page, and shop.drawer.support while a receipt is open. */
+  orderId?: string;
+  /** The storefront page, and shop.drawer.support on a store page. */
+  slug?: string;
+  side?: "buyer" | "seller";
+  /** /shop/search: ?q= and every ?k=. k is always an array, empty when the URL has none. */
+  searchParams?: { q?: string; k: string[] };
+  /** True on every slot of the public build only. */
+  publicSite?: boolean;
 }
 
 export interface FeatureModule {
@@ -48,8 +109,8 @@ export interface FeatureModule {
   slots: Partial<Record<SlotId, ComponentType<SlotProps>>>;
 }
 
-/** The eight camera states in ui-contract.md. */
-export type CameraId =
+/** v1's eight camera states, which the v1 timeline keeps until I2-tour. */
+export type LegacyCameraId =
   | "buyer"
   | "buyer-studio"
   | "studio-month"
@@ -59,7 +120,7 @@ export type CameraId =
   | "maker"
   | "receipt";
 
-export const CAMERA_IDS: readonly CameraId[] = [
+export const LEGACY_CAMERA_IDS: readonly LegacyCameraId[] = [
   "buyer",
   "buyer-studio",
   "studio-month",
@@ -70,9 +131,101 @@ export const CAMERA_IDS: readonly CameraId[] = [
   "receipt",
 ];
 
+/** The tour's camera states (ui-contract.md), plus shop-legacy (frame-buyer on /shop/legacy) until I2-tour. */
+export type TourCameraId =
+  | "pitch"
+  | "shop-home"
+  | "shop-search"
+  | "shop-piece"
+  | "shop-receipt"
+  | "sell-map"
+  | "sell-month"
+  | "sell-approvals"
+  | "sell-close"
+  | "sell-proof"
+  | "sell-watch"
+  | "sell-listings"
+  | "sell-storefront"
+  | "sell-catch"
+  | "maker"
+  | "store"
+  | "shop-legacy";
+
+export const TOUR_CAMERA_IDS: readonly TourCameraId[] = [
+  "pitch",
+  "shop-home",
+  "shop-search",
+  "shop-piece",
+  "shop-receipt",
+  "sell-map",
+  "sell-month",
+  "sell-approvals",
+  "sell-close",
+  "sell-proof",
+  "sell-watch",
+  "sell-listings",
+  "sell-storefront",
+  "sell-catch",
+  "maker",
+  "store",
+  "shop-legacy",
+];
+
+/** Both sets, until I2-tour drops the legacy ones. */
+export type CameraId = LegacyCameraId | TourCameraId;
+
+/** Every camera ID once, legacy first. validate.ts checks beat.started.camera against it. */
+export const CAMERA_IDS: readonly CameraId[] = [...LEGACY_CAMERA_IDS, ...TOUR_CAMERA_IDS.filter((c) => !(LEGACY_CAMERA_IDS as readonly string[]).includes(c))];
+
+/** The Phase A mapping: each v1 camera on the desktop shell. */
+export const LEGACY_CAMERA_TO_TOUR: Record<LegacyCameraId, TourCameraId> = {
+  buyer: "shop-legacy",
+  receipt: "shop-legacy",
+  "buyer-studio": "sell-map",
+  "studio-month": "sell-month",
+  "studio-catch": "sell-catch",
+  "studio-owner": "sell-approvals",
+  "studio-close": "sell-close",
+  maker: "maker",
+};
+
+/** A legacy camera through the Phase A mapping. A tour camera comes back as it is. */
+export function toTourCamera(id: CameraId): TourCameraId {
+  return id in LEGACY_CAMERA_TO_TOUR ? LEGACY_CAMERA_TO_TOUR[id as LegacyCameraId] : (id as TourCameraId);
+}
+
+/** v1's five studio views. They stay until I2-tour, so nothing in v1 breaks. */
 export type StudioView = "map" | "month" | "close" | "proof" | "dashboard";
 
 export const STUDIO_VIEWS: readonly StudioView[] = ["map", "month", "close", "proof", "dashboard"];
+
+/** The eleven Sell views, in route order. */
+export type SellView =
+  | "overview"
+  | "listings"
+  | "storefront"
+  | "projects"
+  | "map"
+  | "month"
+  | "close"
+  | "proof"
+  | "dashboard"
+  | "approvals"
+  | "watch";
+
+export const SELL_VIEWS: readonly SellView[] = [
+  "overview",
+  "listings",
+  "storefront",
+  "projects",
+  "map",
+  "month",
+  "close",
+  "proof",
+  "dashboard",
+  "approvals",
+  "watch",
+];
 
 /** Converts a slot ID to its placeholder test ID suffix: "studio.month.side" to "studio-month-side". */
 export function slotTestId(slot: SlotId): string {

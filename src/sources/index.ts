@@ -7,7 +7,8 @@ import { createResponder, REQUEST_DEFAULTS, type Responder } from "./requests";
 import { loadScripted } from "./scripted";
 
 export type { LiveAdapter } from "./types";
-export { PRODUCE_TIMEOUT_MS, REPLY_DELAY_MS } from "./types";
+export { PRODUCE_TIMEOUT_MS, REPLY_DELAY_MS, timeoutFor } from "./types";
+export { answerId, liveIdStart, pageTag } from "./ids";
 export { createRegistry, getRegistry, asLive, withTimeout, type Registry } from "./registry";
 export { createResponder, normalizeQuestion, scriptedAnswer, type MockAnswers, type Responder } from "./requests";
 export { loadTimeline, timelineIds } from "./timelines";
@@ -33,7 +34,7 @@ export function installSources(): void {
     now: () => player.now(),
     epoch: () => player.epoch(),
     delayMs: REQUEST_DEFAULTS.delayMs,
-    timeoutMs: REQUEST_DEFAULTS.timeoutMs,
+    timeoutFor: REQUEST_DEFAULTS.timeoutFor,
     log: (msg) => console.warn(`[cindia sources] ${msg}`),
   });
   loadScripted("demo");

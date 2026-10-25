@@ -15,9 +15,16 @@ const SOURCE_NAMES: Record<SourceKey, string> = {
   "b05-scenario": "Your own statement",
   "b06-workbook": "Excel report",
   "b07-ask": "Ask Cindy",
-  "b08-approvals": "Owner approvals",
+  "b08-approvals": "Manager approvals",
   "b09-concierge": "Gift finder",
   "b10-derived": "Splits, receipts, statements and impact",
+  // v2 keys: placeholder names until I2-tour writes the real end card.
+  "b11-embed": "Search model",
+  "b12-search": "Vibe search",
+  "b13-live": "The database",
+  "b14-swarm": "Agent swarm",
+  "b15-watch": "Counterfeit watch",
+  "b16-bank-books": "Bank books",
 };
 
 export function EndCard() {

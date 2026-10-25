@@ -1,5 +1,6 @@
 // Entities from docs/common/data-model.md. Money is integer cents, rates are basis points,
 // dates are ISO "YYYY-MM-DD" strings.
+import type { EventType, Payloads } from "./events";
 
 export interface Text {
   en: string;
@@ -10,12 +11,36 @@ export type Lang = "en" | "zh";
 
 // ID string types. Each is a plain string with a fixed prefix, documented here.
 export type StudioId = string; // "std_dine"
-export type PersonId = string; // "own_01", "mkr_01".."mkr_03", "buy_01".."buy_20"
-export type MakerId = string; // "mkr_01".."mkr_03"
+export type PersonId = string; // "own_01".."own_04", "mkr_01".."mkr_17", "buy_01".."buy_20"
+export type MakerId = string; // "mkr_01".."mkr_17" (the co-op's are "mkr_01".."mkr_03")
 export type BuyerId = string; // "buy_01".."buy_20"
-export type OwnerId = string; // "own_01"
-export type PieceId = string; // "pc_01".."pc_12"
+export type OwnerId = string; // "own_01".."own_04" (the co-op's is "own_01")
+export type PieceId = string; // "pc_01".."pc_54" (the co-op's are "pc_01".."pc_12"), "pc_55" and "pc_user_<n>" in events only
+export type CommunityId = string; // "com_dine", "com_ojibwe", "com_acoma", "com_seminole"
+export type ProjectId = string; // "prj_01".."prj_04"
+export type WipId = string; // "wip_01".."wip_03"
+export type MilestoneId = string; // "mls_01" onward
+export type StorefrontId = string; // "sto_01".."sto_04"
+export type BlockId = string; // "blk_01" onward, "blk_user_<n>", "blk_user_<tag>_<n>"
+export type ListingId = string; // "lst_01", "lst_user_<n>"
+export type AgentId = string; // the agent IDs in the roster: "cindy", "intake", "writer" and so on
+export type SearchQueryId = string; // "sq_001".."sq_050", the held-out eval queries
+export type CounterfeitId = string; // "cft_01".."cft_04", "cft_user_<n>"
+export type RunId = string; // "run_01".."run_10", "run_user_<n>"
+export type StepId = string; // "stp_0001" onward, "stp_user_<n>"
+export type CheckId = string; // "chk_01" onward, "chk_user_<n>"
+export type ContributionId = string; // "ctb_01" onward, "ctb_user_<n>"
+export type QueryId = string; // "qry_01", "qry_user_<n>"
+export type SurpriseId = string; // "srp_01", "srp_user_<n>"
+export type ThreadId = string; // "thr_00".."thr_05", "thr_user_<n>", or a listing's or storefront's ID
+export type ScanId = string; // "wsc_01", "wsc_user_<n>"
+export type MakerQuestionId = string; // "qst_01" onward, "qst_user_<n>": a buyer's question put to a maker
+export type AnswerId = string; // "ans_01" onward, "ans_user_<n>": a maker's answer
+export type PolicyTopicId = string; // "pol_01" onward
 export type ChannelId = "ch_cindia" | "ch_site" | "ch_gallery";
+// More IDs: "ord_user_<n>" (a person's order, store only), "evt_" (the timeline), "evt_user_" (a
+// person), "evt_reply_<n>" (a scripted answer), "evt_live_" (a live answer). A live answer to a
+// person uses its prefix with the page tag: "<prefix>_user_<tag>_<n>".
 export type ContractId = string; // "ctr_gallery_01"
 export type OrderId = string; // "ord_001".."ord_030"
 export type ChannelPayoutId = string; // "pay_001" onward
@@ -26,17 +51,17 @@ export type BankTxnId = string; // "txn_001" onward
 export type MatchId = string; // "mat_001" onward
 export type FlagId = string; // "flg_01"
 export type MakerPayoutId = string; // "mpo_01".."mpo_03"
-export type ApprovalId = string; // "apr_01", "apr_02"
-export type FollowUpId = string; // "fup_01"
+export type ApprovalId = string; // "apr_01".."apr_05", "apr_user_<n>"
+export type FollowUpId = string; // "fup_01", "fup_02", "fup_user_<n>"
 export type LedgerEntryId = string; // "led_0001" onward
 export type MakerStatementId = string; // "mst_01".."mst_03"
 export type PlantedErrorId = string; // "err_01".."err_04"
 export type ImpactId = string; // "imp_2026_09"
 export type MonthId = string; // "2026-09"
-export type MoveId = string; // "mv_0001" onward, events only
+export type MoveId = string; // "mv_0001" onward, "mv_0101", "mv_0102", "mv_user_<n>", events only
 export type AccountId = string; // "acct_studio", events only
-export type ActId = string; // "act_0001" onward, events only
-export type QuestionId = string; // "ask_01".."ask_03", "ask_user_1" onward
+export type ActId = string; // "act_0001" onward, "act_reply_<n>", events only
+export type QuestionId = string; // Ask Cindy: "ask_01".."ask_03", "ask_user_1" onward
 export type ScenarioId = string; // "scn_01"
 export type IsoDate = string;
 
@@ -57,11 +82,38 @@ export interface Person {
   name: Text;
   surnameChar: string;
   lang: "zh" | "en";
+  /** Owners and makers: their community. */
+  communityId?: CommunityId;
+  /** Unset for everyone in v2. */
+  nativeName?: string;
+  /** BCP 47 tags, display only. */
+  languages?: string[];
+  /** Makers: two plain lines for the buyer's paid receipt, demo data. */
+  receiptNote?: Text;
 }
 
 export interface ProcessStep {
   step: Text;
   hours: number;
+}
+
+/** A piece's facts. Every word list is lowercase English. */
+export interface Facets {
+  object: Text;
+  materials: string[];
+  techniques: string[];
+  motifs: string[];
+  colors: string[];
+  sizeCm?: { w: number; h: number };
+  oneOfAKind: boolean;
+  leadTimeDays: number;
+}
+
+/** How a piece feels and who it's for. Every word list is lowercase English. */
+export interface Vibe {
+  moods: string[];
+  occasions: string[];
+  recipients: string[];
 }
 
 export interface Piece {
@@ -76,6 +128,163 @@ export interface Piece {
   heritage: Text;
   process: ProcessStep[];
   image: string;
+  communityId: CommunityId;
+  facets: Facets;
+  vibe: Vibe;
+  imageAlt: Text;
+}
+
+export interface CommunityVerification {
+  method: "nation_attestation";
+  by: Text;
+  note: Text;
+}
+
+export interface Community {
+  id: CommunityId;
+  name: Text;
+  kind: "native_american";
+  /** The nation, as the glossary writes it. */
+  people: Text;
+  place: Text;
+  craft: Text;
+  /** Two plain third-person sentences, shown as a placeholder under L8. */
+  about: Text;
+  /** Cindia's demo exclusions, shown under L9. */
+  protocols: Text[];
+  verification: CommunityVerification;
+  /** BCP 47 tags, display only. */
+  languages: string[];
+  leadId: OwnerId;
+  makerIds: MakerId[];
+  /** "std_dine" for com_dine only. */
+  studioId?: StudioId;
+  storefrontId: StorefrontId;
+  projectIds: ProjectId[];
+  demo: true;
+}
+
+/** Who writes each layer of an index entry in a real launch. */
+export type ProvenanceSource = "maker" | "community" | "agent:tagger" | "agent:describer";
+
+/** What Cindia keeps about each piece to find it. One per piece, keyed by pieceId. */
+export interface IndexEntry {
+  pieceId: PieceId;
+  communityId: CommunityId;
+  makerId: MakerId;
+  storefrontSlug: string;
+  /** One entry per field group: facts, culture, vibe, picture. */
+  provenance: Record<string, ProvenanceSource>;
+  approvedBy: MakerId;
+  pictureNote: Text;
+  /** The passage, built by the rule in data-model.md. */
+  embedText: string;
+  salesThisMonth: number;
+  status: "active" | "draft";
+}
+
+export interface ProjectUpdate {
+  date: IsoDate;
+  text: Text;
+}
+
+export interface Project {
+  id: ProjectId;
+  communityId: CommunityId;
+  title: Text;
+  summary: Text;
+  goalCents: number;
+  raisedCents: number;
+  /** The checkout contribution, 500. */
+  addOnCents: number;
+  updates: ProjectUpdate[];
+}
+
+export type MilestoneStatus = "pending" | "reached" | "paid";
+
+export interface Milestone {
+  milestoneId: MilestoneId;
+  label: Text;
+  /** One commission's shares add up to 10000. */
+  shareBps: number;
+  status: MilestoneStatus;
+  date?: IsoDate;
+}
+
+export interface WorkInProgress {
+  id: WipId;
+  communityId: CommunityId;
+  makerId: MakerId;
+  buyerId: BuyerId;
+  title: Text;
+  priceCents: number;
+  milestones: Milestone[];
+}
+
+export type StorefrontBlockKind = "hero" | "story" | "pieces" | "process" | "projects" | "visit";
+
+export interface StorefrontBlock {
+  blockId: BlockId;
+  kind: StorefrontBlockKind;
+  /** Single strings or string lists, never _en and _zh pairs. */
+  props: Record<string, string | string[]>;
+}
+
+export interface Storefront {
+  id: StorefrontId;
+  communityId: CommunityId;
+  slug: string;
+  /** accent is a kit color token name, never a raw hex. */
+  theme: { accent: string; layout: "story_first" | "grid_first" };
+  blocks: StorefrontBlock[];
+  status: "draft" | "published";
+}
+
+export interface ListingDraft {
+  id: ListingId;
+  makerId: MakerId;
+  /** The maker's own words, in English. */
+  notes: string;
+  lang: Lang;
+}
+
+/** The only Claude models in the platform. */
+export type AgentModel = "claude-haiku-5-5" | "claude-sonnet-5-5";
+
+export interface AgentSpec {
+  agentId: AgentId;
+  name: Text;
+  job: Text;
+  kind: "claude" | "code";
+  model?: AgentModel;
+  tools: string[];
+  never: Text;
+}
+
+export interface SearchQuery {
+  id: SearchQueryId;
+  text: string;
+  lang: Lang;
+  /** 2 is a perfect match, 1 a good one. */
+  grades: Record<PieceId, 1 | 2>;
+  author: "data_agent" | "gordon";
+}
+
+export type CopyVerdict = "possible_copy" | "claim_only" | "neither";
+
+export interface CounterfeitCandidate {
+  id: CounterfeitId;
+  url: string;
+  title: string;
+  snippet: string;
+  /** The co-op's piece it resembles. */
+  pieceId: PieceId;
+  /** Normalized, 0 to 1. */
+  similarity: number;
+  claim: Text;
+  verdict: CopyVerdict;
+  seller?: string;
+  priceCents?: number;
 }
 
 export interface Channel {
@@ -205,9 +414,28 @@ export interface MakerPayout {
 
 export type ApprovalStatus = "pending" | "granted" | "declined";
 
+export type ApprovalKind =
+  | "follow_up"
+  | "maker_payouts"
+  | "listing_publish"
+  | "storefront_publish"
+  | "report_listing"
+  | "milestone_release"
+  | "support_action";
+
+export const APPROVAL_KINDS: readonly ApprovalKind[] = [
+  "follow_up",
+  "maker_payouts",
+  "listing_publish",
+  "storefront_publish",
+  "report_listing",
+  "milestone_release",
+  "support_action",
+];
+
 export interface Approval {
   id: ApprovalId;
-  kind: "follow_up" | "maker_payouts";
+  kind: ApprovalKind;
   subjectIds: string[];
   proposedBy: "cindy";
   amountCents?: number;
@@ -280,3 +508,81 @@ export interface Impact {
   bookkeepingHoursSaved: number;
   estimate: true;
 }
+
+// The shared shapes the mock data and the scripted responders both use (I2-core, Interfaces).
+
+/**
+ * An approval that isn't in src/mock/ (IDs apr_user_<n>), carried inline on approval.requested.
+ * decisionDate is there because the Approval record has one.
+ */
+export interface InlineApproval {
+  kind: ApprovalKind;
+  subjectIds: string[];
+  amountCents?: number;
+  overLimit: boolean;
+  proposedBy: "cindy";
+  summary: Text;
+  decisionDate: IsoDate;
+}
+
+/** One event a scripted run plays, without id, source, key or at. */
+export type PlannedEvent = { [T in EventType]: { type: T; payload: Payloads[T] } }[EventType];
+
+/**
+ * What starts a scripted run. A support run with pieceId or makerId answers only when the request's
+ * contextIds include it. `fallback` marks the two fallback runs (run_05, run_06), which no request
+ * matches by trigger.
+ */
+export type ScriptedRunTrigger =
+  | { kind: "support"; matches: string[]; pieceId?: PieceId; makerId?: MakerId } // matches: normalized en and zh texts
+  | { kind: "listing"; listingId: ListingId; notes: string } // matched on the normalized notes
+  | { kind: "storefront"; storefrontId: StorefrontId }
+  | { kind: "question"; questionId: MakerQuestionId } // the "ask the maker" relay
+  | { kind: "fallback" };
+
+export interface ScriptedRun {
+  runId: RunId;
+  side: "buyer" | "seller";
+  /** thr_01 onward, the listingId, the storefrontId, or thr_00 for a fallback. */
+  threadId: ThreadId;
+  trigger: ScriptedRunTrigger;
+  steps: Omit<Payloads["swarm.step"], "threadId">[];
+  /** In order: the run's last events, approvals and follow-ups included. */
+  final: PlannedEvent[];
+}
+
+export interface ModelReport {
+  trained: Payloads["model.trained"];
+  scored: Payloads["proof.search_scored"];
+  points: { pieceId: PieceId; x: number; y: number }[];
+}
+
+/** The tour's vibe search. query has no queryId: the tour's timeline adds qry_01. */
+export interface DemoSearch {
+  query: Omit<Payloads["search.queried"], "queryId">;
+  answer: Omit<Payloads["search.answered"], "queryId">;
+}
+
+export interface DemoSurprise {
+  ask: Omit<Payloads["surprise.asked"], "surpriseId">;
+  draw: Omit<Payloads["surprise.drawn"], "surpriseId">;
+}
+
+export interface ScriptedScan {
+  scanId: ScanId;
+  makerId: MakerId;
+  queries: string[];
+  cftIds: CounterfeitId[];
+  followUpId?: FollowUpId;
+  approvalId?: ApprovalId;
+}
+
+/** One topic the Clerk reads. pol_01 (shipping) holds { transitDaysMin: 6, transitDaysMax: 10 }. */
+export interface PolicyTopic {
+  id: PolicyTopicId;
+  title: Text;
+  body: Text;
+  data?: Record<string, string | number>;
+}
+
+export type Policy = PolicyTopic[];

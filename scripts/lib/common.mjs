@@ -187,6 +187,43 @@ export function testCounts(out) {
   };
 }
 
+/** How far past the timeline's own length the tour test may end, in ms (definition-of-done.md). */
+export const TOUR_MARGIN_MS = 15000;
+
+/**
+ * The gate's time rule (fix-plan 1.9): the tour test alone, from the demo harness's report.json.
+ * It passes when the file was written at or after `startedAtMs` (this run) and its `endedAtWallMs`
+ * is at most its `durationMs` plus TOUR_MARGIN_MS. Never throws.
+ */
+export function tourTimeCheck(file, startedAtMs) {
+  const shown = rel(file);
+  let st;
+  try {
+    st = fs.statSync(file);
+  } catch {
+    return { ok: false, text: `no ${shown}` };
+  }
+  if (st.mtimeMs < startedAtMs) return { ok: false, text: `${shown} is older than this run` };
+  let report;
+  try {
+    report = JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
+    return { ok: false, text: `${shown} isn't valid JSON` };
+  }
+  const ended = report?.endedAtWallMs;
+  const duration = report?.durationMs;
+  if (typeof ended !== 'number' || !Number.isFinite(ended)) return { ok: false, text: `${shown} has no endedAtWallMs` };
+  if (typeof duration !== 'number' || !Number.isFinite(duration) || duration <= 0) return { ok: false, text: `${shown} has no durationMs` };
+  const limit = duration + TOUR_MARGIN_MS;
+  const ok = ended <= limit;
+  return {
+    ok,
+    endedAtWallMs: ended,
+    durationMs: duration,
+    text: `tour ${(ended / 1000).toFixed(1)}s ${ok ? 'within' : 'OVER'} ${(limit / 1000).toFixed(1)}s (durationMs ${duration} + ${TOUR_MARGIN_MS / 1000} s)`,
+  };
+}
+
 export function countsText(c) {
   const parts = [];
   if (c.passed !== null) parts.push(`${c.passed} passed`);

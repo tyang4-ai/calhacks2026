@@ -16,7 +16,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "server": "node scripts/server.mjs",
-    "test:server": "node scripts/test-server.mjs"
+    "test:server": "node scripts/test-server.mjs",
+    "export:mock": "node scripts/export-mock.mjs"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "5.3.0",

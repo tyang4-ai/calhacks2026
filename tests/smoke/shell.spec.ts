@@ -1,6 +1,7 @@
 // The shell's behavior: language resolution, the demo controls and their keys, video mode,
 // and the live badge rule through window.__cindia.emit().
 import { expect, test, type Page } from "@playwright/test";
+import { SOURCE_KEYS } from "../../src/core/events";
 import { waitForHooks, waitForSlots, watchPage } from "./lib";
 
 async function frameLangs(page: Page) {
@@ -102,7 +103,7 @@ test("demo controls respond to clicks", async ({ page }) => {
   await expect(page.getByTestId("demo-mode-toggle")).toHaveText(/Live/);
   expect(await page.evaluate(() => window.__cindia!.store.getState().mode)).toBe("live");
   // One dot per source key in live mode.
-  await expect(page.getByTestId("demo-mode-toggle").locator("[data-source-key]")).toHaveCount(10);
+  await expect(page.getByTestId("demo-mode-toggle").locator("[data-source-key]")).toHaveCount(SOURCE_KEYS.length);
   await page.getByTestId("demo-mode-toggle").click();
   await expect(page.getByTestId("demo-mode-toggle")).toHaveText(/Scripted/);
 
@@ -240,7 +241,7 @@ test("a live account.synced clears only the b04-bank source", async ({ page }) =
   });
   expect(sources["b04-bank"]).toBe("live");
   const others = Object.entries(sources).filter(([k]) => k !== "b04-bank");
-  expect(others).toHaveLength(9);
+  expect(others).toHaveLength(SOURCE_KEYS.length - 1);
   for (const [, v] of others) expect(v).toBe("scripted");
   watch.expectClean();
 });

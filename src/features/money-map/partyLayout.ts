@@ -26,6 +26,8 @@ const FIXED: Record<Exclude<Party["kind"], "maker">, Point> = {
   gallery: { x: 320, y: 530 },
   studio: { x: 590, y: 300 },
   supplier: { x: 590, y: 530 },
+  // v2 placeholder (I2-core fallout): above the studio, clear of every v1 node and thread.
+  community_fund: { x: 590, y: 60 },
 };
 
 /** Maker slots, top to bottom, in the studio's makerIds order. */

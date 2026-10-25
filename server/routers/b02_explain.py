@@ -37,7 +37,8 @@ log = logging.getLogger("cindia")
 KEY = "b02-explain"
 MODEL = config.MODEL_DEFAULT  # claude-sonnet-5-5
 CLAUDE_TIMEOUT_S = 6.0
-MAX_TOKENS = 1600
+# The answer runs about 400 tokens. Anything near 700 couldn't finish inside the timeout anyway.
+MAX_TOKENS = 700
 
 # evt_live_ plus a number, unique within the server process. B02's numbers start at 200001 so they
 # never meet another router's counter.
@@ -141,15 +142,22 @@ class CatchExplanation(BaseModel):
 # ---------------------------------------------------------------------------------------------
 # The prompt.
 
+# Short on purpose: Sonnet answers at roughly 165 tokens a second after a wait of about 2.5 seconds,
+# so the whole answer has to stay near 350 tokens to land well inside the 6-second timeout. The
+# matcher has already done the arithmetic, so Claude only has to say it plainly.
 SYSTEM_PROMPT = """You are Cindy, the AI agent that keeps the books for a small Diné (Navajo) weaving and silver co-op on the Navajo Nation in Arizona that sells through Cindia, its own website and a consignment gallery in San Francisco. You speak to the co-op's manager in the first person, short and plain, like a careful bookkeeper.
 
+The matcher has already checked every figure. Say what it found briefly; don't redo the arithmetic.
+
 Rules:
-- Use only the numbers that appear in the records and the facts you are given. Never invent a date, an amount, a rate or a name.
+- Use only the numbers in the facts you are given. Never invent a date, an amount, a rate or a name.
 - Write money in US dollars with a dollar sign and cents, for example $340.00, in English and in Chinese alike.
-- Name the contract's commission rate and the rate the statement charged.
-- Say which record you trust and why. If something is uncertain, say what you are unsure about instead of guessing.
-- explanation_en and explanation_zh: two or three sentences each. The Chinese is natural Simplified Chinese, not a word-for-word translation.
-- The follow-up is a short, polite, specific note from the co-op to the gallery's accounts team. It thanks them for the statement and payment, points out the commission difference, and asks them to send the difference. It promises nothing on the manager's behalf: no discounts, no deadlines the manager did not set, no legal threats. Sign it "Diné Weaving and Silver Co-op" in English and "纳瓦霍（Diné）编织与银饰合作社" in Chinese. Keep each body under 90 words or 180 characters.
+- Call the records the contract, the statement and the bank deposit. Never write a record ID in the texts.
+- explanation_en: two short sentences, 45 words at most. Name the contract's commission rate and the rate the statement charged, say you trust the signed contract, and give the amount still owed. If something is uncertain, say so instead of guessing.
+- explanation_zh: the same in natural Simplified Chinese, 90 characters at most, not a word-for-word translation.
+- The follow-up is a short, polite note from the co-op to the gallery's accounts team. It thanks them for the statement and payment, points out the commission difference, and asks them to send the amount still owed. It promises nothing on the manager's behalf: no discounts, no deadlines, no legal threats.
+- follow_up_subject_en: 8 words at most. follow_up_subject_zh: 20 characters at most.
+- follow_up_body_en: 50 words at most, then the signature "Diné Weaving and Silver Co-op". follow_up_body_zh: 100 characters at most, then the signature "纳瓦霍（Diné）编织与银饰合作社".
 - trusted_record_id is the ID of the record you trust, exactly as written in the records. delta_cents is the amount still owed, in integer cents.
 """
 
@@ -186,8 +194,8 @@ def build_prompt(req: ExplainRequest) -> str:
         "The matcher flagged a short payment from the gallery. Here are the facts it found:\n"
         + "\n".join(f"- {f}" for f in facts)
         + "\n\nThe three records, as JSON:\n"
-        + json.dumps(records, ensure_ascii=False, indent=1)
-        + "\n\nExplain to the manager which record to trust and why, and draft the follow-up to the gallery."
+        + json.dumps(records, ensure_ascii=False, separators=(",", ":"))
+        + "\n\nTell the manager which record to trust and why, and draft the follow-up to the gallery. Keep to the word limits."
     )
 
 
@@ -199,7 +207,9 @@ def make_client():
     """An Anthropic client holding the key from server/config.py. No retries inside a request."""
     from anthropic import Anthropic
 
-    return Anthropic(api_key=config.ANTHROPIC_API_KEY, timeout=CLAUDE_TIMEOUT_S, max_retries=0)
+    return Anthropic(
+        api_key=config.ANTHROPIC_API_KEY, base_url=config.CLAUDE_BASE_URL, timeout=CLAUDE_TIMEOUT_S, max_retries=0
+    )
 
 
 def _call_claude(client: Any, prompt: str) -> Any:
@@ -209,6 +219,10 @@ def _call_claude(client: Any, prompt: str) -> Any:
         system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": prompt}],
         output_format=CatchExplanation,
+        # Sonnet 5.5 rejects thinking "disabled" but accepts "between_tools", which turns off
+        # up-front thinking. With no tools in the request it doesn't think at all. Left adaptive,
+        # it spent about 250 tokens (1.6 s) thinking even at low effort and missed the 6 s timeout.
+        thinking={"type": "between_tools"},
         output_config={"effort": "low"},
         timeout=CLAUDE_TIMEOUT_S,
     )

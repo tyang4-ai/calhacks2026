@@ -78,7 +78,7 @@ function entityIds(v: unknown, field = "", out: string[] = []): string[] {
 
 describe("events", () => {
   it("events.md was parsed", () => {
-    expect(DOC_KEYS.size).toBe(32);
+    expect(DOC_KEYS.size).toBe(59);
     expect(DOC_KEYS.get("match.made")).toBe("b01-match");
     expect(DOC_KEYS.get("concierge.asked")).toBeUndefined();
   });

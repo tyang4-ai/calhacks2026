@@ -17,6 +17,27 @@ export const SLOT_FEATURE: Record<SlotId, string> = {
   "studio.drawer.audit": "audit",
   "owner.main": "approvals",
   "maker.main": "maker-statement",
+  // v2 slots. A slug whose folder doesn't exist yet renders the slot's placeholder.
+  "process.bar": "process",
+  "process.view": "process",
+  "shop.home.main": "search",
+  "shop.home.communities": "communities",
+  "shop.search.main": "search",
+  "shop.piece.main": "buyer",
+  "shop.piece.side": "support",
+  "shop.community.main": "communities",
+  "shop.projects.main": "communities",
+  "shop.receipt.main": "buyer",
+  "shop.drawer.support": "support",
+  "store.main": "storefront",
+  "studio.overview.main": "seller-hub",
+  "studio.listings.main": "seller-hub",
+  "studio.storefront.main": "storefront",
+  "studio.projects.main": "communities",
+  "studio.proof.side": "search",
+  "studio.watch.main": "watch",
+  "studio.drawer.support": "support",
+  "maker.side": "seller-hub",
 };
 
 const modules = import.meta.glob<{ default?: FeatureModule }>("../features/*/index.ts");
