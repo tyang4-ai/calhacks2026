@@ -3,7 +3,7 @@
 // progress, the milestone shares and the score bar's fill.
 import type { Lang, Text } from "../core/types";
 import { clamp01 } from "./motion";
-import { DOT_SEPARATOR, L3, L4 } from "./strings";
+import { DOT_SEPARATOR, L3, L4, NOT_CHECKED } from "./strings";
 
 /** Chip n (from 1) gets `<chipPrefix><n>`, and its remove control `<chipPrefix>remove-<n>`. */
 export function chipTestIds(chipPrefix: string, n: number): { chip: string; remove: string } {
@@ -29,11 +29,12 @@ export function addChip(chips: readonly string[], text: string): string[] {
 
 /**
  * A piece card's short verification line. With `demo` it starts with L3, then the given line after
- * a dot. Without `demo` it is the given line alone, and without either there is no line.
+ * a dot and ", not checked". Without `demo` it is the given line alone, and without either there is
+ * no line.
  */
 export function pieceVerificationText(verification: Text | undefined, demo: boolean, lang: Lang): string | null {
   const line = verification ? verification[lang] : "";
-  if (demo) return line ? `${L3[lang]}${DOT_SEPARATOR}${line}` : L3[lang];
+  if (demo) return line ? `${L3[lang]}${DOT_SEPARATOR}${line}${NOT_CHECKED[lang]}` : L3[lang];
   return line || null;
 }
 

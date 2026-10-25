@@ -35,6 +35,12 @@ export const L4: Text = {
   zh: "演示：这里展示认证将如何进行。并未做过真实核查。",
 };
 
+/**
+ * Ends a demo piece card's verification line, which has no L4 under it (Gordon, Oct 25 4:58 AM,
+ * docs/v2/video-brief.md). English only, so zh reuses it.
+ */
+export const NOT_CHECKED: Text = { en: ", not checked", zh: ", not checked" };
+
 /** How a maker would be verified, by the data model's method. The Chinese is design drop 3's proposal. */
 export const VERIFICATION_METHOD_WORDS: Record<CommunityVerification["method"], Text> = {
   nation_attestation: { en: "Nation attestation", zh: "部族认证" },

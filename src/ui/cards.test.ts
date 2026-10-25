@@ -170,8 +170,8 @@ describe("demo verification lines (A2-3)", () => {
   };
 
   it("starts a piece card's line with L3 only with demo", () => {
-    expect(pieceVerificationText(card.verification, true, "en")).toBe("Demo verification · Nation attestation");
-    expect(pieceVerificationText(card.verification, true, "zh")).toBe("演示认证 · 部族认证");
+    expect(pieceVerificationText(card.verification, true, "en")).toBe("Demo verification · Nation attestation, not checked");
+    expect(pieceVerificationText(card.verification, true, "zh")).toBe("演示认证 · 部族认证, not checked");
     expect(pieceVerificationText(undefined, true, "en")).toBe("Demo verification");
     expect(pieceVerificationText(card.verification, false, "en")).toBe("Nation attestation");
     expect(pieceVerificationText(undefined, false, "en")).toBeNull();
