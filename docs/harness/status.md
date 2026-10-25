@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:43 PT
+UPDATED: 2026-10-24 23:44 PT
 
 # Status board
 
@@ -108,7 +108,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-storefront | V2 P1 | running | feature-lead | | |
 | M-maker-statement | V2 P1 | built, worktree G3 queued and verifier | feature-lead | | compact layout under 600 px for Phase A's box |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
-| I2-tour | V3 | todo | integrator, data-smith | | |
+| I2-tour | V3 | T2 running | integrator, data-smith | | T1 then T3-T8; English-only toggle hiding in T3-T8 |
 | I3-redesign | V4 | todo | integrator | | per design drop |
 
 ## v2 Upgrades
@@ -370,3 +370,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:42 PT · Gordon's decisions recorded: English only (toggle hidden, polish round before G4v2, contracts by the integrator), fonts Source Sans 3 and Source Code Pro approved, CINDIA_HF_REPO set; Chinese checks dropped from Needs Gordon · decisions.md
 - 2026-10-24 23:42 PT · G3 watch PASS in the worktree; verifier's one blocking finding was Chinese-only, moot under English only; committed, tag v2-watch · artifacts/gates/G3-watch-wt-2324.md
 - 2026-10-24 23:43 PT · G3 approvals: worktree 3/3 PASS, verifier FAIL on F1 (the Toast covers L20 and Cindy's line at the end of a long detail), fix round 1 sent with F2-F4 and English only; M-desktop and M-maker-statement built; worktree queue: process rerun, maker-statement, desktop, T9 data with the search specs; verifier workflow for maker-statement, desktop and the process recheck · artifacts/gates/G3-approvals-verifier.md
+- 2026-10-24 23:44 PT · V3 started early: I2-tour T2 integrator spawned (contract check and the tour tables in demo-script.md; tests and docs only, so it disturbs no running lead); B11 --eval-only --no-publish running on the pooled grades; English-only toggle hiding goes to I2-tour's integrator (T3-T8 owns src/app), feature-side English-only items to each lead's polish round · status.md
