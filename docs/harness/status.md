@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:52 PT
+UPDATED: 2026-10-24 22:55 PT
 
 # Status board
 
@@ -337,3 +337,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:42 PT · contracts docs round 1 PASS (integrator; code-match and consistency verifiers PASS, minors only): api-contract, definition-of-done, demo-script, design-system, events, ui-contract (41 internal test IDs, a data-attributes table, the scrim token, the Seal date rule); code items queued for the polish round · status.md
 - 2026-10-24 22:43 PT · G3 buyer verifier PASS (F1, F2 to the polish queue); worktree dev server got fs.allow for the symlinked node_modules (fonts were refused); buyer, process and D-deploy gates running in the worktree, in that order; D-deploy built (17 public checks, laptop dry-run), its two-lens verifier running · status.md
 - 2026-10-24 22:52 PT · D-deploy verifiers PASS (public-safety, laptop-preflight; minors only); fix round 1 sent to its integrator (SKIP banner, unknown flags rejected, step 8 restart text, SpacetimeDB install page, preflight v1 rows); S3 data round 1 spawned (G2b M1-M5, M8: cft_01's seller Red Mesa Home Goods → Lantern Lane Home Goods, no business found by that name) · artifacts/gates/D-deploy-verifier-public.md
+- 2026-10-24 22:55 PT · smoke fix: shell.spec.ts:447's offline check pauses, waits for slots and fonts, and cuts the network through watch.setOffline(), which lets through only the ERR_INTERNET_DISCONNECTED failures the test causes (3 runs 5/5 at load 18-19, check:scope PASS); the other failure was a Vite full reload from another agent's edit · tests/smoke/lib.ts

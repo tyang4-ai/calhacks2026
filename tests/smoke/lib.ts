@@ -52,12 +52,36 @@ export function isLocal(url: string): boolean {
   }
 }
 
-/** Starts collecting console errors, page errors, shell warnings and requests beyond localhost. */
+/** The error Chromium gives every request, localhost included, while the context is offline. */
+const DISCONNECTED = "net::ERR_INTERNET_DISCONNECTED";
+
+/**
+ * Starts collecting console errors, page errors, shell warnings and requests beyond localhost.
+ * A test that cuts the network goes through `watch.setOffline()`, never `context().setOffline()`
+ * itself, so the check knows which failures the test caused.
+ */
 export function watchPage(page: Page) {
   const errors: string[] = [];
   const remote: string[] = [];
+  // setOffline(true) cuts localhost too, unlike a real outage, so anything the page asks for from
+  // then on fails with net::ERR_INTERNET_DISCONNECTED and Chromium logs "Failed to load resource"
+  // for it: a Noto Sans SC unicode-range subset, for one, loads only when a glyph from it is first
+  // drawn. Those two lines are the test's own doing. Once this watcher has taken the page offline,
+  // expectClean() lets through exactly that failure, and that console line only for a URL that
+  // failed that way. The window stays open after setOffline(false), because Chromium can report a
+  // failure from the offline spell a moment after the network is back. Everything else still
+  // counts: a pageerror, any other console error (a failed module import logs one), any other
+  // failed request, and any request beyond localhost. A test that never calls setOffline() is
+  // checked exactly as before.
+  let wentOffline = false;
+  const cutRequests: { url: string; line: string }[] = [];
+  const cutConsole: { url: string; line: string }[] = [];
   page.on("console", (msg) => {
-    if (msg.type() === "error") errors.push(`console.error: ${msg.text()}`);
+    if (msg.type() === "error") {
+      const line = `console.error: ${msg.text()}`;
+      if (wentOffline && msg.text() === `Failed to load resource: ${DISCONNECTED}`) cutConsole.push({ url: msg.location().url, line });
+      else errors.push(line);
+    }
     // The shell warns when it skips a feature (an id that doesn't match its folder), and the
     // store warns on an invalid event in development. Both fail the smoke test.
     if (msg.type() === "warning" && /^\[cindia( shell)?\]/.test(msg.text())) errors.push(`console.warn: ${msg.text()}`);
@@ -93,6 +117,7 @@ export function watchPage(page: Page) {
     const text = req.failure()?.errorText ?? "";
     const line = `request failed: ${req.url()} ${text}`;
     if (text === "net::ERR_ABORTED") aborted.push({ req, frame: frameOf(req), text: line });
+    else if (wentOffline && text === DISCONNECTED) cutRequests.push({ url: req.url(), line });
     else errors.push(line);
   });
   page.on("response", (res) => {
@@ -107,14 +132,38 @@ export function watchPage(page: Page) {
       const start = navAtStart.get(req);
       return start === undefined || (navCount.get(frame) ?? 0) <= start;
     });
+  // A "Failed to load resource" line for a URL that didn't fail with net::ERR_INTERNET_DISCONNECTED
+  // counts. Matched here, because the console line can arrive before or after the failure.
+  const strayCutConsole = () => {
+    const cut = new Set(cutRequests.map((r) => r.url));
+    return cutConsole.filter((c) => !cut.has(c.url)).map((c) => c.line);
+  };
   return {
     errors,
     remote,
+    /** Takes the page's context offline or back online, and tells the check it did. */
+    async setOffline(offline: boolean) {
+      if (offline) wentOffline = true;
+      await page.context().setOffline(offline);
+    },
     expectClean() {
-      expect([...errors, ...abortsNotFromNavigation().map((a) => a.text)], "console errors, page errors or failed requests").toEqual([]);
+      expect([...errors, ...strayCutConsole(), ...abortsNotFromNavigation().map((a) => a.text)], "console errors, page errors or failed requests").toEqual([]);
       expect(remote, "requests beyond localhost").toEqual([]);
     },
   };
+}
+
+/**
+ * Waits until the page has laid out what it shows and every font file that text needs has loaded.
+ * A unicode-range subset loads only once a glyph from it is laid out, so this forces a layout and
+ * waits two frames before document.fonts.ready, which Chromium also holds until layout is clean.
+ */
+export async function waitForFonts(page: Page) {
+  await page.evaluate(async () => {
+    document.body.getBoundingClientRect();
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+    await document.fonts.ready;
+  });
 }
 
 /** Waits until every slot on the page (or inside `scope`) has finished loading its feature. */

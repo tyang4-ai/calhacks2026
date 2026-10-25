@@ -4,7 +4,7 @@
 // and the live badge rule through window.__cindia.emit().
 import { expect, test, type Page } from "@playwright/test";
 import { SOURCE_KEYS } from "../../src/core/events";
-import { L1_ZH, PROCESS_IDS, readSlotProps, seekToEvent, shownFrameId, slotTestId, waitForHooks, waitForSlots, watchPage } from "./lib";
+import { L1_ZH, PROCESS_IDS, readSlotProps, seekToEvent, shownFrameId, slotTestId, waitForFonts, waitForHooks, waitForSlots, watchPage } from "./lib";
 
 const now = (page: Page) => page.evaluate(() => window.__cindia!.player.now());
 const playing = (page: Page) => page.evaluate(() => window.__cindia!.player.isPlaying());
@@ -481,13 +481,35 @@ test.describe("demo controls", () => {
     await page.getByTestId("demo-mode-toggle").click();
     await expect(page.getByTestId("demo-mode-toggle")).toHaveText(/Scripted/);
 
+    // Start at the catch seeks to d07-catch's beat.started and plays. With no catch beat loaded it does nothing.
     await expect(page.getByTestId("demo-start-at-catch")).toBeVisible();
+    const catchAt = await page.evaluate(
+      () =>
+        window.__cindia!.player.getTimeline()?.events.find(
+          (e) => e.type === "beat.started" && (e.payload as { beatId: string }).beatId === "d07-catch",
+        )?.at ?? null,
+    );
     await page.getByTestId("demo-start-at-catch").click();
-    // demo-offline only shows while the browser has no network.
+    if (catchAt === null) {
+      expect(await now(page)).toBe(0);
+      expect(await playing(page)).toBe(false);
+    } else {
+      await expect(page.getByTestId("demo-pause")).toBeVisible();
+      await expect.poll(() => now(page)).toBeGreaterThanOrEqual(catchAt);
+      // Pause, so no beat draws anything new while the network is cut below.
+      await page.getByTestId("demo-pause").click();
+      await expect(page.getByTestId("demo-play")).toBeVisible();
+    }
+
+    // demo-offline only shows while the browser has no network. Going offline cuts localhost too,
+    // so first let the page finish loading what it shows: every slot's feature, and every font
+    // subset its text needs. watch.setOffline() tells the check which failures the test caused.
+    await waitForSlots(page);
+    await waitForFonts(page);
     await expect(page.getByTestId("demo-offline")).toHaveCount(0);
-    await page.context().setOffline(true);
+    await watch.setOffline(true);
     await expect(page.getByTestId("demo-offline")).toBeVisible();
-    await page.context().setOffline(false);
+    await watch.setOffline(false);
     await expect(page.getByTestId("demo-offline")).toHaveCount(0);
     watch.expectClean();
   });
