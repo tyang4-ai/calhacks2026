@@ -12,9 +12,8 @@ A skeleton for Gordon to finish in his own voice. The scribe wrote it at 8:00 PM
 ## Project name and tagline
 
 - Name: Cindia. It stands for Craft Inheritance Network, Direct from Independent Artisans. Cindy is the agent inside it. [`docs/spec/cindia-pitch.md`](../spec/cindia-pitch.md)
+- The tagline: **Describe the vibe. Gift the piece. Pay the person.** It is line 1 of the Cindia pitch card and the end card repeats it. [`src/app/demo/pitch.ts`](../../src/app/demo/pitch.ts) (`TAGLINE`), Gordon's message of Oct 25, 3:25 AM
 - The shared one-liner: Cindia is a platform for underrepresented makers, starting with Native American makers. It does the selling, the marketing and the books for them. [`docs/v2/brief.md`](../v2/brief.md), "In one line"
-
-[GORDON: the tagline for the Devpost header, in one breath. How would you say what Cindia does to a stranger at the next table? Which three words do you want a judge to remember?]
 
 ## Inspiration
 
@@ -61,7 +60,8 @@ A skeleton for Gordon to finish in his own voice. The scribe wrote it at 8:00 PM
 - A bar of 11 clickable blocks across the top of every page. Each shows a live status, a small count and a Live mark when its sources are live. One line sums it up ("Live: N of 11"). Each view draws what is happening and lists the raw events under it. Status: planned (F-process).
 
 **The tour** (planned, `I2-tour`)
-- Three minutes: a one-minute pitch (three cards: what, why, the tech), the buyer minute, and the seller minute. It is always scripted, so it never waits on a network.
+- Three minutes: a one-minute pitch (three cards: "Cindia", which opens with the tagline, then "Why" and "How it works", text in [`src/app/demo/pitch.ts`](../../src/app/demo/pitch.ts)), the buyer minute, and the seller minute. It is always scripted, so it never waits on a network.
+- It plays online at https://cindia.design/demo.
 - Presenter mode (`/demo?mode=present`) pauses at the end of every beat. Chapter 2 covers Surprise me, the proofs, the counterfeit watch and the storefront.
 - Today `/demo` plays v1's 60-second demo on the co-op's names.
 
@@ -192,28 +192,29 @@ Planned items are marked. Delete anything that doesn't ship.
 - Capital One's Nessie sandbox API
 - Figma, through the Figma MCP server, FigJam and Figma Slides
 - Playwright, Vitest and pytest
-- Cloudflare Pages and a GoDaddy Registry domain (planned, Gordon's steps)
+- Cloudflare Pages and a GoDaddy Registry domain, cindia.design (Gordon's steps, done)
 
 ## Tracks
 
-Select a track on Devpost only when its hard requirement is met in the final what's-real list. The freeze pass adds a met-or-not line per track to [`sponsors/README.md`](../../sponsors/README.md).
-- Anthropic, Claude for Public Benefit: [`sponsors/anthropic/`](../../sponsors/anthropic/README.md). The prize is in the hacker guide and not on the Devpost page.
+Select a track on Devpost only when its hard requirement is met in the final what's-real list. The freeze pass adds a met-or-not line per track to [`sponsors/README.md`](../../sponsors/README.md). Gordon checked the Devpost prize names live at 11:45 PM on Oct 24.
+- [Anthropic] Claude for Public Benefit: [`sponsors/anthropic/`](../../sponsors/anthropic/README.md). It is on the Devpost page.
 - Hyphenate, The Hyphenated Enterprise: Autonomous Systems for Finance: [`sponsors/hyphenate/`](../../sponsors/hyphenate/README.md)
 - Visa, Best use of Reimagining Shopping: [`sponsors/visa/`](../../sponsors/visa/README.md)
 - Microsoft, Built for the Real World: [`sponsors/microsoft/`](../../sponsors/microsoft/README.md)
 - Capital One, Best Use of Nessie: [`sponsors/capital-one/`](../../sponsors/capital-one/README.md)
 - Meta, Bringing People Closer Together with AI: [`sponsors/meta/`](../../sponsors/meta/README.md)
 - Elastic, Best use of the Elastic Agent Builder on a Serverless instance: [`sponsors/elastic/`](../../sponsors/elastic/README.md)
-- SpacetimeDB, Best Use of Spacetime: [`sponsors/spacetimedb/`](../../sponsors/spacetimedb/README.md). The prize is in the hacker guide and not on the Devpost page.
+- [Spacetime] Best Use of Spacetime: [`sponsors/spacetimedb/`](../../sponsors/spacetimedb/README.md). It is on the Devpost page.
 - Apify, Best use of Apify: [`sponsors/apify/`](../../sponsors/apify/README.md)
-- Figma: [`sponsors/figma/`](../../sponsors/figma/README.md). Check the Figma prize names on the Devpost page before you select one.
-- MLH, Best Domain Name from GoDaddy Registry: [`sponsors/mlh-godaddy/`](../../sponsors/mlh-godaddy/README.md)
-- Cal Hacks Best Solo Hack is automatic, per the Devpost notes in [`docs/reference/ch13-devpost.md`](../reference/ch13-devpost.md).
+- [Figma] Best Figma Workflow Hack ($1,000): [`sponsors/figma/`](../../sponsors/figma/README.md). It is the one Figma prize on the Devpost page now.
+- [MLH] Best Domain Name from GoDaddy Registry: [`sponsors/mlh-godaddy/`](../../sponsors/mlh-godaddy/README.md). The domain is cindia.design, and .design is a GoDaddy Registry domain.
+- Cal Hacks Best Solo Hack: select it. Gordon built Cindia alone. (The Devpost notes in [`docs/reference/ch13-devpost.md`](../reference/ch13-devpost.md) call it automatic, and Gordon's Oct 25 message says to select it.)
+- Cal Hacks Best People-First Social Impact Hack: select it. Cindia is built for Native American makers, and the demo follows the fictional Diné Weaving and Silver Co-op.
 
 ## Links
 
 - Repo: https://github.com/tyang4-ai/calhacks2026
-- Public site: [GORDON: the public site link]. It plays the scripted tour only and sells nothing. The Public site line of `status.md` is empty at 8:00 PM.
+- Public site: https://cindia.design (also https://cindia-cfn.pages.dev). The tour runs at https://cindia.design/demo. It is the scripted public build, with no Pay and no Live switch, and it sells nothing. Gordon uploaded it from commit `b01fc1b` to the Cloudflare Pages project `cindia`. [`docs/plans/D-deploy.md`](../plans/D-deploy.md)
 - Demo video: [GORDON: video link]. Hyphenate wants a video that opens with the catch (`d08-catch`, a $340 short payment). Figma's limit is 3 minutes.
 - Project image: `docs/devpost/project-image.png`. The orchestrator copies the catch screenshot there at the freeze, so the file doesn't exist yet.
 

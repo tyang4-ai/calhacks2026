@@ -4,7 +4,7 @@ Written at 8:00 PM PT on Saturday, Oct 24, 2026. Every maker, community and stor
 
 ## What its judges look for
 
-The prize is not on the Devpost prizes page ([Cal Hacks 13.0 on Devpost](https://cal-hacks-13-0.devpost.com)). The criteria come from the hacker guide row and Anthropic's Slack post, copied in [`docs/reference/sponsors/ch13-sponsor-anthropic.md`](../../docs/reference/sponsors/ch13-sponsor-anthropic.md).
+The prize is "[Anthropic] Claude for Public Benefit", and it is on the Devpost prizes page now ([Cal Hacks 13.0 on Devpost](https://cal-hacks-13-0.devpost.com), checked live by Gordon at 11:45 PM on Oct 24). The criteria come from the hacker guide row and Anthropic's Slack post, copied in [`docs/reference/sponsors/ch13-sponsor-anthropic.md`](../../docs/reference/sponsors/ch13-sponsor-anthropic.md).
 
 - **A named community.** "Students" is too broad. Anthropic's post says "The narrower, the better."
 - **A real problem.** You have lived it, or you talked to someone who has.

@@ -1,10 +1,10 @@
-# Figma · Idea To Demo
+# Figma · Best Figma Workflow Hack
 
 Written at 8:00 PM PT on Saturday, Oct 24, 2026. Every maker, community and story named here is fictional. Where something is not done yet, this page says so.
 
 ## What its judges look for
 
-The track is "Idea To Demo": take a real project from idea to working demo, use Figma's tools at the stages where they help, and hand in an honest record of how. The criteria are in Figma's track doc, copied in [`docs/reference/sponsors/ch13-sponsor-figma.md`](../../docs/reference/sponsors/ch13-sponsor-figma.md). The [Cal Hacks 13.0 Devpost page](https://cal-hacks-13-0.devpost.com) lists the Figma prizes, but its names and Figma's doc disagree (see below).
+The Devpost prize is "[Figma] Best Figma Workflow Hack" ($1,000), the one Figma prize on the [Cal Hacks 13.0 Devpost page](https://cal-hacks-13-0.devpost.com) now (checked live by Gordon at 11:45 PM on Oct 24). Figma's track doc calls the track "Idea To Demo": take a real project from idea to working demo, use Figma's tools at the stages where they help, and hand in an honest record of how. The criteria are in that doc, copied in [`docs/reference/sponsors/ch13-sponsor-figma.md`](../../docs/reference/sponsors/ch13-sponsor-figma.md).
 
 - **Workflow design.** A clear path from idea to demo, with each stage accounted for and tools chosen for a reason. Could another team follow the process without the builder in the room?
 - **Adoptability.** Would a team use this workflow on its next project? Does it remove real friction?
@@ -16,7 +16,7 @@ The stage log is judged for being intentional, traceable, honest about friction 
 
 **What to hand in:** a demo video of 3 minutes at most, a stage log of 200 words at most per stage (ideation, prototyping, handoff, code generation), and Figma Slides with the Figma files embedded and a link to the code. Every Figma file has to be shared with anyone who has the link, and the account has to be Edu verified.
 
-**The prize names don't match.** Figma's doc lists Best Design ($500), Most Creative ($500), Best Figma Workflow ($2,000) and Best Stage Log ($2,000). A fetch of Devpost on Oct 24 showed five prizes of $1,000 each, and the planning session saw one called "Best Figma Workflow Hack" the same day. Check the Devpost page in a browser and select whichever Figma prizes it lists when you submit.
+**One prize, not four.** Figma's own doc lists Best Design ($500), Most Creative ($500), Best Figma Workflow ($2,000) and Best Stage Log ($2,000), and an earlier fetch of Devpost showed five prizes of $1,000 each. Gordon's live check supersedes both: Figma has one prize on Devpost now, "[Figma] Best Figma Workflow Hack". Select that one when you submit.
 
 ## What Cindia does for this track
 

@@ -145,7 +145,7 @@ The pitch keeps its claims as written (`docs/v2/fix-plan.md` section 1.5). This 
 | "Tested on queries written by hand" | 50 held-out test queries, written separately by our data agent | Gordon writes or edits 15 of them, scored as their own row | Not started. Until then the pitch says what the demo has |
 | "The Describer reads each photo" | No photo upload | A photo on the listing form, the Describer's layer, image vectors | Not started |
 | "Every screen reads from SpacetimeDB" | The listed tables, the data view and presence | The approval queue moves onto SpacetimeDB, so the seal crosses two screens through it | Not started. The tables and the data view are B13's plan, also not started |
-| "Judges can try it live online" | The public site plays scripted | A hosted live API | Not started |
+| "Judges can try it live online" | The public site, https://cindia.design, plays the scripted tour at https://cindia.design/demo, with no Pay and no Live switch | A hosted live API | Not started. The public site is live and scripted (Gordon uploaded it from commit `b01fc1b`) |
 | "Each seller builds their own storefront" | A mock block editor, labeled a preview | A real builder | Not started |
 | "Cindy asks the maker for you" | One scripted run | The live loop | Not started |
 | "A bigger model trained on a GPU" | The cloud CPU run | A longer run on the lab GPU machine | Not started |

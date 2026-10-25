@@ -4,7 +4,7 @@ Written at 8:00 PM PT on Saturday, Oct 24, 2026. Every maker, community and stor
 
 ## What its judges look for
 
-The prize ($2,048, $1,024 and $512) is in the hacker guide and is not on the [Cal Hacks 13.0 Devpost page](https://cal-hacks-13-0.devpost.com). The notes are copied in [`docs/reference/sponsors/ch13-sponsor-spacetimedb.md`](../../docs/reference/sponsors/ch13-sponsor-spacetimedb.md). SpacetimeDB should be the core real-time backend. They name live shared state, instant sync between users, agents and systems, live dashboards, marketplaces and AI agent coordination. In their words: "meaningfully used, not just added on the side."
+The prize is "[Spacetime] Best Use of Spacetime" ($2,048, $1,024 and $512 in the hacker guide), and it is on the [Cal Hacks 13.0 Devpost page](https://cal-hacks-13-0.devpost.com) now (checked live by Gordon at 11:45 PM on Oct 24). The notes are copied in [`docs/reference/sponsors/ch13-sponsor-spacetimedb.md`](../../docs/reference/sponsors/ch13-sponsor-spacetimedb.md). SpacetimeDB should be the core real-time backend. They name live shared state, instant sync between users, agents and systems, live dashboards, marketplaces and AI agent coordination. In their words: "meaningfully used, not just added on the side."
 
 ## What Cindia does for this track
 

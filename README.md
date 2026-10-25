@@ -1,5 +1,7 @@
 # Cindia
 
+**Describe the vibe. Gift the piece. Pay the person.**
+
 Cindia is a platform for underrepresented makers, starting with Native American makers. Selling online takes time, broadband and marketing reach that many makers on tribal lands don't have. Cindia does the selling, the marketing and the books for them, and it's fair by design: the price split is shown, search ranks by fit and not by ads, and Surprise me leans toward makers who sold less.
 
 The demo follows the Diné Weaving and Silver Co-op, a fictional co-op of Diné (Navajo) makers on the Navajo Nation in Arizona. Its manager is Ruth B. and its makers are Grace N., Lena T. and Mae K. Three more fictional communities sit beside it in the catalog: an Ojibwe beadwork co-op, an Acoma pottery studio and a Seminole patchwork co-op.
@@ -33,9 +35,9 @@ We don't claim lower fees. Cindia's own fee is 10%.
 
 ### The public site
 
-[GORDON: the public site link]
+https://cindia.design (also https://cindia-cfn.pages.dev). The tour runs at https://cindia.design/demo.
 
-The public site plays the scripted tour only and sells nothing. It is a separate build (`npm run build:public`, planned in [`docs/plans/D-deploy.md`](docs/plans/D-deploy.md)) that Gordon uploads to Cloudflare Pages. It will also serve the sandbox market at `/market/`.
+The public site is the scripted public build. It plays the scripted tour only, has no Pay button and no Live switch, and sells nothing. It is a separate build (`npm run build:public`, in [`docs/plans/D-deploy.md`](docs/plans/D-deploy.md)) on Cloudflare Pages, project `cindia`, which Gordon uploaded from commit `b01fc1b`. The build also holds the sandbox market at `/market/`.
 
 ### Scripted, on your own machine
 
@@ -62,7 +64,7 @@ Live mode swaps the scripted event sources for the FastAPI server, one source at
    - `ELASTIC_URL`, `KIBANA_URL` and `ELASTIC_API_KEY`
    - `APIFY_TOKEN`
    - `HF_TOKEN` and `CINDIA_HF_REPO`
-   - `PUBLIC_SITE_URL`, once the public site is up
+   - `PUBLIC_SITE_URL`, the public site's address (the copy watch crawls its sandbox market)
    - `SPACETIME_TOKEN`, which a script writes for you
 3. Start the API with `npm run server` (port 8000). `GET /api/health` lists which routers loaded and which keys are set.
 4. **Planned (B13).** Start SpacetimeDB on this machine only with `spacetime start --listen-addr 127.0.0.1:3000`.
@@ -78,7 +80,7 @@ The tour is the 3-minute pitch. It is always scripted, so it never waits on a ne
 
 | Part | Beats | Seconds | What happens |
 |---|---|---|---|
-| The pitch, 1 minute | `p01-what`, `p02-why`, `p03-how` | 0 to 60 | Three full-screen pitch cards: what it is, why, the tech. Gordon writes the words |
+| The pitch, 1 minute | `p01-what`, `p02-why`, `p03-how` | 0 to 60 | Three full-screen pitch cards: "Cindia" (it opens with the tagline, then says what it is), "Why" and "How it works". Gordon approved the text, which lives in [`src/app/demo/pitch.ts`](src/app/demo/pitch.ts) |
 | The buyer minute | `d01-vibe`, `d03-piece`, `d04-support`, `d05-pay` | 60 to 120 | Vibe search, the piece and where the money goes, a question answered by the swarm with a guard firing, pay, and a receipt that promises to show when Grace N. is paid |
 | The seller minute | `d15-listing`, `d06-money`, `d07-month`, `d08-catch`, `d09-approve`, `d10-close`, `d11-maker`, `d12-receipt` | 120 to 180 | A maker's notes become a listing that our model embeds into the index. Then the money: map, month, the catch, approve and seal, close, Grace N.'s statement, and the receipt turning to "Paid to the maker" |
 | Chapter 2, for questions | `d02-surprise`, `d13-proof`, `d14-watch`, `d16-store` | 180 to 205 | Surprise me, the proofs, the counterfeit watch and the storefront, after the end card |
@@ -112,7 +114,7 @@ There are 21 agent roles. Fifteen run on Claude, six on Haiku and nine on Sonnet
 | Steward | Sonnet | Answers "is it real?" and "what does it mean?" only from the community's page, the verification record and the piece's own story. It quotes its source or says "I'll ask the maker" |
 | Clerk | Haiku | Order status, shipping and returns, read-only. Arrival dates come from code |
 | Writer | Sonnet | Writes the reply in the person's language from the facts the others found. Code fills amounts and dates |
-| Lister | Sonnet | Turns a maker's notes into a draft listing in English and Chinese, and marks the version she didn't write |
+| Lister | Sonnet | Drafts a listing's title and summary from the maker's notes |
 | Describer | Sonnet | Describes what is visible in a photo. It runs only when a photo is uploaded, and nothing uploads one yet |
 | Tagger | Haiku | Proposes vibe keywords for the maker to approve |
 | Checker | Sonnet | Checks a draft against the community's rules and the maker's facts. A check in code backs it |
@@ -188,17 +190,19 @@ Each folder says what its judges look for, what Cindia does for that track, wher
 
 | Track | Folder | Look at first |
 |---|---|---|
-| Anthropic, Claude for Public Benefit | [`sponsors/anthropic/`](sponsors/anthropic/README.md) | A named community, the swarm's narrow agents, the "where it could go wrong" table and the impact plan |
+| [Anthropic] Claude for Public Benefit | [`sponsors/anthropic/`](sponsors/anthropic/README.md) | A named community, the swarm's narrow agents, the "where it could go wrong" table and the impact plan |
 | Hyphenate, Autonomous Systems for Finance | [`sponsors/hyphenate/`](sponsors/hyphenate/README.md) | The catch: the gallery paid $340 short, and Cindy proposes while a person approves |
 | Visa, Reimagining Shopping | [`sponsors/visa/`](sponsors/visa/README.md) | Vibe search, the price split, the card token and the receipt |
 | Microsoft, Built for the Real World | [`sponsors/microsoft/`](sponsors/microsoft/README.md) | The Excel close, the impact numbers and the path from prototype to production |
 | Capital One, Best Use of Nessie | [`sponsors/capital-one/`](sponsors/capital-one/README.md) | Sales and maker payouts on a Nessie account |
 | Meta, Bringing People Closer Together with AI | [`sponsors/meta/`](sponsors/meta/README.md) | The maker's own words, reaching the buyer |
 | Elastic, Agent Builder on Serverless | [`sponsors/elastic/`](sponsors/elastic/README.md) | Hybrid search with our own vectors, and the `cindia-finder` agent |
-| SpacetimeDB, Spacetime | [`sponsors/spacetimedb/`](sponsors/spacetimedb/README.md) | One database that holds everything, and the data view |
+| [Spacetime] Best Use of Spacetime | [`sponsors/spacetimedb/`](sponsors/spacetimedb/README.md) | One database that holds everything, and the data view |
 | Apify, Best use of Apify | [`sponsors/apify/`](sponsors/apify/README.md) | The copy watch crawling our sandbox market |
-| Figma, workflow | [`sponsors/figma/`](sponsors/figma/README.md) | The stage log, the handoff files and the Slides deck |
-| MLH, Best Domain Name from GoDaddy Registry | [`sponsors/mlh-godaddy/`](sponsors/mlh-godaddy/README.md) | The domain, pointing at the public site |
+| [Figma] Best Figma Workflow Hack | [`sponsors/figma/`](sponsors/figma/README.md) | The stage log, the handoff files and the Slides deck |
+| [MLH] Best Domain Name from GoDaddy Registry | [`sponsors/mlh-godaddy/`](sponsors/mlh-godaddy/README.md) | cindia.design, pointing at the public site |
+
+Cindia also enters two Cal Hacks prizes, which have no folder: Cal Hacks Best Solo Hack and Cal Hacks Best People-First Social Impact Hack.
 
 ## What's real and what's simulated
 

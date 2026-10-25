@@ -18,7 +18,7 @@ Cindia is a platform for underrepresented makers, starting with Native American 
 1. **Scout** (plain code) runs Apify's Cheerio Scraper (`apify/cheerio-scraper`) through the API's synchronous run endpoint, over the sandbox market, with a 45-second budget. It follows only links under `/market/`.
 2. **Comparer** (plain code) scores each result's title and snippet against the co-op's pieces with our own embedding model. The score is shown as "Text match", and it is a text match and not a picture match.
 3. **Claims** (Claude Haiku) reads what each close listing claims, inside a delimited block marked as untrusted text, and quotes the words that make the claim. The quote has to appear word for word in the listing, or it counts as no claim.
-4. **Reporter** (Claude Sonnet) fills a report template for the manager. It names no seller and uses no accusing words in English or Chinese.
+4. **Reporter** (Claude Sonnet) fills a report template for the manager. It names no seller and uses no accusing words.
 
 **The hit rule.** A result is a possible copy only with evidence about this maker: it names the co-op or one of its makers, repeats an 8-word run of a piece's story, or claims a Cindia verification it lacks. A bare claim like "Authentic Native American made" is listed as something the watch can't judge ("Claims to be Native-made. We can't check that."), with no report button.
 
@@ -34,11 +34,11 @@ All of these are **planned**.
 ## How to run that part
 
 Planned. This is the design.
-1. Gordon uploads the public site to Cloudflare Pages ([`D-deploy`](../../docs/plans/D-deploy.md)). The sandbox market is part of it.
+1. Gordon uploaded the public site to Cloudflare Pages ([`D-deploy`](../../docs/plans/D-deploy.md)). It is live at https://cindia.design, and the sandbox market is part of the build, at `/market/`.
 2. Set `APIFY_TOKEN` and `PUBLIC_SITE_URL` in the cloud environment or in `.env` (names only here). Set a monthly usage limit on the Apify account.
 3. `npm run server`. `GET /api/b15/status` says whether the market is set up.
 4. Switch on Live and press Scan now on the watch view. The scan starts, then the browser polls for the result.
-5. Until the public site is up, the watch runs on its fixture, plays scripted and keeps its Simulated badge.
+5. Without `PUBLIC_SITE_URL`, the watch runs on its fixture, plays scripted and keeps its Simulated badge.
 
 ## The moment in the tour
 
@@ -48,7 +48,7 @@ Planned (`I2-tour`). Times are from [`docs/v2/fix-plan.md`](../../docs/v2/fix-pl
 
 ## What's live and what's simulated
 
-- `/api/health` read `apify` as true at 7:30 PM, so the token is set in the cloud environment. That is not a gate. The public site link is empty, so the watch has no market to crawl yet.
+- `/api/health` read `apify` as true at 7:30 PM, so the token is set in the cloud environment. That is not a gate. The public site is live now at https://cindia.design (Gordon, Oct 25), so the market has an address. B15's gate (G5) has not passed yet.
 - **Planned:** the crawl, the comparer, the claims check, the reporter, the watch view and the sandbox market.
 - **Simulated by design:** the listings, their sellers and every report. Nothing is sent, and the real web is never searched.
 
