@@ -1,0 +1,61 @@
+{
+ "_about": "B12's 6-piece test fixture, plus one draft that must never be returned. Every community, maker and piece here is fictional demo data, shaped like artifacts/mock/mock.json. The 4-number vectors are hand-made so the rankings in tests/server/test_b12_search.py can be checked by hand.",
+ "communities": [
+  {"id": "com_dine", "name": {"en": "Diné Weaving and Silver Co-op", "zh": "纳瓦霍（Diné）编织与银饰合作社"}, "people": {"en": "Diné (Navajo)", "zh": "纳瓦霍（Diné）"}, "craft": {"en": "Wool weavings, silver and turquoise jewelry", "zh": "羊毛编织与绿松石银饰"}, "storefrontId": "sto_01"},
+  {"id": "com_ojibwe", "name": {"en": "Ojibwe Beadwork Co-op", "zh": "奥吉布瓦（Ojibwe）珠饰合作社"}, "people": {"en": "Ojibwe", "zh": "奥吉布瓦（Ojibwe）"}, "craft": {"en": "Glass bead embroidery", "zh": "玻璃珠刺绣"}, "storefrontId": "sto_02"},
+  {"id": "com_acoma", "name": {"en": "Acoma Pottery Studio", "zh": "阿科马（Acoma）陶艺工作室"}, "people": {"en": "Acoma Pueblo", "zh": "阿科马（Acoma）"}, "craft": {"en": "Hand-coiled pottery", "zh": "手工盘筑陶器"}, "storefrontId": "sto_03"},
+  {"id": "com_seminole", "name": {"en": "Seminole Patchwork Co-op", "zh": "塞米诺尔（Seminole）拼布合作社"}, "people": {"en": "Seminole", "zh": "塞米诺尔（Seminole）"}, "craft": {"en": "Machine-sewn patchwork", "zh": "机缝拼布"}, "storefrontId": "sto_04"}
+ ],
+ "pieces": [
+  {"id": "pc_01", "title": {"en": "Small grey, red and black wool weaving", "zh": "灰红黑三色小幅羊毛编织"}, "makerId": "mkr_01", "communityId": "com_dine", "priceCents": 18000,
+   "facets": {"object": {"en": "wall weaving", "zh": "壁挂编织"}, "materials": ["wool"], "techniques": ["handwoven"], "motifs": ["diamond", "step"], "colors": ["grey", "red", "black"]},
+   "vibe": {"moods": ["warm", "bold"], "occasions": ["birthday"], "recipients": ["gift for mom"]},
+   "story": {"en": "A small wool weaving in grey, red and black, with a stepped diamond at its center. It hangs on a wall.", "zh": "一幅小幅羊毛编织。"}},
+  {"id": "pc_02", "title": {"en": "Red and cream wool rug", "zh": "红米双色羊毛地毯"}, "makerId": "mkr_02", "communityId": "com_dine", "priceCents": 95000,
+   "facets": {"object": {"en": "rug", "zh": "地毯"}, "materials": ["wool"], "techniques": ["handwoven"], "motifs": ["stripe"], "colors": ["red", "cream"]},
+   "vibe": {"moods": ["warm"], "occasions": ["housewarming"], "recipients": ["gift for mom"]},
+   "story": {"en": "A wool rug in red and cream stripes.", "zh": "一块红米条纹羊毛地毯。"}},
+  {"id": "pc_03", "title": {"en": "Stamped silver earrings", "zh": "压花银耳环"}, "makerId": "mkr_03", "communityId": "com_dine", "priceCents": 6500,
+   "facets": {"object": {"en": "earrings", "zh": "耳环"}, "materials": ["silver"], "techniques": ["stamped"], "motifs": ["chevron"], "colors": ["silver"]},
+   "vibe": {"moods": ["bright"], "occasions": ["birthday"], "recipients": ["gift for her"]},
+   "story": {"en": "Small silver earrings with stamped chevrons.", "zh": "压印人字纹的小银耳环。"}},
+  {"id": "pc_04", "title": {"en": "Red and green floral beaded earrings", "zh": "红绿花卉串珠耳环"}, "makerId": "mkr_05", "communityId": "com_ojibwe", "priceCents": 9000,
+   "facets": {"object": {"en": "beaded earrings", "zh": "串珠耳环"}, "materials": ["glass beads"], "techniques": ["beadwork"], "motifs": ["floral"], "colors": ["red", "green"]},
+   "vibe": {"moods": ["bold", "bright"], "occasions": [], "recipients": ["gift for mom"]},
+   "story": {"en": "Beaded earrings with a floral pattern in red and green.", "zh": "红绿花卉图案的串珠耳环。"}},
+  {"id": "pc_05", "title": {"en": "Black and orange seed pot", "zh": "黑橙双色种子罐"}, "makerId": "mkr_12", "communityId": "com_acoma", "priceCents": 15000,
+   "facets": {"object": {"en": "seed pot", "zh": "种子罐"}, "materials": ["clay"], "techniques": ["coiled"], "motifs": ["geometric"], "colors": ["black", "orange"]},
+   "vibe": {"moods": ["calm"], "occasions": [], "recipients": []},
+   "story": {"en": "A small clay seed pot painted in black and orange.", "zh": "一个黑橙两色彩绘的小陶罐。"}},
+  {"id": "pc_06", "title": {"en": "Yellow and black patchwork skirt", "zh": "黄黑拼布裙"}, "makerId": "mkr_15", "communityId": "com_seminole", "priceCents": 21000,
+   "facets": {"object": {"en": "skirt", "zh": "裙子"}, "materials": ["cotton"], "techniques": ["patchwork"], "motifs": ["geometric"], "colors": ["yellow", "black"]},
+   "vibe": {"moods": ["cheerful"], "occasions": [], "recipients": []},
+   "story": {"en": "A cotton skirt with bands of yellow and black patchwork.", "zh": "一条黄黑拼布带的棉布裙。"}},
+  {"id": "pc_07", "title": {"en": "Warm red wool rug draft", "zh": "暖红羊毛地毯草稿"}, "makerId": "mkr_01", "communityId": "com_dine", "priceCents": 10000,
+   "facets": {"object": {"en": "rug", "zh": "地毯"}, "materials": ["wool"], "techniques": ["handwoven"], "motifs": ["diamond"], "colors": ["red"]},
+   "vibe": {"moods": ["warm"], "occasions": ["birthday"], "recipients": ["gift for mom"]},
+   "story": {"en": "A drafted listing that waits for the owner.", "zh": "一份等待负责人批准的草稿。"}}
+ ],
+ "searchIndex": [
+  {"pieceId": "pc_01", "communityId": "com_dine", "makerId": "mkr_01", "storefrontSlug": "dine-weavers", "salesThisMonth": 1, "status": "active", "embedText": "passage: wall weaving | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven | motifs: diamond, step | colors: grey, red, black | mood: warm, bold | for: birthday, gift for mom | A small wool weaving in grey, red and black, with a stepped diamond at its center."},
+  {"pieceId": "pc_02", "communityId": "com_dine", "makerId": "mkr_02", "storefrontSlug": "dine-weavers", "salesThisMonth": 0, "status": "active", "embedText": "passage: rug | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven | motifs: stripe | colors: red, cream | mood: warm | for: housewarming, gift for mom | A wool rug in red and cream stripes."},
+  {"pieceId": "pc_03", "communityId": "com_dine", "makerId": "mkr_03", "storefrontSlug": "dine-weavers", "salesThisMonth": 3, "status": "active", "embedText": "passage: earrings | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: silver | techniques: stamped | motifs: chevron | colors: silver | mood: bright | for: birthday, gift for her | Small silver earrings with stamped chevrons."},
+  {"pieceId": "pc_04", "communityId": "com_ojibwe", "makerId": "mkr_05", "storefrontSlug": "ojibwe-beadwork", "salesThisMonth": 2, "status": "active", "embedText": "passage: beaded earrings | craft: Glass bead embroidery, Ojibwe | materials: glass beads | techniques: beadwork | motifs: floral | colors: red, green | mood: bold, bright | for: gift for mom | Beaded earrings with a floral pattern in red and green."},
+  {"pieceId": "pc_05", "communityId": "com_acoma", "makerId": "mkr_12", "storefrontSlug": "acoma-pottery", "salesThisMonth": 0, "status": "active", "embedText": "passage: seed pot | craft: Hand-coiled pottery, Acoma Pueblo | materials: clay | techniques: coiled | motifs: geometric | colors: black, orange | mood: calm | A small clay seed pot painted in black and orange."},
+  {"pieceId": "pc_06", "communityId": "com_seminole", "makerId": "mkr_15", "storefrontSlug": "seminole-patchwork", "salesThisMonth": 4, "status": "active", "embedText": "passage: skirt | craft: Machine-sewn patchwork, Seminole | materials: cotton | techniques: patchwork | motifs: geometric | colors: yellow, black | mood: cheerful | A cotton skirt with bands of yellow and black patchwork."},
+  {"pieceId": "pc_07", "communityId": "com_dine", "makerId": "mkr_01", "storefrontSlug": "dine-weavers", "salesThisMonth": 0, "status": "draft", "embedText": "passage: rug | craft: Wool weavings, silver and turquoise jewelry, Diné (Navajo) | materials: wool | techniques: handwoven | motifs: diamond | colors: red | mood: warm | for: birthday, gift for mom | A drafted listing that waits for the owner."}
+ ],
+ "keywordAliases": {"mom": "gift for mom", "mother": "gift for mom"},
+ "vectors": {
+  "query": [1, 0, 0, 0],
+  "pieces": {
+   "pc_01": [0.9, 0.1, 0, 0],
+   "pc_02": [0.8, 0.3, 0, 0],
+   "pc_03": [0.1, 0.9, 0.2, 0],
+   "pc_04": [0.6, 0.6, 0, 0],
+   "pc_05": [0.95, 0, 0.1, 0],
+   "pc_06": [0, 0, 0, 1],
+   "pc_07": [1, 0, 0, 0]
+  }
+ }
+}

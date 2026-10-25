@@ -1,0 +1,1602 @@
+{
+ "_about": "Written by node server/b12_search/golden.mjs from src/sources/surprise.ts (mulberry32, drawSurprise) and src/mock/. Every piece is fictional demo data. Regenerate it whenever surprise.ts or the index changes.",
+ "keyword": "geometric",
+ "seeds": [
+  {
+   "seed": 1,
+   "mulberry32": [
+    0.6270739405881613,
+    0.002735721180215478,
+    0.5274470399599522
+   ],
+   "draws": {
+    "keyword_random": {
+     "request": {
+      "keyword": "geometric",
+      "method": "keyword_random",
+      "seed": 1
+     },
+     "pieceId": "pc_42",
+     "candidates": [
+      {
+       "pieceId": "pc_27",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      }
+     ]
+    },
+    "fair_random": {
+     "request": {
+      "keyword": "geometric",
+      "method": "fair_random",
+      "seed": 1
+     },
+     "pieceId": "pc_42",
+     "candidates": [
+      {
+       "pieceId": "pc_27",
+       "weight": 0.06185567010309278,
+       "raw": 0.2
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.07731958762886597,
+       "raw": 0.25
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.10309278350515462,
+       "raw": 0.3333333333333333
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.05154639175257731,
+       "raw": 0.16666666666666666
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.3092783505154639,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.07731958762886597,
+       "raw": 0.25
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.10309278350515462,
+       "raw": 0.3333333333333333
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.06185567010309278,
+       "raw": 0.2
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.15463917525773194,
+       "raw": 0.5
+      }
+     ]
+    },
+    "pure_random": {
+     "request": {
+      "method": "pure_random",
+      "seed": 1
+     },
+     "pieceId": "pc_34",
+     "candidates": [
+      {
+       "pieceId": "pc_01",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_02",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_03",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_04",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_05",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_06",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_07",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_08",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_09",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_10",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_11",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_12",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_13",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_14",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_15",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_16",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_17",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_18",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_19",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_20",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_21",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_22",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_23",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_24",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_25",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_26",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_27",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_28",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_29",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_31",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_33",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_34",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_36",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_37",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_39",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_40",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_41",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_43",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_44",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_46",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_47",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_49",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_50",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_52",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_53",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_54",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "seed": 7,
+   "mulberry32": [
+    0.011704753153026104,
+    0.06195825757458806,
+    0.97690763277933
+   ],
+   "draws": {
+    "keyword_random": {
+     "request": {
+      "keyword": "geometric",
+      "method": "keyword_random",
+      "seed": 7
+     },
+     "pieceId": "pc_27",
+     "candidates": [
+      {
+       "pieceId": "pc_27",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      }
+     ]
+    },
+    "fair_random": {
+     "request": {
+      "keyword": "geometric",
+      "method": "fair_random",
+      "seed": 7
+     },
+     "pieceId": "pc_27",
+     "candidates": [
+      {
+       "pieceId": "pc_27",
+       "weight": 0.06185567010309278,
+       "raw": 0.2
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.07731958762886597,
+       "raw": 0.25
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.10309278350515462,
+       "raw": 0.3333333333333333
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.05154639175257731,
+       "raw": 0.16666666666666666
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.3092783505154639,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.07731958762886597,
+       "raw": 0.25
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.10309278350515462,
+       "raw": 0.3333333333333333
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.06185567010309278,
+       "raw": 0.2
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.15463917525773194,
+       "raw": 0.5
+      }
+     ]
+    },
+    "pure_random": {
+     "request": {
+      "method": "pure_random",
+      "seed": 7
+     },
+     "pieceId": "pc_01",
+     "candidates": [
+      {
+       "pieceId": "pc_01",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_02",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_03",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_04",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_05",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_06",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_07",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_08",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_09",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_10",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_11",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_12",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_13",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_14",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_15",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_16",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_17",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_18",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_19",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_20",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_21",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_22",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_23",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_24",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_25",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_26",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_27",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_28",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_29",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_31",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_33",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_34",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_36",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_37",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_39",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_40",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_41",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_43",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_44",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_46",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_47",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_49",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_50",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_52",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_53",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_54",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "seed": 13,
+   "mulberry32": [
+    0.5663226493634284,
+    0.36011716164648533,
+    0.0705908453091979
+   ],
+   "draws": {
+    "keyword_random": {
+     "request": {
+      "keyword": "geometric",
+      "method": "keyword_random",
+      "seed": 13
+     },
+     "pieceId": "pc_42",
+     "candidates": [
+      {
+       "pieceId": "pc_27",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      }
+     ]
+    },
+    "fair_random": {
+     "request": {
+      "keyword": "geometric",
+      "method": "fair_random",
+      "seed": 13
+     },
+     "pieceId": "pc_38",
+     "candidates": [
+      {
+       "pieceId": "pc_27",
+       "weight": 0.06185567010309278,
+       "raw": 0.2
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.07731958762886597,
+       "raw": 0.25
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.10309278350515462,
+       "raw": 0.3333333333333333
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.05154639175257731,
+       "raw": 0.16666666666666666
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.3092783505154639,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.07731958762886597,
+       "raw": 0.25
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.10309278350515462,
+       "raw": 0.3333333333333333
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.06185567010309278,
+       "raw": 0.2
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.15463917525773194,
+       "raw": 0.5
+      }
+     ]
+    },
+    "pure_random": {
+     "request": {
+      "method": "pure_random",
+      "seed": 13
+     },
+     "pieceId": "pc_31",
+     "candidates": [
+      {
+       "pieceId": "pc_01",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_02",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_03",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_04",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_05",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_06",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_07",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_08",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_09",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_10",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_11",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_12",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_13",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_14",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_15",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_16",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_17",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_18",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_19",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_20",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_21",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_22",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_23",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_24",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_25",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_26",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_27",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_28",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_29",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_31",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_33",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_34",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_36",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_37",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_39",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_40",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_41",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_43",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_44",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_46",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_47",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_49",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_50",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_52",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_53",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_54",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "seed": 10,
+   "mulberry32": [
+    0.5019920116756111,
+    0.9174868050031364,
+    0.6913183077704161
+   ],
+   "draws": {
+    "keyword_random": {
+     "request": {
+      "keyword": "geometric",
+      "method": "keyword_random",
+      "seed": 10
+     },
+     "pieceId": "pc_38",
+     "candidates": [
+      {
+       "pieceId": "pc_27",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.1111111111111111,
+       "raw": 1
+      }
+     ]
+    },
+    "fair_random": {
+     "request": {
+      "keyword": "geometric",
+      "method": "fair_random",
+      "seed": 10
+     },
+     "pieceId": "pc_38",
+     "candidates": [
+      {
+       "pieceId": "pc_27",
+       "weight": 0.06185567010309278,
+       "raw": 0.2
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.07731958762886597,
+       "raw": 0.25
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.10309278350515462,
+       "raw": 0.3333333333333333
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.05154639175257731,
+       "raw": 0.16666666666666666
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.3092783505154639,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.07731958762886597,
+       "raw": 0.25
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.10309278350515462,
+       "raw": 0.3333333333333333
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.06185567010309278,
+       "raw": 0.2
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.15463917525773194,
+       "raw": 0.5
+      }
+     ]
+    },
+    "pure_random": {
+     "request": {
+      "method": "pure_random",
+      "seed": 10
+     },
+     "pieceId": "pc_28",
+     "candidates": [
+      {
+       "pieceId": "pc_01",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_02",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_03",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_04",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_05",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_06",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_07",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_08",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_09",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_10",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_11",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_12",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_13",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_14",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_15",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_16",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_17",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_18",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_19",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_20",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_21",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_22",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_23",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_24",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_25",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_26",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_27",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_28",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_29",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_30",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_31",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_32",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_33",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_34",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_35",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_36",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_37",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_38",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_39",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_40",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_41",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_42",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_43",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_44",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_45",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_46",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_47",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_48",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_49",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_50",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_51",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_52",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_53",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      },
+      {
+       "pieceId": "pc_54",
+       "weight": 0.018518518518518517,
+       "raw": 1
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

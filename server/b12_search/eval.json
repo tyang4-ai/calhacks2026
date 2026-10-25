@@ -1,0 +1,17 @@
+{
+ "_about": "B12's live eval: the 50 held-out queries (written separately by our data agent, never used for training) run once on Elastic's hybrid (rrf over multi_match and kNN on Cindia's own vectors). A small test, not a benchmark.",
+ "engine": "elastic_hybrid",
+ "modelId": "cindia-embed-v1",
+ "fingerprint": "f7181c7ddb90af25",
+ "queries": 50,
+ "k": 5,
+ "recallAtK": 0.8187,
+ "mrr": 0.8873,
+ "agentBuilder": true,
+ "timings": {
+  "seed_s": 29.16,
+  "encode_one_query_s": 8.351,
+  "tour_query_s": 0.61,
+  "eval_msearch_s": 1.43
+ }
+}
