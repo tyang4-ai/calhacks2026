@@ -44,23 +44,28 @@ async function expectSlotsFollowFrames(page: Page) {
 const now = (page: Page) => page.evaluate(() => window.__cindia!.player.now());
 const playing = (page: Page) => page.evaluate(() => window.__cindia!.player.isPlaying());
 
-test("language: auto puts buyer and studio in English, owner and maker in Chinese, then the toggle cycles", async ({ page }) => {
+test("language: auto starts every surface in English, then the toggle cycles", async ({ page }) => {
   const watch = watchPage(page);
   await page.goto("/demo");
   await waitForHooks(page);
-  expect(await page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("auto");
+  const setting = () => page.evaluate(() => window.__cindia!.store.getState().lang);
+  expect(await setting()).toBe("auto");
   // At every step, each slot's content (placeholder or feature) follows its surface's language,
   // whichever slots W1 has filled so far.
-  expect(await frameLangs(page)).toEqual({ buyer: "en", studio: "en", owner: "zh", maker: "zh" });
-  await expectSlotsFollowFrames(page);
-  await page.getByTestId("demo-lang-toggle").click();
   expect(await frameLangs(page)).toEqual({ buyer: "en", studio: "en", owner: "en", maker: "en" });
   await expectSlotsFollowFrames(page);
   await page.getByTestId("demo-lang-toggle").click();
+  // With auto and en both giving English, the store's setting shows the toggle moved.
+  expect(await setting()).toBe("en");
+  expect(await frameLangs(page)).toEqual({ buyer: "en", studio: "en", owner: "en", maker: "en" });
+  await expectSlotsFollowFrames(page);
+  await page.getByTestId("demo-lang-toggle").click();
+  expect(await setting()).toBe("zh");
   expect(await frameLangs(page)).toEqual({ buyer: "zh", studio: "zh", owner: "zh", maker: "zh" });
   await expectSlotsFollowFrames(page);
   await page.getByTestId("demo-lang-toggle").click();
-  expect(await frameLangs(page)).toEqual({ buyer: "en", studio: "en", owner: "zh", maker: "zh" });
+  expect(await setting()).toBe("auto");
+  expect(await frameLangs(page)).toEqual({ buyer: "en", studio: "en", owner: "en", maker: "en" });
   await expectSlotsFollowFrames(page);
   watch.expectClean();
 });

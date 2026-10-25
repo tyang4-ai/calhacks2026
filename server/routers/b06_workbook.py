@@ -236,7 +236,7 @@ def _reconciliation_sheet(ws, records: Records, month_id: str) -> None:
 # ---------------------------------------------------------------------------------------------
 # Profit and loss: SUMIFS over the Ledger sheet, by account.
 
-SALES = [("Sales, Cindia", "sales_cindia", "credit"), ("Sales, studio site", "sales_site", "credit"),
+SALES = [("Sales, Cindia", "sales_cindia", "credit"), ("Sales, co-op site", "sales_site", "credit"),
          ("Sales, gallery", "sales_gallery", "credit"), ("Refunds", "refunds", "refund")]
 COSTS = [("Card fees", "card_fees", "debit"), ("Cindia fees", "platform_fees", "debit"),
          ("Gallery commission", "gallery_commission", "debit"), ("Materials", "materials", "debit"),

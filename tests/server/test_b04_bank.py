@@ -1,4 +1,4 @@
-"""B04 · Nessie, the studio's bank account. Contract tests with FastAPI's TestClient and a fake
+"""B04 · Nessie, the co-op's bank account. Contract tests with FastAPI's TestClient and a fake
 Nessie behind httpx.MockTransport, so nothing here touches the network.
 
 The two tests marked `live` need NESSIE_KEY and skip without it: one lists accounts (read only),
@@ -278,11 +278,11 @@ def test_seed_creates_customer_account_and_history_once(client, fake):
     check_envelope(events[0], "account.synced", 0)
     check_synced(events[0]["payload"])
 
-    assert [c["first_name"] + " " + c["last_name"] for c in fake.customers] == ["Gu Embroidery Studio"]
+    assert [c["first_name"] + " " + c["last_name"] for c in fake.customers] == ["Dine Weaving and Silver Co-op"]
     assert set(fake.customers[0]["address"]) == {"street_number", "street_name", "city", "state", "zip"}
     assert len(fake.accounts) == 1
     acct = fake.accounts[0]
-    assert acct["nickname"] == "Gu studio operating" and acct["type"] == "Checking"
+    assert acct["nickname"] == "Dine co-op operating" and acct["type"] == "Checking"
     aid = acct["_id"]
     hist = FIXTURE["history"]
     assert len(fake.deposits[aid]) == len(hist["deposits"]) + 1  # plus the opening balance
@@ -358,7 +358,7 @@ def test_sale_posts_one_deposit_and_reproduces_the_demo_balance(client, fake):
     move = events[1]["payload"]
     check_move(move)
     assert move["moveId"] == "mv_0003" and move["kind"] == "settlement"
-    assert move["from"] == {"kind": "cindia"} and move["to"] == {"kind": "studio", "id": "std_gu"}
+    assert move["from"] == {"kind": "cindia"} and move["to"] == {"kind": "studio", "id": "std_dine"}
     assert move["amountCents"] == 15648 and move["refId"] == "pay_001" and move["date"] == "2026-09-01"
     aid = fake.accounts[0]["_id"]
     sale_deps = [d for d in fake.deposits[aid] if d["amount"] == 15648]
@@ -378,7 +378,7 @@ def test_a_replayed_sale_reuses_its_deposit(client, fake):
         "source": "scripted",
         "key": "b04-bank",
         "payload": {"moveId": "mv_0003", "kind": "settlement", "from": {"kind": "cindia"},
-                    "to": {"kind": "studio", "id": "std_gu"}, "amountCents": 15648, "refId": "pay_001", "date": "2026-09-01"},
+                    "to": {"kind": "studio", "id": "std_dine"}, "amountCents": 15648, "refId": "pay_001", "date": "2026-09-01"},
     }
     second = client.post("/api/b04/sale", json=sale_body(trig)).json()["events"]
     assert fake.creates("deposits") == len(FIXTURE["history"]["deposits"]) + 2  # history, opening, one sale
@@ -435,7 +435,7 @@ def test_payouts_create_three_withdrawals_and_lower_the_balance_by_their_sum(cli
         p = move["payload"]
         check_move(p)
         assert p["moveId"] == spec["moveId"] and p["kind"] == "maker_pay"
-        assert p["from"] == {"kind": "studio", "id": "std_gu"} and p["to"] == {"kind": "maker", "id": spec["makerId"]}
+        assert p["from"] == {"kind": "studio", "id": "std_dine"} and p["to"] == {"kind": "maker", "id": spec["makerId"]}
         assert p["amountCents"] == spec["amountCents"] and p["refId"] == spec["makerPayoutId"]
         total += spec["amountCents"]
     payout_ws = [w for w in fake.withdrawals[aid] if w["description"].startswith("Maker payout ")]

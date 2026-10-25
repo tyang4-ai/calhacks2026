@@ -112,7 +112,7 @@ test("a question that matches none of the three gets the fallback, and the sugge
   expect((await askState(page)).questionIds).toEqual([]);
 
   // Enter sends a typed question as ask_user_1, shown as asked.
-  const question = "What's the weather in Suzhou?";
+  const question = "What's the weather in Denver?";
   await input.fill(question);
   await input.press("Enter");
   await expect(input).toHaveValue("");

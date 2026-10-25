@@ -15,7 +15,7 @@ const mock: MockAnswers = {
     {
       questionId: "ask_01",
       questions: { en: "Which piece earned the most this month?", zh: "这个月哪件作品最赚钱?" },
-      answer: { en: "The koi pond panel.", zh: "锦鲤图。" },
+      answer: { en: "The brown, white and grey rug.", zh: "棕白灰三色地毯。" },
       refIds: ["ord_027"],
     },
   ],
@@ -64,7 +64,7 @@ describe("requests from people", () => {
     expect(getState().ask.answers.ask_user_1).toBeUndefined();
     await vi.advanceTimersByTimeAsync(1);
     const a = getState().ask.answers.ask_user_1;
-    expect(a.answer.en).toBe("The koi pond panel.");
+    expect(a.answer.en).toBe("The brown, white and grey rug.");
     expect(a.refIds).toEqual(["ord_027"]);
     expect(getState().sources["b07-ask"]).toBe("scripted");
     r.dispose();
@@ -185,7 +185,7 @@ describe("requests from people", () => {
     const { r, log } = responder(failing);
     emit(userEvent("ask.asked", { questionId: "ask_user_6", text: "Which piece earned the most this month?", lang: "en" }));
     await vi.advanceTimersByTimeAsync(1200);
-    expect(getState().ask.answers.ask_user_6.answer.en).toBe("The koi pond panel.");
+    expect(getState().ask.answers.ask_user_6.answer.en).toBe("The brown, white and grey rug.");
     expect(getState().sources["b07-ask"]).toBe("scripted");
     expect(log).toHaveBeenCalled();
     r.dispose();

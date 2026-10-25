@@ -8,7 +8,7 @@ const BEAT_TITLES: Record<string, string> = {
   "d03-split": "3 · Where your money goes",
   "d04-pay": "4 · Pay with a token",
   "d05-money": "5 · Follow the money",
-  "d06-month": "6 · The studio's month",
+  "d06-month": "6 · The co-op's month",
   "d07-catch": "7 · The catch",
   "d08-approve": "8 · Only the owner approves",
   "d09-close": "9 · Close the month",

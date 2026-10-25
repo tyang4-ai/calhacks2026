@@ -43,7 +43,7 @@ export const UI = {
   notYet: { en: "These numbers appear when the month closes.", zh: "月结后显示这些数字。" },
   /** The one-line estimate note, shown while the payload's estimate is true. */
   estimateNote: {
-    en: "These are estimates until a real studio's month replaces them.",
-    zh: "这些是估算，等真实工作室的月度数据到来后替换。",
+    en: "These are estimates until a real co-op's month replaces them.",
+    zh: "这些是估算，等真实合作社的月度数据到来后替换。",
   },
 } as const satisfies Record<string, Text>;

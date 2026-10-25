@@ -49,7 +49,7 @@ export const BEATS: Beat[] = [
     onScreen: { buyer: ["buyer-story-card", "buyer-process-timeline"] },
     slots: { buyer: "buyer.main" },
     figures: [
-      { testId: "buyer-story-card", text: "Lu Yun" },
+      { testId: "buyer-story-card", text: "Grace N." },
       { testId: "buyer-story-card", text: "26 hours" },
     ],
   },
@@ -159,7 +159,7 @@ export const BEATS: Beat[] = [
     onScreen: { "maker-statement": ["maker-statement-total", "maker-statement-lines", "maker-statement-held"] },
     slots: { "maker-statement": "maker.main" },
     figures: [
-      { testId: "maker-statement-total", text: "本月收入" },
+      { testId: "maker-statement-total", text: "This month's income" },
       { testId: "maker-statement-lines", text: "$134.48" },
       { testId: "maker-statement-held", text: "$95.00" },
     ],

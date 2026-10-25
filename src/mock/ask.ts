@@ -45,7 +45,8 @@ export const cannedAnswers: CannedAnswer[] = [
     chart: {
       type: "bar",
       title: { en: "Maker share by piece, September 2026", zh: "2026年9月各作品匠人所得" },
-      labels: byPiece.map((r) => r.piece.title.zh),
+      // The co-op's manager reads English, so the chart's piece labels are the English titles.
+      labels: byPiece.map((r) => r.piece.title.en),
       series: [{ name: { en: "Maker share", zh: "匠人所得" }, valuesCents: byPiece.map((r) => r.cents) }],
     },
   },
@@ -55,11 +56,11 @@ export const cannedAnswers: CannedAnswer[] = [
     answer: {
       en:
         `The contract says the gallery keeps ${galleryContract.commissionBps / 100}%, but its September statement charged ${STATEMENT_COMMISSION_BPS / 100}% on every sale. ` +
-        `By the contract the studio is owed ${usd(galleryFlag.expectedCents)}. The bank shows ${usd(galleryDeposit.amountCents)} on ${depositDay.en}, ` +
+        `By the contract the co-op is owed ${usd(galleryFlag.expectedCents)}. The bank shows ${usd(galleryDeposit.amountCents)} on ${depositDay.en}, ` +
         `so the gallery paid ${usd(galleryFlag.deltaCents)} short. I trust the signed contract.`,
       zh:
         `合同约定画廊抽成${galleryContract.commissionBps / 100}%，但9月对账单每笔都按${STATEMENT_COMMISSION_BPS / 100}%收取。` +
-        `按合同，工作室应得${usd(galleryFlag.expectedCents)}。银行流水显示${depositDay.zh}到账${usd(galleryDeposit.amountCents)}，` +
+        `按合同，合作社应得${usd(galleryFlag.expectedCents)}。银行流水显示${depositDay.zh}到账${usd(galleryDeposit.amountCents)}，` +
         `画廊少付了${usd(galleryFlag.deltaCents)}。我以已签合同为准。`,
     },
     refIds: [galleryContract.id, galleryStatement.id, galleryDeposit.id],

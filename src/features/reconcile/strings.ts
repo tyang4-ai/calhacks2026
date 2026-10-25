@@ -64,7 +64,7 @@ export const UI = {
   expected: { en: "Owed by contract", zh: "按合同应付" },
   paid: { en: "Paid", zh: "实付" },
   short: { en: "Short", zh: "少付" },
-  owedToStudio: { en: "Owed to the studio", zh: "工作室应得" },
+  owedToStudio: { en: "Owed to the co-op", zh: "合作社应得" },
   statementNet: { en: "Net paid", zh: "实付净额" },
   deposit: { en: "Deposit", zh: "到账金额" },
   depositDate: { en: "Date", zh: "日期" },

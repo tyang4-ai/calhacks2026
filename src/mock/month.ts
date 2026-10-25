@@ -1,4 +1,4 @@
-// September 2026 for the Gu embroidery studio: every record, plus the early-October ones that belong
+// September 2026 for the Diné Weaving and Silver Co-op: every record, plus the early-October ones that belong
 // to September (the late site payout and the maker payouts on Oct 2). Every figure is computed from
 // the money rules in data-model.md, so totals reconcile to the cent. The one planted problem in the
 // money itself is the gallery charging 5000 bps instead of the contract's 4000 (err_01). The other
@@ -230,14 +230,14 @@ export const latePayout = payoutWith((p) => p.date > closeDate);
 export const refunds: Refund[] = [{ ...refundDraft, nettedInPayoutId: refundPayout.id }];
 
 // ---------------------------------------------------------------------------------------------
-// Materials bought for the month from a fictional silk supplier.
+// Materials bought for the month from a fictional wool and silver supplier.
 
-const SUPPLIER: Text = { en: "Suzhou Morning Silk Co.", zh: "苏州晨丝坊" };
+const SUPPLIER: Text = { en: "Morning Loom Supply Co.", zh: "晨织供应社" };
 
 const PURCHASE_SPECS: [string, number, string][] = [
-  ["2026-09-03", 18500, "Mulberry silk ground fabric, 6 m"],
-  ["2026-09-15", 7200, "Silk floss, 40 colors"],
-  ["2026-09-24", 4600, "Backing cotton and fan frames"],
+  ["2026-09-03", 18500, "Wool weaving yarn, 4 kg"],
+  ["2026-09-15", 7200, "Silver sheet and wire"],
+  ["2026-09-24", 4600, "Turquoise stones and ear wires"],
 ];
 
 // ---------------------------------------------------------------------------------------------
@@ -512,12 +512,12 @@ export const galleryFlag: Flag = {
   explanation: {
     en:
       `The gallery's September statement charged ${STATEMENT_COMMISSION_BPS / 100}% commission on all four sales and paid ${usd(galleryStatement.totalNetCents)}. ` +
-      `The signed contract says ${galleryContract.commissionBps / 100}%, which leaves the studio ${usd(expectedNet)} on ${usd(galleryStatement.totalSaleCents)} of sales. ` +
+      `The signed contract says ${galleryContract.commissionBps / 100}%, which leaves the co-op ${usd(expectedNet)} on ${usd(galleryStatement.totalSaleCents)} of sales. ` +
       `The bank shows ${usd(galleryDeposit.amountCents)} on ${depositDay.en}, matching the statement, not the contract. ` +
       `I trust the contract, so the gallery owes ${usd(expectedNet - galleryDeposit.amountCents)}.`,
     zh:
       `画廊9月对账单对四笔销售都按${STATEMENT_COMMISSION_BPS / 100}%收取佣金，实付${usd(galleryStatement.totalNetCents)}。` +
-      `已签合同约定${galleryContract.commissionBps / 100}%，按${usd(galleryStatement.totalSaleCents)}的销售额，工作室应得${usd(expectedNet)}。` +
+      `已签合同约定${galleryContract.commissionBps / 100}%，按${usd(galleryStatement.totalSaleCents)}的销售额，合作社应得${usd(expectedNet)}。` +
       `银行流水显示${depositDay.zh}到账${usd(galleryDeposit.amountCents)}，与对账单一致，与合同不符。` +
       `我以合同为准，画廊还欠${usd(expectedNet - galleryDeposit.amountCents)}。`,
   },
@@ -540,13 +540,13 @@ export const followUp: FollowUp = {
     en:
       `Hello,\n\nThank you for the September statement and the payment of ${usd(galleryDeposit.amountCents)} on ${depositDay.en}. ` +
       `The statement charges ${STATEMENT_COMMISSION_BPS / 100}% commission on each sale, but our contract of Mar 2, 2026 sets it at ${galleryContract.commissionBps / 100}%. ` +
-      `At ${galleryContract.commissionBps / 100}%, the studio's share of ${usd(galleryStatement.totalSaleCents)} in sales is ${usd(expectedNet)}, so ${usd(expectedNet - galleryDeposit.amountCents)} is still owed. ` +
-      `Could you send the difference by Oct 16?\n\nThank you,\nGu Embroidery Studio`,
+      `At ${galleryContract.commissionBps / 100}%, the co-op's share of ${usd(galleryStatement.totalSaleCents)} in sales is ${usd(expectedNet)}, so ${usd(expectedNet - galleryDeposit.amountCents)} is still owed. ` +
+      `Could you send the difference by Oct 16?\n\nThank you,\n${studio.name.en}`,
     zh:
       `您好：\n\n感谢寄来9月对账单，并于${depositDay.zh}付款${usd(galleryDeposit.amountCents)}。` +
       `对账单每笔按${STATEMENT_COMMISSION_BPS / 100}%收取佣金，但我们2026年3月2日签订的合同约定为${galleryContract.commissionBps / 100}%。` +
-      `按${galleryContract.commissionBps / 100}%计算，${usd(galleryStatement.totalSaleCents)}销售额中工作室应得${usd(expectedNet)}，尚欠${usd(expectedNet - galleryDeposit.amountCents)}。` +
-      `烦请于10月16日前补付差额。\n\n谢谢！\n顾绣工作室`,
+      `按${galleryContract.commissionBps / 100}%计算，${usd(galleryStatement.totalSaleCents)}销售额中合作社应得${usd(expectedNet)}，尚欠${usd(expectedNet - galleryDeposit.amountCents)}。` +
+      `烦请于10月16日前补付差额。\n\n谢谢！\n${studio.name.zh}`,
   },
 };
 

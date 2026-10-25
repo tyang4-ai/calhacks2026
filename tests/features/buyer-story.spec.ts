@@ -22,37 +22,37 @@ async function openBuyerAt(page: Page, ms: number) {
   }, ms);
 }
 
-test("@T2 the story card shows the Peony fan, its maker, 26 hours and the heritage line", async ({ page }) => {
+test("@T2 the story card shows the grey, red and black weaving, its maker, 26 hours and the craft line", async ({ page }) => {
   const watch = watchPage(page);
   await openBuyerAt(page, STORY_AT);
-  const fan = piece("pc_01");
-  const maker = makers.find((m) => m.id === fan.makerId)!;
+  const weaving = piece("pc_01");
+  const maker = makers.find((m) => m.id === weaving.makerId)!;
   expect(maker, "pc_01's maker in src/mock").toBeTruthy();
 
   const card = page.getByTestId("buyer-story-card");
   await expect(card).toBeVisible();
-  await expect(card).toContainText("Peony fan");
-  await expect(card).toContainText(fan.title.zh);
+  await expect(card).toContainText(weaving.title.en);
+  await expect(card).toContainText(weaving.title.zh);
   await expect(card).toContainText(maker.name.en);
   await expect(card.getByRole("img", { name: maker.surnameChar, exact: true })).toHaveText(maker.surnameChar);
-  await expect(card).toContainText(`${fan.hours} hours`);
-  expect(fan.hours).toBe(26);
-  await expect(card).toContainText(fan.heritage.en);
+  await expect(card).toContainText(`${weaving.hours} hours`);
+  expect(weaving.hours).toBe(26);
+  await expect(card).toContainText(weaving.heritage.en);
   watch.expectClean();
 });
 
-test("@T2 the process timeline lists every step of the Peony fan's process in order", async ({ page }) => {
+test("@T2 the process timeline lists every step of the grey, red and black weaving's process in order", async ({ page }) => {
   const watch = watchPage(page);
   await openBuyerAt(page, STORY_AT);
-  const fan = piece("pc_01");
+  const weaving = piece("pc_01");
 
   const timeline = page.getByTestId("buyer-story-card").getByTestId("buyer-process-timeline");
   await expect(timeline).toBeVisible();
   const steps = timeline.getByRole("listitem");
-  await expect(steps).toHaveCount(fan.process.length);
-  for (let i = 0; i < fan.process.length; i++) {
-    await expect(steps.nth(i)).toContainText(fan.process[i].step.en);
-    await expect(steps.nth(i)).toContainText(`${fan.process[i].hours} h`);
+  await expect(steps).toHaveCount(weaving.process.length);
+  for (let i = 0; i < weaving.process.length; i++) {
+    await expect(steps.nth(i)).toContainText(weaving.process[i].step.en);
+    await expect(steps.nth(i)).toContainText(`${weaving.process[i].hours} h`);
   }
   watch.expectClean();
 });
@@ -75,10 +75,10 @@ test("@T2 the story step fits the phone with the last process step in view", asy
   watch.expectClean();
 });
 
-test("@T2 a piece.opened from the buyer for pc_07 shows the Peony sachet", async ({ page }) => {
+test("@T2 a piece.opened from the buyer for pc_07 shows the red and grey mini weaving", async ({ page }) => {
   const watch = watchPage(page);
   await openBuyerAt(page, 3700);
-  const sachet = piece("pc_07");
+  const mini = piece("pc_07");
 
   await page.evaluate(() => {
     const c = window.__cindia!;
@@ -93,7 +93,7 @@ test("@T2 a piece.opened from the buyer for pc_07 shows the Peony sachet", async
 
   const card = page.getByTestId("buyer-story-card");
   await expect(card).toBeVisible();
-  await expect(card).toContainText("Peony sachet");
-  await expect(card.getByTestId("buyer-process-timeline").getByRole("listitem")).toHaveCount(sachet.process.length);
+  await expect(card).toContainText(mini.title.en);
+  await expect(card.getByTestId("buyer-process-timeline").getByRole("listitem")).toHaveCount(mini.process.length);
   watch.expectClean();
 });

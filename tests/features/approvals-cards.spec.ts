@@ -45,7 +45,7 @@ function payoutsTotalCents(a: Approval): number {
   return a.subjectIds.map((id) => getById<MakerPayout>(id)!).reduce((acc, p) => acc + p.amountCents, 0);
 }
 
-test("Acceptance 1: at 36.5 s the apr_01 card shows the follow-up for the short payment, in Chinese", async ({ page }) => {
+test("Acceptance 1: at 36.5 s the apr_01 card shows the follow-up for the short payment, in English", async ({ page }) => {
   const watch = watchPage(page);
   await openAt(page, AFTER_APR_01);
 
@@ -55,13 +55,13 @@ test("Acceptance 1: at 36.5 s the apr_01 card shows the follow-up for the short 
 
   const card = page.getByTestId(`approvals-item-${APR_01.id}`);
   await expect(card).toBeVisible();
-  await expect(card).toHaveAttribute("lang", "zh");
-  await expect(card).toContainText(UI.followUpTitle.zh);
-  await expect(card).toContainText(shortPaymentSummary(formatCents(FLAG.deltaCents)).zh);
+  await expect(card).toHaveAttribute("lang", "en");
+  await expect(card).toContainText(UI.followUpTitle.en);
+  await expect(card).toContainText(shortPaymentSummary(formatCents(FLAG.deltaCents)).en);
   await expect(card).toContainText(formatCents(APR_01.amountCents!));
-  await expect(card).toContainText(GLOSSARY.needsApproval.zh);
-  await expect(card).toContainText(GLOSSARY.proposedByCindy.zh);
-  if (!APR_01.overLimit) await expect(card).not.toContainText(GLOSSARY.overLimit.zh);
+  await expect(card).toContainText(GLOSSARY.needsApproval.en);
+  await expect(card).toContainText(GLOSSARY.proposedByCindy.en);
+  if (!APR_01.overLimit) await expect(card).not.toContainText(GLOSSARY.overLimit.en);
 
   // apr_02 isn't requested yet, so its card isn't there.
   await expect(page.getByTestId(`approvals-item-${APR_02.id}`)).toHaveCount(0);
@@ -83,11 +83,11 @@ test("Acceptance 3: every card says Cindy proposed it, and no card shows a seal 
         continue;
       }
       await expect(card, `${a.id} at ${ms} ms`).toBeVisible();
-      await expect(card, `${a.id} at ${ms} ms says Cindy proposed it`).toContainText(GLOSSARY.proposedByCindy.zh);
+      await expect(card, `${a.id} at ${ms} ms says Cindy proposed it`).toContainText(GLOSSARY.proposedByCindy.en);
       if (item.status !== "granted") {
         await expect(page.getByTestId(`approvals-seal-${a.id}`), `${a.id} has no seal at ${ms} ms`).toHaveCount(0);
       } else {
-        await expect(card, `${a.id} reads approved at ${ms} ms`).toContainText(GLOSSARY.approved.zh);
+        await expect(card, `${a.id} reads approved at ${ms} ms`).toContainText(GLOSSARY.approved.en);
       }
     }
   }
@@ -95,34 +95,44 @@ test("Acceptance 3: every card says Cindy proposed it, and no card shows a seal 
   // The apr_02 card carries its summary and, when the approval says so, the over-limit mark.
   await seek(page, AFTER_APR_02);
   const payouts = page.getByTestId(`approvals-item-${APR_02.id}`);
-  await expect(payouts).toContainText(UI.payoutsTitle.zh);
-  await expect(payouts).toContainText(payoutsSummary(APR_02.subjectIds.length, formatCents(payoutsTotalCents(APR_02))).zh);
-  if (APR_02.overLimit) await expect(payouts).toContainText(GLOSSARY.overLimit.zh);
+  await expect(payouts).toContainText(UI.payoutsTitle.en);
+  await expect(payouts).toContainText(payoutsSummary(APR_02.subjectIds.length, formatCents(payoutsTotalCents(APR_02))).en);
+  if (APR_02.overLimit) await expect(payouts).toContainText(GLOSSARY.overLimit.en);
   watch.expectClean();
 });
 
-test("Acceptance 7: one tap on the language toggle turns the cards English", async ({ page }) => {
+test("Acceptance 7: the cards open in English, and two taps on the language toggle turn them Chinese", async ({ page }) => {
   const watch = watchPage(page);
   await openAt(page, AFTER_APR_02);
 
+  // With lang "auto" the owner's page starts in English.
   expect(await page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("auto");
-  await page.getByTestId("demo-lang-toggle").click();
-  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("en");
-
   const followUp = page.getByTestId(`approvals-item-${APR_01.id}`);
+  const payouts = page.getByTestId(`approvals-item-${APR_02.id}`);
   await expect(followUp).toHaveAttribute("lang", "en");
   await expect(followUp).toContainText(UI.followUpTitle.en);
-  await expect(followUp).toContainText(shortPaymentSummary(formatCents(FLAG.deltaCents)).en);
-  await expect(followUp).toContainText(GLOSSARY.needsApproval.en);
-  await expect(followUp).toContainText(GLOSSARY.proposedByCindy.en);
-  await expect(followUp).not.toContainText(UI.followUpTitle.zh);
-
-  const payouts = page.getByTestId(`approvals-item-${APR_02.id}`);
   await expect(payouts).toHaveAttribute("lang", "en");
   await expect(payouts).toContainText(UI.payoutsTitle.en);
-  await expect(payouts).toContainText(payoutsSummary(APR_02.subjectIds.length, formatCents(payoutsTotalCents(APR_02))).en);
-  await expect(payouts).toContainText(GLOSSARY.proposedByCindy.en);
-  if (APR_02.overLimit) await expect(payouts).toContainText(GLOSSARY.overLimit.en);
-  await expect(payouts).not.toContainText(UI.payoutsTitle.zh);
+
+  // The toggle cycles auto, en, zh: the first tap gives en (still English), the second gives zh.
+  await page.getByTestId("demo-lang-toggle").click();
+  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("en");
+  await expect(followUp).toHaveAttribute("lang", "en");
+  await page.getByTestId("demo-lang-toggle").click();
+  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("zh");
+
+  await expect(followUp).toHaveAttribute("lang", "zh");
+  await expect(followUp).toContainText(UI.followUpTitle.zh);
+  await expect(followUp).toContainText(shortPaymentSummary(formatCents(FLAG.deltaCents)).zh);
+  await expect(followUp).toContainText(GLOSSARY.needsApproval.zh);
+  await expect(followUp).toContainText(GLOSSARY.proposedByCindy.zh);
+  await expect(followUp).not.toContainText(UI.followUpTitle.en);
+
+  await expect(payouts).toHaveAttribute("lang", "zh");
+  await expect(payouts).toContainText(UI.payoutsTitle.zh);
+  await expect(payouts).toContainText(payoutsSummary(APR_02.subjectIds.length, formatCents(payoutsTotalCents(APR_02))).zh);
+  await expect(payouts).toContainText(GLOSSARY.proposedByCindy.zh);
+  if (APR_02.overLimit) await expect(payouts).toContainText(GLOSSARY.overLimit.zh);
+  await expect(payouts).not.toContainText(UI.payoutsTitle.en);
   watch.expectClean();
 });

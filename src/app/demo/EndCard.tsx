@@ -28,7 +28,7 @@ export function EndCard() {
   return (
     <div className={styles.endCard} data-testid="demo-end-card">
       <div className={styles.endInner}>
-        <h2 className={styles.endTitle}>Cindia · 顾绣</h2>
+        <h2 className={styles.endTitle}>Cindia · Diné Weaving and Silver Co-op</h2>
         {score && (
           <div className={styles.endScore} data-end="score">
             Proof: caught {score.caught} of {score.total} planted errors

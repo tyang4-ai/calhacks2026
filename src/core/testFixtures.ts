@@ -4,14 +4,14 @@ import type { CindiaEvent, EventType, Payloads, SourceKey } from "./events";
 import { EVENT_KEYS } from "./events";
 
 export const SAMPLE_PAYLOADS: { [T in EventType]: Payloads[T] } = {
-  "concierge.asked": { query: "a gift under $200 for my mom, she loves peonies", lang: "en" },
+  "concierge.asked": { query: "a gift under $200 for my mom, she loves red wool", lang: "en" },
   "concierge.answered": {
-    query: "a gift under $200 for my mom, she loves peonies",
+    query: "a gift under $200 for my mom, she loves red wool",
     pieceIds: ["pc_01", "pc_07", "pc_11"],
     reasons: {
-      pc_01: { en: "Peonies, under $200", zh: "牡丹，200美元以内" },
-      pc_07: { en: "A small peony gift", zh: "牡丹小礼物" },
-      pc_11: { en: "A fan like the peony one", zh: "同款团扇" },
+      pc_01: { en: "Red wool, under $200", zh: "红色羊毛，200美元以内" },
+      pc_07: { en: "A small red weaving", zh: "红色小幅编织" },
+      pc_11: { en: "A weaving like the first", zh: "同款编织" },
     },
   },
   "piece.opened": { pieceId: "pc_01" },
@@ -109,7 +109,7 @@ export const SAMPLE_PAYLOADS: { [T in EventType]: Payloads[T] } = {
   "ask.asked": { questionId: "ask_01", text: "这个月哪件作品最赚钱?", lang: "zh" },
   "ask.answered": {
     questionId: "ask_01",
-    answer: { en: "The koi pond panel.", zh: "锦鲤图。" },
+    answer: { en: "The brown, white and grey rug.", zh: "棕白灰三色地毯。" },
     chart: {
       type: "bar",
       title: { en: "Sales by piece", zh: "各作品销售额" },

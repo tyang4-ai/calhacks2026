@@ -28,7 +28,7 @@ const amountStyle: CSSProperties = {
 export function AccountBalance({ lang }: { lang: Lang }) {
   const account = useCindia((s) => (s.money.latestAccountId ? (s.money.accounts[s.money.latestAccountId] ?? null) : null));
   const live = useCindia((s) => s.sources["b04-bank"] === "live");
-  const studio = getById<Studio>("std_gu");
+  const studio = getById<Studio>("std_dine");
   const studioName = studio ? t(studio.name, lang) : "";
 
   return (

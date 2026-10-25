@@ -49,7 +49,7 @@ describe("demo-critical figures (data-model.md)", () => {
     expect(curatedSet.pieceIds).toEqual(["pc_01", "pc_07", "pc_11"]);
     const ans = ofType("concierge.answered");
     expect(ans).toHaveLength(1);
-    expect(ans[0].payload.query).toBe("a gift under $200 for my mom, she loves peonies");
+    expect(ans[0].payload.query).toBe("a gift under $200 for my mom, she loves red wool");
     expect(ans[0].payload.pieceIds).toEqual(["pc_01", "pc_07", "pc_11"]);
     expect(Object.keys(ans[0].payload.reasons).toSorted()).toEqual(["pc_01", "pc_07", "pc_11"]);
   });

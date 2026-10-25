@@ -250,8 +250,8 @@ describe("the demo timeline", () => {
   });
 
   it("the buyer's beats carry the query, the token and the receipts", () => {
-    expect(of("concierge.asked")[0].payload).toEqual({ query: "a gift under $200 for my mom, she loves peonies", lang: "en" });
-    expect(of("concierge.answered")[0].payload).toEqual({ query: "a gift under $200 for my mom, she loves peonies", pieceIds: curatedSet.pieceIds, reasons: curatedSet.reasons });
+    expect(of("concierge.asked")[0].payload).toEqual({ query: "a gift under $200 for my mom, she loves red wool", lang: "en" });
+    expect(of("concierge.answered")[0].payload).toEqual({ query: "a gift under $200 for my mom, she loves red wool", pieceIds: curatedSet.pieceIds, reasons: curatedSet.reasons });
     expect(of("card.tokenized")[0].payload).toEqual({ token: "tok_7Q2M9X4KD1PA", brand: "visa", last4: "4242" });
     expect(of("order.placed")[0].payload).toEqual({ orderId: "ord_001", pieceId: "pc_01", channelId: "ch_cindia", buyerId: "buy_01", grossCents: 18000, date: "2026-09-01" });
     expect(of("approval.granted").map((e) => [e.at, e.payload])).toEqual([

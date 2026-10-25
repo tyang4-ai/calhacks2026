@@ -4,7 +4,12 @@ import {
   approvals,
   bankTxns,
   buyers,
+  cannedAnswers,
+  channels,
+  contracts,
+  curatedSet,
   demoTimeline,
+  fallbackAnswer,
   galleryContract,
   galleryStatement,
   getById,
@@ -16,13 +21,41 @@ import {
   orders,
   owner,
   payouts,
+  people,
   pieces,
   purchases,
   refunds,
   statements,
   studio,
 } from "../../src/mock/index";
+import * as monthExports from "../../src/mock/month";
 import type { ChannelPayout, Order, Piece } from "../../src/core/types";
+
+// R0-reskin's acceptance grep for v1's old names, term by term. Each term carries a "·" that
+// unmark() strips, and the one single-character term is an escape, so the plan's grep over tests/
+// finds nothing in this file while the regex still matches exactly what the grep does.
+const unmark = (s: string) => s.replaceAll("·", "");
+const OLD_TERMS = [
+  "std·_gu", "Gu Em·broidery", "Gu em·broidery", "Gu stu·dio", "顾·绣", "顾·氏",
+  "Shen Ruo·lan", "沈·若兰", "Lu Y·un", "陆·芸", "Han Ji·ng", "韩·静", "Zhou M·ei", "周·梅",
+  "Shang·hai", "上·海", "Song·jiang", "松·江", "Su·zhou", "苏·州", "晨丝·坊",
+  "[Pp]e·on(y|ies)", "牡·丹", "Plum blos·som", "梅·花", "[Kk]o·i", "锦·鲤", "Lo·tus", "晨·荷",
+  "Orchid sc·roll", "兰花·轴", "Sparrow on bam·boo", "竹·雀", "[Ss]a·chet", "香·囊",
+  "Silk coas·ters", "丝·绣", "Crane bro·och", "仙·鹤", "Cloud po·uch", "祥·云",
+  "[Cc]hrysan·themum", "菊·花", "[Pp]hoe·nix", "凤·凰", "团·扇", "osman·thus", "桂·花",
+  "Ming dyn·asty", "明·代", "宋·画", "刺·绣", "\u7ee2", "非·遗", "主理·人", "工作·室",
+];
+const OLD_NAMES = new RegExp(OLD_TERMS.map(unmark).join("|"));
+// A2 R14: no Text says what a pattern or design means.
+const MEANING_WORDS = /symboliz|represents|象征|寓意/i;
+
+/** Every string reachable from a value, with its path, skipping functions. */
+function strings(value: unknown, path: string, out: [string, string][] = []): [string, string][] {
+  if (typeof value === "string") out.push([path, value]);
+  else if (Array.isArray(value)) value.forEach((v, i) => strings(v, `${path}[${i}]`, out));
+  else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) strings(v, `${path}.${k}`, out);
+  return out;
+}
 
 const halfUp = (amount: number, rate: number) => Math.floor((amount * rate + 5000) / 10000);
 const total = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
@@ -32,28 +65,28 @@ const CLOSE = "2026-09-30";
 const balance = (acct: string) => total(ledger.filter((l) => l.account === acct).map((l) => l.debitCents - l.creditCents));
 
 const CATALOG: [string, string, string, string, "featured" | "series", number, number, number][] = [
-  ["pc_01", "Peony fan", "牡丹团扇", "mkr_01", "featured", 18000, 26, 2200],
-  ["pc_02", "Plum blossom bookmarks", "梅花书签", "mkr_02", "series", 6500, 9, 800],
-  ["pc_03", "Koi pond panel", "锦鲤图", "mkr_03", "featured", 120000, 160, 9500],
-  ["pc_04", "Lotus at dawn", "晨荷图", "mkr_01", "featured", 95000, 130, 8000],
-  ["pc_05", "Orchid scroll", "兰花轴", "mkr_02", "featured", 80000, 110, 7000],
-  ["pc_06", "Sparrow on bamboo", "竹雀图", "mkr_03", "featured", 45000, 60, 4500],
-  ["pc_07", "Peony sachet", "牡丹香囊", "mkr_02", "series", 4800, 6, 600],
-  ["pc_08", "Silk coasters", "丝绣杯垫", "mkr_03", "series", 3800, 4, 500],
-  ["pc_09", "Crane brooch", "仙鹤胸针", "mkr_01", "series", 12000, 14, 1200],
-  ["pc_10", "Cloud pouch", "祥云荷包", "mkr_03", "series", 8500, 10, 900],
-  ["pc_11", "Chrysanthemum fan", "菊花团扇", "mkr_02", "featured", 17500, 24, 2100],
-  ["pc_12", "Phoenix needle case", "凤凰针盒", "mkr_01", "series", 9500, 11, 1000],
+  ["pc_01", "Small grey, red and black wool weaving", "灰红黑三色小幅羊毛编织", "mkr_01", "featured", 18000, 26, 2200],
+  ["pc_02", "Stamped silver earrings", "压花银耳环", "mkr_02", "series", 6500, 9, 800],
+  ["pc_03", "Brown, white and grey wool rug", "棕白灰三色羊毛地毯", "mkr_03", "featured", 120000, 160, 9500],
+  ["pc_04", "Red, black and white wool rug with stepped diamonds", "红黑白三色阶梯菱形羊毛地毯", "mkr_01", "featured", 95000, 130, 8000],
+  ["pc_05", "Indigo and white striped wool weaving", "靛蓝白条纹羊毛编织", "mkr_02", "featured", 80000, 110, 7000],
+  ["pc_06", "Grey and white zigzag wool weaving", "灰白锯齿纹羊毛编织", "mkr_03", "featured", 45000, 60, 4500],
+  ["pc_07", "Red and grey wool mini weaving", "红灰双色迷你羊毛编织", "mkr_02", "series", 4800, 6, 600],
+  ["pc_08", "Thin silver ring with stamped chevrons", "压印人字纹细银戒", "mkr_03", "series", 3800, 4, 500],
+  ["pc_09", "Silver and turquoise pendant necklace", "绿松石银吊坠项链", "mkr_01", "series", 12000, 14, 1200],
+  ["pc_10", "Silver and turquoise drop earrings", "绿松石银坠耳环", "mkr_03", "series", 8500, 10, 900],
+  ["pc_11", "Red and white wool weaving", "红白双色羊毛编织", "mkr_02", "featured", 17500, 24, 2100],
+  ["pc_12", "Narrow stamped silver cuff bracelet", "压花细银手镯", "mkr_01", "series", 9500, 11, 1000],
 ];
 
 describe("people and catalog", () => {
   it("the studio, owner, makers and buyers follow data-model.md", () => {
-    expect(studio).toMatchObject({ id: "std_gu", ownerId: "own_01", makerIds: ["mkr_01", "mkr_02", "mkr_03"], payoutLimitCents: 50000 });
-    expect(owner).toMatchObject({ id: "own_01", role: "owner", lang: "zh" });
+    expect(studio).toMatchObject({ id: "std_dine", ownerId: "own_01", makerIds: ["mkr_01", "mkr_02", "mkr_03"], payoutLimitCents: 50000 });
+    expect(owner).toMatchObject({ id: "own_01", role: "owner", lang: "en" });
     expect(makers.map((m) => [m.id, m.role, m.lang])).toEqual([
-      ["mkr_01", "maker", "zh"],
-      ["mkr_02", "maker", "zh"],
-      ["mkr_03", "maker", "zh"],
+      ["mkr_01", "maker", "en"],
+      ["mkr_02", "maker", "en"],
+      ["mkr_03", "maker", "en"],
     ]);
     const chars = [...makers.map((m) => m.surnameChar), owner.surnameChar];
     expect(new Set(chars).size).toBe(4);
@@ -72,6 +105,21 @@ describe("people and catalog", () => {
         expect(t.zh.length, p.id).toBeGreaterThan(0);
       }
     }
+  });
+
+  it("no text in the co-op's records names v1's studio, its people or its pieces, or says what a pattern means", () => {
+    const sources: Record<string, unknown> = { studio, people, pieces, curatedSet, channels, contracts, cannedAnswers, fallbackAnswer };
+    for (const [name, value] of Object.entries(monthExports)) if (typeof value !== "function") sources[`month.${name}`] = value;
+    const all = Object.entries(sources).flatMap(([name, value]) => strings(value, name));
+    // The walk reaches every Text, including the long ones: the stories, the flag and the follow-up.
+    expect(all.length).toBeGreaterThan(500);
+    expect(all.some(([p]) => p.startsWith("month.followUp.body"))).toBe(true);
+    expect(OLD_TERMS).toHaveLength(56);
+    expect(["Pe·ony fan", "顾·绣工作·室", "Lu Y·un", "a pink \u7ee2 fan"].every((s) => OLD_NAMES.test(unmark(s)))).toBe(true);
+    expect(["It symbolizes wealth", "It represents luck", "象征坚韧", "寓意富贵"].every((s) => MEANING_WORDS.test(s))).toBe(true);
+    expect(all.filter(([, s]) => OLD_NAMES.test(s) || MEANING_WORDS.test(s))).toEqual([]);
+    // A2 R10: a title names the object, never a nation as a product word or a banned label.
+    expect(pieces.filter((p) => /Navajo|Diné|纳瓦霍|tribal|authentic|Indian/i.test(p.title.en + p.title.zh)).map((p) => p.id)).toEqual([]);
   });
 });
 

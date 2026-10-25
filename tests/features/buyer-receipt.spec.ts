@@ -84,7 +84,7 @@ test("@T4 at the end of d11-receipt the receipt reads Paid to the maker with nam
   expect(r?.status).toBe("paid_to_maker");
   const maker = getById<Person>(r!.makerId);
   expect(maker).toBeDefined();
-  expect(maker!.name.en).toBe("Lu Yun");
+  expect(maker!.name.en).toBe("Grace N.");
 
   await expect(status).toContainText(maker!.name.en);
   await expect(status).toContainText("$134.48");

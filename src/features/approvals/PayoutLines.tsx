@@ -16,7 +16,7 @@ const softStyle = { color: "var(--c-color-ink-soft)", fontSize: "var(--c-text-14
 export function PayoutLines({ approvalId, lang }: PayoutLinesProps) {
   const sentPayouts = useCindia((s) => s.approvals.payouts);
   const approval = getById<Approval>(approvalId);
-  const limitCents = getById<Studio>("std_gu")?.payoutLimitCents;
+  const limitCents = getById<Studio>("std_dine")?.payoutLimitCents;
   if (!approval) return null;
 
   const payouts = approval.subjectIds.map((id) => getById<MakerPayout>(id)).filter((p): p is MakerPayout => Boolean(p));

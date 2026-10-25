@@ -37,7 +37,7 @@ const MAKER_SLOTS: Point[] = [
 /** Where a maker the studio doesn't list stands. */
 const MAKER_FALLBACK: Point = { x: 885, y: 560 };
 
-const MAKER_IDS: readonly string[] = getById<Studio>("std_gu")?.makerIds ?? [];
+const MAKER_IDS: readonly string[] = getById<Studio>("std_dine")?.makerIds ?? [];
 
 /** The studio's makers, in layout order. */
 export function studioMakerIds(): readonly string[] {

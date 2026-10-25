@@ -1,6 +1,6 @@
 """B07 · Ask Cindy (`b07-ask`).
 
-POST /api/b07/ask answers the owner's question from the studio's own records. Claude (MODEL_DEFAULT)
+POST /api/b07/ask answers the manager's question from the co-op's own records. Claude (MODEL_DEFAULT)
 calls strict tools that this module runs in Python over the request's `records`, so no number on
 screen comes from the model's memory:
 
@@ -283,7 +283,7 @@ TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "answer",
-        "description": "Give the owner your answer. Call this exactly once, last. Every number and chart value must come from a tool result in this conversation.",
+        "description": "Give the manager your answer. Call this exactly once, last. Every number and chart value must come from a tool result in this conversation.",
         "strict": True,
         "input_schema": {
             "type": "object",
@@ -300,8 +300,8 @@ TOOLS: list[dict[str, Any]] = [
 ]
 
 SYSTEM_PROMPT = (
-    "You are Cindy, the bookkeeping agent for a small Gu embroidery studio with three makers. "
-    "The studio owner asks you about the month's money. Answer only from the studio's records, through the tools. "
+    "You are Cindy, the bookkeeping agent for a small Diné (Navajo) weaving and silver co-op with three makers. "
+    "The co-op's manager asks you about the month's money. Answer only from the co-op's records, through the tools. "
     "Rules: Take every number from a tool result. Never estimate, round or recall a number. "
     "Amounts in tool results are integer cents; write them as dollars in your sentences. "
     "When the records can't answer the question, say so plainly in both languages, with chart null and no ref_ids. "

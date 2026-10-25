@@ -31,7 +31,7 @@ function collectNodes(moves: readonly MoneyMove[]): NodeInfo[] {
     }
     return n;
   };
-  add({ kind: "studio", id: "std_gu" });
+  add({ kind: "studio", id: "std_dine" });
   for (const id of studioMakerIds()) add({ kind: "maker", id });
   for (const m of moves) {
     add(m.from).netCents -= m.amountCents;
@@ -47,7 +47,7 @@ function collectNodes(moves: readonly MoneyMove[]): NodeInfo[] {
 
 function nodeName(p: Party, lang: Lang): string {
   if (p.kind === "studio") {
-    const s = getById<Studio>(p.id ?? "std_gu");
+    const s = getById<Studio>(p.id ?? "std_dine");
     if (s) return s.name[lang];
   }
   if (p.kind === "maker" && p.id) {

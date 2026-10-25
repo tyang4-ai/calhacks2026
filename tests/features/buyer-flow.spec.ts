@@ -55,7 +55,7 @@ test.describe("buyer flow @T5", () => {
   test("d01-ask shows the request and three curated pieces in order @T5", async ({ page }) => {
     const watch = watchPage(page);
     await openAt(page, "d01-ask");
-    await expect(page.getByTestId("buyer-concierge-input")).toHaveValue("a gift under $200 for my mom, she loves peonies");
+    await expect(page.getByTestId("buyer-concierge-input")).toHaveValue("a gift under $200 for my mom, she loves red wool");
     const results = page.getByTestId("buyer-concierge-results").locator('[data-testid^="buyer-result-"]');
     await expect(results).toHaveCount(3);
     expect(await results.evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")))).toEqual([
@@ -66,12 +66,12 @@ test.describe("buyer flow @T5", () => {
     watch.expectClean();
   });
 
-  test("d02-story shows the peony fan's maker story and process @T5", async ({ page }) => {
+  test("d02-story shows the grey, red and black weaving's maker story and process @T5", async ({ page }) => {
     await openAt(page, "d02-story");
     const card = page.getByTestId("buyer-story-card");
-    await expect(card).toContainText("Peony fan");
-    await expect(card).toContainText("Lu Yun");
-    await expect(card).toContainText("陆");
+    await expect(card).toContainText("Small grey, red and black wool weaving");
+    await expect(card).toContainText("Grace N.");
+    await expect(card).toContainText("N");
     await expect(card).toContainText("26");
     await expect(page.getByTestId("buyer-process-timeline")).toBeVisible();
     await expect(page.getByTestId("buyer-concierge-results")).toHaveCount(0);
@@ -101,7 +101,7 @@ test.describe("buyer flow @T5", () => {
     const receipt = page.getByTestId("buyer-receipt");
     await expect(page.getByTestId("buyer-receipt-status")).toContainText("Paid to the maker");
     await expect(receipt).toContainText("Paid to the maker");
-    await expect(receipt).toContainText("Lu Yun");
+    await expect(receipt).toContainText("Grace N.");
     await expect(receipt).toContainText("$134.48");
     await expect(receipt).toContainText("Oct 2, 2026");
   });
@@ -124,10 +124,10 @@ test.describe("buyer flow @T5", () => {
     });
   }
 
-  test("tapping the sachet after d01-ask opens its story @T5", async ({ page }) => {
+  test("tapping the mini weaving after d01-ask opens its story @T5", async ({ page }) => {
     await openAt(page, "d01-ask");
     await page.getByTestId("buyer-result-pc_07").click();
-    await expect(page.getByTestId("buyer-story-card")).toContainText("Peony sachet");
+    await expect(page.getByTestId("buyer-story-card")).toContainText("Red and grey wool mini weaving");
     const opened = await page.evaluate(() => (window.__cindia!.store.getState().buyer as { openPieceId: string | null }).openPieceId);
     expect(opened).toBe("pc_07");
   });

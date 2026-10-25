@@ -331,7 +331,7 @@ def test_tool_errors_go_back_to_claude(client, with_key, monkeypatch):
 
 def test_prose_reply_gets_one_more_round(client, with_key, monkeypatch):
     fake = install(monkeypatch, FakeClient([
-        reply(text_block("I think it was the peony fan.")),
+        reply(text_block("I think it was the grey, red and black weaving.")),
         reply(tool_use("revenue_by_piece", {"month_id": MONTH})),
         answer_from_piece_rows,
     ]))
@@ -386,7 +386,7 @@ def test_chart_before_any_tool_is_rejected(client, with_key, monkeypatch):
 
 def test_unknown_ref_id(client, with_key, monkeypatch):
     install(monkeypatch, FakeClient([reply(tool_use("answer", {
-        "answer_en": "The peony fan.", "answer_zh": "牡丹团扇。", "chart": None, "ref_ids": ["pc_01", "pc_999"],
+        "answer_en": "The grey, red and black weaving.", "answer_zh": "灰红黑三色编织。", "chart": None, "ref_ids": ["pc_01", "pc_999"],
     }))]))
     r = client.post("/api/b07/ask", json=body())
     assert r.status_code == 502

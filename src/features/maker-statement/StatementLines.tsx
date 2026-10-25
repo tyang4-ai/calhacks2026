@@ -40,6 +40,15 @@ const row: CSSProperties = {
   borderBottom: "1px solid var(--c-color-line)",
 };
 
+// One line per piece, as v1's short titles were: a long English title ends in an ellipsis and
+// keeps its full text in the tooltip, so the held line stays inside the phone frame.
+const titleCell: CSSProperties = {
+  minWidth: 0,
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+};
+
 const amount: CSSProperties = {
   textAlign: "right",
   fontVariantNumeric: "tabular-nums",
@@ -63,7 +72,9 @@ export function StatementLines({ lang, lines }: StatementLinesProps) {
           const title = piece ? t(piece.title, lang) : t(UI.unknownPiece, lang);
           return (
             <li key={line.orderId} data-testid={`maker-statement-line-${line.orderId}`} style={row}>
-              <span style={{ minWidth: 0 }}>{title}</span>
+              <span style={titleCell} title={title}>
+                {title}
+              </span>
               <Money cents={line.makerShareCents} tone="in" style={amount} />
             </li>
           );

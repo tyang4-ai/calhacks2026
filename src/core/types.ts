@@ -9,7 +9,7 @@ export interface Text {
 export type Lang = "en" | "zh";
 
 // ID string types. Each is a plain string with a fixed prefix, documented here.
-export type StudioId = string; // "std_gu"
+export type StudioId = string; // "std_dine"
 export type PersonId = string; // "own_01", "mkr_01".."mkr_03", "buy_01".."buy_20"
 export type MakerId = string; // "mkr_01".."mkr_03"
 export type BuyerId = string; // "buy_01".."buy_20"

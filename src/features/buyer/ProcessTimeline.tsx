@@ -1,4 +1,4 @@
-// F-buyer T2: the opened piece's process, from the sketch to the last stitch, each step with its
+// F-buyer T2: the opened piece's process, from the first step to the last, each step with its
 // hours, and the piece's total hours of work at the bottom. Lives inside the story card, so it has
 // no panel of its own (no cards in cards). Data comes from src/mock through getById().
 import type { Piece } from "../../core/types";

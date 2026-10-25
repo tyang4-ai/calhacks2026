@@ -4,7 +4,7 @@ Read by the scaffolder (it builds `src/ui/` from this file) and by every feature
 
 ## The idea
 
-Cindia's screens look like the studio's own materials: a silk ground, ink lettering, a cinnabar seal and the thread that holds it all together. Gordon chose this look on Oct 23.
+Cindia's screens use a paper ground, ink lettering, a red seal and the thread that holds it all together. Gordon chose this look on Oct 23.
 
 - **One memorable thing: money moves as thread.** Every flow of money (buyer to studio, studio to maker, gallery to studio) is drawn as a running stitch that sews itself along its path. Nothing else on screen animates on its own.
 - **The seal means a person decided.** The owner's approval leaves a square cinnabar seal on the item. Cindy never stamps anything. Its proposals stay unsealed until the owner approves, which is the responsible-AI story in one image.
@@ -82,7 +82,7 @@ The scaffolder builds these in S1, with the props the S1 plan sets, and each tak
 | `LedgerTable` | Dense table with right-aligned amounts, a `mat` header row and row states (matched, flagged, pending) |
 | `Toast` | Bottom-anchored notice on phones, for approval requests and payouts |
 | `PhoneFrame`, `ConsoleFrame` | The device frames the four surfaces render in |
-| `LangToggle` | 中文 and English switch. Maker surfaces start in Chinese |
+| `LangToggle` | 中文 and English switch. Every surface starts in English |
 | `chartTheme` | Recharts settings: ink axes, `line` grid, jade and seal series, Inter tabular numbers |
 
 ## Words on screen

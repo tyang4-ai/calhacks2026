@@ -21,8 +21,8 @@ An unknown route or view redirects to `/demo`. The demo controls overlay every r
 |---|---|---|---|---|
 | `buyer` | `PhoneFrame`, test ID `frame-buyer` | 390 by 844 | English | Slot `buyer.main` |
 | `studio` | `ConsoleFrame`, test ID `frame-studio` | 1280 by 800 | English | The view rail, one view at a time, two drawers |
-| `owner` | `PhoneFrame`, test ID `frame-owner` | 390 by 844 | Chinese | Slot `owner.main` |
-| `maker` | `PhoneFrame`, test ID `frame-maker` | 390 by 844 | Chinese | Slot `maker.main` |
+| `owner` | `PhoneFrame`, test ID `frame-owner` | 390 by 844 | English, with Chinese through the toggle | Slot `owner.main` |
+| `maker` | `PhoneFrame`, test ID `frame-maker` | 390 by 844 | English, with Chinese through the toggle | Slot `maker.main` |
 
 On its own route a surface renders its frame at full size, centered on the paper ground. On `/demo` the stage places and scales the frames (camera states below).
 

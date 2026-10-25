@@ -149,6 +149,10 @@ test("live: a bad file gets the server's 400, a readable note and no crash", asy
   await expect(results(page)).toBeVisible();
   expect(await b05Source(page)).toBe("scripted");
   await expect(panel(page).getByTestId("simulated-badge")).toBeVisible();
+  // The note shows while the scripted answer is still playing, so wait for its flag. A later
+  // scripted event keyed b05-scenario would otherwise flip the source back after the sample's
+  // live answer.
+  await expect.poll(() => logged(page, "flag.raised").then((f) => f.length), { timeout: ANSWER_TIMEOUT }).toBeGreaterThan(0);
   expect(await logged(page, "flag.raised").then((f) => f.every((e) => e.source === "scripted"))).toBe(true);
 
   // The panel still works: the sample still goes live afterwards.

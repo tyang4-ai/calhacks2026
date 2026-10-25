@@ -1,15 +1,19 @@
-// PLACEHOLDER NAMES. Every person here is fictional. Gordon can swap any name in this one file.
-// A real artisan's name goes in only with their OK (data-model.md, Units and rules).
+// PLACEHOLDER NAMES. Every person here is fictional, and so is the co-op. Gordon can swap any name
+// in this one file. A real artisan's name goes in only with their OK (data-model.md, Units and rules).
 //
-// The studio std_gu sits here with its owner and makers, because the data-model file table gives
+// The Native American co-op's manager and makers follow A2 R9 (docs/v2/reviews/A2-culture-trust.md):
+// a common English given name and a family initial, with surnameChar the initial. Never a full
+// family name or a name in an Indigenous language. Their Chinese name is the same romanized name.
+//
+// The studio std_dine sits here with its owner and makers, because the data-model file table gives
 // the studio no file of its own.
 import type { Person, Studio } from "../core/types";
 
 export const studio: Studio = {
-  id: "std_gu",
-  name: { en: "Gu Embroidery Studio", zh: "顾绣工作室" },
-  craft: { en: "Gu embroidery", zh: "顾绣" },
-  city: { en: "Shanghai", zh: "上海" },
+  id: "std_dine",
+  name: { en: "Diné Weaving and Silver Co-op", zh: "纳瓦霍（Diné）编织与银饰合作社" },
+  craft: { en: "Wool weavings, silver and turquoise jewelry", zh: "羊毛编织与绿松石银饰" },
+  city: { en: "Navajo Nation, Arizona", zh: "亚利桑那州纳瓦霍保留区" },
   ownerId: "own_01",
   makerIds: ["mkr_01", "mkr_02", "mkr_03"],
   payoutLimitCents: 50000,
@@ -18,15 +22,15 @@ export const studio: Studio = {
 export const owner: Person = {
   id: "own_01",
   role: "owner",
-  name: { en: "Shen Ruolan", zh: "沈若兰" },
-  surnameChar: "沈",
-  lang: "zh",
+  name: { en: "Ruth B.", zh: "Ruth B." },
+  surnameChar: "B",
+  lang: "en",
 };
 
 export const makers: Person[] = [
-  { id: "mkr_01", role: "maker", name: { en: "Lu Yun", zh: "陆芸" }, surnameChar: "陆", lang: "zh" },
-  { id: "mkr_02", role: "maker", name: { en: "Han Jing", zh: "韩静" }, surnameChar: "韩", lang: "zh" },
-  { id: "mkr_03", role: "maker", name: { en: "Zhou Mei", zh: "周梅" }, surnameChar: "周", lang: "zh" },
+  { id: "mkr_01", role: "maker", name: { en: "Grace N.", zh: "Grace N." }, surnameChar: "N", lang: "en" },
+  { id: "mkr_02", role: "maker", name: { en: "Lena T.", zh: "Lena T." }, surnameChar: "T", lang: "en" },
+  { id: "mkr_03", role: "maker", name: { en: "Mae K.", zh: "Mae K." }, surnameChar: "K", lang: "en" },
 ];
 
 const BUYER_NAMES: string[] = [
@@ -61,5 +65,5 @@ export const buyers: Person[] = BUYER_NAMES.map((n, i) => ({
   lang: "en",
 }));
 
-/** Everyone: the owner, the three makers and the twenty buyers. */
+/** Everyone: the co-op's manager (role owner), the three makers and the twenty buyers. */
 export const people: Person[] = [owner, ...makers, ...buyers];

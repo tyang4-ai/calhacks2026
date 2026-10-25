@@ -44,7 +44,7 @@ export const UI = {
   downloadNotReady: { en: "The file is ready once the month closes.", zh: "月结后即可下载。" },
   sheets: { en: "Sheets", zh: "工作表" },
   builtInBrowser: { en: "Built in your browser from the month's books. Every total is a live formula.", zh: "在浏览器中根据本月账目生成，所有合计都是公式。" },
-  builtOnServer: { en: "Built by the studio's server.", zh: "由工作室服务器生成。" },
+  builtOnServer: { en: "Built on Cindia's server.", zh: "由Cindia服务器生成。" },
   previewTitle: { en: "Profit and loss", zh: "损益表" },
   previewLine: { en: "Line", zh: "项目" },
   previewAmount: { en: "Amount", zh: "金额" },
@@ -56,7 +56,7 @@ export const UI = {
 
 export const PNL_LABELS = {
   salesCindia: { en: "Sales, Cindia", zh: "销售额，Cindia" },
-  salesSite: { en: "Sales, studio site", zh: "销售额，工作室网站" },
+  salesSite: { en: "Sales, co-op site", zh: "销售额，合作社网站" },
   salesGallery: { en: "Sales, gallery", zh: "销售额，画廊" },
   refunds: { en: "Refunds", zh: "退款" },
   netSales: { en: "Net sales", zh: "净销售额" },

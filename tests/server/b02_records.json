@@ -8,8 +8,8 @@
       "flagId": "flg_01",
       "trustRecordId": "ctr_gallery_01",
       "explanation": {
-        "en": "The gallery's September statement charged 50% commission on all four sales and paid $1,700.00. The signed contract says 40%, which leaves the studio $2,040.00 on $3,400.00 of sales. The bank shows $1,700.00 on Sep 30, matching the statement, not the contract. I trust the contract, so the gallery owes $340.00.",
-        "zh": "画廊9月对账单对四笔销售都按50%收取佣金，实付$1,700.00。已签合同约定40%，按$3,400.00的销售额，工作室应得$2,040.00。银行流水显示9月30日到账$1,700.00，与对账单一致，与合同不符。我以合同为准，画廊还欠$340.00。"
+        "en": "The gallery's September statement charged 50% commission on all four sales and paid $1,700.00. The signed contract says 40%, which leaves the co-op $2,040.00 on $3,400.00 of sales. The bank shows $1,700.00 on Sep 30, matching the statement, not the contract. I trust the contract, so the gallery owes $340.00.",
+        "zh": "画廊9月对账单对四笔销售都按50%收取佣金，实付$1,700.00。已签合同约定40%，按$3,400.00的销售额，合作社应得$2,040.00。银行流水显示9月30日到账$1,700.00，与对账单一致，与合同不符。我以合同为准，画廊还欠$340.00。"
       }
     },
     "key": "b02-explain"
@@ -31,8 +31,8 @@
         "zh": "9月对账单：佣金按50%计，合同为40%"
       },
       "body": {
-        "en": "Hello,\n\nThank you for the September statement and the payment of $1,700.00 on Sep 30. The statement charges 50% commission on each sale, but our contract of Mar 2, 2026 sets it at 40%. At 40%, the studio's share of $3,400.00 in sales is $2,040.00, so $340.00 is still owed. Could you send the difference by Oct 16?\n\nThank you,\nGu Embroidery Studio",
-        "zh": "您好：\n\n感谢寄来9月对账单，并于9月30日付款$1,700.00。对账单每笔按50%收取佣金，但我们2026年3月2日签订的合同约定为40%。按40%计算，$3,400.00销售额中工作室应得$2,040.00，尚欠$340.00。烦请于10月16日前补付差额。\n\n谢谢！\n顾绣工作室"
+        "en": "Hello,\n\nThank you for the September statement and the payment of $1,700.00 on Sep 30. The statement charges 50% commission on each sale, but our contract of Mar 2, 2026 sets it at 40%. At 40%, the co-op's share of $3,400.00 in sales is $2,040.00, so $340.00 is still owed. Could you send the difference by Oct 16?\n\nThank you,\nDiné Weaving and Silver Co-op",
+        "zh": "您好：\n\n感谢寄来9月对账单，并于9月30日付款$1,700.00。对账单每笔按50%收取佣金，但我们2026年3月2日签订的合同约定为40%。按40%计算，$3,400.00销售额中合作社应得$2,040.00，尚欠$340.00。烦请于10月16日前补付差额。\n\n谢谢！\n纳瓦霍（Diné）编织与银饰合作社"
       }
     },
     "key": "b02-explain"
@@ -51,8 +51,8 @@
     "deltaCents": 34000,
     "trustRecordId": "ctr_gallery_01",
     "explanation": {
-      "en": "The gallery's September statement charged 50% commission on all four sales and paid $1,700.00. The signed contract says 40%, which leaves the studio $2,040.00 on $3,400.00 of sales. The bank shows $1,700.00 on Sep 30, matching the statement, not the contract. I trust the contract, so the gallery owes $340.00.",
-      "zh": "画廊9月对账单对四笔销售都按50%收取佣金，实付$1,700.00。已签合同约定40%，按$3,400.00的销售额，工作室应得$2,040.00。银行流水显示9月30日到账$1,700.00，与对账单一致，与合同不符。我以合同为准，画廊还欠$340.00。"
+      "en": "The gallery's September statement charged 50% commission on all four sales and paid $1,700.00. The signed contract says 40%, which leaves the co-op $2,040.00 on $3,400.00 of sales. The bank shows $1,700.00 on Sep 30, matching the statement, not the contract. I trust the contract, so the gallery owes $340.00.",
+      "zh": "画廊9月对账单对四笔销售都按50%收取佣金，实付$1,700.00。已签合同约定40%，按$3,400.00的销售额，合作社应得$2,040.00。银行流水显示9月30日到账$1,700.00，与对账单一致，与合同不符。我以合同为准，画廊还欠$340.00。"
     }
   },
   "contract": {
@@ -62,8 +62,8 @@
     "statementDay": 30,
     "signedDate": "2026-03-02",
     "terms": {
-      "en": "Fogline Gallery sells the studio's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the studio the balance with the statement.",
-      "zh": "雾线画廊寄售工作室作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向工作室支付余款。"
+      "en": "Fogline Gallery sells the co-op's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the co-op the balance with the statement.",
+      "zh": "雾线画廊寄售合作社作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向合作社支付余款。"
     }
   },
   "statement": {
@@ -135,8 +135,8 @@
       "zh": "9月对账单：佣金按50%计，合同为40%"
     },
     "body": {
-      "en": "Hello,\n\nThank you for the September statement and the payment of $1,700.00 on Sep 30. The statement charges 50% commission on each sale, but our contract of Mar 2, 2026 sets it at 40%. At 40%, the studio's share of $3,400.00 in sales is $2,040.00, so $340.00 is still owed. Could you send the difference by Oct 16?\n\nThank you,\nGu Embroidery Studio",
-      "zh": "您好：\n\n感谢寄来9月对账单，并于9月30日付款$1,700.00。对账单每笔按50%收取佣金，但我们2026年3月2日签订的合同约定为40%。按40%计算，$3,400.00销售额中工作室应得$2,040.00，尚欠$340.00。烦请于10月16日前补付差额。\n\n谢谢！\n顾绣工作室"
+      "en": "Hello,\n\nThank you for the September statement and the payment of $1,700.00 on Sep 30. The statement charges 50% commission on each sale, but our contract of Mar 2, 2026 sets it at 40%. At 40%, the co-op's share of $3,400.00 in sales is $2,040.00, so $340.00 is still owed. Could you send the difference by Oct 16?\n\nThank you,\nDiné Weaving and Silver Co-op",
+      "zh": "您好：\n\n感谢寄来9月对账单，并于9月30日付款$1,700.00。对账单每笔按50%收取佣金，但我们2026年3月2日签订的合同约定为40%。按40%计算，$3,400.00销售额中合作社应得$2,040.00，尚欠$340.00。烦请于10月16日前补付差额。\n\n谢谢！\n纳瓦霍（Diné）编织与银饰合作社"
     }
   }
 }

@@ -26,7 +26,7 @@ from server.routers.b09_concierge import ConciergePicks, price_limit
 FIXTURE = json.loads((Path(__file__).parent / "b09_catalog.json").read_text(encoding="utf-8"))
 URL = "/api/b09/concierge"
 FAKE_KEY = "test-placeholder-not-a-key"
-DEMO_QUERY = "a gift under $200 for my mom, she loves peonies"
+DEMO_QUERY = "a gift under $200 for my mom, she loves red wool"
 CATALOG_IDS = {p["id"] for p in FIXTURE["catalog"]}
 PRICES = {p["id"]: p["priceCents"] for p in FIXTURE["catalog"]}
 
@@ -134,9 +134,9 @@ def test_fixture_holds_the_demo_figures():
         ("something blue", None),
         ("a scarf, up to $85 please", (8500, False)),
         ("$50 or less", (5000, False)),
-        ("below $1,200.50 and peonies", (120050, True)),
+        ("below $1,200.50 and red wool", (120050, True)),
         ("budget of 100 dollars", (10000, False)),
-        ("给妈妈的礼物，200美元以内，她喜欢牡丹", (20000, False)),
+        ("给妈妈的礼物，200美元以内，她喜欢红色羊毛", (20000, False)),
         ("不超过100美元的小礼物", (10000, False)),
         ("低于$60", (6000, True)),
         ("under $300 but ideally under $100", (10000, True)),
@@ -209,7 +209,7 @@ def test_request_follows_the_2026_10_21_api(client, with_key, monkeypatch):
     prompt = kw["messages"][0]["content"]
     for pid in CATALOG_IDS:
         assert pid in prompt
-    for needle in (DEMO_QUERY, "Price limit: under $200.00", "$180.00", "Peony fan", "Lu Yun", "26"):
+    for needle in (DEMO_QUERY, "Price limit: under $200.00", "$180.00", "Small grey, red and black wool weaving", "Grace N.", "26"):
         assert needle in prompt, needle
     assert FAKE_KEY not in prompt
 

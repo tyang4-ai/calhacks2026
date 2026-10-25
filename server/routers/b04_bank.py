@@ -1,9 +1,9 @@
-"""B04 · Nessie, the studio's bank account (`b04-bank`). api-contract.md, B04.
+"""B04 · Nessie, the co-op's bank account (`b04-bank`). api-contract.md, B04.
 
 Routes, all needing NESSIE_KEY (503 `key_missing` without it):
 - GET  /api/b04/status    { seeded, accountId, balanceCents }, not an events response.
-- POST /api/b04/seed      finds or creates the customer "Gu Embroidery Studio" and its Checking
-                          account "Gu studio operating", then posts September's history.
+- POST /api/b04/seed      finds or creates the customer "Dine Weaving and Silver Co-op" and its
+                          Checking account "Dine co-op operating", then posts September's history.
 - POST /api/b04/sale      one deposit for the buyer's sale, read back, plus the account's balance.
 - POST /api/b04/payouts   one withdrawal per maker payout, read back, plus the account's balance.
 
@@ -40,8 +40,10 @@ from server.routers import b04_nessie as nessie
 router = APIRouter(prefix="/api/b04")
 
 KEY = "b04-bank"
-CUSTOMER_FIRST = "Gu Embroidery"
-CUSTOMER_LAST = "Studio"
+# Plain ASCII on purpose: the sandbox bank finds the customer and the account by exact string, so
+# these stay "Dine" and not "Diné". B16 imports the constants, so their names don't change.
+CUSTOMER_FIRST = "Dine Weaving and Silver"
+CUSTOMER_LAST = "Co-op"
 # Fictional US mailing address.
 CUSTOMER_ADDRESS = {
     "street_number": "1450",
@@ -50,10 +52,10 @@ CUSTOMER_ADDRESS = {
     "state": "CA",
     "zip": "94133",
 }
-ACCOUNT_NICKNAME = "Gu studio operating"
+ACCOUNT_NICKNAME = "Dine co-op operating"
 OPENING_DATE = "2026-08-31"
-OPENING_DESCRIPTION = "Opening balance std_gu 2026-09"
-STUDIO = {"kind": "studio", "id": "std_gu"}
+OPENING_DESCRIPTION = "Opening balance std_dine 2026-09"
+STUDIO = {"kind": "studio", "id": "std_dine"}
 
 STATUS_BUDGET_S = 7.0
 SEED_BUDGET_S = 28.0
@@ -215,12 +217,12 @@ def _by_description(rows: list[dict[str, Any]], description: str) -> Optional[di
 
 
 def _line_description(line: HistoryLine) -> str:
-    memo = line.memo.strip() or (line.refId or "Studio record")
+    memo = line.memo.strip() or (line.refId or "Co-op record")
     return f"{memo} ({line.id})" if line.id else memo
 
 
 def _find_account(budget: nessie.Budget) -> Optional[str]:
-    """The studio's account ID: cached, or the account nicknamed ACCOUNT_NICKNAME."""
+    """The co-op's account ID: cached, or the account nicknamed ACCOUNT_NICKNAME."""
     with _state_lock:
         cached = _state["account_id"]
     if cached:
@@ -252,7 +254,7 @@ def _find_or_create_customer(budget: nessie.Budget) -> str:
         nessie.create_customer(budget, CUSTOMER_FIRST, CUSTOMER_LAST, CUSTOMER_ADDRESS)
         customer_id = find()  # the create answers with a string, so read the list back
     if not customer_id:
-        raise ApiError("upstream_error", "Nessie didn't list the studio's customer after creating it.")
+        raise ApiError("upstream_error", "Nessie didn't list the co-op's customer after creating it.")
     with _state_lock:
         _state["customer_id"] = customer_id
     return customer_id
@@ -275,7 +277,7 @@ def _find_or_create_account(budget: nessie.Budget) -> str:
         nessie.create_account(budget, customer_id, ACCOUNT_NICKNAME, balance=0)
         account_id = find()
     if not account_id:
-        raise ApiError("upstream_error", "Nessie didn't list the studio's account after creating it.")
+        raise ApiError("upstream_error", "Nessie didn't list the co-op's account after creating it.")
     with _state_lock:
         _state["account_id"] = account_id
     return account_id
@@ -284,7 +286,7 @@ def _find_or_create_account(budget: nessie.Budget) -> str:
 def _require_account(budget: nessie.Budget) -> str:
     account_id = _find_account(budget)
     if not account_id:
-        raise ApiError("not_found", "The studio's Nessie account isn't set up yet, so seed it first.")
+        raise ApiError("not_found", "The co-op's Nessie account isn't set up yet, so seed it first.")
     return account_id
 
 

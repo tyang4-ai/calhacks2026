@@ -91,7 +91,7 @@ async function goLive(page: Page) {
   await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().mode)).toBe("live");
 }
 
-const CSV = "date,piece,sale,commission\n2026-10-03,Lotus panel,180000,72000\n";
+const CSV = "date,piece,sale,commission\n2026-10-03,Large wool rug,180000,72000\n";
 
 test("the month view's scenario panel shows the drop zone and its file input", async ({ page }) => {
   const watch = watchPage(page);

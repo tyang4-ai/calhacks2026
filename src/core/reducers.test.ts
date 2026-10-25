@@ -117,7 +117,7 @@ const checks: { [T in EventType]: (s: CindiaState) => void } = {
     expect(s.ask.latestQuestionId).toBe("ask_01");
   },
   "ask.answered": (s) => {
-    expect(s.ask.answers.ask_01.answer.en).toBe("The koi pond panel.");
+    expect(s.ask.answers.ask_01.answer.en).toBe("The brown, white and grey rug.");
     expect(s.ask.answers.ask_01.chart?.type).toBe("bar");
     expect(s.ask.latestAnswerId).toBe("ask_01");
   },

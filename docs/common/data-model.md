@@ -15,7 +15,7 @@ Read by the data-smith, every feature and the backend. It fixes every entity, fi
 
 | Entity | ID | Fields |
 |---|---|---|
-| Studio | `std_gu` | `name: Text`, `craft: Text` (Gu embroidery, 顾绣), `city: Text` (Shanghai, 上海), `ownerId`, `makerIds`, `payoutLimitCents: 50000`, `nessieAccountId?` |
+| Studio | `std_dine` | `name: Text`, `craft: Text` (Wool weavings, silver and turquoise jewelry, 羊毛编织与绿松石银饰), `city: Text` (Navajo Nation, Arizona, 亚利桑那州纳瓦霍保留区), `ownerId`, `makerIds`, `payoutLimitCents: 50000`, `nessieAccountId?` |
 | Person | `own_01`, `mkr_01` to `mkr_03`, `buy_01` to `buy_20` | `role: "owner" \| "maker" \| "buyer"`, `name: Text`, `surnameChar` (one character, for the kit's `MakerMark`), `lang: "zh" \| "en"` |
 | Piece | `pc_01` to `pc_12` | `title: Text`, `makerId`, `kind: "featured" \| "series"`, `hours`, `materialsCents`, `priceCents`, `story: Text`, `heritage: Text`, `process: { step: Text; hours: number }[]`, `image` (a path under `/images/`, a marked placeholder until Gordon supplies photos) |
 | Channel | `ch_cindia`, `ch_site`, `ch_gallery` | `name: Text`, `kind: "marketplace" \| "own_site" \| "consignment"` |
@@ -57,18 +57,18 @@ Ledger accounts: `cash`, `sales_cindia`, `sales_site`, `sales_gallery`, `card_fe
 
 | ID | Title (en, zh) | Maker | Kind | Price | Hours | Materials |
 |---|---|---|---|---|---|---|
-| `pc_01` | Peony fan, 牡丹团扇 | `mkr_01` | featured | $180.00 | 26 | $22.00 |
-| `pc_02` | Plum blossom bookmarks, 梅花书签 | `mkr_02` | series | $65.00 | 9 | $8.00 |
-| `pc_03` | Koi pond panel, 锦鲤图 | `mkr_03` | featured | $1,200.00 | 160 | $95.00 |
-| `pc_04` | Lotus at dawn, 晨荷图 | `mkr_01` | featured | $950.00 | 130 | $80.00 |
-| `pc_05` | Orchid scroll, 兰花轴 | `mkr_02` | featured | $800.00 | 110 | $70.00 |
-| `pc_06` | Sparrow on bamboo, 竹雀图 | `mkr_03` | featured | $450.00 | 60 | $45.00 |
-| `pc_07` | Peony sachet, 牡丹香囊 | `mkr_02` | series | $48.00 | 6 | $6.00 |
-| `pc_08` | Silk coasters, 丝绣杯垫 | `mkr_03` | series | $38.00 | 4 | $5.00 |
-| `pc_09` | Crane brooch, 仙鹤胸针 | `mkr_01` | series | $120.00 | 14 | $12.00 |
-| `pc_10` | Cloud pouch, 祥云荷包 | `mkr_03` | series | $85.00 | 10 | $9.00 |
-| `pc_11` | Chrysanthemum fan, 菊花团扇 | `mkr_02` | featured | $175.00 | 24 | $21.00 |
-| `pc_12` | Phoenix needle case, 凤凰针盒 | `mkr_01` | series | $95.00 | 11 | $10.00 |
+| `pc_01` | Small grey, red and black wool weaving, 灰红黑三色小幅羊毛编织 | `mkr_01` | featured | $180.00 | 26 | $22.00 |
+| `pc_02` | Stamped silver earrings, 压花银耳环 | `mkr_02` | series | $65.00 | 9 | $8.00 |
+| `pc_03` | Brown, white and grey wool rug, 棕白灰三色羊毛地毯 | `mkr_03` | featured | $1,200.00 | 160 | $95.00 |
+| `pc_04` | Red, black and white wool rug with stepped diamonds, 红黑白三色阶梯菱形羊毛地毯 | `mkr_01` | featured | $950.00 | 130 | $80.00 |
+| `pc_05` | Indigo and white striped wool weaving, 靛蓝白条纹羊毛编织 | `mkr_02` | featured | $800.00 | 110 | $70.00 |
+| `pc_06` | Grey and white zigzag wool weaving, 灰白锯齿纹羊毛编织 | `mkr_03` | featured | $450.00 | 60 | $45.00 |
+| `pc_07` | Red and grey wool mini weaving, 红灰双色迷你羊毛编织 | `mkr_02` | series | $48.00 | 6 | $6.00 |
+| `pc_08` | Thin silver ring with stamped chevrons, 压印人字纹细银戒 | `mkr_03` | series | $38.00 | 4 | $5.00 |
+| `pc_09` | Silver and turquoise pendant necklace, 绿松石银吊坠项链 | `mkr_01` | series | $120.00 | 14 | $12.00 |
+| `pc_10` | Silver and turquoise drop earrings, 绿松石银坠耳环 | `mkr_03` | series | $85.00 | 10 | $9.00 |
+| `pc_11` | Red and white wool weaving, 红白双色羊毛编织 | `mkr_02` | featured | $175.00 | 24 | $21.00 |
+| `pc_12` | Narrow stamped silver cuff bracelet, 压花细银手镯 | `mkr_01` | series | $95.00 | 11 | $10.00 |
 
 The data-smith writes each piece's story, heritage line and process steps in both languages. Stories describe the craft plainly and never claim a real person made the piece.
 
@@ -77,7 +77,7 @@ The data-smith writes each piece's story, heritage line and process steps in bot
 G2 checks every one of these. Nothing else in the dataset may contradict them.
 
 1. **The buyer's order** is `ord_001`: `ch_cindia`, `pc_01`, `buy_01`, `2026-09-01`, gross 18000. Card fee 552, platform fee 1800, materials 2200, maker share 13448. Cindia's same-day payout `pay_001` nets 15648.
-2. **The concierge answer** to "a gift under $200 for my mom, she loves peonies" is `pc_01`, `pc_07`, `pc_11`, in that order.
+2. **The concierge answer** to "a gift under $200 for my mom, she loves red wool" is `pc_01`, `pc_07`, `pc_11`, in that order.
 3. **Thirty orders:** `ord_001` to `ord_012` on `ch_cindia`, `ord_013` to `ord_026` on `ch_site`, `ord_027` to `ord_030` on `ch_gallery`.
 4. **The gallery's month:** `ord_027` to `ord_030` sell `pc_03`, `pc_04`, `pc_05` and `pc_06`, gross 340000 in total. The contract says 4000 bps, so the studio is owed 204000. The statement `stm_gallery_2026_09` charges 5000 bps on every line and totals 170000 net. The bank shows a deposit of exactly 170000 on `2026-09-30`. Short by 34000.
 5. **The bundled payout:** one site payout covers exactly three orders, `ord_015`, `ord_016` and `ord_017`.
@@ -102,12 +102,12 @@ The answer key lives in `src/mock/answerKey.ts` and lists exactly these four. Th
 
 | File | Holds |
 |---|---|
-| `people.ts` | The studio `std_gu`, the owner, makers and buyers, with fictional names |
+| `people.ts` | The studio `std_dine`, the owner, makers and buyers, with fictional names |
 | `catalog.ts` | The twelve pieces above, and `curatedSet` (`pc_01`, `pc_07`, `pc_11`), the scripted concierge answer |
 | `channels.ts` | The three channels and the gallery contract |
 | `month.ts` | Orders, payouts, refunds, purchases, the statement, bank transactions, ledger entries, maker payouts, approvals, the follow-up and maker statements for September |
 | `answerKey.ts` | The four planted errors and the expected results |
-| `ask.ts` | `cannedAnswers`: three canned Ask Cindy answers (`ask_01` to `ask_03`), the first for 这个月哪件作品最赚钱?, and `fallbackAnswer` for any other question in scripted mode |
+| `ask.ts` | `cannedAnswers`: three canned Ask Cindy answers (`ask_01` to `ask_03`), the first for "Which piece earned the most this month?" (Chinese 这个月哪件作品最赚钱?), and `fallbackAnswer` for any other question in scripted mode |
 | `impact.ts` | The impact numbers, marked as estimates |
 | `scenario.ts` | One held-back statement for the judge's scenario (W2), not used in September's totals, `sampleFileName` and `sampleRecordIds` (its `scn_` record IDs, which the `scenario.loaded` request carries), and `scenarioReplies`: the events the scripted responder emits, with `at` as an offset from the request |
 | `timelines/demo.ts` | The 60-second demo timeline, from `demo-script.md` |

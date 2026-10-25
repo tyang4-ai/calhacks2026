@@ -28,7 +28,7 @@ import { pieces } from "../catalog";
 import { MONTH_ACT_COUNT, monthTimeline } from "./month";
 
 export const MONTH_SHIFT_MS = 20200;
-export const DEMO_QUERY = "a gift under $200 for my mom, she loves peonies";
+export const DEMO_QUERY = "a gift under $200 for my mom, she loves red wool";
 
 /** The beats: ID, start in ms, camera (demo-script.md). */
 export const BEATS: [string, number, CameraId][] = [
@@ -52,7 +52,7 @@ const settlement = payoutForOrder(ord.id); // pay_001
 const mst01 = makerStatements[0];
 const [apr01, apr02] = approvals;
 
-const STUDIO = { kind: "studio" as const, id: "std_gu" };
+const STUDIO = { kind: "studio" as const, id: "std_dine" };
 
 const closingRefs = [galleryPayout.id, ...makerPayouts.map((m) => m.id)];
 const closingEntryIds = closingRefs.flatMap((r) => journalFor(r)?.entryIds ?? []);

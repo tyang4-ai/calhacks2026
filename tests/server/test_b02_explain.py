@@ -50,8 +50,8 @@ def good_answer(**over) -> CatchExplanation:
         "explanation_zh": "对账单按50%收取佣金，合同约定40%。我以合同为准，画廊还欠$340.00。",
         "follow_up_subject_en": "September statement: commission at 50% instead of 40%",
         "follow_up_subject_zh": "9月对账单：佣金按50%计，合同为40%",
-        "follow_up_body_en": "Hello,\n\nCould you send the $340.00 difference?\n\nThank you,\nGu Embroidery Studio",
-        "follow_up_body_zh": "您好：\n\n烦请补付差额$340.00。\n\n谢谢！\n顾绣工作室",
+        "follow_up_body_en": "Hello,\n\nCould you send the $340.00 difference?\n\nThank you,\nDiné Weaving and Silver Co-op",
+        "follow_up_body_zh": "您好：\n\n烦请补付差额$340.00。\n\n谢谢！\n纳瓦霍（Diné）编织与银饰合作社",
     }
     data.update(over)
     return CatchExplanation(**data)

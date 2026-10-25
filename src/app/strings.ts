@@ -5,7 +5,7 @@ import type { Text } from "../core/types";
 /** What each empty slot will hold, in the surface's language. */
 export const SLOT_LABELS: Record<SlotId, Text> = {
   "buyer.main": { en: "Gift finder, the piece's story, where your money goes and the receipt", zh: "选购助手、作品故事、钱去哪儿了与收据" },
-  "studio.map.main": { en: "Money map: money moving between the buyer, Cindia, the studio and the makers", zh: "资金流向图：买家、Cindia、工作室与匠人之间的资金" },
+  "studio.map.main": { en: "Money map: money moving between the buyer, Cindia, the co-op and the makers", zh: "资金流向图：买家、Cindia、合作社与匠人之间的资金" },
   "studio.month.main": { en: "The month's records, matched, with any flag and its evidence", zh: "本月记录核对，以及异常和证据" },
   "studio.month.side": { en: "Try your own statement", zh: "试试您自己的对账单" },
   "studio.close.main": { en: "Close the month and the Excel report", zh: "月结与Excel报表" },
@@ -32,7 +32,7 @@ export const VIEW_LABELS: Record<StudioView, Text> = {
 };
 
 export const SHELL: Record<string, Text> = {
-  studio: { en: "Studio", zh: "工作室" },
+  studio: { en: "Co-op", zh: "合作社" },
   askCindy: { en: "Ask Cindy", zh: "问Cindy" },
   close: { en: "Close", zh: "关闭" },
   cindyIdle: { en: "Waiting for the month's records.", zh: "正在等待本月记录。" },

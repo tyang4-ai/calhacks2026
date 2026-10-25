@@ -1,6 +1,6 @@
 {
   "_note": "Written from src/mock (data-model.md demo-critical figures 1 and 8): September's bank history without pay_001 and the maker payouts, the sale, the three maker payouts, and the balances balanceAsOf() gives after each.",
-  "studio": { "id": "std_gu", "name": { "en": "Gu Embroidery Studio", "zh": "顾绣工作室" }, "openingBalanceCents": 1250000 },
+  "studio": { "id": "std_dine", "name": { "en": "Diné Weaving and Silver Co-op", "zh": "纳瓦霍（Diné）编织与银饰合作社" }, "openingBalanceCents": 1250000 },
   "history": {
     "deposits": [
       { "id": "txn_002", "date": "2026-09-02", "amountCents": 4151, "memo": "Cindia settlement pay_002", "refId": "pay_002" },
@@ -28,9 +28,9 @@
       { "id": "txn_027", "date": "2026-10-02", "amountCents": 9941, "memo": "Card processor payout pay_024", "refId": "pay_024" }
     ],
     "withdrawals": [
-      { "id": "txn_003", "date": "2026-09-03", "amountCents": 18500, "memo": "Mulberry silk ground fabric, 6 m", "refId": "pur_001" },
-      { "id": "txn_014", "date": "2026-09-15", "amountCents": 7200, "memo": "Silk floss, 40 colors", "refId": "pur_002" },
-      { "id": "txn_021", "date": "2026-09-24", "amountCents": 4600, "memo": "Backing cotton and fan frames", "refId": "pur_003" }
+      { "id": "txn_003", "date": "2026-09-03", "amountCents": 18500, "memo": "Wool weaving yarn, 4 kg", "refId": "pur_001" },
+      { "id": "txn_014", "date": "2026-09-15", "amountCents": 7200, "memo": "Silver sheet and wire", "refId": "pur_002" },
+      { "id": "txn_021", "date": "2026-09-24", "amountCents": 4600, "memo": "Turquoise stones and ear wires", "refId": "pur_003" }
     ]
   },
   "sale": {
@@ -38,7 +38,7 @@
     "payoutId": "pay_001",
     "netCents": 15648,
     "date": "2026-09-01",
-    "description": "Cindia sale ord_001, Peony fan, net of fees",
+    "description": "Cindia sale ord_001, Small grey, red and black wool weaving, net of fees",
     "pieceId": "pc_01",
     "channelId": "ch_cindia",
     "buyerId": "buy_01",

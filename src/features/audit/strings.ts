@@ -101,7 +101,7 @@ export const UI = {
 export const ACCOUNTS = {
   cash: { en: "Cash", zh: "现金" },
   sales_cindia: { en: "Sales on Cindia", zh: "Cindia销售额" },
-  sales_site: { en: "Sales on the studio site", zh: "工作室网站销售额" },
+  sales_site: { en: "Sales on the co-op site", zh: "合作社网站销售额" },
   sales_gallery: { en: "Gallery sales", zh: "画廊销售额" },
   card_fees: { en: "Card fees", zh: "刷卡手续费" },
   platform_fees: { en: "Cindia fees", zh: "平台费" },

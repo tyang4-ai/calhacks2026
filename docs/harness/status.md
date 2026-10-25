@@ -1,9 +1,9 @@
 STAGE: V2
-NEXT: V1 step 0 (R0)
+NEXT: V0 step 8 (B04 G5), then V1 step 1 (I2-core)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 18:25 PT
+UPDATED: 2026-10-24 18:55 PT
 
 # Status board
 
@@ -36,6 +36,7 @@ v1 (desktop session, history):
 | G3 (W1) | PASS | Oct 24 3:27 AM | `artifacts/gates/G3-0327.md` (wave: check, smoke 22/22, build); 9/9 features green | w1 |
 | G4 | PASS | Oct 24 4:15 AM | `artifacts/gates/G4-0415.md` 5/5 (60 s runs, strict demo test), `artifacts/gates/G4-verifier-r2.md` PASS (round 1 FAIL: `G4-verifier.md`) | demo-ok-1 |
 | G5 | B01 PASS | Oct 24 4:43 AM | `artifacts/gates/G5-0443.md`, `artifacts/gates/G5-b01-verifier.md` (FAIL fixed by the live-source check) | demo-ok-b01 |
+| R0 | PASS | Oct 24 6:46 PM | `artifacts/gates/R0-1836.md`, `artifacts/gates/R0-verifier-screens.md`, `-numbers.md`, `-words.md` (first run `R0-1828.md` FAIL: d10 held line out of frame, fixed) | v2-reskin |
 | G6 | | | | |
 
 ## Features
@@ -76,7 +77,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 
 | Plan | Wave | State | Lead | Last green tag | Notes |
 |---|---|---|---|---|---|
-| R0-reskin | V1 step 0 | running | data-smith, integrator, feature-lead, backend-builder | | one commit |
+| R0-reskin | V1 step 0 | green | data-smith, integrator, feature-lead, backend-builder | v2-reskin | gate 11/11 checks, 3 verifiers PASS (screens, numbers, words) |
 | I2-core | V1 | todo | integrator | | with fallout FO1, FO2 |
 | I2-kit | V1 | todo | integrator | | |
 | I2-shell | V1 | todo | integrator | | |
@@ -160,6 +161,7 @@ Each item names the default already in use, so the build never waits.
 
 | Since | Question | Default in use |
 |---|---|---|
+| Oct 24 6:16 PM | R0: check the Chinese of the co-op's place (美国亚利桑那州纳瓦霍保留区) and the twelve Chinese piece stories in `src/mock/catalog.ts`, plus the Chinese of L1, L2, L4 and L15 (fix-plan section 7) | The data-smith's Chinese, as written |
 | Oct 24 2:01 AM | `.env` is missing, so there's no `ANTHROPIC_API_KEY` or `NESSIE_KEY`. Copy `C:\dev\secrets\cindia.env` to `.env` | The upgrades that need these keys stay scripted: B02, B07, B09 (Anthropic) and B04 (Nessie) are blocked; B01, B03, B05, B06, B08, B10 run without keys |
 
 ## Demo notes for Gordon
@@ -244,5 +246,8 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 06:45 PT · G5 b10 regression with all ten routers FAIL 9/13: B06 save race (os.replace onto an open xlsx, flaky, 3 reruns pass) and live demo 78 s (harness waits 15 s for keyless adapters); backend-builder fixing B06, integrator fixing the wait; keyed upgrades stay uncommitted until green · artifacts/gates/G5-0638.md
 - 2026-10-24 06:58 PT · B06 save race fixed (unique file per build, the file route serves the newest under the contract name; server 230 passed x3) · status.md
 - 2026-10-24 07:00 PT · harness health wait fixed; regression G5 b10 PASS 13/13 with all ten routers (60 s runs; b01, b03, b06, b08, b10 live); keyed upgrades committed untagged; tag demo-ok-4 · artifacts/gates/G5-0653.md
-- 2026-10-24 18:10 PT · V0 started in the cloud session: fix plan APPLIED, on main, network check passed (cdn.sheetjs.com 200, huggingface.co 200, download.pytorch.org 403, install.spacetimedb.com 200, cdn.playwright.dev 400), hand-off from Gordon's message; stage V2; v2 tables and Tags table added · status.md
-- 2026-10-24 18:25 PT · V0 done: npm ci, .venv, Chromium 1228, SpacetimeDB CLI 2.13.0; hooks 338/338; servers 5173, 8000, 3000 answer; smoke 22/22; heartbeat send_later every 20 min; /api/health keys nessie true, anthropic false (config reads only ANTHROPIC_API_KEY until I2-core); NEXT V1. R0's four agents spawned (data-smith T1, integrator T2, feature-lead T3, backend-builder T4) · status.md
+- 2026-10-24 18:05 PT · V0 started in the cloud session: fix plan APPLIED, on main, network check passed (cdn.sheetjs.com 200, huggingface.co 200, download.pytorch.org 403, install.spacetimedb.com 200, cdn.playwright.dev 400), hand-off from Gordon's message; stage V2; v2 tables and Tags table added · status.md
+- 2026-10-24 18:13 PT · V0 done: npm ci, .venv, Chromium 1228, SpacetimeDB CLI 2.13.0; hooks 338/338; servers 5173, 8000, 3000 answer; smoke 22/22; heartbeat send_later every 20 min; /api/health keys nessie true, anthropic false (config reads only ANTHROPIC_API_KEY until I2-core); NEXT V1. R0's four agents spawned (data-smith T1, integrator T2, feature-lead T3, backend-builder T4) · status.md
+- 2026-10-24 18:31 PT · R0 gate run 1 FAIL: test:demo 3/3 and offline fail at d10 (maker-statement-held $95.00 out of the phone frame: English titles wrap); scenario-live bad-file race fixed (pre-existing); orchestrator fixed StatementLines to one-line titles · artifacts/gates/R0-1828.md
+- 2026-10-24 18:46 PT · R0 gate run 2: check, check:data 78, smoke 22/22, build, test:demo 3/3 (endedAtWallMs 60002, 60011, 60012 ≤ 75000), offline, server 232 passed + 3 skipped, old-names grep 0; all feature specs 150/151 (impact-numbers count-up flakes 1 in 4 on the VM, timing, not R0; noted for M-desktop) · artifacts/gates/R0-1836.md
+- 2026-10-24 18:55 PT · R0 verifiers PASS: screens, numbers, words (workflow of 3); minors queued (owner wording in EndCard/BeatLabel for I2-core/I2-tour, Grace N. twice on d02 for M-buyer, buy_01 name for S3, stale sponsor notes for the scribe, seal date wrap at d08) · artifacts/gates/R0-verifier-*.md

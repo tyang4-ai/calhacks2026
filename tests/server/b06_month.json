@@ -845,10 +845,10 @@
         "direction": "out",
         "amountCents": 18500,
         "counterparty": {
-          "en": "Suzhou Morning Silk Co.",
-          "zh": "苏州晨丝坊"
+          "en": "Morning Loom Supply Co.",
+          "zh": "晨织供应社"
         },
-        "memo": "Mulberry silk ground fabric, 6 m",
+        "memo": "Wool weaving yarn, 4 kg",
         "refId": "pur_001"
       },
       {
@@ -977,10 +977,10 @@
         "direction": "out",
         "amountCents": 7200,
         "counterparty": {
-          "en": "Suzhou Morning Silk Co.",
-          "zh": "苏州晨丝坊"
+          "en": "Morning Loom Supply Co.",
+          "zh": "晨织供应社"
         },
-        "memo": "Silk floss, 40 colors",
+        "memo": "Silver sheet and wire",
         "refId": "pur_002"
       },
       {
@@ -1061,10 +1061,10 @@
         "direction": "out",
         "amountCents": 4600,
         "counterparty": {
-          "en": "Suzhou Morning Silk Co.",
-          "zh": "苏州晨丝坊"
+          "en": "Morning Loom Supply Co.",
+          "zh": "晨织供应社"
         },
-        "memo": "Backing cotton and fan frames",
+        "memo": "Turquoise stones and ear wires",
         "refId": "pur_003"
       },
       {
@@ -1256,7 +1256,7 @@
         "debitCents": 18500,
         "creditCents": 0,
         "refId": "pur_001",
-        "memo": "Mulberry silk ground fabric, 6 m"
+        "memo": "Wool weaving yarn, 4 kg"
       },
       {
         "id": "led_0010",
@@ -1265,7 +1265,7 @@
         "debitCents": 0,
         "creditCents": 18500,
         "refId": "pur_001",
-        "memo": "Mulberry silk ground fabric, 6 m"
+        "memo": "Wool weaving yarn, 4 kg"
       },
       {
         "id": "led_0011",
@@ -1688,7 +1688,7 @@
         "debitCents": 7200,
         "creditCents": 0,
         "refId": "pur_002",
-        "memo": "Silk floss, 40 colors"
+        "memo": "Silver sheet and wire"
       },
       {
         "id": "led_0058",
@@ -1697,7 +1697,7 @@
         "debitCents": 0,
         "creditCents": 7200,
         "refId": "pur_002",
-        "memo": "Silk floss, 40 colors"
+        "memo": "Silver sheet and wire"
       },
       {
         "id": "led_0059",
@@ -1922,7 +1922,7 @@
         "debitCents": 4600,
         "creditCents": 0,
         "refId": "pur_003",
-        "memo": "Backing cotton and fan frames"
+        "memo": "Turquoise stones and ear wires"
       },
       {
         "id": "led_0084",
@@ -1931,7 +1931,7 @@
         "debitCents": 0,
         "creditCents": 4600,
         "refId": "pur_003",
-        "memo": "Backing cotton and fan frames"
+        "memo": "Turquoise stones and ear wires"
       },
       {
         "id": "led_0085",

@@ -76,7 +76,7 @@ test.describe("buyer concierge @T1", () => {
     const watch = watchPage(page);
     await openAt(page, D01_ASK_END - 300);
     const tl = await timelineConcierge(page);
-    expect(tl.query).toBe("a gift under $200 for my mom, she loves peonies");
+    expect(tl.query).toBe("a gift under $200 for my mom, she loves red wool");
     expect(tl.pieceIds).toEqual(["pc_01", "pc_07", "pc_11"]);
 
     await expect(page.getByTestId("buyer-concierge-input")).toHaveValue(tl.query);
@@ -137,7 +137,7 @@ test.describe("buyer concierge @T1", () => {
     // The dev server always serves the store module, so there the source check must run.
     if (new URL(page.url()).port === "5173") expect(recording, "event recorder attached").toBe(true);
 
-    const typed = "a silk gift for my sister who likes blue";
+    const typed = "a wool gift for my sister who likes blue";
     const input = page.getByTestId("buyer-concierge-input");
     await input.fill(typed);
     await expect(input).toHaveValue(typed);

@@ -2,10 +2,13 @@
 import { expect, test, type Page } from "@playwright/test";
 import { waitForHooks, watchPage } from "../smoke/lib";
 import { formatCents } from "../../src/ui/formatCents";
+import { pieces } from "../../src/mock/catalog";
 import { makerStatements } from "../../src/mock/month";
 import { GLOSSARY } from "../../src/features/maker-statement/strings";
 
 const MST_01 = makerStatements.find((m) => m.id === "mst_01")!;
+/** ord_001 sells pc_01. The maker's page opens in English; the toggle gives Chinese. */
+const PC_01 = pieces.find((p) => p.id === "pc_01")!;
 
 async function seek(page: Page, ms: number) {
   await page.evaluate((t) => {
@@ -25,7 +28,7 @@ test("Acceptance 1: at 46 s, before statement.issued, the empty state shows and 
   await openMaker(page);
   await seek(page, 46000);
   await expect(page.getByTestId("maker-statement-empty")).toBeVisible();
-  await expect(page.getByTestId("maker-statement-empty")).toContainText(GLOSSARY.noSalesYet.zh);
+  await expect(page.getByTestId("maker-statement-empty")).toContainText(GLOSSARY.noSalesYet.en);
   await expect(page.getByTestId("maker-statement-total")).toHaveCount(0);
   await expect(page.getByTestId("maker-statement-lines")).toHaveCount(0);
   watch.expectClean();
@@ -54,10 +57,25 @@ test("playing d10-statement at 8x fills the statement from the event", async ({ 
   expect(payload!.totalCents).toBe(MST_01.totalCents);
 
   await expect(page.getByTestId("maker-statement-empty")).toHaveCount(0);
-  await expect(page.getByTestId("maker-statement-total")).toContainText(GLOSSARY.makerStatement.zh);
+  await expect(page.getByTestId("maker-statement-total")).toContainText(GLOSSARY.makerStatement.en);
   await expect(page.getByTestId("maker-statement-total")).toContainText(formatCents(payload!.totalCents));
   await expect(page.getByTestId("maker-statement-lines").locator('[data-testid^="maker-statement-line-"]')).toHaveCount(payload!.lines.length);
-  await expect(page.getByTestId("maker-statement-line-ord_001")).toContainText("牡丹团扇");
+  await expect(page.getByTestId("maker-statement-line-ord_001")).toContainText(PC_01.title.en);
+  await expect(page.getByTestId("maker-statement-line-ord_001")).toContainText("$134.48");
+  await expect(page.getByTestId("maker-statement-held")).toContainText("$95.00");
+  await expect(page.getByTestId("maker-statement-held")).toContainText(GLOSSARY.heldNote.en);
+  await expect(page.getByTestId("maker-statement-payout-date")).toContainText("Oct 2, 2026");
+  await expect(page.getByTestId("maker-statement-paid")).toContainText(GLOSSARY.paid.en);
+
+  // The toggle cycles auto, en, zh: two taps from the start give Chinese, with the same amounts.
+  const toggle = page.getByTestId("demo-lang-toggle");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("data-lang", "en");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("data-lang", "zh");
+  await expect(page.getByTestId("maker-statement-total")).toContainText(GLOSSARY.makerStatement.zh);
+  await expect(page.getByTestId("maker-statement-total")).toContainText(formatCents(payload!.totalCents));
+  await expect(page.getByTestId("maker-statement-line-ord_001")).toContainText(PC_01.title.zh);
   await expect(page.getByTestId("maker-statement-line-ord_001")).toContainText("$134.48");
   await expect(page.getByTestId("maker-statement-held")).toContainText("$95.00");
   await expect(page.getByTestId("maker-statement-held")).toContainText(GLOSSARY.heldNote.zh);

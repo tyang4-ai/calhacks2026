@@ -982,7 +982,7 @@
         "debitCents": 18500,
         "creditCents": 0,
         "refId": "pur_001",
-        "memo": "Mulberry silk ground fabric, 6 m"
+        "memo": "Wool weaving yarn, 4 kg"
       },
       {
         "id": "led_0010",
@@ -991,7 +991,7 @@
         "debitCents": 0,
         "creditCents": 18500,
         "refId": "pur_001",
-        "memo": "Mulberry silk ground fabric, 6 m"
+        "memo": "Wool weaving yarn, 4 kg"
       },
       {
         "id": "led_0011",
@@ -1414,7 +1414,7 @@
         "debitCents": 7200,
         "creditCents": 0,
         "refId": "pur_002",
-        "memo": "Silk floss, 40 colors"
+        "memo": "Silver sheet and wire"
       },
       {
         "id": "led_0058",
@@ -1423,7 +1423,7 @@
         "debitCents": 0,
         "creditCents": 7200,
         "refId": "pur_002",
-        "memo": "Silk floss, 40 colors"
+        "memo": "Silver sheet and wire"
       },
       {
         "id": "led_0059",
@@ -1648,7 +1648,7 @@
         "debitCents": 4600,
         "creditCents": 0,
         "refId": "pur_003",
-        "memo": "Backing cotton and fan frames"
+        "memo": "Turquoise stones and ear wires"
       },
       {
         "id": "led_0084",
@@ -1657,7 +1657,7 @@
         "debitCents": 0,
         "creditCents": 4600,
         "refId": "pur_003",
-        "memo": "Backing cotton and fan frames"
+        "memo": "Turquoise stones and ear wires"
       },
       {
         "id": "led_0085",
@@ -1938,8 +1938,8 @@
         "statementDay": 30,
         "signedDate": "2026-03-02",
         "terms": {
-          "en": "Fogline Gallery sells the studio's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the studio the balance with the statement.",
-          "zh": "雾线画廊寄售工作室作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向工作室支付余款。"
+          "en": "Fogline Gallery sells the co-op's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the co-op the balance with the statement.",
+          "zh": "雾线画廊寄售合作社作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向合作社支付余款。"
         }
       }
     ]

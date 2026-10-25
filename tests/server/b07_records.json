@@ -427,8 +427,8 @@
    {
     "id": "pc_01",
     "title": {
-     "en": "Peony fan",
-     "zh": "牡丹团扇"
+     "en": "Small grey, red and black wool weaving",
+     "zh": "灰红黑三色小幅羊毛编织"
     },
     "makerId": "mkr_01",
     "kind": "featured",
@@ -436,46 +436,39 @@
     "materialsCents": 2200,
     "priceCents": 18000,
     "story": {
-     "en": "A round silk fan with a single peony in full bloom. The petals are built up from hair-fine split thread, so the pink deepens toward the heart of the flower the way paint would.",
-     "zh": "一柄圆形绢面团扇，绣一朵盛开的牡丹。花瓣用细如发丝的劈丝层层绣出，粉色向花心渐深，宛如设色。"
+     "en": "A small wool weaving in grey, red and black, with a stepped diamond at its center. About 30 by 40 cm, woven tight so it hangs flat.",
+     "zh": "一幅灰、红、黑三色的小幅羊毛编织，中央是一个阶梯菱形。约30×40厘米，织得紧密，挂起来平整服帖。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Peonies stand for wealth and honor.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。牡丹寓意富贵。"
+     "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+     "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
-      },
-      "hours": 3
-     },
-     {
-      "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Preparing the yarn",
+       "zh": "整理毛线"
       },
       "hours": 4
      },
      {
       "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
+       "en": "Setting up the warp on the loom",
+       "zh": "在织机上挂经线"
       },
-      "hours": 12
+      "hours": 3
      },
      {
       "step": {
-       "en": "Blending the shaded stitches",
-       "zh": "施针晕色"
+       "en": "Weaving",
+       "zh": "编织"
       },
-      "hours": 5
+      "hours": 17
      },
      {
       "step": {
-       "en": "Mounting on the fan frame",
-       "zh": "上扇框装裱"
+       "en": "Finishing the edges",
+       "zh": "收边"
       },
       "hours": 2
      }
@@ -485,8 +478,8 @@
    {
     "id": "pc_02",
     "title": {
-     "en": "Plum blossom bookmarks",
-     "zh": "梅花书签"
+     "en": "Stamped silver earrings",
+     "zh": "压花银耳环"
     },
     "makerId": "mkr_02",
     "kind": "series",
@@ -494,41 +487,41 @@
     "materialsCents": 800,
     "priceCents": 6500,
     "story": {
-     "en": "A set of silk bookmarks, each with a branch of winter plum. Small enough to stitch in a few sittings, with the same split-thread shading as the large pieces.",
-     "zh": "一套绢面书签，每枚绣一枝寒梅。尺幅虽小，用的仍是大件作品的劈丝晕色。"
+     "en": "A pair of small silver ovals, each stamped with a ring of dots. Light enough to wear every day.",
+     "zh": "一对小巧的椭圆形银耳环，每只都压印着一圈圆点。分量很轻，适合天天佩戴。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Plum blossom opens in the cold and stands for resilience.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。梅花凌寒而开，象征坚韧。"
+     "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+     "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Cutting and shaping the silver",
+       "zh": "裁切银料并塑形"
+      },
+      "hours": 3
+     },
+     {
+      "step": {
+       "en": "Stamping the design",
+       "zh": "压印花纹"
+      },
+      "hours": 3
+     },
+     {
+      "step": {
+       "en": "Fitting the ear wires",
+       "zh": "装耳钩"
       },
       "hours": 1
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Filing and polishing",
+       "zh": "锉磨抛光"
       },
       "hours": 2
-     },
-     {
-      "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
-      },
-      "hours": 5
-     },
-     {
-      "step": {
-       "en": "Sewing up and finishing",
-       "zh": "缝合收尾"
-      },
-      "hours": 1
      }
     ],
     "image": "/images/pc_02.svg"
@@ -536,8 +529,8 @@
    {
     "id": "pc_03",
     "title": {
-     "en": "Koi pond panel",
-     "zh": "锦鲤图"
+     "en": "Brown, white and grey wool rug",
+     "zh": "棕白灰三色羊毛地毯"
     },
     "makerId": "mkr_03",
     "kind": "featured",
@@ -545,55 +538,41 @@
     "materialsCents": 9500,
     "priceCents": 120000,
     "story": {
-     "en": "Three koi turning under lotus leaves. Gu embroidery is half painting and half stitching: the water is a painted wash, and the fish are stitched over it scale by scale.",
-     "zh": "三尾锦鲤在荷叶下回游。顾绣半绣半绘：水面以淡彩渲染，鱼身在其上逐片绣出鳞片。"
+     "en": "A rug in undyed brown, white and grey wool, with bands of small diamonds across it. About 75 by 120 cm.",
+     "zh": "一块用未经染色的棕、白、灰三色羊毛织成的地毯，横贯几道小菱形纹带。约75×120厘米。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Koi stand for abundance, year after year.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。锦鲤寓意年年有余。"
+     "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+     "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Spinning the wool",
+       "zh": "纺毛线"
       },
-      "hours": 12
+      "hours": 30
      },
      {
       "step": {
-       "en": "Painting the base colors",
-       "zh": "敷底色"
+       "en": "Setting up the warp on the loom",
+       "zh": "在织机上挂经线"
       },
-      "hours": 18
+      "hours": 10
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Weaving",
+       "zh": "编织"
       },
-      "hours": 20
+      "hours": 112
      },
      {
       "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
+       "en": "Finishing the edges",
+       "zh": "收边"
       },
-      "hours": 80
-     },
-     {
-      "step": {
-       "en": "Blending the shaded stitches",
-       "zh": "施针晕色"
-      },
-      "hours": 24
-     },
-     {
-      "step": {
-       "en": "Stretching and framing",
-       "zh": "绷框装裱"
-      },
-      "hours": 6
+      "hours": 8
      }
     ],
     "image": "/images/pc_03.svg"
@@ -601,8 +580,8 @@
    {
     "id": "pc_04",
     "title": {
-     "en": "Lotus at dawn",
-     "zh": "晨荷图"
+     "en": "Red, black and white wool rug with stepped diamonds",
+     "zh": "红黑白三色阶梯菱形羊毛地毯"
     },
     "makerId": "mkr_01",
     "kind": "featured",
@@ -610,53 +589,46 @@
     "materialsCents": 8000,
     "priceCents": 95000,
     "story": {
-     "en": "A lotus opening in early light, after the style of the old Gu studio's copies of Song dynasty paintings. The mist is left as bare silk.",
-     "zh": "清晨初开的荷花，仿顾绣绣宋画的旧法。晨雾处留出素绢，不着一针。"
+     "en": "Three stepped diamonds in red and black on a white ground. About 60 by 100 cm, with even, tight edges.",
+     "zh": "白色底上织着三个红黑两色的阶梯菱形。约60×100厘米，边缘匀整紧实。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. The Gu family studio was known for stitching famous paintings.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。顾氏绣坊以绣名画著称。"
+     "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+     "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Preparing the yarn",
+       "zh": "整理毛线"
+      },
+      "hours": 6
+     },
+     {
+      "step": {
+       "en": "Dyeing the yarn",
+       "zh": "染线"
       },
       "hours": 10
      },
      {
       "step": {
-       "en": "Painting the base colors",
-       "zh": "敷底色"
+       "en": "Setting up the warp on the loom",
+       "zh": "在织机上挂经线"
       },
-      "hours": 14
+      "hours": 10
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Weaving",
+       "zh": "编织"
       },
-      "hours": 16
+      "hours": 98
      },
      {
       "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
-      },
-      "hours": 64
-     },
-     {
-      "step": {
-       "en": "Blending the shaded stitches",
-       "zh": "施针晕色"
-      },
-      "hours": 20
-     },
-     {
-      "step": {
-       "en": "Stretching and framing",
-       "zh": "绷框装裱"
+       "en": "Finishing the edges",
+       "zh": "收边"
       },
       "hours": 6
      }
@@ -666,8 +638,8 @@
    {
     "id": "pc_05",
     "title": {
-     "en": "Orchid scroll",
-     "zh": "兰花轴"
+     "en": "Indigo and white striped wool weaving",
+     "zh": "靛蓝白条纹羊毛编织"
     },
     "makerId": "mkr_02",
     "kind": "featured",
@@ -675,53 +647,46 @@
     "materialsCents": 7000,
     "priceCents": 80000,
     "story": {
-     "en": "A hanging scroll of wild orchids on a rock. The long leaves are single unbroken runs of stitching, which is the hardest part to get right.",
-     "zh": "一幅兰石立轴。修长的兰叶各以一气呵成的长针绣成，这是最难的地方。"
+     "en": "Wide and narrow stripes in indigo blue and natural white. About 60 by 90 cm, for a wall or across a bench.",
+     "zh": "靛蓝与本白的宽窄条纹相间。约60×90厘米，可以挂在墙上，也可以搭在长凳上。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. The orchid is one of the four gentlemen of Chinese painting.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。兰为“四君子”之一。"
+     "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+     "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Spinning the wool",
+       "zh": "纺毛线"
+      },
+      "hours": 20
+     },
+     {
+      "step": {
+       "en": "Dyeing the yarn",
+       "zh": "染线"
+      },
+      "hours": 12
+     },
+     {
+      "step": {
+       "en": "Setting up the warp on the loom",
+       "zh": "在织机上挂经线"
       },
       "hours": 8
      },
      {
       "step": {
-       "en": "Painting the base colors",
-       "zh": "敷底色"
+       "en": "Weaving",
+       "zh": "编织"
       },
-      "hours": 10
+      "hours": 64
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
-      },
-      "hours": 14
-     },
-     {
-      "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
-      },
-      "hours": 56
-     },
-     {
-      "step": {
-       "en": "Blending the shaded stitches",
-       "zh": "施针晕色"
-      },
-      "hours": 16
-     },
-     {
-      "step": {
-       "en": "Mounting as a scroll",
-       "zh": "装裱成轴"
+       "en": "Finishing the edges",
+       "zh": "收边"
       },
       "hours": 6
      }
@@ -731,8 +696,8 @@
    {
     "id": "pc_06",
     "title": {
-     "en": "Sparrow on bamboo",
-     "zh": "竹雀图"
+     "en": "Grey and white zigzag wool weaving",
+     "zh": "灰白锯齿纹羊毛编织"
     },
     "makerId": "mkr_03",
     "kind": "featured",
@@ -740,55 +705,41 @@
     "materialsCents": 4500,
     "priceCents": 45000,
     "story": {
-     "en": "A sparrow resting on a bamboo stem. The feathers use short, overlapping stitches in a dozen browns.",
-     "zh": "一只麻雀栖于竹枝。羽毛以十余种褐色短针层层叠绣。"
+     "en": "Grey and white bands that bend into zigzags across the weaving. About 45 by 60 cm.",
+     "zh": "灰白两色的纹带横穿整幅织物，折成一道道锯齿。约45×60厘米。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Bamboo bends without breaking.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。竹子宁折不弯，象征气节。"
+     "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+     "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Preparing the yarn",
+       "zh": "整理毛线"
+      },
+      "hours": 4
+     },
+     {
+      "step": {
+       "en": "Setting up the warp on the loom",
+       "zh": "在织机上挂经线"
       },
       "hours": 5
      },
      {
       "step": {
-       "en": "Painting the base colors",
-       "zh": "敷底色"
+       "en": "Weaving",
+       "zh": "编织"
       },
-      "hours": 6
+      "hours": 47
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Finishing the edges",
+       "zh": "收边"
       },
-      "hours": 8
-     },
-     {
-      "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
-      },
-      "hours": 30
-     },
-     {
-      "step": {
-       "en": "Blending the shaded stitches",
-       "zh": "施针晕色"
-      },
-      "hours": 8
-     },
-     {
-      "step": {
-       "en": "Stretching and framing",
-       "zh": "绷框装裱"
-      },
-      "hours": 3
+      "hours": 4
      }
     ],
     "image": "/images/pc_06.svg"
@@ -796,8 +747,8 @@
    {
     "id": "pc_07",
     "title": {
-     "en": "Peony sachet",
-     "zh": "牡丹香囊"
+     "en": "Red and grey wool mini weaving",
+     "zh": "红灰双色迷你羊毛编织"
     },
     "makerId": "mkr_02",
     "kind": "series",
@@ -805,39 +756,39 @@
     "materialsCents": 600,
     "priceCents": 4800,
     "story": {
-     "en": "A small silk sachet with a peony on one side, filled with dried osmanthus. A traditional gift to carry or hang.",
-     "zh": "一只小巧的绢面香囊，一面绣牡丹，内装干桂花。是可佩可挂的传统礼物。"
+     "en": "A palm-sized weaving in red and grey, about 15 by 15 cm, for a shelf or a desk.",
+     "zh": "一幅巴掌大小的红灰双色编织，约15×15厘米，适合摆在书架或书桌上。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Embroidered sachets were given as tokens of care.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。绣香囊自古是表达心意的信物。"
+     "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+     "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Preparing the yarn",
+       "zh": "整理毛线"
       },
       "hours": 1
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Setting up the warp on the loom",
+       "zh": "在织机上挂经线"
       },
       "hours": 1
      },
      {
       "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
+       "en": "Weaving",
+       "zh": "编织"
       },
       "hours": 3
      },
      {
       "step": {
-       "en": "Sewing up and finishing",
-       "zh": "缝合收尾"
+       "en": "Finishing the edges",
+       "zh": "收边"
       },
       "hours": 1
      }
@@ -847,8 +798,8 @@
    {
     "id": "pc_08",
     "title": {
-     "en": "Silk coasters",
-     "zh": "丝绣杯垫"
+     "en": "Thin silver ring with stamped chevrons",
+     "zh": "压印人字纹细银戒"
     },
     "makerId": "mkr_03",
     "kind": "series",
@@ -856,39 +807,39 @@
     "materialsCents": 500,
     "priceCents": 3800,
     "story": {
-     "en": "A pair of coasters, each with a small ripple pattern in blue and silver thread, backed with cotton so they can be used every day.",
-     "zh": "一对杯垫，以蓝银两色丝线绣水波纹，背衬棉布，可日常使用。"
+     "en": "A narrow silver band stamped all the way around with small chevrons.",
+     "zh": "一枚细窄的银戒，整圈压印着小小的人字纹。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Everyday pieces keep the stitches in daily use.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。日用小件让针法走进日常。"
+     "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+     "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Cutting and shaping the silver",
+       "zh": "裁切银料并塑形"
+      },
+      "hours": 1
+     },
+     {
+      "step": {
+       "en": "Stamping the design",
+       "zh": "压印花纹"
+      },
+      "hours": 1.5
+     },
+     {
+      "step": {
+       "en": "Soldering",
+       "zh": "焊接"
       },
       "hours": 0.5
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
-      },
-      "hours": 0.5
-     },
-     {
-      "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
-      },
-      "hours": 2
-     },
-     {
-      "step": {
-       "en": "Sewing up and finishing",
-       "zh": "缝合收尾"
+       "en": "Filing and polishing",
+       "zh": "锉磨抛光"
       },
       "hours": 1
      }
@@ -898,8 +849,8 @@
    {
     "id": "pc_09",
     "title": {
-     "en": "Crane brooch",
-     "zh": "仙鹤胸针"
+     "en": "Silver and turquoise pendant necklace",
+     "zh": "绿松石银吊坠项链"
     },
     "makerId": "mkr_01",
     "kind": "series",
@@ -907,48 +858,41 @@
     "materialsCents": 1200,
     "priceCents": 12000,
     "story": {
-     "en": "A red-crowned crane in flight, stitched on silk and set in a brass frame to wear as a brooch.",
-     "zh": "一只飞翔的丹顶鹤，绣于绢上，嵌入黄铜框，可作胸针佩戴。"
+     "en": "One small oval of turquoise set in silver with a stamped border, on a silver chain.",
+     "zh": "一颗小小的椭圆形绿松石，镶在带压花边框的银托里，配一条银链。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. The crane stands for long life.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。仙鹤寓意长寿。"
+     "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+     "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Cutting and shaping the silver",
+       "zh": "裁切银料并塑形"
       },
-      "hours": 2
+      "hours": 3
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Stamping the design",
+       "zh": "压印花纹"
       },
-      "hours": 2
+      "hours": 3
      },
      {
       "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
+       "en": "Setting the turquoise",
+       "zh": "镶嵌绿松石"
       },
-      "hours": 7
+      "hours": 4
      },
      {
       "step": {
-       "en": "Blending the shaded stitches",
-       "zh": "施针晕色"
+       "en": "Filing and polishing",
+       "zh": "锉磨抛光"
       },
-      "hours": 2
-     },
-     {
-      "step": {
-       "en": "Sewing up and finishing",
-       "zh": "缝合收尾"
-      },
-      "hours": 1
+      "hours": 4
      }
     ],
     "image": "/images/pc_09.svg"
@@ -956,8 +900,8 @@
    {
     "id": "pc_10",
     "title": {
-     "en": "Cloud pouch",
-     "zh": "祥云荷包"
+     "en": "Silver and turquoise drop earrings",
+     "zh": "绿松石银坠耳环"
     },
     "makerId": "mkr_03",
     "kind": "series",
@@ -965,41 +909,41 @@
     "materialsCents": 900,
     "priceCents": 8500,
     "story": {
-     "en": "A drawstring pouch with auspicious clouds worked in gold and indigo thread.",
-     "zh": "一只抽绳荷包，以金线与靛蓝丝线绣祥云纹。"
+     "en": "Each earring is a small turquoise stone in a plain silver setting, hanging from a short wire.",
+     "zh": "每只耳环是一颗嵌在素面银托里的小绿松石，挂在一段短短的耳钩下。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Auspicious clouds wish the carrier good fortune.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。祥云纹寓意吉祥如意。"
+     "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+     "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Cutting and shaping the silver",
+       "zh": "裁切银料并塑形"
+      },
+      "hours": 2
+     },
+     {
+      "step": {
+       "en": "Setting the turquoise",
+       "zh": "镶嵌绿松石"
+      },
+      "hours": 4
+     },
+     {
+      "step": {
+       "en": "Fitting the ear wires",
+       "zh": "装耳钩"
       },
       "hours": 1
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Filing and polishing",
+       "zh": "锉磨抛光"
       },
-      "hours": 2
-     },
-     {
-      "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
-      },
-      "hours": 5
-     },
-     {
-      "step": {
-       "en": "Sewing up and finishing",
-       "zh": "缝合收尾"
-      },
-      "hours": 2
+      "hours": 3
      }
     ],
     "image": "/images/pc_10.svg"
@@ -1007,8 +951,8 @@
    {
     "id": "pc_11",
     "title": {
-     "en": "Chrysanthemum fan",
-     "zh": "菊花团扇"
+     "en": "Red and white wool weaving",
+     "zh": "红白双色羊毛编织"
     },
     "makerId": "mkr_02",
     "kind": "featured",
@@ -1016,46 +960,46 @@
     "materialsCents": 2100,
     "priceCents": 17500,
     "story": {
-     "en": "A round fan with autumn chrysanthemums. Each curled petal is a separate run of thread, shaded from gold to cream.",
-     "zh": "一柄团扇，绣秋日菊花。每片卷曲的花瓣单独起针，由金黄晕至米白。"
+     "en": "Red and white stripes with a band of red diamonds through the middle. About 30 by 40 cm.",
+     "zh": "红白相间的条纹，中间横贯一道红色菱形纹带。约30×40厘米。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. Chrysanthemums bloom late and stand for long life.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。菊花傲霜晚开，寓意长寿。"
+     "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+     "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Preparing the yarn",
+       "zh": "整理毛线"
+      },
+      "hours": 2
+     },
+     {
+      "step": {
+       "en": "Dyeing the yarn",
+       "zh": "染线"
       },
       "hours": 3
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Setting up the warp on the loom",
+       "zh": "在织机上挂经线"
       },
-      "hours": 4
+      "hours": 3
      },
      {
       "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
+       "en": "Weaving",
+       "zh": "编织"
       },
-      "hours": 11
+      "hours": 14
      },
      {
       "step": {
-       "en": "Blending the shaded stitches",
-       "zh": "施针晕色"
-      },
-      "hours": 4
-     },
-     {
-      "step": {
-       "en": "Mounting on the fan frame",
-       "zh": "上扇框装裱"
+       "en": "Finishing the edges",
+       "zh": "收边"
       },
       "hours": 2
      }
@@ -1065,8 +1009,8 @@
    {
     "id": "pc_12",
     "title": {
-     "en": "Phoenix needle case",
-     "zh": "凤凰针盒"
+     "en": "Narrow stamped silver cuff bracelet",
+     "zh": "压花细银手镯"
     },
     "makerId": "mkr_01",
     "kind": "series",
@@ -1074,41 +1018,41 @@
     "materialsCents": 1000,
     "priceCents": 9500,
     "story": {
-     "en": "A small hard-sided case for needles, its lid stitched with a phoenix tail in five colors.",
-     "zh": "一只硬面针盒，盒盖绣五彩凤尾。"
+     "en": "A narrow silver cuff stamped with small dots and lines, to wear alone or with others.",
+     "zh": "一只细窄的开口银手镯，压印着小圆点和线条，可以单戴，也可以和别的手镯叠戴。"
     },
     "heritage": {
-     "en": "Gu embroidery began in Songjiang, Shanghai, in the late Ming dynasty, and has been on China's national intangible cultural heritage list since 2006. The phoenix stands for good omens.",
-     "zh": "顾绣起源于明代晚期的上海松江，2006年列入第一批国家级非物质文化遗产名录。凤凰寓意祥瑞。"
+     "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+     "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
     },
     "process": [
      {
       "step": {
-       "en": "Drawing the design onto silk",
-       "zh": "在绢上勾稿"
+       "en": "Cutting and shaping the silver",
+       "zh": "裁切银料并塑形"
+      },
+      "hours": 3
+     },
+     {
+      "step": {
+       "en": "Stamping the design",
+       "zh": "压印花纹"
+      },
+      "hours": 4
+     },
+     {
+      "step": {
+       "en": "Soldering",
+       "zh": "焊接"
       },
       "hours": 1
      },
      {
       "step": {
-       "en": "Splitting and dyeing the silk thread",
-       "zh": "劈丝染线"
+       "en": "Filing and polishing",
+       "zh": "锉磨抛光"
       },
-      "hours": 2
-     },
-     {
-      "step": {
-       "en": "Stitching",
-       "zh": "刺绣"
-      },
-      "hours": 6
-     },
-     {
-      "step": {
-       "en": "Sewing up and finishing",
-       "zh": "缝合收尾"
-      },
-      "hours": 2
+      "hours": 3
      }
     ],
     "image": "/images/pc_12.svg"
@@ -1295,8 +1239,8 @@
     "deltaCents": 34000,
     "trustRecordId": "ctr_gallery_01",
     "explanation": {
-     "en": "The gallery's September statement charged 50% commission on all four sales and paid $1,700.00. The signed contract says 40%, which leaves the studio $2,040.00 on $3,400.00 of sales. The bank shows $1,700.00 on Sep 30, matching the statement, not the contract. I trust the contract, so the gallery owes $340.00.",
-     "zh": "画廊9月对账单对四笔销售都按50%收取佣金，实付$1,700.00。已签合同约定40%，按$3,400.00的销售额，工作室应得$2,040.00。银行流水显示9月30日到账$1,700.00，与对账单一致，与合同不符。我以合同为准，画廊还欠$340.00。"
+     "en": "The gallery's September statement charged 50% commission on all four sales and paid $1,700.00. The signed contract says 40%, which leaves the co-op $2,040.00 on $3,400.00 of sales. The bank shows $1,700.00 on Sep 30, matching the statement, not the contract. I trust the contract, so the gallery owes $340.00.",
+     "zh": "画廊9月对账单对四笔销售都按50%收取佣金，实付$1,700.00。已签合同约定40%，按$3,400.00的销售额，合作社应得$2,040.00。银行流水显示9月30日到账$1,700.00，与对账单一致，与合同不符。我以合同为准，画廊还欠$340.00。"
     }
    }
   ],
@@ -1367,8 +1311,8 @@
     "statementDay": 30,
     "signedDate": "2026-03-02",
     "terms": {
-     "en": "Fogline Gallery sells the studio's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the studio the balance with the statement.",
-     "zh": "雾线画廊寄售工作室作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向工作室支付余款。"
+     "en": "Fogline Gallery sells the co-op's pieces on consignment and keeps a commission of 40% of each sale price. The gallery sends a statement of the month's sales on the 30th of each month and pays the co-op the balance with the statement.",
+     "zh": "雾线画廊寄售合作社作品，每件按售价收取40%佣金。画廊于每月30日寄出当月销售对账单，并随对账单向合作社支付余款。"
     }
    }
   ],
@@ -1448,10 +1392,10 @@
     "direction": "out",
     "amountCents": 18500,
     "counterparty": {
-     "en": "Suzhou Morning Silk Co.",
-     "zh": "苏州晨丝坊"
+     "en": "Morning Loom Supply Co.",
+     "zh": "晨织供应社"
     },
-    "memo": "Mulberry silk ground fabric, 6 m",
+    "memo": "Wool weaving yarn, 4 kg",
     "refId": "pur_001"
    },
    {
@@ -1580,10 +1524,10 @@
     "direction": "out",
     "amountCents": 7200,
     "counterparty": {
-     "en": "Suzhou Morning Silk Co.",
-     "zh": "苏州晨丝坊"
+     "en": "Morning Loom Supply Co.",
+     "zh": "晨织供应社"
     },
-    "memo": "Silk floss, 40 colors",
+    "memo": "Silver sheet and wire",
     "refId": "pur_002"
    },
    {
@@ -1664,10 +1608,10 @@
     "direction": "out",
     "amountCents": 4600,
     "counterparty": {
-     "en": "Suzhou Morning Silk Co.",
-     "zh": "苏州晨丝坊"
+     "en": "Morning Loom Supply Co.",
+     "zh": "晨织供应社"
     },
-    "memo": "Backing cotton and fan frames",
+    "memo": "Turquoise stones and ear wires",
     "refId": "pur_003"
    },
    {
@@ -1784,31 +1728,31 @@
     "id": "mkr_01",
     "role": "maker",
     "name": {
-     "en": "Lu Yun",
-     "zh": "陆芸"
+     "en": "Grace N.",
+     "zh": "Grace N."
     },
-    "surnameChar": "陆",
-    "lang": "zh"
+    "surnameChar": "N",
+    "lang": "en"
    },
    {
     "id": "mkr_02",
     "role": "maker",
     "name": {
-     "en": "Han Jing",
-     "zh": "韩静"
+     "en": "Lena T.",
+     "zh": "Lena T."
     },
-    "surnameChar": "韩",
-    "lang": "zh"
+    "surnameChar": "T",
+    "lang": "en"
    },
    {
     "id": "mkr_03",
     "role": "maker",
     "name": {
-     "en": "Zhou Mei",
-     "zh": "周梅"
+     "en": "Mae K.",
+     "zh": "Mae K."
     },
-    "surnameChar": "周",
-    "lang": "zh"
+    "surnameChar": "K",
+    "lang": "en"
    }
   ],
   "channels": [
@@ -1823,8 +1767,8 @@
    {
     "id": "ch_site",
     "name": {
-     "en": "Studio website",
-     "zh": "工作室网站"
+     "en": "Co-op website",
+     "zh": "合作社网站"
     },
     "kind": "own_site"
    },
@@ -1865,8 +1809,8 @@
   {
    "questionId": "ask_03",
    "questions": {
-    "en": "How much does Lu Yun get this month?",
-    "zh": "陆芸这个月能拿多少?"
+    "en": "How much does Grace N. get this month?",
+    "zh": "Grace N.这个月能拿多少?"
    },
    "refIds": [
     "mpo_01",

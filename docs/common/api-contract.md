@@ -119,15 +119,15 @@ Needs `NESSIE_KEY`. The server keeps the Nessie customer and account IDs in memo
 
 **`POST /api/b04/seed`** · up to 30 seconds, called once by the adapter's `health()` in live mode, never during the demo's 8-second window
 
-Request: `{ "trigger": null, "studio": { "id": "std_gu", "name": "...", "openingBalanceCents": 0 }, "history": { "deposits": [], "withdrawals": [] } }`, where `history` is September's bank transactions from `src/mock`, except the buyer's sale (`pay_001`) and the maker payouts. Each history line is `{ "id", "date", "amountCents", "memo", "refId" }`. `studio.openingBalanceCents` (a non-negative integer, default 0) is posted as one deposit dated 2026-08-31, so Nessie's balance reproduces `src/mock`'s `balanceAsOf()`.
+Request: `{ "trigger": null, "studio": { "id": "std_dine", "name": "...", "openingBalanceCents": 0 }, "history": { "deposits": [], "withdrawals": [] } }`, where `history` is September's bank transactions from `src/mock`, except the buyer's sale (`pay_001`) and the maker payouts. Each history line is `{ "id", "date", "amountCents", "memo", "refId" }`. `studio.openingBalanceCents` (a non-negative integer, default 0) is posted as one deposit dated 2026-08-31, so Nessie's balance reproduces `src/mock`'s `balanceAsOf()`.
 
-Idempotent. Each line carries a unique description, and a line already on the account isn't posted again. When the opening deposit is already there, it does nothing; a seed cut short finishes on the next call. Otherwise it finds or creates the customer (a fictional US mailing address) and a Checking account nicknamed "Gu studio operating", then posts one deposit or withdrawal per history line and the opening deposit last. Returns `{ "events": [account.synced] }`.
+Idempotent. Each line carries a unique description, and a line already on the account isn't posted again. When the opening deposit is already there, it does nothing; a seed cut short finishes on the next call. Otherwise it finds or creates the customer (a fictional US mailing address) and a Checking account nicknamed "Dine co-op operating", then posts one deposit or withdrawal per history line and the opening deposit last. Returns `{ "events": [account.synced] }`.
 
 When live mode is switched on, the adapter's `health()` starts the seed in the background: about 30 POSTs to Nessie, up to 30 seconds. `health()` answers false until the seed is done, so `b04-bank` stays scripted until then.
 
 **`POST /api/b04/sale`** · under 4 seconds
 
-Request: `{ "trigger": { "...": "the scripted order.placed or money.moved for the sale" }, "orderId": "ord_001", "payoutId": "pay_001", "netCents": 15648, "date": "2026-09-01", "description": "Cindia sale ord_001, Peony fan, net of fees", "pieceId": "...", "channelId": "...", "buyerId": "...", "grossCents": 18000, "moveId": "mv_0003" }`
+Request: `{ "trigger": { "...": "the scripted order.placed or money.moved for the sale" }, "orderId": "ord_001", "payoutId": "pay_001", "netCents": 15648, "date": "2026-09-01", "description": "Cindia sale ord_001, Small grey, red and black wool weaving, net of fees", "pieceId": "...", "channelId": "...", "buyerId": "...", "grossCents": 18000, "moveId": "mv_0003" }`
 
 `pieceId`, `channelId`, `buyerId`, `grossCents` and `moveId` are optional. They let the server build the `order.placed` and the settlement's `moveId` when the trigger is the other of the two sale events. Without them, `order.placed` comes from an `order.placed` trigger, and `moveId` from a `money.moved` trigger or `mv_0003`.
 
@@ -208,7 +208,7 @@ No key needed. The server holds approvals in memory, so a restart clears them.
 
 **`POST /api/b09/concierge`** · `ANTHROPIC_API_KEY` · `claude-haiku-5-5` with a 4-second timeout, because it opens the demo
 
-Request: `{ "trigger": { "...": "the scripted concierge.answered, or the buyer's own concierge.asked" }, "query": "a gift under $200 for my mom, she loves peonies", "lang": "en", "catalog": [] }`
+Request: `{ "trigger": { "...": "the scripted concierge.answered, or the buyer's own concierge.asked" }, "query": "a gift under $200 for my mom, she loves red wool", "lang": "en", "catalog": [] }`
 
 `catalog` holds every piece with its title, price, maker, hours and story. Claude answers through `messages.parse()` with exactly three picks, each `{ piece_id, reason_en, reason_zh }`. The server checks that every `piece_id` is in the catalog, that there are three different ones, and that a price limit stated in the query holds.
 

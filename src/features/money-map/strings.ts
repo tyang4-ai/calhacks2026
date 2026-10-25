@@ -20,11 +20,11 @@ export const strings = {
   /** Local: before the first account.synced. */
   noBalanceYet: { en: "No balance yet", zh: "暂无余额" },
   /** Local: the label once b04-bank is live. */
-  nessieAccount: { en: "Studio account on Nessie", zh: "工作室的Nessie账户" },
+  nessieAccount: { en: "Co-op account on Nessie", zh: "合作社的Nessie账户" },
   /** Local: money that stayed with a party (in minus out). */
   kept: { en: "Kept", zh: "留存" },
   /** Local: the canvas's accessible label. */
-  canvasLabel: { en: "Money moving between the buyer, Cindia, the studio and the makers", zh: "买家、Cindia、工作室与匠人之间的资金流向" },
+  canvasLabel: { en: "Money moving between the buyer, Cindia, the co-op and the makers", zh: "买家、Cindia、合作社与匠人之间的资金流向" },
 } satisfies Record<string, Str>;
 
 /**
@@ -36,7 +36,7 @@ export const partyNames: Record<Party["kind"], Str> = {
   buyer: { en: "Buyer", zh: "买家" },
   cindia: { en: "Cindia", zh: "Cindia" },
   card_network: { en: "Card network", zh: "卡组织" },
-  studio: { en: "Studio", zh: "工作室" },
+  studio: { en: "Co-op", zh: "合作社" },
   maker: { en: "Maker", zh: "匠人" },
   gallery: { en: "Gallery", zh: "画廊" },
   processor: { en: "Card processor", zh: "收单机构" },

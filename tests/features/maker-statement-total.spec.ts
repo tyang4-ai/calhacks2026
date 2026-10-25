@@ -1,5 +1,6 @@
 // F-maker-statement T1: the statement header on /maker/mkr_01. Total (Acceptance 2), payout date
-// (Acceptance 4), paid (Acceptance 5) and the header in English (Acceptance 6).
+// (Acceptance 4), paid (Acceptance 5) and the header in Chinese (Acceptance 6). The maker's page
+// opens in English; the language toggle gives Chinese.
 import { expect, test, type Page } from "@playwright/test";
 import type { Payloads } from "../../src/core/events";
 import { GLOSSARY } from "../../src/features/maker-statement/strings";
@@ -48,26 +49,26 @@ test("before statement.issued no total shows", async ({ page }) => {
   watch.expectClean();
 });
 
-test("Acceptance 2: at the end of d10-statement the total reads 本月收入 with the payload's totalCents", async ({ page }) => {
+test("Acceptance 2: at the end of d10-statement the total reads This month's income with the payload's totalCents", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
   await seek(page, END_OF_D10);
   const st = await statementFor(page);
   const total = page.getByTestId("maker-statement-total");
   await expect(total).toBeVisible();
-  await expect(total).toContainText(GLOSSARY.makerStatement.zh);
+  await expect(total).toContainText(GLOSSARY.makerStatement.en);
   await expect(total).toContainText(formatCents(st.totalCents));
   watch.expectClean();
 });
 
-test("Acceptance 4: the payout date reads 2026年10月2日", async ({ page }) => {
+test("Acceptance 4: the payout date reads Oct 2, 2026", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
   await seek(page, END_OF_D10);
   const st = await statementFor(page);
   const date = page.getByTestId("maker-statement-payout-date");
-  await expect(date).toHaveText(formatDate(st.payoutDate, "zh"));
-  await expect(date).toHaveText("2026年10月2日");
+  await expect(date).toHaveText(formatDate(st.payoutDate, "en"));
+  await expect(date).toHaveText("Oct 2, 2026");
   watch.expectClean();
 });
 
@@ -82,24 +83,26 @@ test("Acceptance 5: paid shows because payout.sent for the maker fired in d08-ap
     return Object.values(s.approvals.payouts).map((p) => p.makerId);
   });
   expect(payoutMakers).toContain(MAKER_ID);
-  await expect(page.getByTestId("maker-statement-paid")).toHaveText(GLOSSARY.paid.zh);
+  await expect(page.getByTestId("maker-statement-paid")).toHaveText(GLOSSARY.paid.en);
   watch.expectClean();
 });
 
-test("Acceptance 6: in English the header labels and date are English and the total is unchanged", async ({ page }) => {
+test("Acceptance 6: in Chinese the header labels and date are Chinese and the total is unchanged", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
   await seek(page, END_OF_D10);
   const st = await statementFor(page);
   const toggle = page.getByTestId("demo-lang-toggle");
-  // The toggle cycles auto, en, zh: one click from auto gives English everywhere.
+  // The toggle cycles auto, en, zh: the page starts in English, so two clicks give Chinese everywhere.
   await toggle.click();
   await expect(toggle).toHaveAttribute("data-lang", "en");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("data-lang", "zh");
   const total = page.getByTestId("maker-statement-total");
-  await expect(total).toContainText(GLOSSARY.makerStatement.en);
-  await expect(total).not.toContainText(GLOSSARY.makerStatement.zh);
+  await expect(total).toContainText(GLOSSARY.makerStatement.zh);
+  await expect(total).not.toContainText(GLOSSARY.makerStatement.en);
   await expect(total).toContainText(formatCents(st.totalCents));
-  await expect(page.getByTestId("maker-statement-payout-date")).toHaveText("Oct 2, 2026");
-  await expect(page.getByTestId("maker-statement-paid")).toHaveText(GLOSSARY.paid.en);
+  await expect(page.getByTestId("maker-statement-payout-date")).toHaveText("2026年10月2日");
+  await expect(page.getByTestId("maker-statement-paid")).toHaveText(GLOSSARY.paid.zh);
   watch.expectClean();
 });

@@ -78,3 +78,11 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - P2: On Windows `os.replace` fails while another process has the target open, so a server file written per request needs a unique name or a retry.
 - all: pytest isn't on the system Python; run single files with `.venv/Scripts/python.exe -m pytest`.
 - all: When a new upgrade needs a server key, add it to `REQUIRED_KEYS` in `tests/demo/beats.ts`, or every live run waits out the health timeout.
+
+## v2 (cloud session)
+
+- V0: In the cloud, `git pull --rebase` refuses while agents have unstaged edits. Fetch, and push directly when `origin/main` is an ancestor of HEAD; otherwise merge (`git pull --no-rebase`), which works with a dirty tree when no file overlaps.
+- R0: `scenario-live.spec.ts`'s bad-file test raced the scripted fallback (the note shows while the fallback still plays, and its late keyed events flip `sources` back). Wait for the fallback's last keyed event before the next request.
+- R0: Long English titles wrap where v1's short Chinese ones didn't, which pushes figures out of fixed phone frames. Keep list rows to one line with an ellipsis and the full text in a tooltip.
+- R0: `impact-numbers.spec.ts` "counts up on the player clock" fails about 1 run in 4 on the cloud VM (mid-count sample lands after the count ends, 75.6 vs < 75.55). Timing, not data: for M-desktop's lead, sample by the player clock rather than wall time.
+- R0: The command guard reads `>=`, `->` and some words inside Bash heredocs as redirects or paths; agents write multi-line scripts with the Write tool.

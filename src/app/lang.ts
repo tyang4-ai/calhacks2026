@@ -6,8 +6,8 @@ import { useCindia } from "../core/store";
 export const SURFACE_START_LANG: Record<SurfaceId, "en" | "zh"> = {
   buyer: "en",
   studio: "en",
-  owner: "zh",
-  maker: "zh",
+  owner: "en",
+  maker: "en",
 };
 
 export function resolveLang(setting: LangSetting, surface: SurfaceId): "en" | "zh" {

@@ -31,7 +31,7 @@ async function statementFor(page: Page, makerId: string) {
   }, makerId);
 }
 
-test("Acceptance 3: one line per payload line, and ord_001 reads 牡丹团扇 with $134.48", async ({ page }) => {
+test("Acceptance 3: one line per payload line, and ord_001 reads Small grey, red and black wool weaving with $134.48", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
   await seek(page, END_OF_D10);
@@ -44,33 +44,37 @@ test("Acceptance 3: one line per payload line, and ord_001 reads 牡丹团扇 wi
     await expect(page.getByTestId(`maker-statement-line-${line.orderId}`)).toBeVisible();
   }
   const ord1 = page.getByTestId("maker-statement-line-ord_001");
-  await expect(ord1).toContainText("牡丹团扇");
+  await expect(ord1).toContainText("Small grey, red and black wool weaving");
   await expect(ord1).toContainText("$134.48");
   watch.expectClean();
 });
 
-test("Acceptance 4 (held): the held note shows $95.00 and 待画廊补齐欠款后发放", async ({ page }) => {
+test("Acceptance 4 (held): the held note shows $95.00 and Held until the gallery pays what it owes", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
   await seek(page, END_OF_D10);
   const held = page.getByTestId("maker-statement-held");
   await expect(held).toBeVisible();
   await expect(held).toContainText("$95.00");
-  await expect(held).toContainText("待画廊补齐欠款后发放");
+  await expect(held).toContainText("Held until the gallery pays what it owes");
   watch.expectClean();
 });
 
-test("Acceptance 6 (lines): in English the title is Peony fan, the amount is unchanged, and the held note is English", async ({ page }) => {
+test("Acceptance 6 (lines): in Chinese the title is 灰红黑三色小幅羊毛编织, the amount is unchanged, and the held note is Chinese", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
   await seek(page, END_OF_D10);
-  // The toggle cycles auto, en, zh. From auto, one click is English.
-  await page.getByTestId("demo-lang-toggle").click();
+  // The toggle cycles auto, en, zh. The maker's page starts in English, so two clicks give Chinese.
+  const toggle = page.getByTestId("demo-lang-toggle");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("data-lang", "en");
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("data-lang", "zh");
   const ord1 = page.getByTestId("maker-statement-line-ord_001");
-  await expect(ord1).toContainText("Peony fan");
+  await expect(ord1).toContainText("灰红黑三色小幅羊毛编织");
   await expect(ord1).toContainText("$134.48");
   const held = page.getByTestId("maker-statement-held");
   await expect(held).toContainText("$95.00");
-  await expect(held).toContainText("Held until the gallery pays what it owes");
+  await expect(held).toContainText("待画廊补齐欠款后发放");
   watch.expectClean();
 });

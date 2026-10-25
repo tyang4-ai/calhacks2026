@@ -141,7 +141,7 @@ class CatchExplanation(BaseModel):
 # ---------------------------------------------------------------------------------------------
 # The prompt.
 
-SYSTEM_PROMPT = """You are Cindy, the AI agent that keeps the books for a small Gu embroidery (顾绣) studio in Shanghai that sells through Cindia, its own website and a consignment gallery in San Francisco. You speak to the studio owner in the first person, short and plain, like a careful bookkeeper.
+SYSTEM_PROMPT = """You are Cindy, the AI agent that keeps the books for a small Diné (Navajo) weaving and silver co-op on the Navajo Nation in Arizona that sells through Cindia, its own website and a consignment gallery in San Francisco. You speak to the co-op's manager in the first person, short and plain, like a careful bookkeeper.
 
 Rules:
 - Use only the numbers that appear in the records and the facts you are given. Never invent a date, an amount, a rate or a name.
@@ -149,7 +149,7 @@ Rules:
 - Name the contract's commission rate and the rate the statement charged.
 - Say which record you trust and why. If something is uncertain, say what you are unsure about instead of guessing.
 - explanation_en and explanation_zh: two or three sentences each. The Chinese is natural Simplified Chinese, not a word-for-word translation.
-- The follow-up is a short, polite, specific note from the studio to the gallery's accounts team. It thanks them for the statement and payment, points out the commission difference, and asks them to send the difference. It promises nothing on the owner's behalf: no discounts, no deadlines the owner did not set, no legal threats. Sign it "Gu Embroidery Studio" in English and "顾绣工作室" in Chinese. Keep each body under 90 words or 180 characters.
+- The follow-up is a short, polite, specific note from the co-op to the gallery's accounts team. It thanks them for the statement and payment, points out the commission difference, and asks them to send the difference. It promises nothing on the manager's behalf: no discounts, no deadlines the manager did not set, no legal threats. Sign it "Diné Weaving and Silver Co-op" in English and "纳瓦霍（Diné）编织与银饰合作社" in Chinese. Keep each body under 90 words or 180 characters.
 - trusted_record_id is the ID of the record you trust, exactly as written in the records. delta_cents is the amount still owed, in integer cents.
 """
 
@@ -172,9 +172,9 @@ def build_prompt(req: ExplainRequest) -> str:
         f"Flag {flag.id} ({flag.kind}) links the records {', '.join(flag.recordIds)}.",
         f"The contract {contract.id} sets the gallery's commission at {_pct(contract.commissionBps)}.",
         f"The statement {statement.id} charged {' and '.join(_pct(r) for r in rates)} on {len(statement.lines)} sales"
-        f" totalling {_usd(statement.totalSaleCents)}, and says the studio's net is {_usd(statement.totalNetCents)}.",
+        f" totalling {_usd(statement.totalSaleCents)}, and says the co-op's net is {_usd(statement.totalNetCents)}.",
         f"The bank record {bank.id} shows {_usd(bank.amountCents)} received on {bank.date}.",
-        f"At the contract's rate the studio should have received {_usd(flag.expectedCents)}.",
+        f"At the contract's rate the co-op should have received {_usd(flag.expectedCents)}.",
         f"It received {_usd(flag.actualCents)}, so the difference is {_usd(flag.deltaCents)} ({flag.deltaCents} cents).",
     ]
     records = {
@@ -187,7 +187,7 @@ def build_prompt(req: ExplainRequest) -> str:
         + "\n".join(f"- {f}" for f in facts)
         + "\n\nThe three records, as JSON:\n"
         + json.dumps(records, ensure_ascii=False, indent=1)
-        + "\n\nExplain to the owner which record to trust and why, and draft the follow-up to the gallery."
+        + "\n\nExplain to the manager which record to trust and why, and draft the follow-up to the gallery."
     )
 
 

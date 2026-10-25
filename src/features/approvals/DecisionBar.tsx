@@ -22,7 +22,7 @@ const COMPACT_SEAL = 48;
 /** The seal's size in a full card's header. */
 const FULL_SEAL = 64;
 
-const studio = getById<Studio>("std_gu");
+const studio = getById<Studio>("std_dine");
 /** The payload type fixes the owner to "own_01". The value itself comes from the studio. */
 const OWNER_ID = (studio?.ownerId ?? "own_01") as "own_01";
 const owner = getById<Person>(OWNER_ID);

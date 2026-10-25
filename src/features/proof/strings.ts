@@ -131,7 +131,7 @@ export const SOURCE_LABELS: Record<SourceKey, Text> = {
   "b05-scenario": { en: "Testing your own file", zh: "用您自己的文件测试" },
   "b06-workbook": { en: "Excel report", zh: "Excel报表" },
   "b07-ask": { en: "Ask Cindy", zh: "问Cindy" },
-  "b08-approvals": { en: "Approvals on the owner's phone", zh: "主理人手机上的审批" },
+  "b08-approvals": { en: "Approvals on the manager's phone", zh: "负责人手机上的审批" },
   "b09-concierge": { en: "Gift finder", zh: "选购助手" },
   "b10-derived": { en: "Price split, receipts, statements and impact", zh: "价格拆分、收据、结算单与影响" },
 };
