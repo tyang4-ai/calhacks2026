@@ -1,6 +1,15 @@
-/* F-maker-statement: the paid toast sits at the top of the maker's phone, so it never covers the
-   statement's lines or the held note at the bottom. Overrides only the kit toast's placement. */
+/* M-maker-statement: the paid toast sits at the top of the maker's statement, so it never covers the
+   lines or the held note. Overrides only the kit toast's placement. On v1's phone column (Phase A
+   stage) it runs across the top, as v1 did. */
 .maker-statement-toast > .c-toast {
   top: var(--c-space-8);
   bottom: auto;
+}
+
+/* On the desktop page it sits in the empty left part of the panel's head row, above the header and
+   clear of the Simulated badge on the right. */
+.maker-statement-toast--desktop > .c-toast {
+  left: var(--c-space-24);
+  right: auto;
+  max-width: 50%;
 }

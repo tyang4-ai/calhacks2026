@@ -25,6 +25,7 @@ export const GLOSSARY = {
   piece: { en: "Piece", zh: "作品" },
   maker: { en: "Maker", zh: "匠人" },
   gallery: { en: "Gallery", zh: "画廊" },
+  order: { en: "Order", zh: "订单" },
 } as const satisfies Record<string, Text>;
 
 // ---------------------------------------------------------------------------------------------
@@ -45,4 +46,29 @@ export const UI = {
   emptyHint: { en: "Your statement appears here after the month closes.", zh: "月结后，您的对账会显示在这里。" },
   /** Accessible label for the list of lines. */
   linesLabel: { en: "Pieces sold this month and your share of each", zh: "本月售出的作品及您的所得" },
+  /** The lines table's middle column: the day the order was placed. */
+  orderDate: { en: "Order date", zh: "下单日期" },
+  /**
+   * The held line under the held note (A1-12): ties the held amount to the catch, the gallery's
+   * short payment, in plain words. A feature string; if the glossary gives it a row, its words win.
+   */
+  heldWhy: {
+    en: "The gallery paid less than its contract says, so part of your share waits until it pays.",
+    zh: "画廊的付款少于合同约定，所以您的一部分所得要等画廊补齐后再发放。",
+  },
+} as const satisfies Record<string, Text>;
+
+// ---------------------------------------------------------------------------------------------
+// The desktop page's strings (M-maker-statement T0).
+
+/** The header's "maker at" line: the glossary's Maker, then the community's name. */
+export function makerAt(communityName: Text, lang: Lang): string {
+  return lang === "zh" ? `${communityName.zh} · ${GLOSSARY.maker.zh}` : `${GLOSSARY.maker.en} · ${communityName.en}`;
+}
+
+/** The lines table's three column headings: the piece, the order's date, the maker's share. */
+export const COLUMNS = {
+  piece: GLOSSARY.piece,
+  date: UI.orderDate,
+  share: GLOSSARY.makerShare,
 } as const satisfies Record<string, Text>;

@@ -1,115 +1,177 @@
-// F-maker-statement T3: the maker's phone plays d10-statement on /maker/mkr_01.
-import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, watchPage } from "../smoke/lib";
+// M-maker-statement T4: the maker's page plays her statement on /maker/mkr_01 at 1440 by 900, from
+// the timeline's payout.sent for mpo_01 to its statement.issued for mkr_01, with event-anchored
+// seeks, and the d11-maker IDs sit inside frame-maker. Acceptance 1 to 6.
+import { expect, test } from "@playwright/test";
+import { GLOSSARY, UI } from "../../src/features/maker-statement/strings";
 import { formatCents } from "../../src/ui/formatCents";
-import { pieces } from "../../src/mock/catalog";
 import { makerStatements } from "../../src/mock/month";
-import { GLOSSARY } from "../../src/features/maker-statement/strings";
+import { watchPage } from "../smoke/lib";
+import {
+  BEAT_IDS,
+  DINE,
+  FRAME_VIEWPORT,
+  GRACE,
+  MKR_04,
+  MPO_01,
+  MST_01,
+  PC_01,
+  expectInsideFrame,
+  openMaker,
+  seekToEvent,
+  seekToStatement,
+  slotLang,
+  statementFor,
+  toChinese,
+} from "./maker-statement-lib";
 
-const MST_01 = makerStatements.find((m) => m.id === "mst_01")!;
-/** ord_001 sells pc_01. The maker's page opens in English; the toggle gives Chinese. */
-const PC_01 = pieces.find((p) => p.id === "pc_01")!;
+test.use({ viewport: FRAME_VIEWPORT });
 
-async function seek(page: Page, ms: number) {
-  await page.evaluate((t) => {
-    window.__cindia!.player.pause();
-    window.__cindia!.player.seek(t);
-  }, ms);
-}
-
-async function openMaker(page: Page) {
-  await page.goto("/maker/mkr_01");
-  await waitForHooks(page);
-  await expect(page.locator('[data-slot="maker.main"]')).toHaveAttribute("data-slot-state", "filled");
-}
-
-test("Acceptance 1: at 46 s, before statement.issued, the empty state shows and no total", async ({ page }) => {
+test("Acceptance 1: 300 ms before statement.issued for mkr_01, maker-statement-empty shows and no total does", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
-  await seek(page, 46000);
-  await expect(page.getByTestId("maker-statement-empty")).toBeVisible();
-  await expect(page.getByTestId("maker-statement-empty")).toContainText(GLOSSARY.noSalesYet.en);
+  await seekToStatement(page, -300);
+  const empty = page.getByTestId("maker-statement-empty");
+  await expect(empty).toBeVisible();
+  await expect(empty).toContainText(GLOSSARY.noSalesYet.en);
   await expect(page.getByTestId("maker-statement-total")).toHaveCount(0);
   await expect(page.getByTestId("maker-statement-lines")).toHaveCount(0);
+  await expect(page.getByTestId("maker-statement-held")).toHaveCount(0);
   watch.expectClean();
 });
 
-test("playing d10-statement at 8x fills the statement from the event", async ({ page }) => {
+test("from payout.sent to statement.issued: empty until the statement arrives, then the header, lines and held note", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
-  await page.evaluate(() => {
-    const p = window.__cindia!.player as unknown as { pause(): void; seek(ms: number): void; setSpeed(x: number): void; play(): void };
-    p.pause();
-    p.seek(47000);
-    p.setSpeed(8);
-    p.play();
-  });
-  await page.waitForFunction(() => window.__cindia!.player.now() >= 50000);
+  // Around the payout: the statement isn't issued yet, so the page is still empty and not paid.
+  await seekToEvent(page, "payout.sent", { makerPayoutId: MPO_01.id }, -300);
+  await expect(page.getByTestId("maker-statement-empty")).toBeVisible();
+  await seekToEvent(page, "payout.sent", { makerPayoutId: MPO_01.id }, 300);
+  await expect(page.getByTestId("maker-statement-empty")).toBeVisible();
+  await expect(page.getByTestId("maker-statement-paid")).toHaveCount(0);
+
+  // Play through statement.issued and wait for it on the player clock.
+  await seekToStatement(page, -300);
+  await page.evaluate(() => window.__cindia!.player.play());
+  await expect(page.getByTestId("maker-statement-total")).toBeVisible();
   await page.evaluate(() => window.__cindia!.player.pause());
-
-  const payload = await page.evaluate(() => {
-    const s = window.__cindia!.store.getState() as unknown as {
-      close: { statementByMaker: Record<string, string>; statements: Record<string, { lines: unknown[]; totalCents: number; heldCents: number }> };
-    };
-    return s.close.statements[s.close.statementByMaker["mkr_01"]!];
-  });
-  expect(payload).toBeTruthy();
-  expect(payload!.totalCents).toBe(MST_01.totalCents);
-
+  const st = await statementFor(page);
+  expect(st, "statement.issued for mkr_01 is in the store").not.toBeNull();
   await expect(page.getByTestId("maker-statement-empty")).toHaveCount(0);
-  await expect(page.getByTestId("maker-statement-total")).toContainText(GLOSSARY.makerStatement.en);
-  await expect(page.getByTestId("maker-statement-total")).toContainText(formatCents(payload!.totalCents));
-  await expect(page.getByTestId("maker-statement-lines").locator('[data-testid^="maker-statement-line-"]')).toHaveCount(payload!.lines.length);
-  await expect(page.getByTestId("maker-statement-line-ord_001")).toContainText(PC_01.title.en);
-  await expect(page.getByTestId("maker-statement-line-ord_001")).toContainText("$134.48");
-  await expect(page.getByTestId("maker-statement-held")).toContainText("$95.00");
-  await expect(page.getByTestId("maker-statement-held")).toContainText(GLOSSARY.heldNote.en);
-  await expect(page.getByTestId("maker-statement-payout-date")).toContainText("Oct 2, 2026");
-  await expect(page.getByTestId("maker-statement-paid")).toContainText(GLOSSARY.paid.en);
-
-  // The toggle cycles auto, en, zh: two taps from the start give Chinese, with the same amounts.
-  const toggle = page.getByTestId("demo-lang-toggle");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("data-lang", "en");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("data-lang", "zh");
-  await expect(page.getByTestId("maker-statement-total")).toContainText(GLOSSARY.makerStatement.zh);
-  await expect(page.getByTestId("maker-statement-total")).toContainText(formatCents(payload!.totalCents));
-  await expect(page.getByTestId("maker-statement-line-ord_001")).toContainText(PC_01.title.zh);
-  await expect(page.getByTestId("maker-statement-line-ord_001")).toContainText("$134.48");
-  await expect(page.getByTestId("maker-statement-held")).toContainText("$95.00");
-  await expect(page.getByTestId("maker-statement-held")).toContainText(GLOSSARY.heldNote.zh);
-  await expect(page.getByTestId("maker-statement-payout-date")).toContainText("2026年10月2日");
-  await expect(page.getByTestId("maker-statement-paid")).toContainText(GLOSSARY.paid.zh);
+  await expect(page.getByTestId("maker-statement-total")).toContainText(formatCents(st!.totalCents));
+  await expect(page.getByTestId("maker-statement-lines").locator('[data-testid^="maker-statement-line-"]')).toHaveCount(st!.lines.length);
+  await expect(page.getByTestId("maker-statement-held")).toContainText(formatCents(st!.heldCents));
+  await expect(page.getByTestId("maker-statement-paid")).toHaveText(GLOSSARY.paid.en);
   watch.expectClean();
 });
 
-test("Acceptance 7: in scripted mode the panel shows the Simulated badge", async ({ page }) => {
+test("Acceptance 2: 300 ms after statement.issued, as the page opens in English, every figure shows inside the frame", async ({ page }) => {
+  const watch = watchPage(page);
   await openMaker(page);
-  await seek(page, 46000);
+  expect(await slotLang(page)).toBe("en");
+  await seekToStatement(page, 300);
+  const st = await statementFor(page);
+  expect(st!.totalCents).toBe(MST_01.totalCents);
+
+  const header = page.getByTestId("maker-statement-header");
+  await expect(header).toContainText(GRACE.name.en);
+  await expect(header).toContainText(DINE.name.en);
+  const total = page.getByTestId("maker-statement-total");
+  await expect(total).toContainText(GLOSSARY.makerStatement.en);
+  await expect(total).toContainText(formatCents(st!.totalCents));
+  const ord1 = page.getByTestId("maker-statement-line-ord_001");
+  await expect(ord1).toContainText(PC_01.title.en);
+  await expect(ord1).toContainText("$134.48");
+  const held = page.getByTestId("maker-statement-held");
+  await expect(held).toContainText("$95.00");
+  await expect(held).toContainText(GLOSSARY.heldNote.en);
+  await expect(held).toContainText(UI.heldWhy.en);
+  await expect(page.getByTestId("maker-statement-payout-date")).toHaveText("Oct 2, 2026");
+
+  await expectInsideFrame(page, [
+    "maker-statement-header",
+    ...BEAT_IDS,
+    "maker-statement-line-ord_001",
+    "maker-statement-payout-date",
+    "maker-statement-paid",
+  ]);
+  watch.expectClean();
+});
+
+test("Acceptance 3: at the same moment maker-statement-paid reads Paid, because payout.sent for mpo_01 fired earlier", async ({ page }) => {
+  const watch = watchPage(page);
+  await openMaker(page);
+  const paidAt = await seekToEvent(page, "payout.sent", { makerPayoutId: MPO_01.id }, 0);
+  const shownAt = await seekToStatement(page, 300);
+  expect(paidAt).toBeLessThan(shownAt);
+  await expect(page.getByTestId("maker-statement-paid")).toHaveText(GLOSSARY.paid.en);
+  watch.expectClean();
+});
+
+test("Acceptance 4: /maker/mkr_04, an Ojibwe co-op maker with no statement, starts in English with no native name and no sales yet", async ({ page }) => {
+  const watch = watchPage(page);
+  expect(MKR_04.communityId).toBe("com_ojibwe");
+  expect(makerStatements.some((m) => m.makerId === MKR_04.id)).toBe(false);
+  await openMaker(page, MKR_04.id);
+  expect(await slotLang(page)).toBe("en");
+  await seekToStatement(page, 300);
+  expect(await statementFor(page, MKR_04.id)).toBeNull();
+  const empty = page.getByTestId("maker-statement-empty");
+  await expect(empty).toBeVisible();
+  await expect(empty).toContainText(GLOSSARY.noSalesYet.en);
+  await expect(page.getByTestId("maker-statement-header")).toContainText(MKR_04.name.en);
+  await expect(page.getByTestId("maker-statement-native-name")).toHaveCount(0);
+  await expect(page.getByTestId("maker-statement-total")).toHaveCount(0);
+  await expect(page.getByTestId("maker-statement-line-ord_001")).toHaveCount(0);
+  await expectInsideFrame(page, ["maker-statement-header", "maker-statement-empty"]);
+  watch.expectClean();
+});
+
+test("Acceptance 5: with the toggle on Chinese, the labels and titles are Chinese, the date reads 2026年10月2日, and the amounts are unchanged", async ({ page }) => {
+  const watch = watchPage(page);
+  await openMaker(page);
+  await seekToStatement(page, 300);
+  const st = await statementFor(page);
+  await toChinese(page);
+  expect(await slotLang(page)).toBe("zh");
+  const total = page.getByTestId("maker-statement-total");
+  await expect(total).toContainText(GLOSSARY.makerStatement.zh);
+  await expect(total).toContainText(formatCents(st!.totalCents));
+  const ord1 = page.getByTestId("maker-statement-line-ord_001");
+  await expect(ord1).toContainText(PC_01.title.zh);
+  await expect(ord1).toContainText("$134.48");
+  const held = page.getByTestId("maker-statement-held");
+  await expect(held).toContainText("$95.00");
+  await expect(held).toContainText(GLOSSARY.heldNote.zh);
+  await expect(page.getByTestId("maker-statement-payout-date")).toHaveText("2026年10月2日");
+  await expect(page.getByTestId("maker-statement-paid")).toHaveText(GLOSSARY.paid.zh);
+  await expectInsideFrame(page, [...BEAT_IDS, "maker-statement-header"]);
+  watch.expectClean();
+});
+
+test("Acceptance 6: in scripted mode the panel shows the Simulated badge", async ({ page }) => {
+  const watch = watchPage(page);
+  await openMaker(page);
+  await seekToStatement(page, -300);
   const sources = await page.evaluate(() => window.__cindia!.store.getState().sources);
   expect(sources["b10-derived"]).toBe("scripted");
-  await expect(page.locator('[data-slot="maker.main"]').getByTestId("simulated-badge")).toBeVisible();
-  await seek(page, 50000);
-  await expect(page.locator('[data-slot="maker.main"]').getByTestId("simulated-badge")).toBeVisible();
+  const badge = page.locator('[data-slot="maker.main"]').getByTestId("simulated-badge");
+  await expect(badge).toBeVisible();
+  await seekToStatement(page, 300);
+  await expect(badge).toBeVisible();
+  watch.expectClean();
 });
 
-test("a maker with a statement but another maker's page shows only her own", async ({ page }) => {
+test("another maker's page shows only her own statement", async ({ page }) => {
   const watch = watchPage(page);
-  await page.goto("/maker/mkr_02");
-  await waitForHooks(page);
-  await seek(page, 50000);
+  await openMaker(page, "mkr_02");
+  await seekToStatement(page, 300);
   const mst02 = makerStatements.find((m) => m.makerId === "mkr_02")!;
-  // The demo timeline issues only mst_01, so mkr_02 still sees the empty state.
-  const issued = await page.evaluate(() => {
-    const s = window.__cindia!.store.getState() as unknown as { close: { statementByMaker: Record<string, string> } };
-    return s.close.statementByMaker["mkr_02"] ?? null;
-  });
+  const issued = await statementFor(page, "mkr_02");
   if (issued) {
     await expect(page.getByTestId("maker-statement-total")).toContainText(formatCents(mst02.totalCents));
   } else {
     await expect(page.getByTestId("maker-statement-empty")).toBeVisible();
-    await expect(page.getByTestId("maker-statement-line-ord_001")).toHaveCount(0);
   }
+  await expect(page.getByTestId("maker-statement-line-ord_001")).toHaveCount(0);
   watch.expectClean();
 });

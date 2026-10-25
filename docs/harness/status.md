@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:10 PT
+UPDATED: 2026-10-25 00:11 PT
 
 # Status board
 
@@ -50,6 +50,7 @@ v1 (desktop session, history):
 | G3 seller-hub | PASS | Oct 24 11:33 PM | worktree `artifacts/gates/G3-seller-hub-wt-2316.md` 3/3 (check:scope, feature 30, smoke 123), `artifacts/gates/G3-seller-hub-verifier.md` PASS (F1-F5, F10 to the polish queue) | v2-seller-hub |
 | G3 watch | PASS | Oct 24 11:44 PM | worktree `artifacts/gates/G3-watch-wt-2324.md` 3/3 (check:scope, feature 15 + live skipped, smoke 123); `artifacts/gates/G3-watch-verifier.md` FAIL on F1 only (the Chinese card 21 px past the frame), moot under Gordon's English only (decisions.md); F2 to the polish queue | v2-watch |
 | G3 storefront | PASS | Oct 25 12:05 AM | worktree `artifacts/gates/G3-storefront-wt-2351.md` 3/3 (check:scope, feature 27, smoke 123), `artifacts/gates/G3-storefront-verifier.md` PASS (N1-N4 to the polish queue) | v2-storefront |
+| G3 maker-statement | PASS | Oct 25 12:20 AM | worktree `artifacts/gates/G3-maker-statement-wt-2359.md` 3/3 (check:scope, feature 29, smoke 123), `artifacts/gates/G3-maker-statement-verifier.md` PASS (ten minors) | v2-maker-statement |
 | G3 process | FAIL, fix round 1 | Oct 24 11:05 PM | `artifacts/gates/G3-process-verifier.md` FAIL on screens only: F1 swarm tool node over the Finder's name, F2 data chips cut, F3 reconcile labels truncated, F4 model name truncated; contracts, labels and 20 Acceptance lines pass | |
 | G6 | | | | |
 
@@ -107,7 +108,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | green | feature-lead | v2-watch | live spec skips until B15; F2 in the polish queue |
 | F-storefront | V2 P1 | green | feature-lead | v2-storefront | theme field on storefront.published (integrator); N1-N4 in the polish queue |
-| M-maker-statement | V2 P1 | built, worktree G3 queued and verifier | feature-lead | | compact layout under 600 px for Phase A's box |
+| M-maker-statement | V2 P1 | green | feature-lead | v2-maker-statement | compact layout under 600 px for Phase A's box; minors in the verifier report |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
 | I2-tour | V3 | T2 done (uncommitted, commits with T1), T1 running | integrator, data-smith | | 20 beats, 220 s; T3-T8 next, with English-only toggle hiding |
 | I3-redesign | V4 | todo | integrator | | per design drop |
@@ -388,3 +389,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:07 PT · B14 second spawn (T4 Finder and Curator on B12, T7 listing run, T8 storefront run, T9 endpoints, T10 adapter) and B15 (T1-T6, fixture until the public site is up) spawned · status.md
 - 2026-10-25 00:09 PT · SpacetimeDB stopped at its 2-hour limit, restarted on 127.0.0.1:3000 · status.md
 - 2026-10-25 00:10 PT · B11's trained outputs committed (report.json with hubRepo and hubRevision, vectors.json, unjudged.json, the filled model card, the snapshot) and the card test now holds for the filled card (test:server 671); SpacetimeDB restarted after its 2-hour limit (B13 reseeded: catalog 54, orders 42, approvals 5) · status.md
+- 2026-10-25 00:11 PT · G3 maker-statement PASS in the worktree plus verifier PASS; committed, tag v2-maker-statement; G3 approvals rerun PASS in the worktree (41, smoke 123) and its confirm recheck PASS, adversarial lens pending; desktop's first worktree run broke on over-long log names (script bug, not the feature), rerun queued; desktop verifier FAIL, findings next · status.md

@@ -1,84 +1,101 @@
-// F-maker-statement G4 fix: the paid toast must never cover the held note in d10-statement.
+// M-maker-statement T2: the kit Toast shows the first time paid arrives, as v1, and on the desktop
+// page it covers nothing: not the header, the lines, the held note or the Simulated badge. It's gone
+// by the end of the beat that shows the statement, when the held note is the point of the frame.
+// The toast is the kit's role="status" element inside maker-statement-header.
 import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, watchPage } from "../smoke/lib";
 import { UI } from "../../src/features/maker-statement/strings";
+import { watchPage } from "../smoke/lib";
+import { FRAME_VIEWPORT, beatEndAfterStatement, openMaker, overlaps, seekToStatement, toChinese } from "./maker-statement-lib";
 
-async function seek(page: Page, ms: number) {
-  await page.evaluate((t) => {
-    window.__cindia!.player.pause();
-    window.__cindia!.player.seek(t);
-  }, ms);
+test.use({ viewport: FRAME_VIEWPORT });
+
+function toast(page: Page, text: string) {
+  return page.getByTestId("maker-statement-header").getByRole("status").filter({ hasText: text });
 }
 
-async function openMaker(page: Page) {
-  await page.goto("/maker/mkr_01");
-  await waitForHooks(page);
-  await expect(page.locator('[data-slot="maker.main"]')).toHaveAttribute("data-slot-state", "filled");
+/** The toast's box doesn't overlap the header's text, the lines, the held note or the badge. */
+async function expectCoversNothing(page: Page, text: string) {
+  const t = (await toast(page, text).boundingBox())!;
+  expect(t).toBeTruthy();
+  const others: [string, ReturnType<Page["locator"]>][] = [
+    ["maker-statement-total", page.getByTestId("maker-statement-total")],
+    ["maker-statement-lines", page.getByTestId("maker-statement-lines")],
+    ["maker-statement-held", page.getByTestId("maker-statement-held")],
+    ["maker-statement-payout-date", page.getByTestId("maker-statement-payout-date")],
+    ["simulated-badge", page.locator('[data-slot="maker.main"]').getByTestId("simulated-badge")],
+  ];
+  for (const [name, loc] of others) {
+    const b = (await loc.boundingBox())!;
+    expect(b, `${name} has a box`).toBeTruthy();
+    expect(overlaps(t, b), `toast ${JSON.stringify(t)} overlaps ${name} ${JSON.stringify(b)}`).toBe(false);
+  }
+  // The header's own text starts below the toast: the toast sits in the panel's head row.
+  const header = (await page.getByTestId("maker-statement-header").boundingBox())!;
+  expect(t.y + t.height).toBeLessThanOrEqual(header.y);
 }
 
-function toast(page: Page) {
-  return page.locator('[data-slot="maker.main"]').getByRole("status").filter({ hasText: UI.paidToast.en });
-}
-
-test("after statement.issued and payout.sent the paid toast shows at the top and does not overlap the held note", async ({ page }) => {
+test("just after statement.issued, with payout.sent already in, the paid toast shows and covers nothing", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
-  await seek(page, 47500);
-
-  const held = page.getByTestId("maker-statement-held");
-  await expect(held).toContainText("$95.00");
+  await seekToStatement(page, 300);
   await expect(page.getByTestId("maker-statement-paid")).toBeVisible();
-  await expect(toast(page)).toBeVisible();
-
-  const t = (await toast(page).boundingBox())!;
-  const h = (await held.boundingBox())!;
-  expect(t).toBeTruthy();
-  expect(h).toBeTruthy();
-  const overlaps = t.x < h.x + h.width && h.x < t.x + t.width && t.y < h.y + h.height && h.y < t.y + t.height;
-  expect(overlaps, `toast ${JSON.stringify(t)} overlaps held note ${JSON.stringify(h)}`).toBe(false);
-  // The toast sits above the held note, at the top of the phone.
-  expect(t.y + t.height).toBeLessThanOrEqual(h.y);
+  await expect(toast(page, UI.paidToast.en)).toBeVisible();
+  await expectCoversNothing(page, UI.paidToast.en);
   watch.expectClean();
 });
 
-test("playing d10-statement, the toast is gone and the held note is clear by the end-of-beat frame", async ({ page }) => {
+test("before statement.issued there's no toast", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
+  await seekToStatement(page, -300);
+  await expect(page.getByTestId("maker-statement-empty")).toBeVisible();
+  await expect(page.getByTestId("maker-statement-header").getByRole("status")).toHaveCount(0);
+  watch.expectClean();
+});
+
+test("playing the beat, the toast shows when the statement arrives and is gone by the end-of-beat frame", async ({ page }) => {
+  const watch = watchPage(page);
+  await openMaker(page);
+  const end = await beatEndAfterStatement(page);
+  await seekToStatement(page, -300);
   await page.evaluate(() => {
-    const p = window.__cindia!.player as unknown as { pause(): void; seek(ms: number): void; setSpeed(x: number): void; play(): void };
-    p.pause();
-    p.seek(47000);
-    p.setSpeed(4);
+    const p = window.__cindia!.player;
+    p.setSpeed(2);
     p.play();
   });
-  await expect(toast(page)).toBeVisible();
-  await page.waitForFunction(() => window.__cindia!.player.now() >= 49700);
+  await expect(toast(page, UI.paidToast.en)).toBeVisible();
+  await page.waitForFunction((t) => window.__cindia!.player.now() >= t, end - 300, { timeout: 45_000 });
   await page.evaluate(() => window.__cindia!.player.pause());
-
-  await expect(toast(page)).toHaveCount(0);
+  await expect(toast(page, UI.paidToast.en)).toHaveCount(0);
   await expect(page.getByTestId("maker-statement-held")).toBeVisible();
   await expect(page.getByTestId("maker-statement-held")).toContainText("$95.00");
   watch.expectClean();
 });
 
-test("the toggle turns the paid toast Chinese and it still clears the held note", async ({ page }) => {
+test("seeking from the toast to the end of the beat clears it", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
-  await seek(page, 47500);
-  await expect(toast(page)).toBeVisible();
+  const end = await beatEndAfterStatement(page);
+  await seekToStatement(page, 300);
+  await expect(toast(page, UI.paidToast.en)).toBeVisible();
+  await page.evaluate((t) => {
+    const p = window.__cindia!.player;
+    p.pause();
+    p.seek(t);
+  }, end - 300);
+  await expect(toast(page, UI.paidToast.en)).toHaveCount(0);
+  await expect(page.getByTestId("maker-statement-held")).toContainText("$95.00");
+  watch.expectClean();
+});
 
-  // The toggle cycles auto, en, zh: the page starts in English, so two taps give Chinese.
-  const toggle = page.getByTestId("demo-lang-toggle");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("data-lang", "en");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("data-lang", "zh");
-  const zhToast = page.locator('[data-slot="maker.main"]').getByRole("status").filter({ hasText: UI.paidToast.zh });
-  await expect(zhToast).toBeVisible();
-  await expect(toast(page)).toHaveCount(0);
-
-  const t = (await zhToast.boundingBox())!;
-  const h = (await page.getByTestId("maker-statement-held").boundingBox())!;
-  expect(t.y + t.height).toBeLessThanOrEqual(h.y);
+test("the toggle turns the paid toast Chinese, and it still covers nothing", async ({ page }) => {
+  const watch = watchPage(page);
+  await openMaker(page);
+  await seekToStatement(page, 300);
+  await expect(toast(page, UI.paidToast.en)).toBeVisible();
+  await toChinese(page);
+  await expect(toast(page, UI.paidToast.zh)).toBeVisible();
+  await expect(toast(page, UI.paidToast.en)).toHaveCount(0);
+  await expectCoversNothing(page, UI.paidToast.zh);
   watch.expectClean();
 });
