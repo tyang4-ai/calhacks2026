@@ -33,7 +33,7 @@ Rule for v1: nothing in v1 changes unless this file says so. Plan `R0-reskin` mo
 
 - **Network secrets** (cloud only) keep a key outside the VM. Elastic: header `Authorization`, prefix `ApiKey` (not the default `Bearer`), allowed hosts `*.elastic.cloud`, which covers both project endpoints (on a Team plan without the admin role, two secrets, one per host). Apify: header `Authorization`, prefix `Bearer`, host `api.apify.com`. The Anthropic key and the Nessie key can't use one: the proxy never attaches a secret to `api.anthropic.com`, and Nessie reads its key from the query string.
 - The keys `GET /api/health` reports become `{ anthropic, nessie, elastic, apify, hf }`, each a boolean. A key counts as set when its variable is set or its `*_AUTH=proxy` flag is, and `elastic` also needs `ELASTIC_URL`. A new `services` object reports `{ spacetime: boolean, model: boolean }`: SpacetimeDB answers, and the trained model is on disk. Whether `PUBLIC_SITE_URL` is set comes from `GET /api/b15/status` (section 5).
-- `server/config.py` exposes the names above, plus `HF_REPO` (from `CINDIA_HF_REPO`), `MODEL_DEFAULT` (`claude-sonnet-5-5`), `MODEL_FAST` (`claude-haiku-5-5`), `ALLOWED_MODELS` (exactly those two) and `CLAUDE_BASE_URL` (`https://api.anthropic.com`, a constant, never from the environment, passed by every Claude client).
+- `server/config.py` exposes `ANTHROPIC_API_KEY` (from `CINDIA_ANTHROPIC_API_KEY`, then `ANTHROPIC_API_KEY`), `MODEL_DIR` (from `CINDIA_MODEL_DIR`), `HF_REPO` (from `CINDIA_HF_REPO`), and the other names above as they are, plus `MODEL_DEFAULT` (`claude-sonnet-5-5`), `MODEL_FAST` (`claude-haiku-5-5`), `ALLOWED_MODELS` (exactly those two) and `CLAUDE_BASE_URL` (`https://api.anthropic.com`, a constant, never from the environment, passed by every Claude client).
 - The command guard blocks reads of `.env`, `printenv`-style commands, and any command that names a variable ending in `_KEY`, `_TOKEN` or `_SECRET`. The G6 secrets scan reads the key values from `.env` and from the process environment, in memory only. Never echo a variable that holds a key.
 
 ## 2. Data model additions (`data-model.md`)
@@ -75,7 +75,7 @@ Four fictional Native American communities. The Diné co-op is the named communi
 
 Approval gains kinds: `"follow_up" | "maker_payouts" | "listing_publish" | "storefront_publish" | "report_listing" | "milestone_release" | "support_action"`. Demo approvals added: `apr_03` (report `cft_01`), `apr_04` (publish `lst_01`), `apr_05` (release `wip_01`'s second milestone). Party gains kind `"community_fund"`, with `id` the project ID.
 
-**Verification.** `verification.note` follows one pattern for all four: "In a real launch, makers would be enrolled members of the [nation] or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo." `by` names the nation and the Act. Cards and pages show it as demo verification (L3, L4).
+**Verification.** `verification.note` follows one pattern for all four: "In a real launch, makers would be enrolled members of [nation] or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo." [nation] is "the Navajo Nation", "an Ojibwe tribe or band", "the Pueblo of Acoma" or "the Seminole Tribe of Florida", the phrases in `S3-catalog.md` R6. `by` names the nation and the Act. Cards and pages show it as demo verification (L3, L4).
 
 ### The embedded passage
 
@@ -87,7 +87,7 @@ passage: {facets.object.en} | craft: {community.craft.en}, {community.people.en}
 
 - Lists join with `, `. In `for:`, when one of the two lists is empty, only the other is written, and when both are empty the part is left out.
 - The first sentence of `story.en` is the text up to and including the first `. `, `! ` or `? `, or the whole text when it has none, trimmed.
-- A query is embedded as `query: ` followed by the person's words, then, only when the person added or edited chips, a comma and those chips joined with `, `. The price chip is a filter and is never embedded. `evaluate.py`, `/api/b11/map` and `/api/b12/search` embed queries the same way.
+- A query is `query: ` followed by the person's words, then `, ` and each chip whose words aren't already in the text. A price chip (`under $200`) is never embedded, because it's a filter. Training queries, eval queries, `map`, B12's search and B15's comparer all use this rule through `compose.query_text(text, chips)`.
 - Each input carries exactly one `passage: ` or `query: ` prefix, written in the text. The code never uses sentence-transformers' `prompts` or `encode_query()`. The prefixes are what the e5 model family expects.
 
 ### New demo-critical figures
@@ -115,7 +115,7 @@ G2b checks every one of these as well as the ten from v1, which keep their numbe
 | `storefronts.ts` | The four storefronts |
 | `agents.ts` | The agent roster from section 6 |
 | `swarm.ts` | The scripted swarm runs (section 11's run list), `demoQuestions` and `makerQuestions` (`qst_01` and its scripted answer `ans_01`) |
-| `listings.ts` | `lst_01`, its scripted draft and `apr_04` |
+| `listings.ts` | `listings` (`lst_01` and its notes) and `apr_04`. The scripted draft is `run_02`'s `listing.drafted` in `swarm.ts` |
 | `watch.ts` | The counterfeit candidates, `scriptedScan`, `fup_02` and `apr_03` |
 | `model.ts` | `modelId: "cindia-embed-v1"` and `report` (null until the first real run) |
 | `policy.ts` | Shipping, returns and care topics, which the Clerk reads |
@@ -138,7 +138,7 @@ The envelope, the store and the player stay. These change:
 - `split.shown` adds `compare?: { channelId: "ch_gallery"; commissionBps; makerShareCents }`, what the maker would get for the same piece through the gallery (figure 16).
 - **Per-key timeouts.** The registry gives `produce()` 8 seconds by default, 20 seconds for `b14-swarm` and 60 seconds for `b15-watch`. Each adapter aborts 0.5 seconds earlier.
 - Events a live adapter pushes through `start(emit)` take `at` from the player clock when they arrive.
-- **Store keys added:** `search`, `surprise`, `support`, `swarm`, `listings`, `projects`, `wip`, `model`, `watch`, `storefront`, `questions`, `sync` (`sync.data`, the newest `data.synced`, and `sync.index`, the newest `index.synced`), `log` (section 11) and `demo.process` and `demo.drawer`. `I2-core` writes a reducer for every new type, with unit tests. Features add none.
+- **Store keys added:** `search`, `surprise`, `support` (with `support.questions`, section 11), `swarm`, `listings`, `projects`, `wip`, `model`, `watch`, `storefront`, `sync` (`sync.data`, the newest `data.synced`, and `sync.index`, the newest `index.synced`), `log` (section 11) and `demo.process` and `demo.drawer`. `I2-core` writes a reducer for every new type, with unit tests. Features add none.
 
 ### New event types
 
@@ -176,7 +176,7 @@ The envelope, the store and the player stay. These change:
 - `flag.raised` adds `nessieId?: string`, set only by B16. `money.moved`'s `nessieId?` is set by B04 and by B16. B16 keys only live twins of `flag.raised` and `money.moved`, and no tour event.
 - In live mode, background work an adapter starts from `start(emit)` (B13's mirror, B16's checks) is allowed when it never delays or replaces a tour event. It may add a live twin that only adds a field, like `nessieId`.
 - The payload rule from v1 applies: `search.answered`, `surprise.drawn`, `support.answered`, `listing.drafted`, `proof.search_scored`, `watch.scanned`, `counterfeit.flagged`, `data.synced` and `index.synced` carry their figures and text, and screens render them from the event.
-- `data.synced` comes from the B13 adapter whenever its poll of `GET /api/b13/changes` sees a change. In scripted mode the tour's `d15-listing` beat carries one, built from the mock data (section 11). `index.synced` comes from the B12 adapter after the seed and on each status change.
+- `data.synced` comes from the B13 adapter whenever its poll of `GET /api/b13/changes` sees a change. In scripted mode the tour's `d15-listing` beat carries one, built from the mock data (section 11). That is the one tour event keyed `b13-live`, and in live mode the B13 adapter answers it with `[]` at once, so the scripted one plays. `index.synced` comes from the B12 adapter after the seed and on each status change.
 - `support.escalated` has no scripted producer in the tour. Seeded specs cover its paths.
 
 ### Requests from people, added rows
@@ -185,8 +185,8 @@ The envelope, the store and the player stay. These change:
 |---|---|---|---|
 | `search.queried` | `b12-search` | For the demo query with its own chips and filters, the answer in `src/mock/search.ts`. For anything else, the local keyword scorer over `searchIndex` (`src/sources/keywordSearch.ts`), engine `keyword_scripted` | B12 |
 | `surprise.asked` | `b12-search` | A seeded draw over the catalog (`src/sources/surprise.ts`, section 11) | B12 |
-| `support.asked` | `b14-swarm` | The run in `src/mock/swarm.ts` whose question matches. A run that names a piece answers only when the request's `contextIds` include that piece. Otherwise the fallback run, which replies L16 | B14 |
-| `question.answered` | `b14-swarm` | The run whose `question` trigger names the question: the Writer's `support.answered` on the question's thread, quoting the maker's words as she wrote them | none yet: B14's adapter returns `[]` until the live loop lands ("Backend if time") |
+| `support.asked` | `b14-swarm` | The run in `src/mock/swarm.ts` whose question matches. A run that names a piece or a maker answers only when the request's `contextIds` include it. Otherwise the fallback run, which replies L16 | B14 |
+| `question.answered` | `b14-swarm` | The run whose `question` trigger names the question: the Writer's `support.answered` on the question's thread, quoting the maker's words as she wrote them. A person's own forwarded question (`qst_user_<n>`), which no run names, gets `run_09`'s relay on `support.questions[questionId].forwarded.threadId` | none yet: B14's adapter returns `[]` until the live loop lands ("Backend if time") |
 | `listing.requested` | `b14-swarm` | The run whose notes match `lst_01`'s, re-keyed to the person's listing, or the fallback draft labeled as a sample | B14 |
 | `storefront.requested` | `b14-swarm` | The Designer run (`run_03`) for `sto_01`. Any other storefront gets no scripted draft | B14 |
 | `watch.started` | `b15-watch` | `watch.scanned` and the candidates in `src/mock/watch.ts`, with a person's hits re-keyed (section 11) | B15 |
@@ -309,6 +309,8 @@ Each camera shows one frame at full stage size (the stage is 1440 by 900, scaled
 
 Shell: `shell-topnav`, `shell-side-shop`, `shell-side-sell` (the Shop and Sell switch), `shell-help` (opens the support drawer), `shell-nav-<view>`, `frame-store`, and the process slots' containers and placeholders, `slot-process-bar` and `slot-process-view`. The shell renders no `process-` test ID of its own. The tour adds `pitch-card-what`, `pitch-card-why` and `pitch-card-how`.
 
+The table lists the test IDs that something outside their feature relies on, such as the tour's On screen IDs (section 8) and section 12's label IDs. Any other test ID a feature renders stays internal to it, as `ui-contract.md` says.
+
 | Test ID | Feature | Element |
 |---|---|---|
 | `pitch-card-what`, `pitch-card-why`, `pitch-card-how` | the stage (`I2-tour`) | The three pitch cards |
@@ -362,9 +364,11 @@ Shell: `shell-topnav`, `shell-side-shop`, `shell-side-sell` (the Shop and Sell s
 | `buyer-project-addon` | buyer | The project contribution at checkout |
 | `buyer-receipt-promise` | buyer | Under the received status: "We'll show you when Grace N. is paid." |
 | `buyer-receipt-maker-note` | buyer | The maker's note on the paid receipt |
+| `buyer-pay-blocked` | buyer | L6 in place of `buyer-pay-button`, on the public build only |
 | `seller-overview` | seller-hub | Sell › Overview |
 | `seller-listing-notes` | seller-hub | The maker's notes box |
 | `seller-listing-draft` | seller-hub | The drafted listing |
+| `seller-listing-translated-<lang>` | seller-hub | L27 beside the draft's version in the language the notes weren't written in, `<lang>` that version's language |
 | `seller-listing-check-<checkId>` | seller-hub | One check on the draft |
 | `seller-listing-indexed` | seller-hub | The indexed line: the model, the index and the new dot |
 | `seller-listing-approve` | seller-hub | Propose publishing (an approval) |
@@ -382,10 +386,12 @@ Shell: `shell-topnav`, `shell-side-shop`, `shell-side-sell` (the Shop and Sell s
 | `watch-scan` | watch | Scan now |
 | `watch-results` | watch | The hits, then every checked result |
 | `watch-item-<cftId>` | watch | One hit, side by side with the co-op's piece |
+| `watch-live-<cftId>` | watch | L21 on a live hit, one whose `counterfeit.flagged` came from a live source |
 | `watch-similarity-<cftId>` | watch | Its text match (L19) |
 | `watch-report-<cftId>` | watch | Propose a report (an approval) |
 | `watch-dismiss-<cftId>` | watch | L23, with the same weight as the report button |
 | `watch-fairness` | watch | The fairness line with L20 |
+| `watch-claim-only-<n>` | watch | L22 on a claim-only result, which has no report button. `<n>` is the result's place in `watch.scanned`'s `results`, from 1 |
 
 ## 5. API (`api-contract.md`)
 
@@ -394,14 +400,14 @@ The v1 rules stay: `/api/bNN/` prefixes, `{ "events": [...] }` responses, the er
 1. **Timeouts:** per key, as section 3 gives them: `produce()` gets 8 seconds by default, 20 for `b14-swarm` and 60 for `b15-watch`, the adapter aborts 0.5 seconds earlier, and each endpoint finishes at least 0.5 seconds before that.
 2. **Nothing in the browser calls an outside service:** Claude, Nessie, Elastic, Apify, Hugging Face, or SpacetimeDB on port 3000. Only `server/` does.
 3. **Errors:** `key_missing` names any key the upgrade needs, and `upstream_timeout` and `upstream_error` cover every outside service, SpacetimeDB included. One new code: `busy`, status 503, when the server is already running two swarm runs or one scan, so the scripted answer plays.
-4. **What the server reads:** only what the request carries, except that B11, B12, B14 and B15 (and their tests) also read `artifacts/mock/mock.json`, which `npm run export:mock` writes from `src/mock/`. B11 trains from its committed copy, `server/b11_embed/data/mock.json`. B14 and B15 read `contentRules` from it.
+4. **What the server reads:** only what the request carries, except that B11 to B15 (and their tests) also read `artifacts/mock/mock.json`, which `npm run export:mock` writes from `src/mock/`. B11 trains from its committed copy, `server/b11_embed/data/mock.json`. B13 seeds from it. B14 and B15 read `contentRules` from it.
 
 Also for every v2 router:
 - `side` in a request is a UI hint, not an access boundary. Buyer-side requests carry the pieces, communities, policy, index entries, the roster, the makers of the pieces on screen and only the orders in `contextIds`, and never payouts or maker statements.
-- Limits: `text` at most 1,000 characters, an `image` at most 4 MB and PNG or JPEG by its magic bytes, a body at most 2 MB, all else `bad_request`.
+- Limits: `text` at most 1,000 characters, `notes` at most 2,000, an `image` at most 4 MB and PNG or JPEG by its magic bytes, a body at most 2 MB, or 6 MB for a listing with an image, all else `bad_request`.
 - Web text (B15's found titles and snippets) is untrusted. It is cut to 300 characters and passed to a model only inside a delimited data block that the system prompt names as untrusted, and only `http` and `https` URLs are kept.
 - `evt_live_` IDs never repeat across server restarts: each router writes `evt_live_` followed by its two-digit number, the server's start time as six digits (Unix seconds modulo 1,000,000) and a four-digit count from 0001, as one number. B13's IDs come from the row instead (B13 below).
-- uvicorn runs with `HF_HUB_OFFLINE=1`, and no server module calls out at import time. `server/main.py` keeps the `httpx` loggers at WARNING, and when a router fails to load it logs the missing module's name.
+- uvicorn runs with `HF_HUB_OFFLINE=1`, and no server module calls out at import time. `server/main.py` keeps the `httpx`, `httpx2` and `httpcore` loggers at WARNING, and when a router fails to load it logs the missing module's name.
 - Models: only `claude-haiku-5-5` and `claude-sonnet-5-5`. A test fails on any other model ID.
 
 ### B11 · the embedding model (`b11-embed`)
@@ -414,9 +420,9 @@ Also for every v2 router:
 - **The hand-off is the Hugging Face repo.** With `HF_TOKEN` and `CINDIA_HF_REPO` set, `publish.py` publishes the model, its card and `report.json` to the private repo. `python server/b11_embed/fetch_model.py` pulls the newest onto the cloud VM and the demo laptop. A model, `vectors.json` and an Elastic index that don't share one fingerprint are refused: `trained` is false, and B12 reseeds an index whose fingerprint differs.
 - **Base model:** `intfloat/multilingual-e5-small` (384 dimensions), so Chinese and English queries share one space. The builder may pick another open model if this one won't train in the cloud, and records why in its report.
 - **Training pairs:** a build-time prompt to `claude-sonnet-5-5` writes 20 buyer-style queries per piece about the fictional catalog, in mixed voices, about a fifth in Chinese, plus filtered hard negatives. A query that hits `contentRules` is dropped and counted. Every pair is kept in `pairs.jsonl` for audit. Eval queries never enter training. The model card says the data is synthetic queries about fictional pieces and names what the model is not for: classifying, ranking or verifying real makers or their work.
-- **`GET /api/b11/model`** · no key · under 200 ms · returns `{ "trained": boolean, "warm": boolean, "modelId": string | null, "baseModel": string | null, "dims": number | null, "fingerprint": string | null, "problem": string | null }` (not an events response). The first call starts loading the model in a background thread. The B11, B12 and B15 adapters' `health()` need `trained` and `warm`.
+- **`GET /api/b11/model`** · no key · under 200 ms · returns `{ "trained": boolean, "warm": boolean, "modelId": string | null, "baseModel": string | null, "dims": number | null, "fingerprint": string | null, "problem": string | null }` (not an events response). The first call starts loading the model in a background thread. The B11 and B12 adapters' `health()` need `trained` and `warm`. B15's doesn't wait on B11.
 - **`POST /api/b11/report`** · no key · under 1 second · `{ "trigger": ... }` → `model.trained` and `proof.search_scored` from `report.json`.
-- **`POST /api/b11/map`** · no key · under 2 seconds once warm · `{ "trigger": ..., "queryId": ..., "text": ..., "keywords": [] }` → `search.mapped` (all pieces' PCA points plus the query's). Called by the B11 adapter and by the B12 adapter for a person's search. `[]` while the model isn't trained or warm.
+- **`POST /api/b11/map`** · no key · under 2 seconds once warm · `{ "trigger": ..., "queryId": ..., "text": ..., "keywords": [] }` → `search.mapped` (all pieces' PCA points plus the query's), or `[]` while the model isn't trained or warm. Called by the B12 adapter for a person's search. The B11 adapter's `produce()` answers every event with `[]` at once, with no call.
 - **Fallback:** the scripted `model.trained`, `proof.search_scored` and `search.mapped` from `src/mock/model.ts`, or nothing when the report is null.
 
 ### B12 · search (`b12-search`)
@@ -454,6 +460,7 @@ SpacetimeDB is the platform's system of record. Elastic is the search index buil
 - `seed` and `record` answer 503 `upstream_error` without the token or with SpacetimeDB down. `changes` and `status` always answer from the snapshot.
 - **The adapter** `src/sources/live/b13-live.ts`:
   - `health()`: `/api/health` lists `b13` with `services.spacetime` true, then `/api/b13/status` says `spacetime`. While `seeded` is false it starts the seed in the background and answers false.
+  - `produce()`: `[]` at once for the tour's `data.synced` in `d15-listing`, the one tour event keyed `b13-live`, so the scripted one plays.
   - `start(emit)` polls `/changes` with the screen ID `scr_` plus the page tag and the role from the route (`/shop` buyer, `/sell` and `/maker` seller, `/demo` tour), from the moment live mode turns on until it turns off. The registry stamps each event's `at` on arrival.
   - Steps of a run another page started (its `runId` carries another page's tag) reach the swarm view with that page's tag added to their `threadId`, so they never land on this page's own threads.
 - **Fallback:** without B13, swarm steps arrive in B14's response or from the scripted runs, and the data view shows the mock data.
@@ -481,7 +488,7 @@ SpacetimeDB is the platform's system of record. Elastic is the search index buil
 
 ### B15 · the copy watch (`b15-watch`)
 
-- **`POST /api/b15/watch`** · `APIFY_TOKEN` or `APIFY_AUTH=proxy`, and `PUBLIC_SITE_URL` · answers at once · `{ "trigger", "runId", "idTag", "idStart", "scanId", "makerId", "queries" }` → status 202 with `{ "scanId", "status": "running" }` (not an events response). It starts the scan in a server thread, or joins the one already running for the same scan ID and queries, single flight and cached by scan. A maker outside `com_dine` gets 400 `bad_request`, and without `PUBLIC_SITE_URL` it answers 503 `upstream_error`.
+- **`POST /api/b15/watch`** · `APIFY_TOKEN` or `APIFY_AUTH=proxy`, and `PUBLIC_SITE_URL` · answers at once · `{ "trigger", "runId", "idTag", "idStart", "scanId", "makerId", "queries" }` → status 202 with `{ "scanId", "status": "running" }` (not an events response). It starts the scan in a server thread, or joins the one already running for the same `idTag` and `scanId` (single flight). Scans are cached by maker for 30 minutes, with fresh IDs. A maker outside `com_dine` gets 400 `bad_request`, and without `PUBLIC_SITE_URL` it answers 503 `upstream_error`.
 - **`GET /api/b15/watch/{scanId}`** · no key · under 200 ms · `{ "status": "running" | "done" | "failed", "events": CindiaEvent[], "error": { "code", "message" } | null }`. `events` is empty until `done`. The adapter's `produce()` polls it every second until `done` or `failed`, inside its 59.5-second abort, and a failed scan throws, so the scripted scan plays.
 - **`GET /api/b15/status`** · no key · under 200 ms · `{ "market": boolean, "threshold": number, "measured": boolean, "model": boolean }` (not an events response). `market` is true when `PUBLIC_SITE_URL` is set. The adapter's `health()` needs `/api/health` to list `b15` with `keys.apify` true, then `market`. It doesn't wait on B11.
 - **The scan:**
@@ -645,7 +652,7 @@ Rules:
 | Gate | After | Commands | Tag |
 |---|---|---|---|
 | R0 | `R0-reskin`, before everything else in V1 | `npm run check`, `npm run check:data`, `npm run test:smoke`, `npm run build`, `npm run test:demo` 3 times (v1's 60-second demo on the new names), `npm run test:offline`, `npm run test:server`, the verifier's screenshot review, and the old-names search in `R0-reskin.md`. Every v1 check green, every number unchanged. `scripts/gate.mjs` learns the time rule below only in `I2-core`, so the orchestrator applies it here from `report.json` itself | `v2-reskin` |
-| core | `I2-core`'s first spawn with the fallout step, committed together | `npm run check`, `npm run test:server` | `v2-core` |
+| core | `I2-core`'s first spawn with the fallout step, committed together | `npm run check`, `npm run test:smoke`, `npm run test:demo` (v1's 60-second demo on the new names), `npm run test:server` | `v2-core` |
 | G1b | `I2-core`, `I2-shell`, `I2-kit` | `npm run check`, `npm run test:smoke`, `npm run build`, `npm run test:demo` once with the Phase A mapping, `npm run test:offline`, a verifier review | `v2-shell` |
 | G2b | `S3-catalog` | `npm run check:data` (v1's figures 1 to 10 and v2's 11 to 16), `npm run check:scope -- src/mock/ tests/data/ src/sources/`, `npm run art -- --check`, a verifier review. It runs when no integrator is mid-task | `v2-data` |
 | G3 | each v2 feature or migration | as v1. A migration that owns several folders passes with all its slugs listed | `v2-<slug>` |
@@ -654,7 +661,7 @@ Rules:
 | D-deploy | `D-deploy` | its Acceptance commands, a verifier review | `v2-deploy` |
 | G6 | the freeze | as v1, with the secrets scan reading the v2 names | `final` |
 
-- **Time limits.** Every gate that plays the demo times the tour test alone and passes when `artifacts/demo/report.json`'s `endedAtWallMs` is at most the loaded timeline's `durationMs` plus 15 seconds: 75 seconds for v1's 60-second demo, 220 seconds for the 205-second tour. R0, G1b, G4v2, G5 and G6 all use this rule.
+- **Time limits.** Every gate that plays the demo times the tour test alone and passes when `artifacts/demo/report.json`'s `endedAtWallMs` is at most the loaded timeline's `durationMs` plus 15 seconds: 75 seconds for v1's 60-second demo, 220 seconds for the 205-second tour. R0, core, G1b, G4v2, G5 and G6 all use this rule.
 - **G5 for v2 upgrades** (B11 to B16) runs `npm run test:server`, the upgrade's contract and live tests, its named live feature specs, then `npm run test:demo` once in live mode and `npm run test:offline`. It passes when the server tests pass, the live feature spec answers a person's own request end to end with every event valid, and the scripted tour still passes with the source in live mode. The tour's keyed events for that source are listed in `ALLOWED_EMPTY_FALLBACKS`. v1 upgrades keep v1's G5 on the Phase A demo.
 - **Git in the cloud** (`conventions.md`, Git, in place of `git push origin main --follow-tags`): the GitHub proxy refuses tag pushes, so the orchestrator pushes with `git push origin main` only, makes each tag locally after the push, and records the tag and its full commit SHA in the Tags table of `status.md`. A cut restores from the SHA when the tag is missing, and never restores a folder that R0 or the fallout step touched from anything older than `v2-core`. Gordon creates and pushes the tags from Windows at the freeze. A design drop may add `demo-ok-v2-dN`.
 
@@ -689,7 +696,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
 - **New store keys:**
   - `log`: one `{ id, type, at, source, key }` per event, idempotent by `id`, keeping the newest 400. A status event (`data.synced`, `index.synced`) replaces the log's earlier entry of its own type instead of adding one, so live polling never pushes the tour's events out. The process views and block counts read it.
   - `demo.process` and `demo.drawer`. `I2-core` owns both, with `beat.started.process` and `beat.started.drawer`, their schema and their reducer. `I2-tour` only sets them on the tour's beats.
-  - `questions`, by `questionId`: the forwarded question and, once it arrives, the maker's answer.
+  - `support.questions`, by `questionId`: `{ forwarded, answered }`, the forwarded question and, once it arrives, the maker's answer.
   - `sync`: `sync.data`, the newest `data.synced`, and `sync.index`, the newest `index.synced`.
 - **New types in `src/core/types.ts`:** `ScriptedRun` (`runId`, `side`, `threadId`, `trigger`, `steps`, `final`), `PlannedEvent`, `ModelReport`, `DemoSearch`, `DemoSurprise`, `ScriptedScan`, `PolicyTopic`, `Policy` and `InlineApproval`, with the fields `I2-core.md` gives them:
   - `ScriptedRun.trigger` is `{ kind: "support"; matches: string[]; pieceId?; makerId? }` (a run with `pieceId` or `makerId` answers only when the request's `contextIds` include it), `{ kind: "listing"; listingId; notes }`, `{ kind: "storefront"; storefrontId }` or `{ kind: "question"; questionId }`. `final` is an ordered list of events, approvals and follow-ups included.
@@ -716,7 +723,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
 
 - **Listing runs** use the `listingId` as `threadId`. Notes equal to `lst_01.notes` (normalized) get `lst_01`'s run, re-keyed to the person's IDs. The tour's run ends with `listing.drafted`, `listing.indexed` and `approval.requested` `apr_04`. A person's run ends with its own `apr_user_<n>`, whose inline approval is a `listing_publish` for the person's listing, and never re-emits `apr_04`.
 - **The watch run:** the tour's carries `followup.drafted` `fup_02` (the Reporter's draft), then `approval.requested` `apr_03`. A person's scripted scan re-keys its hits to `cft_user_<n>`, its draft to `fup_user_<n>` and its approval to `apr_user_<n>`, so the tour's `cft_01` and `apr_03` stay as they were.
-- **The "ask the maker" run:** the buyer's meaning question gets the L14 reply and a `question.forwarded` to the piece's maker. Her `question.answered` on the maker page is a request, and its answer is the Writer's `support.answered` on the original thread, quoting her words exactly. `planRun` puts a person's own answer text where `run_09`'s scripted reply quotes `ans_01`. If the chapter 2 beat `d17-ask-maker` ships, it carries `drawer: "support"`, and its On screen IDs are `support-forwarded-<questionId>` and `support-maker-answer-<questionId>`.
+- **The "ask the maker" run:** the buyer's meaning question gets the L14 reply and a `question.forwarded` to the piece's maker. Her `question.answered` on the maker page is a request, and its answer is the Writer's `support.answered` on the original thread, quoting her words exactly. `planRun` puts a person's own answer text where `run_09`'s scripted reply quotes `ans_01`. A person's own forwarded question is re-keyed `qst_user_<n>` on the request's thread, and its answer gets the same relay on that thread. If the chapter 2 beat `d17-ask-maker` ships, it carries `drawer: "support"`, and its On screen IDs are `support-forwarded-<questionId>` and `support-maker-answer-<questionId>`.
 - **New Requests rows:**
 
 | Request | Key | Scripted answer |
@@ -751,6 +758,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - `receiptNotes` (`people.ts`), a record by `makerId` of each maker's `receiptNote`
   - `makerQuestions` (`swarm.ts`), `vibeVocabulary` (`searchIndex.ts`), `demoDataSync` (`database.ts`)
   - `contentRules` (`contentRules.ts`)
+  - `allApprovals` (`apr_01` to `apr_05`) and `allFollowUps` (`fup_01`, `fup_02`), gathered in `index.ts` itself, so `mock.json` holds every approval and follow-up
 - **`getById()`** also finds `com_`, `prj_`, `wip_`, `mls_`, `sto_`, `lst_`, `cft_`, `pol_`, `qst_`, `apr_03` to `apr_05`, `fup_02` and the new people. Agents have no prefix: features use `getAgent()`. A person's `ord_user_<n>` lives only in the store (`buyer.orders`).
 - **`contentRules`** is `{ bannedObjects, stereotypeWords, meaningWords, accusingWords, peopleNames, allowedHosts }`:
   - `bannedObjects`: section 2's "Kept out of the catalog" list,
@@ -760,7 +768,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - `peopleNames`: by community, each nation's names in English and Chinese, plus Indigenous, Native, Indian, 原住民 and 土著,
   - `allowedHosts`: `example.com` and `example.org`, with `/market/` paths allowed as relative URLs.
   
-  The data tests scan every v2 `Text` against it, except `communities[].protocols`. A test scans `src/mock/`, the server fixtures, `pairs.jsonl` and the model card for URLs outside `allowedHosts` and for a nation's name used as a product word.
+  The data tests scan every v2 `Text` against it, except `communities[].protocols`. A test scans `src/mock/`, the server fixtures, `pairs.jsonl` and the model card for URLs outside `allowedHosts` and for a nation's name used as a product word. The model card may also link `huggingface.co`, where its base model lives.
 - **`demoQuestions`** is `{ side: "buyer" | "seller"; text: Text }[]`, and every entry has its own scripted run. The buyer's first is the d04 question, the second a meaning question that ends in the "ask the maker" run, and the third a find question that goes through Agent Builder. The seller's are the payout question (`run_04`) and "Why is part of my September pay held?" (`run_10`).
 - **Approval subjects:**
   - `apr_03.subjectIds` is `["cft_01"]`,
@@ -771,6 +779,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - hero: `tagline` (a plain craft line),
   - story: `title`, `body` (it renders the community's `about` under L8),
   - pieces: `pieceIds`,
+  - process: `title`, `body`,
   - projects: `projectIds`,
   - visit: `address` (the region only, never a street address) and `hours` ("Visits by arrangement"). No phone or email, for every storefront.
   
@@ -780,7 +789,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - Order: moods, then facet words, then occasions and recipients, then price, in text order within each group.
   - `keywordAliases` never map a stereotype word to anything. The scripted keyword scorer also applies `filters`.
 - **The surprise draw:** `src/sources/surprise.ts` (`I2-core` T5) exports `mulberry32(seed)` and the draw, which B12 ports exactly.
-  - Candidates: for `keyword_random` and `fair_random`, the keyword's top 12 by score, then `pieceId`, scoring above 0. For `pure_random`, or with no keyword, all 54.
+  - Candidates: for `keyword_random` and `fair_random`, the keyword's top 12 by score, then `pieceId`, scoring above 0. For `pure_random`, with no keyword, or when the keyword matches nothing, all 54 in `pieceId` order, with the method's weights.
   - Raw weights are 1 for `keyword_random` and `pure_random`, and `1 / (1 + salesThisMonth)` for `fair_random`. The draw takes `r = rng() * total` and walks the raw weights with a plain loop in candidate order.
   - The payload's weights are the raw weights divided by their total, so they sum to 1.
   - The data's `salesThisMonth` values make figure 12's seed land on its piece. A person's seed is 1 plus the number of `surprise.asked` events already in the store.
@@ -845,21 +854,21 @@ The plan writers found these gaps. Each one is settled here, and where two plans
 | `run_01` | `thr_01` | buyer | support, `pieceId` `pc_01` | The d04 question | `support.answered` |
 | `run_02` | `lst_01` | seller | listing `lst_01`, its notes | The d15 listing | `listing.drafted`, `listing.indexed`, `approval.requested` `apr_04` |
 | `run_03` | `sto_01` | seller | storefront `sto_01` | The Designer drafts the co-op's storefront | `storefront.drafted` |
-| `run_04` | `thr_02` | seller | support | "When do I get paid for September?" | `support.answered` |
+| `run_04` | `thr_02` | seller | support, `makerId` `mkr_01` | "When do I get paid for September?" | `support.answered` |
 | `run_05` | `thr_00` | buyer | none (fallback) | `fallbackSupportRun`, L16 | `support.answered` |
 | `run_06` | `thr_00` | seller | none (fallback) | `fallbackListingRun`, a draft labeled as a sample | `listing.drafted` |
 | `run_07` | `thr_03` | buyer | support, `pieceId` `pc_01` | The meaning question that goes to the maker | `support.answered` (L14), `question.forwarded` `qst_01` |
 | `run_08` | `thr_04` | buyer | support, `pieceId` `pc_01` | The find question through Elastic Agent Builder | `support.answered` |
 | `run_09` | `thr_03` | buyer | question `qst_01` | The "ask the maker" relay of Grace N.'s answer | `support.answered` quoting her words |
-| `run_10` | `thr_05` | seller | support | "Why is part of my September pay held?" | `support.answered` |
-- **Where the new approvals live:** `apr_03` and `fup_02` in `watch.ts`, `apr_04` in `listings.ts`, `apr_05` in `projects.ts`. `getById()` finds them, and the approvals feature reads them the same way as `apr_01` and `apr_02`.
+| `run_10` | `thr_05` | seller | support, `makerId` `mkr_01` | "Why is part of my September pay held?" | `support.answered` |
+- **Where the new approvals live:** `apr_03` and `fup_02` in `watch.ts`, `apr_04` in `listings.ts`, `apr_05` in `projects.ts`. `getById()` finds them, and the approvals feature reads them the same way as `apr_01` and `apr_02`. `src/mock/index.ts` exports `allApprovals` (`apr_01` to `apr_05`) and `allFollowUps` (`fup_01`, `fup_02`), so `mock.json` holds them all.
 - **`Policy`** is a list of topics (`pol_01` onward), each with `title: Text`, `body: Text` and an optional `data` record. `pol_01` (shipping) holds `{ transitDaysMin: 6, transitDaysMax: 10 }`.
 - **B14 requests** carry `runId`, `idTag` and `idStart`, and the listing request adds `vibeVocabulary` and an optional `image`.
 - **`listing.indexed`** is keyed `b14-swarm`, because the listing run's Indexer produces it, and B12's adapter answers that one with `[]`. B12's publish sends its own, keyed `b12-search`.
 - **B12's module functions** are `search`, `surprise`, `converse`, `index_draft` and `publish`. `ALLOWED_EMPTY_FALLBACKS` adds `b12-search` for `search.answered` and `surprise.drawn`.
 - **B13:** the table columns and reducer arguments are as `docs/plans/B13-live.md` writes them. A Rust module needs the hosts `static.rust-lang.org`, `index.crates.io` and `static.crates.io`.
 - **B15:**
-  - `ALLOWED_EMPTY_FALLBACKS` (`tests/demo/beats.ts`) lists the tour's keyed events for every v2 source (section 10): `b15-watch` for `watch.scanned`, `counterfeit.flagged` and `followup.drafted`, `b14-swarm` for `swarm.step`, `support.answered`, `listing.drafted`, `listing.indexed`, `question.forwarded` and `question.answered`, and `b12-search` for `search.answered` and `surprise.drawn`. `REQUIRED_KEYS` has `b14-swarm: anthropic`, `b15-watch: apify` and `b16-bank-books: nessie`, and `REQUIRED_SERVICES` has `model` for `b11-embed` and `b12-search` and `spacetime` for `b13-live`.
+  - `ALLOWED_EMPTY_FALLBACKS` (`tests/demo/beats.ts`) lists the tour's keyed events for every v2 source that keys one (section 10), each entry marked `tourScripted: true`: `b11-embed` for `search.mapped`, `model.trained` and `proof.search_scored`, `b12-search` for `search.answered` and `surprise.drawn`, `b13-live` for `data.synced` (`d15-listing`'s, the one tour event keyed `b13-live`, which the B13 adapter answers with `[]` at once), `b14-swarm` for `swarm.step`, `support.answered`, `listing.drafted`, `listing.indexed`, `question.forwarded` and `question.answered`, and `b15-watch` for `watch.scanned`, `counterfeit.flagged` and `followup.drafted`. B16 keys no tour event and gets no entry. `REQUIRED_KEYS` has `b14-swarm: anthropic`, `b15-watch: apify` and `b16-bank-books: nessie`, and `REQUIRED_SERVICES` has `model` for `b11-embed` and `b12-search` and `spacetime` for `b13-live`.
   - The tour's `followup.drafted` `fup_02` is keyed `b15-watch` (`I2-tour`'s timeline task).
   - A scan's `threadId` is its `scanId`.
   - The similarity is normalized, `(c - b) / (1 - b)`. B15 measures its threshold into `server/b15_watch/threshold.json` (the lowest with precision at least 0.9), and until then uses 0.75, marked "not measured".
@@ -878,7 +887,7 @@ Short labels in English and Chinese. Each owner copies both into its feature's `
 | L3 | Demo verification | 演示认证 | The start of the verification line on every `PieceCard` and result card from a `demo` community | I2-kit |
 | L4 | Demo: this shows how verification would work. No real check was done. | 演示：这里展示认证将如何进行。并未做过真实核查。 | `buyer-verification`, `community-verification` | I2-kit, M-buyer, F-communities |
 | L5 | Fictional maker and story, written by the Cindia team. | 虚构的匠人和故事，由 Cindia 团队撰写。 | The piece page, under the story, beside the Demo data badge (`buyer-story-card`) | M-buyer |
-| L6 | This is the public demo. Nothing here can be bought. | 这是公开演示版。这里的物品都无法购买。 | The piece page, in place of Pay, on the public build only | M-buyer |
+| L6 | This is the public demo. Nothing here can be bought. | 这是公开演示版。这里的物品都无法购买。 | The piece page, in place of Pay, on the public build only (`buyer-pay-blocked`) | M-buyer |
 | L7 | Demo project. No money is collected. | 演示项目。不会收取任何款项。 | Beside every `project-fund-<projectId>` and `buyer-project-addon`, before the click | F-communities, M-buyer |
 | L8 | Placeholder written by the Cindia team. In a real launch, the community writes this page. | 由 Cindia 团队撰写的占位内容。正式上线后，由社区自己撰写此页面。 | The community page's `about` box (`community-page`), the storefront's story block | F-communities, F-storefront |
 | L9 | Kept out of this demo. In a real launch, the community sets these rules. For this demo, the Cindia team left these out. | 本演示未收录。正式上线后，由社区制定这些规则。本演示中，这些内容由 Cindia 团队排除在外。 | `community-protocols`: the first sentence is the title, the rest the line under it | F-communities, glossary |
@@ -887,7 +896,7 @@ Short labels in English and Chinese. Each owner copies both into its feature's `
 | L12 | Live: your question goes to Claude (Anthropic) to answer. Please don't type personal details. | 实时模式：您的问题将发送给 Claude（Anthropic）来回答。请不要输入个人信息。 | Under `support-input`, live mode only | F-support |
 | L13 | Fictional storefront, made for a demo. | 虚构的店铺，为演示而制作。 | `store-footer`, after the preview line | F-storefront |
 | L14 | Our records don't say, and I won't guess, so I'll ask Grace N. Her answer will show here in her own words. | 我们的记录里没有答案，我不会乱猜，所以我会去问 Grace N.。她的回答会以她自己的原话显示在这里。 | The reply (`support-reply`) when a meaning or authenticity question goes to the maker, with the piece's maker named | B14 Writer template, S3 T8 |
-| L15 | The co-op attests that Grace N. wove this herself. That's the co-op's record. | 合作社证明这件作品由 Grace N. 亲手织成。这是合作社的记录。 | `run_01`'s reply (`support-reply`), and the pattern for every authenticity reply | S3 T8, B14 |
+| L15 | The co-op attests that Grace N. wove this herself. That's the co-op's record. Cindia hasn't checked it independently. | 合作社证明这件作品由 Grace N. 亲手织成。这是合作社的记录。Cindia尚未独立核实。 | `run_01`'s reply (`support-reply`), and the pattern for every authenticity reply | S3 T8, B14 |
 | L16 | In this demo, scripted answers cover the small grey, red and black wool weaving. Switch to Live to ask about this piece. | 在本演示中，脚本回答只涵盖灰红黑三色小幅羊毛编织。切换到实时模式即可询问这件作品。 | The fallback reply (`support-reply`) when the open piece isn't the run's piece | S3 T8 (`fallbackSupportRun`) |
 | L17 | I can only look up the order on your screen. | 我只能查询您屏幕上的这笔订单。 | The buyer-side reply (`support-reply`) for any other order ID | B14 Clerk |
 | L18 | Live steps are shared with every open screen in this demo. | 本演示中，实时步骤会同步给所有打开的屏幕。 | The swarm process view (`process-pane-swarm`), live mode | F-process |

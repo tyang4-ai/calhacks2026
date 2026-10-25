@@ -1,6 +1,6 @@
 # S3-catalog · Four communities, the 54-piece catalog, the search index and the scripted agents
 
-Priority: P0 · Wave: V1 · Depends on: R0-reskin (the co-op's names and pieces), I2-core (T1 needs only I2-core's types on disk, T2 to T5 and T7 need I2-core's first commit, T6 and T8 need I2-core T5 committed) · Folder: `src/mock/`, `tests/data/` · Made real by: B10 (splits), B11 (the model's report), B12 (search answers), B13 (the database snapshot), B14 (swarm runs), B15 (the copy watch)
+Priority: P0 · Wave: V1 · Depends on: R0-reskin (the co-op's names and pieces), I2-core (T1 needs only I2-core's types on disk, T2 to T5 and T7 need I2-core's first commit, T6 and T8 need I2-core T5 committed), I2-art T0 (T5's test reads its placeholder files) · Folder: `src/mock/`, `tests/data/` · Made real by: B10 (splits), B11 (the model's report), B12 (search answers), B13 (the database snapshot), B14 (swarm runs), B15 (the copy watch)
 
 **SCOPE:** `src/mock/, tests/data/`
 
@@ -112,28 +112,30 @@ Checked against the sources below on Oct 24, 2026. Write nothing about these cra
 | `communities.ts` | `communities` (four, in the contracts' order) |
 | `people.ts` | R0's exports unchanged (`studio` is `std_dine`, `owner`, `makers` stays the co-op's three, `buyers`, `people`), plus `leads` (`own_01` to `own_04`) and `allMakers` (`mkr_01` to `mkr_17`). `people` now holds everyone. Makers `mkr_01` to `mkr_03` carry `receiptNote`, and `receiptNotes` (a record by `makerId` of those notes) is built from them in code |
 | `catalog.ts` | `pieces` (all 54, the co-op's twelve first), `curatedSet` unchanged |
-| `searchIndex.ts` | `searchIndex`, `keywordAliases` |
+| `searchIndex.ts` | `searchIndex`, `keywordAliases`, `vibeVocabulary` (the closed vibe list, R18) |
 | `search.ts` | `demoSearch`, `demoSurprise` |
 | `searchEval.ts` | `searchEval` |
 | `projects.ts` | `projects`, `worksInProgress`, `demoContribution`, `demoFundMoves`, and `apr_05` beside them |
 | `storefronts.ts` | `storefronts` |
 | `listings.ts` | `listings`, and `apr_04` beside it |
 | `agents.ts` | `agents`, `getAgent(agentId)` |
-| `swarm.ts` | `swarmRuns`, `fallbackSupportRun`, `fallbackListingRun`, `demoQuestions`, and the question record `qst_01` (export name under Needs) |
+| `swarm.ts` | `swarmRuns`, `fallbackSupportRun`, `fallbackListingRun`, `demoQuestions`, `makerQuestions` (`qst_01` and its scripted answer `ans_01`) |
 | `watch.ts` | `counterfeitCandidates`, `scriptedScan`, and `fup_02` and `apr_03` beside them |
 | `model.ts` | `modelId`, `report` |
 | `policy.ts` | `policy` |
 | `splits.ts` | `splits`, a `Record<pieceId, split.shown payload>`, and `gallerySplits` (a record by `pieceId` of the gallery comparison, built from `splits` in code) |
 | `contentRules.ts` | `contentRules` |
-| `database.ts` | the scripted `data.synced` payload for d15 (export name under Needs) |
-| `index.ts` | Re-exports all of the above. `getById()` also finds `com_`, `prj_`, `wip_`, `mls_`, `sto_`, `lst_`, `cft_`, `pol_`, `qst_`, `apr_03` to `apr_05`, `fup_02` and the new people |
+| `database.ts` | `demoDataSync`, the scripted `data.synced` payload for d15 |
+| `index.ts` | Re-exports all of the above, plus `allApprovals` (`apr_01` to `apr_05` in ID order: v1's `approvals`, then `apr_03`, `apr_04` and `apr_05` from `watch.ts`, `listings.ts` and `projects.ts`) and `allFollowUps` (`fup_01` and `fup_02`: v1's `followUps`, then `watch.ts`'s). `getById()` also finds `com_`, `prj_`, `wip_`, `mls_`, `sto_`, `lst_`, `cft_`, `pol_`, `qst_`, `apr_03` to `apr_05`, `fup_02` and the new people |
 
-- **IDs** (contracts section 11, the scripted side): `qry_01`, `srp_01`, `thr_00` to `thr_05`, `wsc_01`, `run_01` to `run_10`, `stp_0001` onward across all runs in run order, `chk_01` onward, `ctb_01`, `qst_01`, `ans_01`, `blk_01` onward (storefronts first, then `run_03`'s drafted blocks), `mls_01` onward, `pol_01` to `pol_05`. People's IDs (`*_user_<n>`) are made by the sources code, never stored here.
+Features, the tour and the Python side find `apr_03` to `apr_05` and `fup_02` through `allApprovals`, `allFollowUps` and `getById()`, never by a file's own export name. `mock.json` holds both lists, since it keeps every named export.
+
+- **IDs** (contracts section 11, the scripted side): `qry_01`, `srp_01`, `thr_00` to `thr_05`, `wsc_01`, `run_01` to `run_10`, `pc_55` (the piece `lst_01` drafts in the tour, event-only until `apr_04` is granted), `stp_0001` onward across all runs in run order, `chk_01` onward, `ctb_01`, `qst_01`, `ans_01`, `blk_01` onward (storefronts first, then `run_03`'s drafted blocks), `mls_01` onward, `pol_01` to `pol_05`. People's IDs (`*_user_<n>`) are made by the sources code, never stored here.
 - **Determinism:** no `Math.random`, no `Date.now`, no `new Date()` without an argument. Any figure that comes from R0's records is computed from them, never typed.
 
 ## Figures 11 and 12, for contracts section 2
 
-FX1 copies these two paragraphs into the `[FIGURE11]` and `[FIGURE12]` places.
+Contracts section 2 holds these two paragraphs word for word. A change to one is made in both.
 
 **11. The vibe query** in `d01-vibe` is exactly `a warm, bold gift for my mom. she loves red wool. under $200`. Its keywords are exactly `warm`, `bold`, `red`, `wool`, `gift for mom`, `under $200`, in that order (moods, then facet words, then the recipient through the alias `mom`, then the price). The scripted results are six pieces, all priced at 20000 or less, in this order: `pc_01` (Grace N.'s small grey, red and black wool weaving, matching all five word chips), `pc_07` (Lena T.'s red and grey wool mini weaving, four) and `pc_11` (Lena T.'s red and white wool weaving, four), then `pc_14` (red and green floral beaded earrings, Ojibwe, three), `pc_30` (a small black and orange seed pot, Acoma, three) and `pc_43` (a red, yellow and black patchwork skirt, Seminole, three). Each result's `matched` lists exactly the chips that piece carries. Every other piece at 20000 or less carries at most two of the five word chips.
 
@@ -141,20 +143,20 @@ FX1 copies these two paragraphs into the `[FIGURE11]` and `[FIGURE12]` places.
 
 ## The scripted runs, for contracts section 11
 
-FX1 copies this list into the `[RUNLIST]` place. Every run has the fields of I2-core's `ScriptedRun`. Step summaries are short, in English and Chinese.
+Contracts section 11 holds this list word for word. Every run has the fields of I2-core's `ScriptedRun`. Step summaries are short, in English and Chinese.
 
 | Run | Thread | Side | Trigger | What it is | Final events, in order |
 |---|---|---|---|---|---|
 | `run_01` | `thr_01` | buyer | support, `pieceId` `pc_01` | The d04 question | `support.answered` |
 | `run_02` | `lst_01` | seller | listing `lst_01`, its notes | The d15 listing | `listing.drafted`, `listing.indexed`, `approval.requested` `apr_04` |
 | `run_03` | `sto_01` | seller | storefront `sto_01` | The Designer drafts the co-op's storefront | `storefront.drafted` |
-| `run_04` | `thr_02` | seller | support | "When do I get paid for September?" | `support.answered` |
+| `run_04` | `thr_02` | seller | support, `makerId` `mkr_01` | "When do I get paid for September?" | `support.answered` |
 | `run_05` | `thr_00` | buyer | none (fallback) | `fallbackSupportRun`, L16 | `support.answered` |
 | `run_06` | `thr_00` | seller | none (fallback) | `fallbackListingRun`, a draft labeled as a sample | `listing.drafted` |
 | `run_07` | `thr_03` | buyer | support, `pieceId` `pc_01` | The meaning question that goes to the maker | `support.answered` (L14), `question.forwarded` `qst_01` |
 | `run_08` | `thr_04` | buyer | support, `pieceId` `pc_01` | The find question through Elastic Agent Builder | `support.answered` |
 | `run_09` | `thr_03` | buyer | question `qst_01` | The "ask the maker" relay of Grace N.'s answer | `support.answered` quoting her words |
-| `run_10` | `thr_05` | seller | support | "Why is part of my September pay held?" | `support.answered` |
+| `run_10` | `thr_05` | seller | support, `makerId` `mkr_01` | "Why is part of my September pay held?" | `support.answered` |
 
 L16's place `[L16PIECE]` reads "the small grey, red and black wool weaving".
 
@@ -162,7 +164,7 @@ L16's place `[L16PIECE]` reads "the small grey, red and black wool weaving".
 
 The data-smith does each spawn's tasks in order, one at a time, so a later task may finish a file an earlier one stubbed. Each task ends with its own test passing under `npm run check:data`. The spawns follow B1-20 and `docs/harness/v2-runbook.md` V1:
 - **Spawn 1** (V1 step 2): T1 alone. The orchestrator commits it as soon as `npm run check` passes, because I2-core T5's responders import the stubs.
-- **Spawn 2** (V1 step 3): T2, T3, T4, T5 and T7. None needs I2-core T5.
+- **Spawn 2** (V1 step 3): T2, T3, T4, T5 and T7. None needs I2-core T5. T5 needs I2-art T0 committed, because its test reads the placeholder files, and V1 step 3 runs I2-art T0 beside this spawn.
 - **Spawn 3** (V1 step 4, after I2-core T5 is committed): T6 and T8, which test through `src/sources/`.
 - **Spawn 4**, after B11's first real training run: T9's first pass. **Spawn 5**, after the orchestrator runs `python server/b11_embed/train.py --eval-only`: T9's second pass.
 
@@ -172,7 +174,7 @@ The data-smith does each spawn's tasks in order, one at a time, so a later task 
 | T2 | Communities, people, receipt notes and the content rules | `src/mock/communities.ts`, `src/mock/people.ts`, `src/mock/contentRules.ts`, `tests/data/v2-communities.test.ts` | T1 | opus |
 | T3 | Catalog part A: Ojibwe and Acoma, `pc_13` to `pc_40` | `src/mock/catalog/part-a.ts`, `tests/data/v2-catalog-a.test.ts` | T2 | opus |
 | T4 | Catalog part B: Seminole, `pc_41` to `pc_54` | `src/mock/catalog/part-b.ts`, `tests/data/v2-catalog-b.test.ts` | T2 | opus |
-| T5 | The co-op's facets, the merge, the index and the aliases | `src/mock/catalog/dine-facets.ts`, `src/mock/catalog.ts`, `src/mock/searchIndex.ts`, `tests/data/v2-index.test.ts`, `tests/data/reconcile.test.ts` | T3, T4 | opus |
+| T5 | The co-op's facets, the merge, the index and the aliases | `src/mock/catalog/dine-facets.ts`, `src/mock/catalog.ts`, `src/mock/searchIndex.ts`, `tests/data/v2-index.test.ts`, `tests/data/reconcile.test.ts` | T3, T4, I2-art T0 committed | opus |
 | T6 | The demo search and surprise, and the 50 eval queries | `src/mock/search.ts`, `src/mock/searchEval.ts`, `tests/data/v2-search.test.ts` | T5, I2-core T5 committed | opus |
 | T7 | Splits, projects, storefronts, the listing, policy, the roster, the watch, the empty model | `src/mock/splits.ts`, `src/mock/projects.ts`, `src/mock/storefronts.ts`, `src/mock/listings.ts`, `src/mock/policy.ts`, `src/mock/agents.ts`, `src/mock/watch.ts`, `src/mock/model.ts`, `tests/data/v2-records.test.ts` | T5 | opus |
 | T8 | The scripted runs, the question, the database snapshot, the lookups, and the integrity and figures tests | `src/mock/swarm.ts`, `src/mock/database.ts`, `src/mock/index.ts`, `tests/data/v2-figures.test.ts`, `tests/data/v2-integrity.test.ts` | T6, T7 | opus |
@@ -185,8 +187,8 @@ Every file in the exports table exists with its exact export names and the types
 ### T2 · Communities, people, receipt notes and the content rules
 
 - `communities.ts`: the four communities in the contracts' order, every field filled by R1 to R8. The file comment says every community is fictional demo data, that `about` stands in for words the community would write (L8), and that `protocols` are Cindia's choices (L9).
-  - `com_dine`: `name` and `place` from R0, `people` "Diné (Navajo)" / 纳瓦霍（Diné）, `craft` "Wool weavings, silver and turquoise jewelry" / 羊毛编织与绿松石银饰, `studioId: "std_dine"`, `leadId: "own_01"`, makers `mkr_01` to `mkr_03`.
-  - `com_ojibwe`, `com_acoma`, `com_seminole`: `craft` "Floral beadwork: earrings, pouches and necklaces", "Coil-built, hand-painted pottery", "Patchwork skirts and jackets" (see Needs for the contracts' wording). Chinese names: 一个奥吉布瓦（Ojibwe）串珠合作社, 一个阿科马（Acoma）陶艺坊, 一个塞米诺尔（Seminole）拼布合作社.
+  - `com_dine`: `name` from R0, `place` "Navajo Nation, Arizona, USA" / 美国亚利桑那州纳瓦霍保留区 (R2 and contracts section 2, while the studio's own `city` stays as R0 wrote it), `people` "Diné (Navajo)" / 纳瓦霍（Diné）, `craft` "Wool weavings, silver and turquoise jewelry" / 羊毛编织与绿松石银饰, `studioId: "std_dine"`, `leadId: "own_01"`, makers `mkr_01` to `mkr_03`.
+  - `com_ojibwe`, `com_acoma`, `com_seminole`: `craft` "Floral beadwork: earrings, pouches and necklaces", "Coil-built, hand-painted pottery", "Patchwork skirts and jackets" (contracts section 2). Chinese names: 一个奥吉布瓦（Ojibwe）串珠合作社, 一个阿科马（Acoma）陶艺坊 (not 工作室, which R0's old-names grep catches), 一个塞米诺尔（Seminole）拼布合作社.
   - `storefrontId` `sto_01` to `sto_04` and `projectIds` `[prj_01]` to `[prj_04]`, in order. `demo: true` on all four.
 - `people.ts`: add `own_02` to `own_04` and `mkr_04` to `mkr_17` from R9's table, with `role`, `name`, `surnameChar`, `lang: "en"`, `communityId` and `languages: ["en"]`. R0's four gain `communityId: "com_dine"` and nothing else changes.
   - **Receipt notes** (A1 top change 7): `mkr_01` to `mkr_03` carry `receiptNote`, two plain lines in the maker's voice and in plain English, written as placeholders Gordon may rewrite, with a comment saying they're demo data. Grace N.'s: "Thank you for choosing my weaving." and "My share of your purchase reached me on Oct 2." / 谢谢您选择我的编织作品。 and 您这笔购买中我的那份已在10月2日到账。 The date matches `makerPayoutDate`, which the T2 test checks. No meaning, lineage or hardship. `receiptNotes` is the same notes as a record by `makerId`, for M-buyer.
@@ -240,7 +242,7 @@ Pieces the figures and runs name:
   - **Rule:** a local, non-exported helper implements the passage rule in contracts section 2 exactly, including the sentence split and the `for:` join.
   - **Entries:** one `IndexEntry` per piece, with `storefrontSlug` from the community's storefront, `provenance` (`facts: "maker"`, `culture: "community"`, `vibe: "agent:tagger"`, `picture: "agent:describer"`), `approvedBy` the piece's maker, `pictureNote` (what the illustration shows, en and zh), `status: "active"`, and `salesThisMonth`. A comment says provenance shows who writes each layer in a real launch, that in this demo the Cindia team wrote every layer, and that the Describer never ran (A2-18).
   - `salesThisMonth` for `pc_01` to `pc_12` is computed from R0's September paid orders, refunds excluded (`pc_01` 1, `pc_02` 5, `pc_07` 4 and so on). For the other 42 it's a typed number from 0 to 6 with a comment saying it's demo data: figure 12's nine candidates take its values, every piece by `mkr_12` is 0, and every other candidate's maker has at least one sale.
-  - The closed vibe list (R18) is exported for B14's Tagger as part of `searchIndex.ts`'s module, under the name the contracts give (see Needs).
+  - The closed vibe list (R18) is exported from `searchIndex.ts` as `vibeVocabulary`, which B14's listing request carries for the Tagger.
   - **Aliases:** `keywordAliases` maps `mom`, `mother` and `mum` to `gift for mom`, `dad` and `father` to `gift for dad`, and nothing from `stereotypeWords` (R24).
 - **`tests/data/reconcile.test.ts`:** line 66's check that `pieces` equals the twelve-piece table narrows to the co-op's twelve (`communityId` `com_dine`), keeping every v1 field check. The orchestrator logs it in `decisions.md` as a planned update, not a weakening (B1-21).
 - **Test** (`v2-index.test.ts`):
@@ -296,8 +298,8 @@ Pieces the figures and runs name:
   - `cft_02`, `claim_only`: "Authentic Native American made wool rug, grey and red", names no maker or community, and its claim reads "Claims to be Native American made. Names no maker." It gets no report (L22).
   - `cft_03`, `neither`: a machine-woven grey and red throw whose snippet says plainly that it's factory made and not Native made, similarity about 0.8.
   - `cft_04`, `neither`: an unrelated grey wool blanket, similarity about 0.3.
-  - Each has an invented seller and a price, under the field names Needs asks for.
-  - `scriptedScan`: `{ scanId: "wsc_01", makerId: "mkr_01", queries, cftIds: ["cft_01"], followUpId: "fup_02", approvalId: "apr_03" }`. `queries` follow F-watch's rule: the co-op's name, "Grace N. wool weaving", and the first eight words of `pc_01`'s story. I2-core's responder builds `watch.scanned.results` from all four candidates, hits and non-hits alike.
+  - Each has an invented `seller` and a `priceCents`, the optional fields of contracts section 2's `CounterfeitCandidate`.
+  - `scriptedScan`: `{ scanId: "wsc_01", makerId: "mkr_01", queries, cftIds: ["cft_01"], followUpId: "fup_02", approvalId: "apr_03" }`. `queries` are the three strings F-watch's rule gives for `mkr_01`: the community's English name, "Diné Weaving and Silver Co-op", then the maker's name plus her first piece's `facets.object.en`, "Grace N. wall weaving" (`pc_01`'s object from T5), then the first eight words of that piece's English story. I2-core's responder builds `watch.scanned.results` from all four candidates, hits and non-hits alike.
   - `fup_02`: a calm, factual draft to the sandbox market's trust team. It says what the listing claims and what Cindia can't confirm, uses no `accusingWords` in either language, cites no law, and is never sent.
   - `apr_03`: kind `report_listing`, `subjectIds: ["cft_01"]`, pending.
 - **`model.ts`:** `modelId: "cindia-embed-v1"`, `report: null`, and a comment that only T9 fills it, from B11's real run.
@@ -309,6 +311,7 @@ Pieces the figures and runs name:
   - every storefront slug, block ID and block reference resolves, all four are published, and no visit block holds a digit sequence that looks like a street number, a phone number or an email,
   - the roster matches section 6 (IDs, kinds, models, tools), and no model ID is outside Haiku and Sonnet,
   - every candidate URL is a `/market/` path or on an `allowedHosts` host, `cft_01`'s snippet holds an 8-word run of `pc_01`'s story, `cft_02` names no maker and no community, and `fup_02` holds no accusing word,
+  - `scriptedScan.queries` equal the rule's three strings, rebuilt in the test from `communities`, `mkr_01` and `pc_01`,
   - `report` is null, or equals `server/b11_embed/report.json` once T9 has run (D1-27).
 
 ### T8 · The scripted runs, the question, the database snapshot, the lookups and the integrity tests
@@ -324,34 +327,35 @@ The tour keeps each run's step order and gaps (`I2-tour.md`), so the two tour ru
   4. `steward` tool `verification_record`,
   5. `steward` result: the co-op's attestation and Grace N.'s name, with the quoted line,
   6. **`steward` check** (A1-7): "Quote found word for word in the co-op's record." / 在合作社的记录中逐字找到了这句引文。,
-  7. `clerk` tool `policy`, 8. `clerk` tool `arrival_window`, 9. `clerk` result: an order on `2026-09-01` ships within `pc_01`'s `leadTimeDays` and arrives in `pol_01`'s window, well before Oct 10, with the dates computed, never typed,
+  7. `clerk` tool `policy`, 8. `clerk` tool `arrival_window` (code the run calls for the Clerk, contracts section 6), 9. `clerk` result: an order on `2026-09-01` ships within `pc_01`'s `leadTimeDays` and arrives in `pol_01`'s window, well before Oct 10, with the dates computed, never typed,
   10. `writer` reply.
   
-  The reply (L15, then A1-9's line, then the dates): "The co-op attests that Grace N. wove this herself. That's the co-op's record, and Cindia hasn't checked it independently." and the arrival dates, in English and Chinese. `refIds` `pc_01`, `com_dine`, `mkr_01`, `pol_01`.
+  The reply is L15 word for word, in English and Chinese as contracts section 12 gives it, then the arrival dates. L15's English: "The co-op attests that Grace N. wove this herself. That's the co-op's record. Cindia hasn't checked it independently." `refIds` `pc_01`, `com_dine`, `mkr_01`, `pol_01`.
 - **`run_02`** (the d15 listing, A1-14): `cindy` route, `lister` result (the draft), `tagger` result (vibe words from the closed list), three `checker` check steps, `indexer` result (the draft embedded into `cindia-drafts`). The final events:
   1. `listing.drafted`: title and summary in both languages, the Chinese marked as the Lister's translation (L27), `facets` and `vibe` drawn only from the notes (`oneOfAKind` and `leadTimeDays` left out, D1-26), `hours: 20` from the notes, and three checks:
      - `chk_01` protocol, ok: "Names only the co-op's own craft. Nothing from the kept-out list.",
      - `chk_02` facts, **not ok, the planted test**: the scripted draft's summary adds "Woven from hand-spun churro wool, the old way." on purpose. The note reads "Planted test: the draft says hand-spun churro wool, but Lena T.'s notes say store-bought yarn. A person must fix this before it publishes." A comment in `swarm.ts` says the claim is planted, like v1's planted errors,
      - `chk_03` price, ok: "The notes give no price, so the draft leaves it for the maker to set.",
-  2. `listing.indexed`: `lst_01`, the draft's `pieceId` (Needs), `modelId: "cindia-embed-v1"`, `embedText` built by the passage rule from the draft, `index: "cindia-drafts"`, an approximate `point` and `approx: true`,
+  2. `listing.indexed`: `lst_01`, the draft's `pieceId` `pc_55`, `modelId: "cindia-embed-v1"`, `embedText` built by the passage rule from the draft, `index: "cindia-drafts"`, an approximate `point` and `approx: true`,
   3. `approval.requested` `apr_04`.
 - **`run_03`** (the Designer, thread `sto_01`): `cindy` route, `designer` tool `community_page`, `designer` result. It ends in `storefront.drafted` with five blocks for `sto_01`: the co-op's pieces and `prj_01`, a tagline that passes `contentRules`, block IDs after the storefronts' own. No other storefront gets a scripted draft.
-- **`run_04`** (seller): "When do I get paid for September?" `cindy` route, `bookkeeper` result (rule-based) reading `mpo_01` and `mst_01`, `writer` reply naming Grace N.'s payout, its date and the held amount, computed from R0's records. It answers for Grace N. only: its trigger names `mkr_01` (the field is under Needs), so the seller drawer on another maker's page gets the fallback, as `trigger.pieceId` does for pieces.
+- **`run_04`** (seller): "When do I get paid for September?" `cindy` route, `bookkeeper` result (rule-based) reading `mpo_01` and `mst_01`, `writer` reply naming Grace N.'s payout, its date and the held amount, computed from R0's records. It answers for Grace N. only: its trigger names `mkr_01`, so the seller drawer on another maker's page gets the fallback, as `trigger.pieceId` does for pieces.
 - **`run_05`** (`fallbackSupportRun`, `thr_00`): its reply is L16 with `[L16PIECE]` filled: "In this demo, scripted answers cover the small grey, red and black wool weaving. Switch to Live to ask about this piece." It names no piece ID in `refIds`.
 - **`run_06`** (`fallbackListingRun`, `thr_00`): a sample draft labeled as a sample, its checks all ok.
 - **`run_07`** (the meaning question, `thr_03`): "What does the pattern on this weaving mean?" `cindy` route, `intake` result (meaning, `pc_01`), `cindy` call steward, `steward` tool `community_page`, `steward` tool `verification_record`, `steward` result: unknown, no record says, **`steward` check**: "No quote about a meaning in the records, so no answer is given." / 记录中没有关于含义的引文，因此不作回答。, `writer` reply. Final: `support.answered` with L14 ("Our records don't say, and I won't guess, so I'll ask Grace N. Her answer will show here in her own words."), then `question.forwarded` `{ questionId: "qst_01", threadId: "thr_03", makerId: "mkr_01", pieceId: "pc_01", text, lang: "en" }`.
 - **`run_08`** (the find question, `thr_04`, C-3): "Anything like this under $100?" `cindy` route, `intake` result (find, budget 10000, like `pc_01`), `cindy` call finder, `finder` tool `elastic_agent` with the summary "Elastic Agent Builder (cindia-finder): pieces like pc_01 under $100" / "Elastic Agent Builder（cindia-finder）：100美元以内、与pc_01相似的作品", `finder` result, `curator` result (the order only, B12's code-built reasons), `writer` reply naming `pc_07` and the two pieces from other communities with their prices. `refIds` are those pieces. All are under 10000 and share two or more of `pc_01`'s words.
 - **`run_09`** (the "ask the maker" relay, C-13, trigger `{ kind: "question", questionId: "qst_01" }`, thread `thr_03`): `cindy` route, `writer` reply. Final: `support.answered` on `thr_03` that quotes the maker's answer exactly and says it's her own words, with the Chinese labeled as Cindy's translation.
 - **`run_10`** (seller, `thr_05`): "Why is part of my September pay held?" `cindy` route, `bookkeeper` result reading `mst_01` and `flg_01`, `writer` reply: what is held (`mst_01.heldCents`), why (the gallery paid `flg_01.deltaCents` short against its contract), and that it's paid once the gallery sends the difference, every figure computed. Like `run_04`, it answers for `mkr_01` only.
-- **The question `qst_01`**, a record `getById()` finds: `{ id: "qst_01", threadId: "thr_03", makerId: "mkr_01", pieceId: "pc_01", text, lang: "en" }` and Grace N.'s scripted answer `ans_01`, the `question.answered` payload the tour plays and the maker page offers in scripted mode: "I picked grey, red and black because I like how they sit together, and the stepped diamond is a shape I enjoy weaving. That's all there is to it." A comment says it's a placeholder in the maker's voice for Gordon to edit, and it holds no meaning, lineage or hardship.
+- **The question `qst_01`**, exported in `makerQuestions` with its answer, a record `getById()` finds: `{ id: "qst_01", threadId: "thr_03", makerId: "mkr_01", pieceId: "pc_01", text, lang: "en" }` and Grace N.'s scripted answer `ans_01`, the `question.answered` payload the tour plays and the maker page offers in scripted mode: "I picked grey, red and black because I like how they sit together, and the stepped diamond is a shape I enjoy weaving. That's all there is to it." A comment says it's a placeholder in the maker's voice for Gordon to edit, and it holds no meaning, lineage or hardship.
 - **`demoQuestions`**: buyer `run_01`'s, `run_07`'s and `run_08`'s questions, in that order, and seller `run_04`'s and `run_10`'s. Every entry has its run (D1-17), and each support trigger's `matches` holds the normalized English and Chinese texts.
-- **`database.ts`**, the scripted `data.synced` for d15 (contracts section 11, B13's shape): `tables` for B13's eight tables (`catalog`, `listings`, `orders`, `approvals`, `runs`, `steps`, `processes`, `screens`), each with `rows` counted from the mock data (54 pieces, `lst_01`, 30 orders, the five approvals, the ten runs, every scripted step, eleven processes, one screen), never typed, and `newest` the last three records by ID as `{ id, label }`, the label built in code from the record's kind, state, status, amount or catalog title, never a person's words. `screens: 1`. `processes`: one `{ processId, status }` per `ProcessId` in order, `swarm` and `data` `working`, the rest `done`. A comment says it's a scripted snapshot shown under the Simulated badge.
-- `index.ts`: re-exports, and `getById()` covering every new collection plus `apr_03` to `apr_05`, `fup_02` and `qst_01`.
-- **`tests/data/v2-figures.test.ts`:** figures 11 to 16, one test each, with exact values. Also: `ord_001`'s figures are untouched, `ctb_01` is separate from it, figure 2 holds on `curatedSet`, and `report` is null or equals the real report.
+- **`database.ts`** exports `demoDataSync`, the scripted `data.synced` payload for d15 (contracts section 11, B13's shape). I2-tour plays it at 127.0 as the tour's one event keyed `b13-live`. It holds `tables` for B13's eight tables (`catalog`, `listings`, `orders`, `approvals`, `runs`, `steps`, `processes`, `screens`), each with `rows` counted from the mock data (54 pieces, `lst_01`, 30 orders, the five approvals in `allApprovals`, the ten runs, every scripted step, eleven processes, one screen), never typed, and `newest` the last three records by ID as `{ id, label }`, the label built in code from the record's kind, state, status, amount or catalog title, never a person's words. `screens: 1`. `processes`: one `{ processId, status }` per `ProcessId` in order, `swarm` and `data` `working`, the rest `done`. A comment says it's a scripted snapshot shown under the Simulated badge.
+- `index.ts`: re-exports, `allApprovals` (`apr_01` to `apr_05`, in ID order) and `allFollowUps` (`fup_01`, `fup_02`) as the exports table gives them, and `getById()` covering every new collection plus `apr_03` to `apr_05`, `fup_02` and `qst_01`.
+- **`tests/data/v2-figures.test.ts`:** figures 11 to 16, one test each, with exact values, except figure 14's text match, which T9 rewrites. That test reads `cft_01.similarity` from `watch.ts` and never types it: it checks a number from 0 to 1 with at most two decimals, the verdict `possible_copy`, and the title, snippet, claim and `apr_03` figure 14 names. Also: `ord_001`'s figures are untouched, `ctb_01` is separate from it, figure 2 holds on `curatedSet`, and `report` is null or equals the real report.
 - **`tests/data/v2-integrity.test.ts`:**
   - every ID is unique across all collections and matches its format,
-  - every ID inside a record or a run resolves through `getById()` or `getAgent()`, event-only IDs excepted (`mv_`, `chk_`, `stp_`, `ans_`, `blk_` in drafts, the draft's piece ID),
-  - every run's steps use roster agents and the tools that agent is allowed, and `stepId`s are unique and ascending,
+  - every ID inside a record or a run resolves through `getById()` or `getAgent()`, event-only IDs excepted (`mv_`, `chk_`, `stp_`, `ans_`, `blk_` in drafts, and `pc_55`, the draft's piece ID),
+  - `allApprovals` holds `apr_01` to `apr_05` and `allFollowUps` holds `fup_01` and `fup_02`, in ID order, each entry the record `getById()` returns,
+  - every run's steps use roster agents and the tools that agent is allowed, except `arrival_window`, which the run calls as code for the Clerk (contracts section 6), and `stepId`s are unique and ascending,
   - every event in a run, the scan, the question and the snapshot passes `validateEvent()`,
   - `run_01`'s reply cites only `pc_01`, `com_dine`, `mkr_01` and `pol_01`, `run_09`'s reply contains `ans_01`'s text exactly, and `run_02`'s planted claim is the only failing check,
   - **the content scan:** every v2 `Text`, facet, vibe word, alias, eval query, step summary and reply holds no `bannedObjects`, `stereotypeWords` or `meaningWords` word, except `communities[].protocols` and the market listings' own title, snippet and claim (R26), and no title, facet, vibe word or alias holds a `peopleNames` word,
@@ -366,10 +370,10 @@ T9 runs twice, as `B11-embed.md`'s orchestrator steps say.
 1. **First pass,** when `server/b11_embed/report.json`, `vectors.json` and `unjudged.json` exist from B11's training run:
    - Copy the report and the PCA points into `model.ts`'s `report`, with the fields of `ModelReport`, rounded to 4 decimals and never edited, plus a comment with the report's `modelId` and the run's date.
    - Grade `unjudged.json` once (pooled grading, B2-8). For each eval query it lists the pieces any system put in its top 5 that the query doesn't grade. Add a 2 or a 1 by T6's rules wherever a listed piece really matches, judged from its words, and leave the rest ungraded, so they count as misses. `author` doesn't change. A comment in `searchEval.ts` says how many grades the pooled pass added.
-   - Set `cft_01.similarity` to its real normalized text match against `pc_01`, computed with B15's formula and the trained model, rounded to 2 decimals (B2-9). Until then the comment in `watch.ts` marks the scripted 0.91 as illustrative.
+   - Set `cft_01.similarity` to its real normalized text match against `pc_01`, computed with B15's formula and the trained model, rounded to 2 decimals (B2-9). Until then the comment in `watch.ts` marks the scripted 0.91 as illustrative. From then on it gives the model's ID and the run's date instead.
 2. **Second pass,** after the orchestrator runs `python server/b11_embed/train.py --eval-only` on the new grades: copy the new `report.json` into `report` again, the same way.
 
-In both passes, the checks in `v2-records.test.ts` and `v2-figures.test.ts` compare `report` with the files, and figure 14's test takes 0.91 before T9 and the computed number after it.
+In both passes, the checks in `v2-records.test.ts` and `v2-figures.test.ts` compare `report` with the files, and figure 14's test reads `cft_01.similarity` from `watch.ts`. T9 types no number it writes into any test, and no other plan's test or acceptance line types one either: they read it from `src/mock/` or from the timeline's event.
 
 **Test** (`v2-model.test.ts`): the values in `model.ts` equal the JSON files' values, and every piece `unjudged.json` lists for a query is either graded now or still ungraded, never removed from the catalog.
 
@@ -396,14 +400,13 @@ In both passes, the checks in `v2-records.test.ts` and `v2-figures.test.ts` comp
 
 ## Needs (for FX1's contracts and the other plans)
 
-- **Contracts section 2, the craft lines:** `com_ojibwe` "Floral beadwork: earrings, pouches and necklaces" (no source found for barrettes) and `com_seminole` "Patchwork skirts and jackets" (no source found for bags). Also `CounterfeitCandidate` gains optional `seller: string` and `priceCents?: number`, which D-deploy's market pages print.
-- **Contracts section 11, export names this plan needs:** the question record in `swarm.ts` (proposed `makerQuestions`, holding `qst_01` and its scripted answer `ans_01`), the scripted `data.synced` payload in a new `database.ts` (proposed `demoDataSync`), and the closed vibe list in `searchIndex.ts` (proposed `vibeVocabulary`, which B14's listing request already carries by that name). Add `database.ts` to the file table.
-- **Contracts section 11 and FX6's plans, one name each:** FX6 asked for `gallerySplits` and `receiptNotes`, while section 2 puts the comparison on `split.shown.compare` and the note on `Person.receiptNote`. This plan writes both, the records built in code from the fields, so they always agree. FX1 adds `gallerySplits` (`splits.ts`) and `receiptNotes` (`people.ts`) to the export list, or FX6's plans read the fields and the two records go.
-- **I2-core (`ScriptedRun`):** a support trigger gains `makerId?`, matched against the request's `contextIds` the way `pieceId` is, so `run_04` and `run_10` answer only on Grace N.'s pages. Until then they answer on every seller page.
-- **The draft's piece ID** in the tour's `listing.indexed` for `lst_01`: proposed `pc_55`, event-only, joining the catalog only when `apr_04` is granted.
-- **I2-core (`planRun`):** a person's own `question.answered` must have its text quoted in `run_09`'s reply, so `planRun` substitutes the answer's text where the reply quotes `ans_01`.
-- **Figure 14 and L19 (FX1, contracts sections 2 and 12):** the scripted 0.91 is illustrative until T9 computes `cft_01`'s real text match, which then replaces it in `watch.ts`. Word figure 14 and L19 as "0.91 until the model's first run, then the computed number", and F-watch renders the number from the data.
-- **Figure 12** uses seed 10, decided at 5 PM, so the weights visibly pick the piece. FX1 copies this plan's figure 12 paragraph, seed, piece and weights included.
-- **R0-reskin:** its acceptance grep includes 工作室, so the Acoma studio's Chinese name here is 陶艺坊.
-</content>
-</invoke>
+None open. Every earlier item is settled:
+- The craft lines of `com_ojibwe` and `com_seminole`, and `CounterfeitCandidate`'s optional `seller` and `priceCents`: settled in contracts section 2.
+- The export names `makerQuestions`, `vibeVocabulary`, `demoDataSync`, `gallerySplits` and `receiptNotes`, and `database.ts` in the file table: settled in contracts sections 2 and 11.
+- `allApprovals` (`apr_01` to `apr_05`) and `allFollowUps` (`fup_01`, `fup_02`) from `index.ts`: settled in contracts section 11.
+- The support trigger's `makerId`, which `run_04` and `run_10` carry: settled in contracts section 11.
+- `pc_55`, the piece `lst_01` drafts in the tour: settled in contracts section 11.
+- `planRun` putting a person's own answer text where `run_09` quotes `ans_01`: settled in contracts section 11.
+- Figure 14 and L19, 0.91 until the model's first run and then the computed number: settled in contracts sections 2 and 12.
+- Figure 12, with seed 10, its piece and its weights: settled in contracts section 2.
+- L15, which ends "Cindia hasn't checked it independently.": settled in contracts section 12.

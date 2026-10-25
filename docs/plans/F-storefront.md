@@ -35,16 +35,16 @@ Each seller on the platform has a page at its own link and keeps the customer re
 - **What the public page shows** (B1-43, D1-50):
   - the blocks of the newest `storefront.published` for that storefront, which carries them,
   - otherwise the mock's blocks,
-  - and when the mock's `status` is `draft` and the store holds no `storefront.published` for it, the mock's blocks under `store-draft-note`: "Draft. This storefront isn't published yet."
+  - and when the mock's `status` is `draft` and the store holds no `storefront.published` for it, the mock's blocks under `store-draft-note` at the top of the page: "Draft. Not published yet." (contracts section 11).
 
   The page never shows a Designer draft the owner didn't use and publish, and it needs no "came after" rule, so a paused player's tied `at` values can't confuse it.
-- **Block props** are single strings or lists of strings, named as in contracts section 11 (D1-25): hero `tagline`, pieces `pieceIds`, projects `projectIds`, visit `address` and `hours`, and story and process `title`. Text props are English only, so in Chinese they stay as written.
+- **Block props** are single strings or lists of strings, named as in contracts section 11 (D1-25): hero `tagline`, pieces `pieceIds`, projects `projectIds`, visit `address` and `hours`, and story and process `title` and `body`. The story and process blocks render their `title` and never their `body` (T2). Text props are English only, so in Chinese they stay as written.
 - **Navigation:** a pieces block's cards and a projects block's cards move to `/shop/piece/<pieceId>` and `/shop/projects/<projectId>` through the kit `Link`.
 - **Exports:** `src/features/storefront/index.ts` default-exports `{ id: "storefront", slots: { "studio.storefront.main": StorefrontBuilder, "store.main": StorePage } }`.
 - **Source keys on the badge:** the builder `b14-swarm`. The public page renders no keyed events, so it shows the kit's `Demo data` badge.
 - **Test IDs:**
-  - From the contracts: `storefront-builder`, `storefront-block-<blockId>`, `storefront-preview`, `storefront-publish`, `store-page`.
-  - Internal to this feature: `storefront-designer` ("Draft with Designer"), `storefront-designer-steps`, `storefront-use-draft`, `storefront-accent`, `storefront-layout`, `storefront-preview-note`, `storefront-status`, `store-block-<blockId>` (a rendered block, in the preview and on the page), `store-story-note` (L8 in the story block), `store-footer`, `store-draft-note`, `store-missing`.
+  - From the contracts: `storefront-builder`, `storefront-block-<blockId>`, `storefront-preview`, `storefront-publish`, `store-page`, `store-footer` (the footer, with L13).
+  - Internal to this feature: `storefront-designer` ("Draft with Designer"), `storefront-designer-steps`, `storefront-use-draft`, `storefront-accent`, `storefront-layout`, `storefront-preview-note`, `storefront-status`, `store-block-<blockId>` (a rendered block, in the preview and on the page), `store-story-note` (L8 in the story block), `store-draft-note`, `store-missing`.
 - **Labels from the glossary:** storefront, storefront builder, community project, demo data, rule-based. From contracts section 12: L8 in the story block and L13 in the footer.
 
 ## Tasks
@@ -68,9 +68,9 @@ Each seller on the platform has a page at its own link and keeps the customer re
 
 **T2.** `StoreBlocks` takes a list of blocks, a theme and the slot's language, and renders each block in order as `store-block-<blockId>`. The theme's `accent` is a kit color token name, used as `var(--c-color-<accent>)`, never a hex. The `layout` is `story_first` or `grid_first`. One component per kind:
 - **hero:** the community's name, its place and the block's `tagline`, a plain craft line (A2 R23).
-- **story:** the block's `title` as its heading, then the community's `about` text with the `Demo data` badge and `store-story-note` under it, reading L8: "Placeholder written by the Cindia team. In a real launch, the community writes this page." It never renders a `body` that a draft brings, so no agent ever writes a community's story (A2-22).
+- **story:** the block's `title` as its heading, then the community's `about` text with the `Demo data` badge and `store-story-note` under it, reading L8: "Placeholder written by the Cindia team. In a real launch, the community writes this page." It never renders the block's `body`, from the mock or from a draft, so no agent ever writes a community's story (A2-22).
 - **pieces:** kit `PieceCard`s for the block's `pieceIds`, each with `demo={community.demo}`, so its verification line starts with L3. Each card is a `Link` to its Shop page.
-- **process steps:** the block's `title`, then the craft's steps from the first listed piece's `process`.
+- **process steps:** the block's `title`, then the craft's steps from the first listed piece's `process`. It never renders the block's `body`, from the mock or from a draft, so the steps on the page are always the piece data's physical steps and no agent describes how a community works (A2-22).
 - **projects:** kit `ProjectCard`s with raised against goal: the mock's `raisedCents` plus the store's `addedCents` for the project, which I2-core sums over distinct contributions. Each card links to its project page.
 - **visit:** the block's `address` and `hours` text. The data holds only the community's region there and "Visits by arrangement", never a street address, a phone number, an email or opening hours (A2 R22).
 
@@ -126,13 +126,11 @@ Every spec checks by test ID only, at 1440 by 900. A spec that needs a timeline 
 - Writing a community's story. The story block shows the community's `about` text, which a real community would write itself.
 
 ## Contract additions needed
-Settled in contracts section 11 and I2-core, listed so a builder knows where each lives:
+Settled in contracts sections 3 and 11 and I2-core, listed so a builder knows where each lives. Nothing is still open:
 1. **`storefront.requested`** (`storefrontId`): a person's request on key `b14-swarm`.
    - Scripted answer: the Designer run `run_03`, thread `sto_01`, with its `swarm.step` events, then `storefront.drafted` for `sto_01`. Any other storefront gets no scripted draft, because the Designer drafts only the seller's own storefront (I2-core T8, A2-22).
    - Live answer: `POST /api/b14/storefront`.
 2. **Navigation for features:** `navigate(path)` in `src/core/nav.ts` and the kit `Link` (prop `to`), which moves between routes without reloading the store.
 3. **`storefront-publish`** reads "Publish". It's the owner's own decision and emits `storefront.published` directly. The `storefront_publish` approval kind stays for a time when Cindy proposes a publish herself.
-4. **Block props:** single strings or lists of strings, as the Storefront type allows: a pieces block holds `pieceIds: string[]`, a projects block `projectIds: string[]`, hero `tagline`, visit `address` and `hours`, and story and process `title` (D1-25). B14's Designer writes the same names.
-
-Still open, and in the fix report's needs:
-5. **`storefront.published`** carries `blocks` (as on Storefront) beside `storefrontId` and `slug` (contracts section 3), and the `storefront` store key keeps them under `published` with the slug (I2-core T3), so the public page shows what the owner published (B1-43).
+4. **Block props:** single strings or lists of strings, as the Storefront type allows: a pieces block holds `pieceIds: string[]`, a projects block `projectIds: string[]`, hero `tagline`, visit `address` and `hours`, story `title` and `body`, and process `title` and `body` (D1-25). B14's Designer writes the same names. Neither `body` renders (T2).
+5. **`storefront.published`** carries `blocks` (as on Storefront) beside `storefrontId` and `slug` (contracts section 3), and the `storefront` store key keeps the newest one under `published` by `storefrontId`, as `{ slug, blocks, at }` (I2-core T3), so the public page shows what the owner published (B1-43).

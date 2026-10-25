@@ -56,7 +56,7 @@ From the Claude Code docs on cloud sessions and cloud environments (https://code
 - **For:** the co-op's bank account. In v1, B04 posts the sale as a deposit and the maker payouts as withdrawals. In v2, B16 reads the bank side back from Nessie in live mode, so B01 finds the $340 catch against Nessie, and it posts the fund moves as a deposit and a withdrawal (Capital One track). Nessie is a sandbox bank, so no real money moves.
 - **Account:** nessieisreal.com, signed in with GitHub. The key is on the profile page. Gordon has it from v1.
 - **Variable:** `NESSIE_KEY`, as a cloud environment variable or in `.env`.
-- **Auth:** query string, `?key=<key>` on every request. httpx logs full URLs at INFO, so the server keeps its `httpx` loggers at WARNING.
+- **Auth:** query string, `?key=<key>` on every request. httpx logs full URLs at INFO, so the server keeps the `httpx`, `httpx2` and `httpcore` loggers at WARNING (contracts section 5).
 - **Network secret:** no, secrets are headers only.
 - **Hosts:** `api.nessieisreal.com`, `prod-api.nessieisreal.com`, `qa-api.nessieisreal.com`. The spec also lists a "Direct QA server", `https://sopko4r0aj.execute-api.us-east-1.amazonaws.com/qa`, which sits under `*.amazonaws.com` on the Trusted list. Untested as a fallback.
 - **Limits:** none published.

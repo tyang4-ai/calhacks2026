@@ -5,7 +5,7 @@ Priority: P0 for T0, P1 for T1 to T3 · Wave: V1 for T0, then V2 · Depends on: 
 SCOPE: scripts/make-illustrations.mjs, scripts/lib/art/, public/images/, package.json, tests/smoke/images.spec.ts, artifacts/art/
 
 **Two spawns.**
-1. **T0, in V1,** right after I2-core's first spawn commits and before G1b. It writes a placeholder for every one of the 54 pieces, so no page shows a broken image while the catalog grows from 12 pieces to 54 (B1-22). The orchestrator commits it on its own.
+1. **T0, in V1,** right after I2-core's first spawn commits and before G1b. It writes a placeholder for every one of the 54 pieces, so no page shows a broken image while the catalog grows from 12 pieces to 54 (B1-22). The orchestrator commits it on its own. S3-catalog T5's test reads these files, so T0 commits before S3's data spawn reaches T5.
 2. **T1 to T3, after G2b,** beside the V2 features. They replace the placeholders with drawings.
 
 T0 edits `package.json`, so it never runs beside another integrator task that edits it (I2-core T7, an install).
@@ -69,7 +69,7 @@ The pages look finished before any Figma drop. A drop with better illustrations 
   - beaded: a dotted bead texture,
   - painted pottery: a slip ground with fine-line bands,
   - patchwork: bands of small pieced squares, triangles, diamonds and zigzags.
-- **Patterns** come from `scripts/lib/art/patterns.mjs` and are plain geometry: stripes, bands, steps, diamonds, triangles, zigzags, chevrons, checks, dots and fine parallel lines. Plain flowers, leaves and vines are drawn only on `com_ojibwe` beadwork whose motifs name them, because floral beadwork is the one craft here known for flowers (A2 R15). A motif word the table doesn't know draws nothing and is printed. The pattern is never a guess.
+- **Patterns** come from `scripts/lib/art/patterns.mjs` and are plain geometry: stripes, bands, steps, diamonds, triangles, squares, zigzags, chevrons, arcs, checks, dots and fine parallel lines. A table there maps every motif word in S3-catalog's R14 lists to its pattern. `line` and `fine line` draw as fine parallel lines, and `geometric` as steps with fine-line bands. Plain flowers, leaves, vines, berries and buds are drawn only on `com_ojibwe` floral beadwork whose motifs name them, because floral beadwork is the one craft here known for flowers (A2 R15). A motif word the table doesn't know draws nothing and is printed. The pattern is never a guess.
 - **Never drawn** (A2-23, A2 R14 to R17):
   - Yei or Yeibichai figures, katsina figures, sandpainting designs,
   - the whirling-log shape, and any cross, with bent arms or straight,
@@ -126,6 +126,6 @@ The integrator does every task itself, in order.
 
 ## Contract additions needed
 
-- The npm script `art` with its `--placeholders`, `--sheet` and `--check` modes, in `CLAUDE.md`'s Commands table (the orchestrator's file).
-- `npm run art -- --check` among G2b's commands (`docs/v2/contracts.md` section 10, `scripts/gate.mjs`).
-- `artifacts/art/` as the contact sheet's home, for the verifier.
+None open. Each earlier item is settled:
+- The npm script `art` with its `--placeholders`, `--sheet` and `--check` modes, and `artifacts/art/` as the contact sheet's home: settled in contracts section 11 and in `CLAUDE.md`'s Commands table.
+- `npm run art -- --check` among G2b's commands: settled in contracts section 10.

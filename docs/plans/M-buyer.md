@@ -18,7 +18,7 @@ A judge opens a piece on the desktop Shop and takes it in at a glance: who made 
 - `docs/v2/contracts.md`, which `docs/common/` holds once I2-core is green:
   - section 2: Community (`verification`, `demo`, `projectIds`), Project (`addOnCents`), figure 13
   - section 3: `project.funded`, `card.tokenized` with `pieceId`, the Requests table
-  - section 4: routes `/shop/piece/:pieceId` and `/shop/receipt/:orderId`, slots `shop.piece.main` and `shop.receipt.main`, `SlotProps.pieceId`, `orderId` and `publicSite`, test IDs `buyer-verification` and `buyer-project-addon`
+  - section 4: routes `/shop/piece/:pieceId` and `/shop/receipt/:orderId`, slots `shop.piece.main` and `shop.receipt.main`, `SlotProps.pieceId`, `orderId` and `publicSite`, test IDs `buyer-verification`, `buyer-split-compare`, `buyer-project-addon`, `buyer-receipt-promise`, `buyer-receipt-maker-note` and `buyer-pay-blocked`
   - section 11: the Requests rows for a person's `piece.opened` and `checkout.started`, `splits`, the Phase A legacy page `/shop/legacy`, the ID scheme, `seekToEvent`
   - section 12: labels L4 to L7 and L10
 - `docs/v2/reviews/A2-culture-trust.md`: findings 2, 3 and 21, labels L4 to L7 and L10
@@ -38,8 +38,8 @@ A judge opens a piece on the desktop Shop and takes it in at a glance: who made 
 - **Which piece:** `SlotProps.pieceId` when the route sets it, otherwise the store's `openPieceId` (the tour on `/demo`). **Which order:** `SlotProps.orderId` when set, otherwise the newest order in the store. A person's `ord_user_<n>` order lives only in the store's `buyer.orders`, so the receipt reads it there, and reads a mock order such as `ord_001` with `getById()` (D1-33).
 - **Reads data** with `getById()` and the `src/mock` exports:
   - the piece, its maker (name, `surnameChar`), its community (`name`, `craft`, `verification`, `demo`, `projectIds`), and the community's first project (`title`, `addOnCents`),
-  - the gallery split for the piece in `src/mock/splits.ts`, for the comparison line (S3 T7, A1-10). A piece with no gallery split shows no line,
-  - the maker's receipt note in `src/mock/` (S3, A1 top change 7).
+  - `gallerySplits[pieceId]` from `src/mock/splits.ts`, the gallery split for the piece, for the comparison line (S3 T7, A1-10). A piece with no entry there shows no line,
+  - `receiptNotes[makerId]` from `src/mock/people.ts`, the maker's receipt note (S3, A1 top change 7).
 - **The public build:** `SlotProps.publicSite` is true there (I2-shell). This feature never reads `import.meta.env`. With `publicSite`, `buyer-pay-blocked` shows L6 in place of `buyer-pay-button`, on `shop.piece.main` and on `buyer.main` alike, and nothing on the page can emit a checkout or a contribution (fix-plan 1.8). The scripted tour's token and receipt still render from their events. On localhost the demo checkout works for every piece.
 - **Emits,** with `source: "user"`, through `userEvent()`:
   - `checkout.started` when the buyer presses pay.
@@ -54,8 +54,8 @@ A judge opens a piece on the desktop Shop and takes it in at a glance: who made 
   - `buyer.main` keeps its v1 keys.
 - **Test IDs:**
   - v1, kept: `buyer-story-card`, `buyer-process-timeline`, `buyer-split-bar`, `buyer-split-maker-share`, `buyer-pay-button`, `buyer-token`, `buyer-receipt`, `buyer-receipt-status`, `buyer-concierge-input` and `buyer-concierge-results` (until T7).
-  - New in the contracts: `buyer-verification`, `buyer-project-addon`, and from fix-plan 1.2's tour table `buyer-split-compare` (the gallery comparison under the split), `buyer-receipt-promise` (the promise under the received status) and `buyer-receipt-maker-note` (the maker's note on the paid receipt).
-  - Internal to this feature: `buyer-split-price`, `buyer-simulated-note`, `buyer-split-request` (the "See where your money goes" button), `buyer-piece-page`, `buyer-receipt-page`, `buyer-contribution` (the confirmation line after a contribution), `buyer-story-demo-note` (L5), `buyer-addon-note` (L7), `buyer-pay-blocked` (L6), `buyer-receipt-demo-note` (L10).
+  - From the contracts (section 4), new in v2: `buyer-verification`, `buyer-split-compare` (the gallery comparison under the split), `buyer-project-addon`, `buyer-receipt-promise` (the promise under the received status), `buyer-receipt-maker-note` (the maker's note on the paid receipt) and `buyer-pay-blocked` (L6, in place of Pay on the public build).
+  - Internal to this feature: `buyer-split-price`, `buyer-simulated-note`, `buyer-split-request` (the "See where your money goes" button), `buyer-piece-page`, `buyer-receipt-page`, `buyer-contribution` (the confirmation line after a contribution), `buyer-story-demo-note` (L5), `buyer-addon-note` (L7), `buyer-receipt-demo-note` (L10).
 - **Labels from the glossary:** maker share, materials, Cindia fee, card fee, token, receipt, received, paid to the maker, simulated checkout, hours of work, about the craft (the `heritage` line), how makers are verified, community project, demo data. From contracts section 12: L4, which the kit's `VerificationLine` prints with `demo`, and L5, L6, L7 and L10.
 
 ## Tasks
@@ -96,7 +96,7 @@ T7 deletes all five.
 **T3.** `PieceSplit` is the top of the price column.
 - It shows the price (`buyer-split-price`).
 - When the store holds a `split.shown` for this piece, it renders `PriceSplit`: the kit `ShareBar` in `buyer-split-bar` and the maker share in `buyer-split-maker-share`, from the payload as in v1.
-- `PriceCompare` (`buyer-split-compare`) sits under the split when the piece has a gallery split in `src/mock/splits.ts` (A1-10): "Through the gallery, by its contract, Grace N. would get $86.00 for this piece. On Cindia, $134.48." The maker's name comes from the piece. The gallery amount is the gallery split's maker share, which the data model's gallery rule gives as gross minus the contract's 40% commission minus materials (18000 minus 7200 minus 2200 is 8600 cents for `pc_01`). The Cindia amount is the `split.shown` payload's `makerShareCents`. Both go through `Money`, and code computed both, so nothing here is typed in.
+- `PriceCompare` (`buyer-split-compare`) sits under the split when the piece has an entry in `gallerySplits` (A1-10): "Through the gallery, by its contract, Grace N. would get $86.00 for this piece. On Cindia, $134.48." The maker's name comes from the piece. The gallery amount is `gallerySplits[pieceId].makerShareCents`, which the data model's gallery rule gives as gross minus the contract's 40% commission minus materials (18000 minus 7200 minus 2200 is 8600 cents for `pc_01`). The Cindia amount is the `split.shown` payload's `makerShareCents`. Both go through `Money`, and code computed both, so nothing here is typed in.
 - When there's no split yet, it shows `buyer-split-request` ("See where your money goes"), which emits `piece.opened` for this piece. The scripted answer, a `split.shown` for that piece from `splits.ts`, is contracts section 11's Requests row (I2-core T8).
 - `PriceSplit` gains a `pieceId` prop that defaults to the store's latest split, so `BuyerFlow` is unchanged.
 
@@ -122,7 +122,7 @@ T7 deletes all five.
 - the amount and date,
 - the status line `buyer-receipt-status`, which follows `receipt.updated`: "Received", then "Paid to the maker" with the maker's name, `makerShareCents` and `paidDate` from the payload,
 - `buyer-receipt-promise` while the status is received ("We'll show you when Grace N. is paid."),
-- `buyer-receipt-maker-note` once the status is `paid_to_maker`: the maker's own note from `src/mock/`, as she wrote it, under her name and `MakerMark`, with the `Demo data` badge. It is the last thing the tour's buyer sees (`d12-receipt`), so the promise in `d05-pay` gets kept on screen,
+- `buyer-receipt-maker-note` once the status is `paid_to_maker`: the maker's own note, `receiptNotes[makerId]` from `src/mock/people.ts`, as she wrote it, under her name and `MakerMark`, with the `Demo data` badge. It is the last thing the tour's buyer sees (`d12-receipt`), so the promise in `d05-pay` gets kept on screen,
 - for an `ord_user_` order, L10 in `buyer-receipt-demo-note`, and no promise or note,
 - the contribution, when a `project.funded` names this order (the tour's `ctb_01` names `ord_001`).
 
@@ -144,11 +144,11 @@ Every spec opens the route named, reaches tour events with `seekToEvent` or `tou
    - `buyer-process-timeline` lists every step,
    - `buyer-verification` shows how `com_dine` would verify its makers, starting with L3 and with L4 under it,
    - the four parts of `buyer-split-bar` add up to $180.00 and `buyer-split-maker-share` reads $134.48,
-   - `buyer-split-compare` reads the gallery split's maker share for `pc_01` from `src/mock/splits.ts` ($86.00) against $134.48,
+   - `buyer-split-compare` reads `gallerySplits.pc_01.makerShareCents` from `src/mock/splits.ts` ($86.00) against $134.48,
    - all six are inside the frame.
 2. **Given** `/shop/piece/pc_01` 300 ms after the timeline's `receipt.updated` with status `received` for `ord_001`, **then** `buyer-token` shows a token starting with `tok_` and last four 4242, `buyer-simulated-note` shows, `buyer-receipt-status` reads "Received", and `buyer-receipt-promise` reads "We'll show you when Grace N. is paid." **Given** the tour's `project.funded` `ctb_01` too, **then** `buyer-project-addon` reads on and `buyer-contribution` names `prj_01`'s title and $5.00.
 3. **Given** `/shop/piece/pc_01` on a fresh store, before the timeline's `checkout.started`, **then** `buyer-project-addon` is off and `buyer-addon-note` shows L7. **When** the buyer switches it on and presses `buyer-pay-button`, **then** the store holds exactly one `checkout.started` with `source: "user"`, and one `project.funded` for `prj_01` with 500 and `source: "user"`. **When**, on another fresh store, they press pay with the add-on left off, **then** the click adds no `project.funded`.
-4. **Given** `/shop/receipt/ord_001` 300 ms after the timeline's `receipt.updated` with status `paid_to_maker`, **then** `buyer-receipt` and `buyer-receipt-status` read "Paid to the maker", Grace N., $134.48 and Oct 2, 2026, `buyer-receipt-maker-note` shows her note from `src/mock/` with the `Demo data` badge, `buyer-receipt-promise` is gone, and all of it is inside the frame.
+4. **Given** `/shop/receipt/ord_001` 300 ms after the timeline's `receipt.updated` with status `paid_to_maker`, **then** `buyer-receipt` and `buyer-receipt-status` read "Paid to the maker", Grace N., $134.48 and Oct 2, 2026, `buyer-receipt-maker-note` shows `receiptNotes.mkr_01` from `src/mock/people.ts` with the `Demo data` badge, `buyer-receipt-promise` is gone, and all of it is inside the frame.
 5. **Given** `/shop/piece/pc_02` with no split in the store, **then** `buyer-split-request` shows. **When** it's pressed, **then** the store holds a `piece.opened` for `pc_02` with `source: "user"`, and `buyer-split-bar` shows `pc_02`'s split from `src/mock/splits.ts` once it arrives (contracts section 11's Requests row).
 6. **When** the buyer presses `buyer-pay-button` on `/shop/piece/pc_02` on a fresh store on localhost, **then** `buyer-token` and a "Received" `buyer-receipt-status` arrive for an `ord_user_` order, and `buyer-receipt-demo-note` shows L10 in place of the promise. **Given** `/shop/piece/pc_01` afterwards, **then** it shows no token, because `pc_02`'s card is filed under `pc_02` (D1-46). **Given** `/shop/receipt/<that order>`, **then** L10 shows and there's no maker note.
 7. **Given** `checkoutRules.test.ts`, **then** with `publicSite` every piece's pay is blocked and the add-on can't emit, and without it pay is open for every piece until that piece's own checkout starts. On the public build, `buyer-pay-blocked` stands where `buyer-pay-button` was (D-deploy checks the built site).
@@ -172,7 +172,5 @@ Settled in contracts section 11, I2-core and I2-shell, listed so a builder knows
 4. **IDs:** a person's contributions use `ctb_user_<n>`.
 5. **The store:** `buyer.checkouts` and `buyer.cards` by `pieceId` (I2-core T3, B1-34).
 6. **After G4v2:** remove `buyer.main`, `buyer-concierge-input` and `buyer-concierge-results` from the UI contract, so T7 can delete them.
-7. **The public build:** `SlotProps.publicSite` (I2-shell).
-
-Still open, and in the fix report's needs:
-8. The names of the gallery split for the comparison and of the maker's receipt note in `src/mock/`, in contracts section 11 (S3 T7).
+7. **The public build:** `SlotProps.publicSite` (I2-shell), and `buyer-pay-blocked` in contracts section 4.
+8. **The comparison and the note:** `gallerySplits` in `splits.ts`, a record by `pieceId` with the gallery's `makerShareCents` (`pc_01` is 8600), and `receiptNotes` in `people.ts`, a record by `makerId` (contracts section 11, S3 T7).

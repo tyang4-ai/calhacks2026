@@ -79,7 +79,7 @@ A judge meets the people behind the pieces: the four Native American communities
 
 **How the tasks fit:** the lead writes T0 before spawning any builder. T3's `projectModel.ts` is the one place that merges the mock with the store (raised amounts, contributions, milestone statuses and amounts), and T4 and T5 import it. T5 reuses T4's `WipTimeline` without editing it. Builders run `npm run check:scope` on their files and write their spec, which imports `communities-lib.ts`. The specs run for the first time once T6 fills the slots, and the lead sends any failure back to the builder who owns the file.
 
-**T0's spec helper.** `communities-lib.ts` re-exports `seekToEvent(page, type, match, offsetMs)` from `tests/smoke/lib.ts` and never copies it (contracts section 11). It adds `tourEvent(page, type, match, offsetMs, seed)`, which seeks to the tour's `project.funded` `ctb_01` once the timeline holds it (after I2-tour), and until then pauses the player and emits figure 13's contribution from `src/mock/` with `window.__cindia.emit()`. It never seeks to a fixed time.
+**T0's spec helper.** `communities-lib.ts` re-exports `seekToEvent(page, type, match, offsetMs)` from `tests/smoke/lib.ts` and never copies it (contracts section 11). It adds `tourEvent(page, type, match, offsetMs, seed)`, which seeks to the tour's `project.funded` `ctb_01` once the timeline holds it (after I2-tour), and until then pauses the player and emits `demoContribution`, figure 13's contribution from `src/mock/projects.ts`, with `window.__cindia.emit()`. It never seeks to a fixed time.
 
 **T1.** `CommunityStrip` (`communities-strip`) is a row of four kit `CommunityCard`s (`community-card-<communityId>`) in community order:
 - the community's name, people and place, and its craft,
@@ -134,7 +134,7 @@ Pressing `wip-release-<milestoneId>` emits `wip.milestone_reached` as above. The
 It's all inside one `Panel` that declares `b08-approvals`. `index.ts` exports the module. `communities-flow.spec.ts` walks home to a community to its project and funds it.
 
 ## Acceptance
-Specs open the route named and check by test ID only. Expected values come from `src/mock/`, not typed in. A spec reaches the tour's `project.funded` `ctb_01` with `tourEvent()` from `communities-lib.ts`: it seeks there with `seekToEvent(page, type, match, offsetMs)` once the timeline holds it (after I2-tour), and until then it emits figure 13's contribution from `src/mock/`. No spec seeks to a fixed time. A scripted answer to a person counts as arrived when it shows within Playwright's default expect timeout, never inside a wall-clock window (B1-27).
+Specs open the route named and check by test ID only. Expected values come from `src/mock/`, not typed in. A spec reaches the tour's `project.funded` `ctb_01` with `tourEvent()` from `communities-lib.ts`: it seeks there with `seekToEvent(page, type, match, offsetMs)` once the timeline holds it (after I2-tour), and until then it emits `demoContribution` from `src/mock/`. No spec seeks to a fixed time. A scripted answer to a person counts as arrived when it shows within Playwright's default expect timeout, never inside a wall-clock window (B1-27).
 
 1. **Given** `/shop`, **then** `communities-strip` shows four `community-card-<communityId>` in community order, `com_dine`, `com_ojibwe`, `com_acoma` and `com_seminole`, each with its kind label and the Demo data badge.
 2. **When** a person clicks `community-card-com_ojibwe`, **then** the page is `/shop/community/com_ojibwe`, and:
@@ -161,18 +161,16 @@ Specs open the route named and check by test ID only. Expected values come from 
 - The storefront pages. The storefront feature owns `/store/:slug`.
 
 ## Contract additions needed
-Settled in contracts section 11, I2-core and S3, listed so a builder knows where each lives:
+Settled in contracts sections 2, 9 and 11, I2-core and S3, listed so a builder knows where each lives. Nothing is still open:
 - **Requests rows (I2-core T8):**
   - `wip.milestone_reached` from a person goes to key `b08-approvals`. The scripted answer is an `agent.acted` (a proposal) plus `approval.requested` `apr_05` when the milestone is `wip_01`'s second. For any other milestone it's only an `agent.acted` line saying scripted mode proposes the demo release.
   - `approval.granted` for a `milestone_release` approval gets the scripted answer `wip.milestone_paid` plus a `money.moved` of kind `milestone`, Cindia to the maker, dated `2026-10-02`.
 - **A person's `wip.milestone_reached`** carries `date: "2026-10-01"`, the same fixed demo date approvals use, so a tap never reads the wall clock.
 - **`wip_01` belongs to `com_dine`**, its maker is one of `mkr_01` to `mkr_03`, and its milestones start as `mls_01` paid, `mls_02` pending and `mls_03` pending (S3 T7, B1-12), so Sell › Projects, the co-op's, can release `mls_02`.
 - **`addedCents`** is the sum of a project's contributions, never a running increment (I2-core T3, B1-44).
-- **The `src/mock` exports this plan reads:** `communities`, `projects`, `worksInProgress`, `storefronts`, plus `getById()` for `com_`, `prj_`, `wip_` and `sto_` IDs (S3-catalog).
+- **The `src/mock` exports this plan reads:** `communities`, `projects`, `worksInProgress`, `storefronts`, `demoContribution`, plus `getById()` for `com_`, `prj_`, `wip_` and `sto_` IDs (S3-catalog).
 - **`src/core/nav.ts` route builders** for the community, projects, piece and storefront routes (I2-core).
 - **Contribution ID prefix** `ctb_user_<n>` for a person's contributions. The tour uses `ctb_01`.
 - **`seekToEvent(page, type, match, offsetMs)`** in `tests/smoke/lib.ts` (I2-shell T5).
-
-Still open, and in the fix report's needs:
-- The glossary's `protocols` row takes L9's title, "Kept out of this demo", and the kind label reads Native American, 美洲原住民 (contracts section 9, fix-plan 1.1).
-- Figure 13's contribution `ctb_01` as a `src/mock` export, so specs can emit it before I2-tour (S3, D1-38).
+- **The glossary rows:** `protocols` reads L9's title, "Kept out of this demo" (本演示未收录), and the kind label reads Native American, 美洲原住民 (contracts section 9, fix-plan 1.1).
+- **Figure 13's contribution** `ctb_01` is the `src/mock/projects.ts` export `demoContribution`, beside `demoFundMoves`, so specs can emit it before I2-tour and the tour builds its event from it (contracts sections 2 and 11, D1-38).

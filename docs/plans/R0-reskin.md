@@ -250,5 +250,3 @@ One lead, no builders: the change is mechanical.
 
 - `docs/harness/v2-runbook.md` V1 step 0 asks for `npm run export:mock` once R0 is in, but `export:mock` arrives with I2-core T7. Run it after V1 step 1 instead. R0's fixtures don't need it (T4 above).
 - Every plan written before R0 that names Lu Yun, the Peony fan or `std_gu` takes this table's names. The fix agents are applying it now (`docs/v2/fix-plan.md` section 2).
-</content>
-</invoke>

@@ -15,7 +15,7 @@ A buyer asks a real question about a piece. In the tour it's whether Grace N. ma
   - section 1.5: "Cindy asks the maker for you" is one scripted run, and the live loop is "if time".
 - `docs/v2/brief.md`: Help any time, the agent swarm, the Sell side
 - `docs/v2/contracts.md`:
-  - section 2: AgentSpec and SwarmRun
+  - section 2: AgentSpec, and section 11's `ScriptedRun` (Store and types)
   - section 3: `support.asked`, `swarm.step`, `support.answered`, `support.escalated`, `question.forwarded`, `question.answered`, the payload rule, the Requests rows (`support.asked` and its timing)
   - section 4: slots `shop.drawer.support`, `studio.drawer.support`, `shop.piece.side`, SlotProps `side`, `pieceId`, `orderId`, `slug` and `makerId`, the support test IDs
   - section 6: the agent roster
@@ -52,7 +52,7 @@ A buyer asks a real question about a piece. In the tour it's whether Grace N. ma
 - **Opens the drawer only for a person's own question (B1-18).** Asking from the piece page's side panel calls `openDrawer("support")` from `src/core/nav.ts`. Help in the top bar and a `?drawer=support` link open it too. No timeline event opens or closes it, and this feature has no effect that watches the timeline. On `/demo` the stage opens the tour's drawer from `d04-support`'s `beat.started.drawer`, so a seek replay, start at the catch included, never leaves the drawer open over a later beat.
 - **Exports:** `src/features/support/index.ts` default-exports `{ id: "support", slots: { "shop.drawer.support": SupportDrawer, "studio.drawer.support": SupportDrawer, "shop.piece.side": AskAboutPiece } }`. One component serves both drawers and reads `SlotProps.side`.
 - **Source keys on the badge:** `b14-swarm`, `b13-live`.
-- **Test IDs from the contract:** `support-drawer`, `support-input`, `support-send`, `support-thread`, `support-reply`, `support-agent`, `support-handoff`.
+- **Test IDs from the contract:** `support-drawer`, `support-input`, `support-send`, `support-thread`, `support-reply`, `support-agent`, `support-handoff`, `support-forwarded-<questionId>` (the line that a question went to the maker), `support-maker-answer-<questionId>` (the maker's own answer in the thread).
 - **Internal test IDs:**
   - `support-msg-<n>`: one message in the thread, from 1,
   - `support-steps`: the step strip,
@@ -64,9 +64,7 @@ A buyer asks a real question about a piece. In the tour it's whether Grace N. ma
   - `support-ask-piece`: the side panel,
   - `support-refs`: the records a reply names,
   - `support-records-note`: L11 at the top of the drawer,
-  - `support-live-note`: L12 under the input, live mode only,
-  - `support-forwarded-<questionId>`: the line that a question went to the maker,
-  - `support-maker-answer-<questionId>`: the maker's own answer in the thread.
+  - `support-live-note`: L12 under the input, live mode only.
 - **Labels from the glossary:** help, agent swarm, rule-based, approval, needs your approval, demo data, plus each agent's name from the roster. From contracts section 12: L11 and L12. L14, L15 and L16 come inside the scripted replies from `src/mock/` and B14's, and this feature shows them as written.
 
 ## Tasks
@@ -134,7 +132,7 @@ Asking from here emits `support.asked` with `contextIds: [pieceId]` and calls `o
 - `Suggestions` for its side, as `support-suggest-<n>`,
 - `Composer`.
 
-The Shop side uses the buyer's suggestions and passes what's on screen as context. The Sell side uses the seller's suggestions (payouts, listing help). The drawer fits the kit's 440 px drawer width at 900 px tall, and the newest message stays in view. `index.ts` exports the module. `support-flow.spec.ts` asks from the piece page and follows the answer. `support-live.spec.ts` is B14's live feature spec (acceptance 15), which the orchestrator runs as `npm run gate -- G5 b14-swarm support-live`.
+The Shop side uses the buyer's suggestions and passes what's on screen as context. The Sell side uses the seller's suggestions (payouts, listing help). The drawer fits the kit's 440 px drawer width at 900 px tall, and the newest message stays in view. `index.ts` exports the module. `support-flow.spec.ts` asks from the piece page and follows the answer. `support-live.spec.ts` is B14's live feature spec (acceptance 15), which the orchestrator runs as `npm run gate -- G5 b14-swarm tests/features/support-live.spec.ts`.
 
 ## Acceptance
 Specs open the route named and check by test ID only. A spec reaches the tour's run with `tourEvent()` from `support-lib.ts`: it seeks there with `seekToEvent(page, type, match, offsetMs)` once the timeline holds the event (after I2-tour), and until then it emits `run_01`'s scripted payloads from `src/mock/swarm.ts`. No spec seeks to a fixed time. A spec seeks before it asks, never after, because a seek drops a pending answer (lessons, F-ask-cindy). A scripted answer to a person counts as arrived when it shows within Playwright's default expect timeout, and specs check the order of its steps, not their wall-clock spacing. The 1.2-second start and the 300 ms spacing are I2-core's `planRun` unit test (B1-27). Expected values come from `src/mock/`, not typed in. After I2-tour, G4v2 checks `d04-support`.
@@ -153,7 +151,7 @@ Specs open the route named and check by test ID only. A spec reaches the tour's 
 12. **Given** scripted mode, **then** both drawers show `simulated-badge` and no `support-live-note`. **Given** the Live switch on, **then** `support-live-note` shows L12 under `support-input`.
 13. **Given** `demo-lang-toggle` set to Chinese, **then** L11, the suggestions, the step summaries and the reply show their Chinese text, and the maker's answer stays as she wrote it.
 14. **While** a run is working, **then** `support-send` doesn't emit a second `support.asked`.
-15. **Given** live mode with `b14-swarm` live, **when** a person asks their own buyer question in the drawer on `/shop/piece/pc_01`, **then** B14 answers it end to end in the drawer, with its steps in `support-steps` and its reply in `support-reply`, and every event is valid. This is `support-live.spec.ts`, B14's live feature spec, run as `npm run gate -- G5 b14-swarm support-live`. It skips with a named reason when `/api/health` doesn't list `b14` or `keys.anthropic` is false, so G3 passes before B14 lands.
+15. **Given** live mode with `b14-swarm` live, **when** a person asks their own buyer question in the drawer on `/shop/piece/pc_01`, **then** B14 answers it end to end in the drawer, with its steps in `support-steps` and its reply in `support-reply`, and every event is valid. This is `support-live.spec.ts`, B14's live feature spec, run as `npm run gate -- G5 b14-swarm tests/features/support-live.spec.ts`. It skips with a named reason when `/api/health` doesn't list `b14` or `keys.anthropic` is false, so G3 passes before B14 lands.
 
 ## Out of scope
 - Running the agents. B14 does that, and B13 streams the steps. In scripted mode the registry plays the runs in `src/mock/swarm.ts`.
@@ -163,7 +161,7 @@ Specs open the route named and check by test ID only. A spec reaches the tour's 
 - Accounts, email or a chat with a real person.
 
 ## Contract additions needed
-Settled in contracts section 11, I2-core and I2-shell, listed so a builder knows where each lives:
+Settled in contracts sections 3 and 11, I2-core and I2-shell, listed so a builder knows where each lives. Nothing is still open:
 - `src/mock/swarm.ts` exports `demoQuestions: { side: "buyer" | "seller", text: Text }[]`, the buyer's first being the tour's `d04` question, with one scripted run per entry (S3 T8, D1-17).
 - `src/mock/agents.ts` exports `agents` and `getAgent(agentId)` (S3-catalog).
 - `src/core/nav.ts` exports `openDrawer("ask" | "audit" | "support", ref?)`. On `/demo` the stage navigator turns it into an override that the next `beat.started` or a seek clears (I2-shell T1).
@@ -173,7 +171,5 @@ Settled in contracts section 11, I2-core and I2-shell, listed so a builder knows
 - `question.forwarded` `{ questionId, threadId, makerId, pieceId, text, lang }` and `question.answered` `{ questionId, answerId, makerId, text, lang }`, both keyed `b14-swarm`, held in `support.questions`. A person's `question.answered` is answered by the run whose `question` trigger names it, ending in the Writer's `support.answered` on the question's thread (I2-core T3, T8).
 - Thread ID prefixes: `thr_01` for the tour, `thr_user_<n>` for a person's conversations.
 - `seekToEvent(page, type, match, offsetMs)` in `tests/smoke/lib.ts` (I2-shell T5).
-
-Still open, and in the fix report's needs:
 - `contextIds` may also hold a store page's community and a maker page's maker (contracts section 3).
-- S3's run for the meaning question ends with the Writer's reply that it will ask Grace N., then a `question.forwarded` to `mkr_01` about `pc_01` on the asker's thread, and a `question` trigger run relays her answer (S3 T8).
+- The meaning question's run, `run_07`, ends with the Writer's reply that it will ask Grace N. (L14), then a `question.forwarded` `qst_01` to `mkr_01` about `pc_01` on the asker's thread. `run_09`, whose `question` trigger names `qst_01`, relays her answer (contracts section 11's run table, S3 T8).

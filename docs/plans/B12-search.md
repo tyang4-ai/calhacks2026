@@ -1,8 +1,8 @@
 # B12-search · Vibe search and surprise me, on Elastic with our own vectors
 
-Priority: P0 · Wave: V2 · Depends on: B11-embed (the model, `vectors.json`, `bm25.py`, `compose.query_text()`, the fingerprint) · Folder: `server/b12_search/` · Source key: `b12-search` · Makes real: F-search for a person's own search and surprise draw, the Finder's tools in B14 (`cindia_search`, and `cindia-finder` for find questions), the index B14's Indexer writes drafts to · Estimate: 3 h
+Priority: P0 · Wave: V2 · Depends on: B11-embed T5 and T6 (the trained model, `vectors.json`, `model.py`, `bm25.py`, `compose.query_text()`, the fingerprint) · Folder: `server/b12_search/` · Source key: `b12-search` · Makes real: F-search for a person's own search and surprise draw, the Finder's tools in B14 (`cindia_search`, and `cindia-finder` for find questions), the index B14's Indexer writes drafts to · Estimate: 3 h
 
-**SCOPE:** `server/routers/b12_search.py, server/b12_search/, src/sources/live/b12-search.ts, tests/server/test_b12_search.py, tests/server/b12_fixture.json`
+**SCOPE:** `server/routers/b12_search.py, server/b12_search/, src/sources/live/b12-search.ts, tests/server/test_b12_search.py, tests/server/b12_fixture.json, tests/server/b12_surprise_golden.json`
 
 ## Goal
 
@@ -27,6 +27,7 @@ The tour is always scripted (fix-plan 1.2). B12 answers people's own searches an
 - `docs/plans/B11-embed.md`: `model.py`, `compose.py`, `bm25.py`, `metrics.py` (RRF), `vectors.json` and the fingerprint
 - `docs/plans/F-search.md`: what the screens show
 - `docs/plans/B04-bank.md`: the pattern of seeding from the adapter's `health()` in the background
+- `docs/plans/B13-live.md`: the bridge's `set_process()`, and the adapter's mirror, which records the `listing.indexed` your publish returns
 - `docs/tech/elasticsearch/` (`dense-vector-mapping.md`, `knn-search.md`, `retrievers-rrf-hybrid.md`, `reciprocal-rank-fusion.md`, `serverless-project-connection-and-api-keys.md`, `serverless-differences-and-billing.md`) and `docs/tech/elastic-agent-builder/` (start with `kibana-api.md`, then `api-tools.md`, `api-agents.md`, `api-converse.md`, `tools-index-search-and-custom.md`, `api-keys.md`). Record the Agent Builder paths you use in `agent.py`'s docstring. Don't write them from memory.
 - `.claude/rules/backend.md`, `docs/harness/lessons.md`, and the Upgrade checklist in `docs/common/definition-of-done.md`
 
@@ -36,9 +37,9 @@ The tour is always scripted (fix-plan 1.2). B12 answers people's own searches an
   - httpx REST calls, no Elasticsearch client library (so `elasticsearch` can leave `server/requirements.txt`, B2-34).
   - The base URL is `ELASTIC_URL`.
   - Every request takes its auth from `config.elastic_headers()`: `Authorization: ApiKey <key>` when `ELASTIC_API_KEY` is set, and nothing when `ELASTIC_AUTH=proxy`, because the cloud environment's network secret adds it. B12 never builds an auth header itself.
-  - The key needs index privileges on `cindia-pieces*` and `cindia-drafts*` (create, write, manage) and the `feature_agentBuilder` privileges, and nothing else (B2-33). `apis-and-accounts.md` says how.
+  - The key's privileges are the ones `docs/v2/apis-and-accounts.md` lists under "The key's privileges" (index privileges on `cindia-pieces*` and `cindia-drafts*`, and Agent Builder's application privileges), and nothing more (B2-33). Take the list from that page, not from this plan.
   - Timeouts: one 2.5-second budget for the whole Elastic part of a search, 20 seconds for the bulk seed, 6 seconds for `converse()`. Every write tolerates `resource_already_exists_exception` as success.
-  - Never log a header, a key, a URL with a key in it, or a response body. The `httpx` and `httpcore` loggers stay at WARNING.
+  - Never log a header, a key, a URL with a key in it, or a response body. The `httpx`, `httpx2` and `httpcore` loggers stay at WARNING.
 - **The indices:**
   - `cindia-pieces-v1` behind alias `cindia-pieces`: the 54 active pieces, then approved listings.
   - `cindia-drafts-v1` behind alias `cindia-drafts`: drafted listings waiting for the owner (B2-25).
@@ -60,7 +61,7 @@ The tour is always scripted (fix-plan 1.2). B12 answers people's own searches an
   - `GET /api/b12/status` returns `{ "elastic", "indexed", "drafts", "fingerprint", "agentBuilder", "seeding", "seedError" }` in under 1 second, always from a cache. `seedError` is null or one plain sentence. A background thread refreshes the cache every 30 seconds in live mode, using `GET /` as the cluster check (Serverless answers 410 to `_cluster/*`), `GET /cindia-pieces/_count`, `GET /cindia-drafts/_count`, and one document's `fingerprint`. It never runs a conversation (B2-24). `agentBuilder` is the result of the seed's test conversation.
   - `POST /api/b12/search` `{ "trigger", "queryId", "text", "keywords", "lang", "filters" }` returns one `search.answered`, under 4 seconds. The steps are below.
   - `POST /api/b12/surprise` `{ "trigger", "surpriseId", "keyword", "method", "seed" }` returns one `surprise.drawn`, under 2 seconds.
-  - `POST /api/b12/publish` `{ "trigger", "listingId", "pieceId", "approvalId" }`, under 3 seconds. When the owner approves a person's listing, it copies the draft document from `cindia-drafts` into `cindia-pieces` with `status: "active"` and deletes the draft, then tells SpacetimeDB through B13's bridge (`publish_listing`) when that's importable. It returns `listing.indexed` for the listing with its `pieceId`, `modelId`, `embedText` and `index: "cindia-pieces"`, keyed `b12-search`. Contracts section 3 makes `index` required. It answers 404 `not_found` when there's no such draft. It never publishes anything the request didn't name, and only for an `approvalId` the request says was granted.
+  - `POST /api/b12/publish` `{ "trigger", "listingId", "pieceId", "approvalId" }`, under 3 seconds. When the owner approves a person's listing, it copies the draft document from `cindia-drafts` into `cindia-pieces` with `status: "active"` and deletes the draft. It returns `listing.indexed` for the listing with its `pieceId`, `modelId`, `embedText` and `index: "cindia-pieces"`, keyed `b12-search`. B12 makes no bridge call for it: the B13 adapter's mirror records the returned `listing.indexed`, and B13's `record` reducer adds the piece to `catalog`. Contracts section 3 makes `index` required. It answers 404 `not_found` when there's no such draft. It never publishes anything the request didn't name, and only for an `approvalId` the request says was granted.
 - **The search steps:**
   1. **Filters:** `filters.maxPriceCents` and `filters.communityIds`, plus any chip shaped like `under $200`, which becomes a price filter. Only `status: "active"` pieces are ever returned, and drafts are in another index anyway.
   2. **Query vector:** B11's `encode_queries()` on `compose.query_text(text, keywords)`: `query: <text>`, then each chip whose words aren't in the text, never the price chip (B2-27). The same rule B11 used for training and evaluation.
@@ -82,7 +83,10 @@ The tour is always scripted (fix-plan 1.2). B12 answers people's own searches an
   - Raw weights are equal for `keyword_random` and `pure_random`, and `1 / (1 + salesThisMonth)` for `fair_random`.
   - The draw is ported exactly as `surprise.ts` does it: the first number from mulberry32 seeded with `seed`, ported bit for bit, times the total raw weight, then a plain loop over the raw weights in candidate order. Never Python's `sum()`, which uses compensated summation since 3.12 and can land on a different piece at a boundary (B2-26).
   - The event's `candidates[].weight` is each raw weight divided by the total, so they sum to 1 for display.
-  - A golden test replays the whole draw for seeds 1, 7 and 13 against fixtures generated from `surprise.ts` (the integrator writes them, or I2-core exports `mulberry32` for a Node one-liner).
+  - A golden test replays the whole draw for seeds 1, 7 and 13 against `tests/server/b12_surprise_golden.json`, which the T2 builder generates once from `mulberry32()` and `drawSurprise()` in `src/sources/surprise.ts` (I2-core T5 exports both):
+    - The generator is `server/b12_search/golden.mjs`, run as `node server/b12_search/golden.mjs`. It loads `surprise.ts` and `src/mock/index.ts` through Vite's `ssrLoadModule`, the way `scripts/export-mock.mjs` loads the mock data, and opens no port. It doesn't use `npx tsx`, because `tsx` isn't in `package.json` and no agent uses `npx` to fetch a package (conventions).
+    - For each seed it records the first three numbers `mulberry32(seed)` gives, and for each method `drawSurprise()`'s payload with each candidate's raw weight, using figure 12's keyword where the method takes one.
+    - The test checks the Python port's numbers bit for bit, then walks the same candidates in the same order, so the ranking difference in the next point doesn't matter.
   - Because B12 ranks with our model and the scripted draw with keywords, B12's piece for seed 10 may differ from the piece S3 T6 states for figure 12. A person's draw is live, and the tour's is scripted.
 - **Agent Builder** (`agent.py`), the Elastic track's visible job (C-3):
   - `ensure_agent()` creates or updates agent `cindia-finder` at `KIBANA_URL` with the same auth plus `kbn-xsrf: true` on writes, and its tool `cindia.search_pieces`, an `index_search` tool (or ES|QL, whichever the current API offers) over `cindia-pieces` only, with `status: active` in its instructions or filter, so drafts never reach it.
@@ -111,6 +115,7 @@ The tour is always scripted (fix-plan 1.2). B12 answers people's own searches an
     - **Index status:** polls `GET /api/b12/status` every 5 seconds (abort 2 seconds) and emits `index.synced` keyed `b12-search`, `{ indexed, drafts, elastic, agentBuilder }`, whenever those values change, so the data view's index group shows the live `cindia-pieces` and `cindia-drafts` counts. Features never fetch.
     - **Publish watch:** listens with `onEvent` from `src/core/store`, and when an `approval.granted` lands for a `listing_publish` approval whose listing is a person's (`lst_user_`), posts `/api/b12/publish` once for that listing in this page load and emits the returned `listing.indexed`.
     - It returns a stop function that stops both and keeps the posted set, so a health flap never publishes twice. The registry re-stamps the `at` of `start(emit)` events (I2-core).
+- **Process status** (C-4): `bridge.set_process("search", ...)` around a person's search and surprise draw, when B13's bridge is importable. It's imported inside the function and goes through the bridge's ordered queue, so a search never waits on SpacetimeDB. The tour's keyed events never reach the server, so they set nothing.
 - **Thresholds** live in `thresholds.py`: `ELASTIC_BUDGET_S = 2.5`, `SEED_BUDGET_S = 60`, `CONVERSE_TIMEOUT_S = 6`, `CLOSE_MIN`.
 
 ## Tasks
@@ -119,7 +124,7 @@ One backend-builder does these in order. Each task adds its own tests to `tests/
 
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
-| T1 | `local.py`, `reasons.py` and `thresholds.py`: the local hybrid with filters, chip-to-filter parsing, the status filter, RRF over matched keyword hits only, score scaling, `closeness` and `closeMatches`, and reasons. Measure `CLOSE_MIN` on the 50 eval queries with B11's real model once it exists, and record it. Tests on a 6-piece fixture with hand-checked rankings | `server/b12_search/__init__.py`, `server/b12_search/local.py`, `server/b12_search/reasons.py`, `server/b12_search/thresholds.py`, `tests/server/b12_fixture.json` | B11 green | opus |
+| T1 | `local.py`, `reasons.py` and `thresholds.py`: the local hybrid with filters, chip-to-filter parsing, the status filter, RRF over matched keyword hits only, score scaling, `closeness` and `closeMatches`, and reasons. Measure `CLOSE_MIN` on the 50 eval queries with B11's real model once it exists, and record it. Tests on a 6-piece fixture with hand-checked rankings | `server/b12_search/__init__.py`, `server/b12_search/local.py`, `server/b12_search/reasons.py`, `server/b12_search/thresholds.py`, `tests/server/b12_fixture.json` | B11 T5 and T6 | opus |
 | T2 | `surprise.py`: the three methods, the candidate order, the mulberry32 port and the plain-loop walk. Tests: the golden draws for seeds 1, 7 and 13, the same seed gives the same piece, displayed weights sum to 1, `fair_random` favors the fewest sales, `pure_random` covers all active pieces | `server/b12_search/surprise.py` | T1 | sonnet |
 | T3 | `elastic.py`: headers from `config.elastic_headers()`, both indices and aliases, the seed from the server's own data with the fingerprint, single flight, the retrievers query inside the 2.5-second budget, the client-side fusion fallback, the cached status with its background refresh. Tests check the request bodies, that proxy mode sends no auth header, that a slow fake cluster falls back inside the budget, and that status answers from cache in under 1 second | `server/b12_search/elastic.py` | T1 | opus |
 | T4 | `agent.py`: `ensure_agent()` with the tool over `cindia-pieces`, and `converse()` keeping only valid `pieceIds`. Tests check the requests, that unknown piece IDs and the prose answer are dropped, and that a token-limit error means `agentBuilder: false` | `server/b12_search/agent.py` | T3 | opus |

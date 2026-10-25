@@ -1,6 +1,6 @@
 # I2-core · v2 contracts, core types, store, sources and server config
 
-Priority: P0 · Wave: V1 · Depends on: R0-reskin, committed with every v1 check green · Area: `docs/common/`, `src/core/`, `src/sources/` (not `live/`), the server skeleton, `scripts/` · Owner: integrator, plus one feature-lead and one data-smith for the fallout step · Gate: `npm run check`, `npm run test:smoke` and `npm run test:demo` after the first spawn and the fallout step, then G1b together with I2-kit and I2-shell
+Priority: P0 · Wave: V1 · Depends on: R0-reskin, committed with every v1 check green · Area: `docs/common/`, `src/core/`, `src/sources/` (not `live/`), the server skeleton, `scripts/` · Owner: integrator, plus one feature-lead and one data-smith for the fallout step · Gate: core (`npm run check`, `npm run test:smoke`, `npm run test:demo` and `npm run test:server`, tag `v2-core`) after the first spawn and the fallout step, then G1b together with I2-kit and I2-shell
 
 **I2-core runs after R0-reskin.** R0 (`docs/plans/R0-reskin.md`) moves v1's whole money story to the Diné Weaving and Silver Co-op in one commit. I2-core starts only once that commit is in, so every name in this plan and in what it writes is scope C: the studio `std_dine`, the communities `com_dine`, `com_ojibwe`, `com_acoma` and `com_seminole`, the owner Ruth B. and the makers Grace N., Lena T. and Mae K. Cindia is a platform in every line T1 writes.
 
@@ -10,7 +10,7 @@ SCOPE: docs/common/, src/core/, src/sources/*.ts, src/app/, server/__init__.py, 
 
 **Two integrator spawns, with a fallout step between them.**
 1. **First spawn** (integrator): T1 to T4, T6 and T7. It ends when `npm run check:scope -- src/core/ src/sources/ src/app/ scripts/` exits 0, then reports.
-2. **Fallout step**, as soon as the first spawn reports (B1-1). The orchestrator spawns FO1 (a feature-lead) and FO2 (a data-smith) at the same time, with the headers in "The fallout step" below. When both report, it runs `npm run check`, `npm run test:smoke` and `npm run test:demo`, and commits all three spawns' work as `I2-core: v2 contracts and core`. Once that commit lands, uvicorn reloads `config.py`, so the orchestrator reads `/api/health` again before it trusts `keys.anthropic` (D2-10).
+2. **Fallout step**, as soon as the first spawn reports (B1-1). The orchestrator spawns FO1 (a feature-lead) and FO2 (a data-smith) at the same time, with the headers in "The fallout step" below. When both report, it runs the core gate's four commands (contracts section 10): `npm run check`, `npm run test:smoke`, `npm run test:demo` and `npm run test:server`. Then it commits all three spawns' work as `I2-core: v2 contracts and core` and tags it `v2-core`. Once that commit lands, uvicorn reloads `config.py`, so the orchestrator reads `/api/health` again before it trusts `keys.anthropic` (D2-10).
 3. **Second spawn** (integrator): T5, then T8, the scripted responders. It starts only after S3-catalog's T1 has committed typed stub files for every `src/mock/` module the responders read (the table in Interfaces). Its SCOPE line is `src/sources/*.ts`. It writes no type: every shared type lands in T2, so S3 builds against a fixed `src/core/types.ts`. A type it finds missing goes under `needs:`. The orchestrator commits it on its own `npm run check:scope -- src/sources/` pass (B1-20), because S3's data-smith is mid-edit at that time.
 
 ## Goal
@@ -184,7 +184,7 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
 | `splits.ts` | `splits`: a record by `pieceId` of `split.shown` payloads, `pc_01` equal to figure 1 (D1-6) | T8 |
 | `projects.ts` | `projects`, `worksInProgress` | T8 |
 | `listings.ts` | `listings` | T5 |
-| `index.ts` | `getById()`, which finds `apr_03`, `apr_04`, `apr_05` and `fup_02` wherever S3 keeps them | T5, T8 |
+| `index.ts` | `getById()`, which finds `apr_03`, `apr_04`, `apr_05` and `fup_02` wherever S3 keeps them. `allApprovals` (`apr_01` to `apr_05`) and `allFollowUps` (`fup_01`, `fup_02`) hold the same records as named exports, so `mock.json` carries them | T5, T8 |
 
 ### Server
 
@@ -226,6 +226,7 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
 - `npm run export:mock` runs `node scripts/export-mock.mjs`, which:
   - loads `src/mock/index.ts` through Vite's `createServer` with `appType: "custom"`, `server.middlewareMode: true`, `server.hmr: false` and `server.ws: false` where the installed Vite accepts it, so it opens no port (D2-30), then `ssrLoadModule`,
   - writes `artifacts/mock/mock.json` in UTF-8: one top-level key per export of `src/mock/index.ts` whose value isn't a function, plus `_generatedAt`,
+  - so it carries `allApprovals` (`apr_01` to `apr_05`) and `allFollowUps` (`fup_01`, `fup_02`) once S3-catalog exports them from `src/mock/index.ts`. `getById()` is a function and never reaches the JSON, so the server's readers find every approval and follow-up only through these two lists,
   - prints one line per key with its item count,
   - closes the server and exits 0. It's `cmd.exe`-safe.
 - `vite.config.ts`: `server.watch.ignored` adds `.venv`, `models`, `server` and `artifacts`, so torch's files never load the watcher (B2-31).
@@ -233,16 +234,18 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
   - It reads key values from `.env` and also from the process environment, for every v2 name: `CINDIA_ANTHROPIC_API_KEY`, `ANTHROPIC_API_KEY`, `NESSIE_KEY`, `ELASTIC_API_KEY`, `APIFY_TOKEN`, `HF_TOKEN` and `SPACETIME_TOKEN`. Values stay in memory and are never printed.
   - It adds patterns for Apify tokens (`apify_api_`), Hugging Face tokens (`hf_`) and JWTs.
   - It takes optional extra paths (`node scripts/secrets-scan.mjs <path> ...`), so B11 can scan the model folder and its card before a publish.
-- `scripts/test-feature.mjs` takes one or more slugs or spec paths. A slug expands to `tests/features/<slug>-*.spec.ts`, and a path ending in `.spec.ts` is used as it is (B1-24).
+- `scripts/test-feature.mjs` takes one or more slugs or spec paths (B1-24). Today it takes one slug only.
+  - An argument ending in `.spec.ts` runs that one file, such as `tests/features/support-live.spec.ts`. That's how a G5 line names its live spec.
+  - Any other argument is a slug and expands to `tests/features/<slug>-*.spec.ts`. A bare spec name like `support-live` is a slug too, matches nothing, and the script exits 1 naming it.
 - `scripts/gate.mjs`, as `definition-of-done.md` section 10 defines the gates:
-  - **Names:** G1, G1b, G2, G2b, G3, G4, G4v2, G5 and G6, in any case. The report is written as `<gate>-<HHMM>.md` with the gate's own spelling.
+  - **Names:** G1, G1b, G2, G2b, G3, G4, G4v2, G5 and G6, in any case. The report is written as `<gate>-<HHMM>.md` with the gate's own spelling. R0, core and D-deploy have no entry: the orchestrator runs the commands in their section 10 row itself, as the gate skill says.
   - **The tour's time (fix-plan 1.9, B1-4):** after every `npm run test:demo`, the gate reads `artifacts/demo/report.json`. The check passes when the file was written by this run and its `endedAtWallMs` is at most its `durationMs` plus 15 seconds, the same margin v1's 75-second limit gave its 60-second demo. Playwright's whole-run time, which also counts `modes.spec.ts` and the browser start, is recorded for information and never judged. G1b, G4, G4v2, G5 and G6 all use this one rule. The 75-second and 130-second limits are gone.
   - **G1b:** `npm run check`, `npm run test:smoke`, `npm run build`, `npm run test:demo` once (the Phase A mapping), `npm run test:offline`.
   - **G2b:** `npm run check:data`, `npm run check:scope -- src/mock/ tests/data/ src/sources/` and `npm run art -- --check`, never a whole-repo check while other V1 agents are mid-edit (B1-19). I2-art T0 adds the `art` script and the 54 placeholders before G1b.
   - **G3** takes one or more slugs. It runs `check:scope` over every slug's folder and specs, `test:feature` with every slug, and `test:smoke`. M-desktop's nine folders fit one call (B1-24).
   - **G4v2:** `npm run build`, `npm run test:demo` three times, `npm run test:offline`.
   - **G5 for `b01` to `b10`:** as v1, on whatever timeline is current.
-  - **G5 for `b11` to `b16`** (fix-plan 1.4): `npm run test:server`, the upgrade's contract tests and its live test as v1 runs them, the live feature specs named after the slug (`npm run gate -- G5 b14-swarm <spec or slug> ...`, at least one, run through `npm run test:feature`), then `npm run build`, `npm run test:demo` once with the source in live mode, timed by the rule above, and `npm run test:offline`. The tour stays scripted, so the source's keyed tour events are allowed to come back empty (`ALLOWED_EMPTY_FALLBACKS`).
+  - **G5 for `b11` to `b16`** (fix-plan 1.4): `npm run test:server`, the upgrade's contract tests and its live test as v1 runs them, the live feature specs named by path after the slug (`npm run gate -- G5 <slug> tests/features/<spec>.spec.ts ...`, such as `npm run gate -- G5 b14-swarm tests/features/support-live.spec.ts`, at least one path, each run through `npm run test:feature`), then `npm run build`, `npm run test:demo` once with the source in live mode, timed by the rule above, and `npm run test:offline`. The tour stays scripted, so the source's keyed tour events are allowed to come back empty (`ALLOWED_EMPTY_FALLBACKS`).
   - **G6:** as v1, with the time rule above.
 - `tests/demo/harness.ts`, one field at the end of `playDemo()`: `report.json` gains `durationMs`, the player's own, for the timeline that played, so the gate never guesses the tour's length. I2-shell T6 makes the harness's end-of-run check relative to it, and I2-shell T6 and I2-tour T6 keep the field.
 
@@ -268,10 +271,10 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
 | File | What it takes |
 |---|---|
 | `conventions.md` | Section 1: the cloud build machine (the Windows desktop and laptop become demo machines), port 3000, the hosts, and the variable table with `CINDIA_ANTHROPIC_API_KEY`, `SPACETIME_TOKEN` and `PUBLIC_SITE_URL`. Folder rows: `design/` (the orchestrator's, written only from the planning session), `sponsors/` (scribe), `server/bNN_<slug>/` folders (backend-builder, with the upgrade's own prefix), `models/` (not committed), `artifacts/mock/` (written by `npm run export:mock`). The cloud's Git rule from fix-plan 1.9: push the branch only, record each tag and its SHA in `status.md`, cut by SHA, and Gordon pushes the tags from Windows at the freeze. From section 11: the npm scripts, the shape of `mock.json`, `seekToEvent` and the rule that every v2 spec seeks by event, and who owns `sponsors/` and `design/` |
-| `glossary.md` | Section 9 appended to Domain words, section 11's glossary rows, and the words of fix-plan 1.1: "Native American" and the four nation names in English and Chinese |
-| `data-model.md` | Section 2: the four communities with every ID and slug, the new and changed entities, the approval kinds and `community_fund`, the passage rule, figures 11 to 15, the new `src/mock/` files. Section 11's data parts: the export list, `demoQuestions`, the approval subjects and where each approval lives, storefront block props, `Policy`, the keyword chip rule, the surprise draw. The shared shapes in this plan's Interfaces. The ID scheme below. Section 12's data rules: A2's R1 to R28 for the four communities, and the mock-only rules |
-| `events.md` | Section 3, with `data` in `ProcessId`, `question.forwarded`, `question.answered` and `pieceId` on `card.tokenized`. Section 11's event parts: the payload additions, `storefront.requested`, the inline `approval`, every Requests row, `listing.indexed`'s key, and the person-scoped and page-tagged IDs. This plan's store shapes |
-| `ui-contract.md` | Section 4: routes with `/demo?mode=present` and `?start=<beatId>`, surfaces and frames, slots, `SlotProps`, the process bar and views with presence, camera states with `pitch`, test IDs. Section 11's shell parts: `nav.ts`, the kit `Link`, `?ref=` on `/sell/approvals`, `?drawer=support` on Shop routes, the Phase A legacy page `/shop/legacy` and camera `shop-legacy` (which replace section 4's old transition rule), the process view layout, which plan renders which test ID, `/dev/kit`. Section 12's fixed labels, L1 to L30, each with where it shows. `frame-owner` and `PhoneFrame` are retired |
+| `glossary.md` | Section 9 appended to Domain words, section 11's glossary rows, and the words of fix-plan 1.1: "Native American" and the four nation names in English and Chinese. Section 12's on-screen labels, L1 to L30, as one table with the English, the Chinese, where each shows (its test ID) and its owner, which every owner copies word for word |
+| `data-model.md` | Section 2: the four communities with every ID and slug, the new and changed entities, the approval kinds and `community_fund`, the passage rule, figures 11 to 16, the new `src/mock/` files. Section 11's data parts: the export list (with `allApprovals` and `allFollowUps`), `demoQuestions`, the approval subjects and where each approval lives, storefront block props, `Policy`, the keyword chip rule, the surprise draw. The shared shapes in this plan's Interfaces. The ID scheme below. S3-catalog's content rules, R1 to R28, by reference: a pointer to that section of `docs/plans/S3-catalog.md`, not a copy |
+| `events.md` | Section 3, with `data` in `ProcessId`, `question.forwarded`, `question.answered` and `pieceId` on `card.tokenized`. Section 11's event parts: the payload additions, `storefront.requested`, the inline `approval`, every Requests row, `listing.indexed`'s key, and the person-scoped and page-tagged IDs. This plan's store shapes, with the "ask the maker" loop as `support.questions`, the store key sections 3 and 11 call `questions` |
+| `ui-contract.md` | Section 4: routes with `/demo?mode=present` and `?start=<beatId>`, surfaces and frames, slots, `SlotProps`, the process bar and views with presence, camera states with `pitch`, test IDs. Section 11's shell parts: `nav.ts`, the kit `Link`, `?ref=` on `/sell/approvals`, `?drawer=support` on Shop routes, the Phase A legacy page `/shop/legacy` and camera `shop-legacy` (which replace section 4's old transition rule), the process view layout, which plan renders which test ID, `/dev/kit`. `frame-owner` and `PhoneFrame` are retired |
 | `api-contract.md` | Sections 5 and 6, and section 11's server parts. Each v2 endpoint is written in v1's line format: method and path, key, budget, request, events, fallback, adapter. Four v1 rules widen (D2-18): the Timeouts bullet points at the per-key timeouts in `events.md`, "nothing in the browser calls" covers every outside service and SpacetimeDB, the error table covers every outside service, and the `mock.json` exception names every server reader |
 | `design-system.md` | Section 7, and desktop sizes: `PageFrame` 1440 by 900, the 56 px top bar, the 64 px process bar, the 440 px drawer, and `PAGE_WIDTH` and `PAGE_HEIGHT`, which I2-kit owns. The kit `Link`, `StatTile` and the `Badge` variants. Phone frames are retired |
 | `demo-script.md` | Only the Phase A mapping: a "Desktop camera (Phase A)" column placed right after the Camera column, so the v1 data test still reads Beat, Time and Camera as the first three (B1-39), plus one paragraph saying the timeline keeps the v1 camera IDs and the shell maps `buyer` and `receipt` to `shop-legacy` and the rest through `toTourCamera()`, until I2-tour. Nothing else changes. The tour table lands in I2-tour |
@@ -280,9 +283,9 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
 T1's report ends with a coverage list: every heading, bullet group and table of contracts sections 1 to 12, each with the `docs/common/` file it went to. A part with no home is a `needs:` line, never a silent drop (D1-9).
 
 **The ID scheme** that `data-model.md` gains, as section 11 states it (D1-47):
-- **The tour and the scripted data:** `qry_01`, `srp_01`, `thr_00` (the fallback runs' placeholder thread), `thr_01` onward, `wsc_01`, `run_01` onward (one per scripted run, section 11's list), `stp_0001` onward, `chk_01` onward, `ctb_01` onward, `qst_01` onward (questions forwarded to a maker), `ans_01` onward (a maker's scripted answers). `lst_` and `run_` are also record prefixes in `src/mock/`.
+- **The tour and the scripted data:** `qry_01`, `srp_01`, `thr_00` to `thr_05` (`thr_00` is the fallback runs' placeholder thread), `wsc_01` (the tour's scan), `run_01` to `run_10` (one per scripted run, section 11's list), `pc_55` (the piece `lst_01` drafts in the tour, event-only until `apr_04` is granted), `stp_0001` onward, `chk_01` onward (listing checks), `ctb_01` onward, `qst_01` onward (questions forwarded to a maker), `ans_01` onward (a maker's scripted answers), `blk_01` onward (storefront blocks), `mls_01` onward (milestones) and `pol_01` onward (policy topics). `lst_` and `run_` are also record prefixes in `src/mock/`.
 - **A person's requests** (made by features, counting what's in the store): `qry_user_<n>`, `srp_user_<n>`, `thr_user_<n>`, `wsc_user_<n>`, `lst_user_<n>`, `ctb_user_<n>`, `ord_user_<n>`, and `ans_user_<n>` for a maker's answer on her page.
-- **Scripted answers to a person** (from `answerId()`): `run_user_<n>`, `stp_user_<n>`, `chk_user_<n>`, `pc_user_<n>`, `cft_user_<n>`, `fup_user_<n>`, `apr_user_<n>`, `mv_user_<n>`, `qst_user_<n>`, plus v1's `evt_reply_<n>` and `act_reply_<n>`.
+- **Scripted answers to a person** (from `answerId()`): `run_user_<n>`, `stp_user_<n>`, `chk_user_<n>`, `pc_user_<n>`, `cft_user_<n>`, `fup_user_<n>`, `apr_user_<n>`, `mv_user_<n>`, `qst_user_<n>`, `blk_user_<n>`, plus v1's `evt_reply_<n>` and `act_reply_<n>`.
 - **Live answers to a person:** the same prefixes with the page tag, `<prefix>_user_<tag>_<n>` (fix-plan 1.9).
 
 ### T2 · Details
@@ -328,7 +331,7 @@ SCOPE: src/mock/catalog.ts
 
 **Shared rules:**
 - Every answer event carries the request's key, as v1's answers do. The keyless `checkout.started` answer carries none.
-- **Re-keying a person's run.** Any ID the scripted record names that would collide with the tour's is replaced through `answerId()`: the run, its steps and checks, a listing's `listingId` (the request's) and its `pc_user_<n>`, a storefront's `storefrontId` (the request's), counterfeit hits, follow-ups and approvals. A re-keyed `approval.requested` carries the inline `approval` object, copied from the scripted approval's record with `subjectIds` naming the person's own records. So a person never sees `apr_03`, `apr_04` or `cft_01` reused (B1-11, B1-40, D1-12, D1-22).
+- **Re-keying a person's run.** Any ID the scripted record names that would collide with the tour's is replaced through `answerId()`: the run, its steps and checks, a listing's `listingId` (the request's) and its `pc_user_<n>`, a storefront's `storefrontId` (the request's) and its drafted blocks (`blk_user_<n>`), a forwarded question (`qst_user_<n>`), counterfeit hits, follow-ups and approvals. A re-keyed `approval.requested` carries the inline `approval` object, copied from the scripted approval's record with `subjectIds` naming the person's own records. So a person never sees `apr_03`, `apr_04`, `cft_01` or `qst_01` reused (B1-11, B1-40, D1-12, D1-22).
 - Texts are normalized as v1 normalizes questions.
 
 **`search.queried`** (T5), from a person:
@@ -338,9 +341,9 @@ SCOPE: src/mock/catalog.ts
 
 **`surprise.asked`** (T5): `drawSurprise` with the request's fields.
 - The random number generator is `mulberry32`, seeded with `seed`.
-- `pure_random` uses every piece, sorted by `pieceId`, with equal weights.
-- `keyword_random` and `fair_random` use the keyword's top 12 from `scoreKeywords`, only pieces scoring above 0, sorted by score, then `pieceId`. `keyword_random` weights them equally. `fair_random` weights each by `1 / (1 + salesThisMonth)` from its `searchIndex` entry.
-- When the keyword matches nothing, every piece is a candidate, with the asked method's weights.
+- `keyword_random` and `fair_random` with a keyword use the keyword's top 12 from `scoreKeywords`, only pieces scoring above 0, sorted by score, then `pieceId`.
+- For `pure_random`, with no keyword, or when the keyword matches nothing, all 54 in `pieceId` order, with the method's weights.
+- The raw weights are 1 for `keyword_random` and `pure_random`, and `1 / (1 + salesThisMonth)` from the piece's `searchIndex` entry for `fair_random`.
 - The draw is `rng() * total` over the raw weights, walked with a plain loop in candidate order. B12's Python port walks the same way.
 - `candidates` lists every candidate with `weight` as its raw weight divided by the total, so the weights sum to 1 (D1-35).
 
@@ -348,6 +351,7 @@ SCOPE: src/mock/catalog.ts
 - The first run in `swarmRuns` whose trigger is `support`, on the same side, with a `matches` entry equal to the normalized text, and whose `pieceId` and `makerId`, when set, are among the request's `contextIds`.
 - Otherwise `fallbackSupportRun`, whose reply is A2's L16 in the platform's scope C words, written by S3. A buyer who asks the tour's question on another piece's page gets that fallback and no `pc_01` reference (A2-10).
 - Through `planRun`, with the request's thread and re-keyed run, step and check IDs.
+- A run that forwards a question (`run_07`) re-keys its `question.forwarded` to `qst_user_<n>`, on the request's `threadId`, with the request's own `text` and `lang`. Its L14 reply lands on the same thread. So the maker page and the buyer's thread both show the person's own question, and T8 can relay her answer back to that thread.
 
 **`listing.requested`** (T5):
 - The run whose `listing` trigger's normalized notes equal the request's notes, re-keyed to the request's `listingId`.
@@ -368,7 +372,7 @@ SCOPE: src/mock/catalog.ts
 4. Match the remaining single words against the vocabulary, as they are, then with simple plural stripping (`ies` to `y`, then `es`, then `s`).
 5. Every matched word is used up, so no later pass matches it again, and each chip appears once.
 
-The output order is moods, then facet words (object, materials, techniques, motifs, colors), then occasions and recipients, then the price chip. Within each group the order is the order of first appearance in the text. A term in two groups counts in the earlier one. For figure 11's text it must return figure 11's six chips in figure 11's order. A unit test with a fixture vocabulary proves the rules, and the data-smith's G2b test proves them on the real data.
+The output order is moods, then facet words (any of object, materials, techniques, motifs or colors, together, in text order), then occasions and recipients, then the price chip. Within each group the order is the order of first appearance in the text. A term in two groups counts in the earlier one. For figure 11's text it must return figure 11's six chips in figure 11's order. A unit test with a fixture vocabulary proves the rules, and the data-smith's G2b test proves them on the real data.
 
 **Reasons:** `reason` is `{ en: "Matches " + words, zh: "匹配：" + words }`, with the matched facet words joined by ", ". The words stay English, as the facets are.
 
@@ -381,8 +385,12 @@ The output order is moods, then facet words (object, materials, techniques, moti
   - These orders stay out of the month, the ledger and the money map, and the tour's own card and checkout stay on their piece.
 - **A person's `wip.milestone_reached`** (date `2026-10-01`): `agent.acted` (a proposal, `act_reply_<n>`) and `approval.requested` `apr_05` for `wip_01`'s second milestone. Any other milestone gets only the `agent.acted` line.
 - **`approval.granted` on a `milestone_release`** (found through `getById()` or the stored inline approval): `wip.milestone_paid` and a `money.moved` of kind `milestone`, Cindia to the maker, `mv_user_<n>`, dated `2026-10-02`, for that milestone's share. v1's approvals still get nothing.
-- **`storefront.requested`:** the run whose trigger names the request's `storefrontId`, `run_03` for `sto_01`. Any other storefront gets no scripted draft, because the Designer drafts only the seller's own storefront (A2-22).
-- **A person's `question.answered`** (the maker's reply on her page): the run in `swarmRuns` whose `question` trigger names that question, through `planRun`, ending in the Writer's `support.answered` on the question's original thread, with her own text in place of `ans_01`'s wherever the reply quotes it.
+- **`storefront.requested`:** the run whose trigger names the request's `storefrontId`, `run_03` for `sto_01`, with its drafted blocks re-keyed to `blk_user_<n>`. Any other storefront gets no scripted draft, because the Designer drafts only the seller's own storefront (A2-22).
+- **A person's `question.answered`** (the maker's reply on her page):
+  - the run in `swarmRuns` whose `question` trigger names that question, `run_09` for `qst_01`,
+  - for any other question in `support.questions` that no run names, such as a person's `qst_user_<n>`, `run_09`'s relay,
+  - either way through `planRun`, re-keyed, ending in the Writer's `support.answered` on the question's original thread, `support.questions[questionId].forwarded.threadId` (`run_09`'s own `thr_03` when the store holds no forward for `qst_01`), with her own text in place of `ans_01`'s wherever the reply quotes it,
+  - a question no run names and the store doesn't hold gets no answer.
 
 ## Acceptance
 
@@ -400,7 +408,7 @@ The output order is moods, then facet words (object, materials, techniques, moti
 - Given a fake adapter for `b14-swarm` that answers in 15 seconds, when its request plays in live mode, then its events are used. Given one for `b01-match` that answers in 9 seconds, then the scripted event plays. Both are tested with fake timers, for the registry and for a person's request through the responder.
 - Given `nav.ts` with no navigator registered, when a feature calls `navigate`, `setProcess` or `openDrawer`, then nothing happens and nothing throws. Given a registered one, the calls reach it, and the route builders return the exact paths in section 11.
 - Given `answerId("run")` called twice in one epoch, then the IDs differ. Given a player reset between them, then both are `run_user_1`. Given `pageTag()` called twice, then it returns the same 6-character tag.
-- Given `npm run test:smoke` and `npm run test:demo` after the fallout step, then both exit 0. The site looks and plays like v1 after R0.
+- Given the core gate after the fallout step, then `npm run check`, `npm run test:smoke`, `npm run test:demo` and `npm run test:server` all exit 0. The site looks and plays like v1 after R0.
 - Given `npm run test:server`, then it exits 0, and the self-test sees `keys` with five booleans, `services` with two, and no model ID outside `ALLOWED_MODELS` in `server/`, `src/` or `scripts/`.
 - Given no environment variables and no `.env`, when `/api/health` answers, then every key and service is `false`, and the server starts without error.
 - Given only `CINDIA_ANTHROPIC_API_KEY` set, then `keys.anthropic` is `true`.

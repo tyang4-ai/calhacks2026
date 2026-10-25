@@ -40,13 +40,13 @@ Everything it learns from is fictional demo data from `src/mock/` (fix-plan 1.6)
   - Prefixes go in the text. Never pass `prompts` to the trainer or call `encode_query()`, so a prefix is never doubled. A test checks that every encoded string starts with exactly one prefix.
   - Every vector is L2-normalized, so cosine is a dot product.
 - **Training script:** `python server/b11_embed/train.py`, CPU by default, memory-safe (B2-5):
-  - Steps: load the data, load the pairs, fine-tune, evaluate the four systems, fit the 2D map, write the outputs and fingerprints, publish when `config.HF_TOKEN` and `config.HF_REPO` (env `CINDIA_HF_REPO`) are set.
+  - Steps: load the data, load the pairs, fine-tune, evaluate the four systems, fit the 2D map, write the outputs and fingerprints, then publish when `config.HF_TOKEN` and `config.HF_REPO` (env `CINDIA_HF_REPO`) are set and `publish.py` exists. `publish.py` is imported inside the function, and when it's missing the run logs one line and finishes. T8 writes `publish.py` after T5's run, so that first run never publishes, and the orchestrator runs `publish.py` itself after T8 (Orchestrator steps).
   - `--probe` runs 3 training steps and exits, printing peak RSS (from `resource.getrusage`, or `psutil` on Windows) and seconds per step. Always run it first.
-  - `--eval-only` reloads the saved model and reruns only the evaluation and the report, for the pooled-grading rerun below.
+  - `--eval-only` reloads the saved model and reruns only the evaluation and the report, for the pooled-grading rerun below. It keeps `hubRepo`, `hubRevision` and `hubUrl` when `report.json` already has them.
   - Seeded (`--seed 13`) in Python, NumPy and torch.
   - Settings: freeze `embeddings.word_embeddings`, so about 22M of the 118M weights train. `max_seq_length` is the longest passage in tokens rounded up to a multiple of 8, at most 128. Batch 32 with `BatchSamplers.NO_DUPLICATES`, 3 epochs, learning rate 2e-5, 10% warmup, `fp16=False`, `bf16=False`, `dataloader_num_workers=0`, `torch.set_num_threads(2)`, `push_to_hub=False`. If the probe shows a peak over 4 GB or more than 30 seconds a step, use batch 16 and say so in `notes`.
   - Checkpoints: one model-only checkpoint per epoch (`save_strategy="epoch"`, `save_only_model=True`, `save_total_limit=1`) under `models/checkpoints/`, never under `server/`. A killed run resumes from the newest one.
-  - It logs one line every 10 steps and one per epoch to `artifacts/b11/train.log`, and never prints data. It sets the `httpx` and `httpx2` loggers to WARNING and never calls `logging.basicConfig` at INFO, so no request URL reaches a log (B2-34).
+  - It logs one line every 10 steps and one per epoch to `artifacts/b11/train.log`, and never prints data. It sets the `httpx`, `httpx2` and `httpcore` loggers to WARNING and never calls `logging.basicConfig` at INFO, so no request URL reaches a log (B2-34).
   - It uses a GPU when torch finds one (`--device auto`), which is the Akbari path. CPU is the default and needs nothing.
 - **Outputs:**
   - `CINDIA_MODEL_DIR` (default `models/cindia-embed-v1/`, not committed) holds the fine-tuned model.
@@ -90,7 +90,7 @@ Everything it learns from is fictional demo data from `src/mock/` (fix-plan 1.6)
 - **Python module for other upgrades** (`server/b11_embed/model.py`):
   - `is_trained()`, `is_warm()`, `fingerprint()`, `encode_queries(texts) -> list[list[float]]`, `encode_passages(texts)`, `piece_vectors() -> dict[pieceId, list[float]]`, `project(vector) -> (x, y, approx)`. B12, B14's Indexer and B15 import these. `compose.query_text()` and `bm25.py` (a small BM25 with English lowercasing and per-character CJK tokens) are shared the same way.
   - **Lazy imports** (B2-10): `torch` and `sentence_transformers` are imported only inside `model.py`'s loader, and sibling upgrades import `model.py` inside their functions. No server module imports torch at module level or calls out at import time, so pytest and every router load fast, and a broken torch install drops nothing but the model.
-  - **Warm-up:** the first `GET /api/b11/model` starts one background thread that loads the model, checks the fingerprints and runs one test encode. Every model-dependent `health()` (B11, B12, B15) stays false until `warm` is true.
+  - **Warm-up:** the first `GET /api/b11/model` starts one background thread that loads the model, checks the fingerprints and runs one test encode. The model-dependent adapters' `health()` (B11, B12) stays false until `warm` is true. B15's doesn't wait on B11.
   - **One encode lock:** every `encode_*` call takes one `threading.Lock`, because a fast tokenizer shared across threadpool threads can raise "Already borrowed".
   - The server never calls the Hugging Face Hub at run time. uvicorn runs with `HF_HUB_OFFLINE=1`, which I2-core sets in `scripts/server.mjs`, and `fetch_model.py` is the only way a model arrives.
 - **The map projection** (B2-28). The PCA is fit on passages only. `report.json` records the two components' explained variance. A test checks that the tour query's projected point lands within the spread of its top 3 results. If it doesn't, `vectors.json` stores `queryShift` (the passage mean minus the mean training-query vector) and `project()` adds it before projecting. If that still misses, the query is placed at the weighted center of its top 3 and `project()` returns `approx: true`.
@@ -107,7 +107,7 @@ Everything it learns from is fictional demo data from `src/mock/` (fix-plan 1.6)
 
 The cloud session can't reach the Akbari lab machine, and `models/` isn't committed, so the Hugging Face repo carries the model between machines.
 
-- **Publish** (`publish.py`, called by `train.py` at the end when `config.HF_TOKEN` and `config.HF_REPO` are set, or run alone):
+- **Publish** (`publish.py`, run alone by the orchestrator after T8, and called by `train.py` at the end of any later run when `config.HF_TOKEN` and `config.HF_REPO` are set):
   - It refuses to run without both, and refuses unless `README.md` (the model card below) exists and passes its content test.
   - It runs `node scripts/secrets-scan.mjs server/b11_embed <CINDIA_MODEL_DIR>` first and refuses to publish when the scan fails (B2-22).
   - `create_repo(config.HF_REPO, private=True, exist_ok=True)`. The repo stays private until Gordon says public.
@@ -129,13 +129,13 @@ The cloud session can't reach the Akbari lab machine, and `models/` isn't commit
 
 ## Tasks
 
-One backend-builder does these in order, except T5's run, which the orchestrator starts (below). Each task adds its own tests to `tests/server/test_b11_embed.py` and ends with them passing.
+One backend-builder does these in order, except T5's run, which the orchestrator starts (below). Each task adds its own tests to `tests/server/test_b11_embed.py` and ends with them passing. B12-search's T1 needs T5 and T6, and this plan's G5 waits for B12's adapter: B11 runs through T8, then B12, then G5 for `b11-embed` and `b12-search` back to back.
 
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
 | T1 | `data.py` (load and check the data, `--snapshot`) and `compose.py` (the passage rule and `query_text()`). Tests: rebuild every `embedText` in a 3-piece fixture and, when the data exists, all 54, and compare. Every encoded string starts with exactly one prefix. A price chip is never embedded | `server/b11_embed/__init__.py`, `server/b11_embed/data.py`, `server/b11_embed/compose.py`, `server/b11_embed/data/mock.json`, `tests/server/b11_fixture.json`, `tests/server/test_b11_embed.py` | none | sonnet |
 | T2 | `bm25.py` and `metrics.py`: recall at 5, MRR@10, RRF that skips zero-score keyword hits, per-language scoring and the paired bootstrap. Tests on a toy set whose answers are worked out by hand, and a bootstrap whose interval is checked against a hand case | `server/b11_embed/bm25.py`, `server/b11_embed/metrics.py` | T1 | sonnet |
-| T3 | `pairs.py`: Claude writes the training queries, with the checks, filters and fallback below. Then run it once (`python server/b11_embed/pairs.py`) and keep `pairs.jsonl` | `server/b11_embed/pairs.py`, `server/b11_embed/pairs.jsonl` | T1 | opus |
+| T3 | `pairs.py`: Claude writes the training queries, with the checks, filters and fallback below. Then run it once (`python server/b11_embed/pairs.py`) and keep `pairs.jsonl` | `server/b11_embed/pairs.py`, `server/b11_embed/pairs.jsonl` | T1, G2b green | opus |
 | T4 | `train.py`, `evaluate.py` and `pca.py`: the memory-safe fine-tune, `--probe`, `--eval-only`, checkpoints and resume, the four systems, the map with its projection check, the fingerprints and the report. A smoke test runs the whole pipeline on the 3-piece fixture with a tiny fake encoder, so no test downloads a model | `server/b11_embed/train.py`, `server/b11_embed/evaluate.py`, `server/b11_embed/pca.py`, `server/b11_embed/requirements-train.txt` | T2, T3 | opus |
 | T5 | The training run. The orchestrator runs the probe and then the real run in the background (Orchestrator steps). The builder checks the outputs against Acceptance, writes `unjudged.json`, and pastes the four systems' numbers, per language, with their intervals, into the REPORT block | `server/b11_embed/report.json`, `server/b11_embed/vectors.json`, `server/b11_embed/unjudged.json` | T4, S3-catalog green | opus |
 | T6 | `model.py` (lazy imports, the warm-up thread, the encode lock, the fingerprint check, `project()`) and the three endpoints, with TestClient tests using a fake model: `GET /api/b11/model` answers in under 200 ms cold, `warm` turns true after the fake load, a fingerprint mismatch makes `trained` false with a `problem` | `server/b11_embed/model.py`, `server/routers/b11_embed.py` | T4 | opus |
@@ -173,10 +173,12 @@ One backend-builder does these in order, except T5's run, which the orchestrator
 
 ## Orchestrator steps (not the builder's)
 
-- **Before T3:** `npm run export:mock`, then `python server/b11_embed/data.py --snapshot`, and install `server/b11_embed/requirements-train.txt` into `.venv`.
+- **Before T3, after G2b:** `npm run export:mock`, then `python server/b11_embed/data.py --snapshot`, and install `server/b11_embed/requirements-train.txt` into `.venv`. T3's eval-leak guard needs S3 T6's eval queries, which are in only once G2b is green.
 - **T5's run:** confirm the network level reaches `huggingface.co`. Run `python server/b11_embed/train.py --probe` in the foreground and read its peak RSS and seconds per step. Then start `python server/b11_embed/train.py` with `run_in_background` and a 60-minute timeout. Nothing heavy runs beside it. Expect 15 to 30 minutes on 2 vCPUs. Check `artifacts/b11/train.log` on each heartbeat. If the VM is reclaimed, restart the same command, and it resumes from the last checkpoint.
 - **After T5:** spawn the data-smith for S3-catalog T9 (copy the report, grade `unjudged.json`), then run `python server/b11_embed/train.py --eval-only` and have T9 copy the report again. Rerun `npm run export:mock` before B12's seed.
-- **After T8:** add `scripts/train-akbari.sh`, one line that runs `server/b11_embed/train_akbari.sh "$@"`. Run `python server/b11_embed/fetch_model.py` after any VM rebuild.
+- **After T8:** add `scripts/train-akbari.sh`, one line that runs `server/b11_embed/train_akbari.sh "$@"`.
+- **After T8 and the `--eval-only` rerun, the publish:** run `python server/b11_embed/publish.py`. Confirm `report.json` now holds `hubRepo` and `hubRevision`, then commit it (B11's G5 commit carries it when that gate hasn't run yet). When `HF_TOKEN` or `CINDIA_HF_REPO` isn't set, or the publish fails, put the publish under Needs Gordon in `status.md` and keep going. This VM keeps its own model, and only the hand-off to other machines waits.
+- **After any VM rebuild:** run `python server/b11_embed/fetch_model.py`.
 
 ## Acceptance
 
@@ -189,7 +191,7 @@ One backend-builder does these in order, except T5's run, which the orchestrator
 - Given no trained model, or a model whose sha256 doesn't match the report, when either POST is called, then it returns `{ "events": [] }`, and `GET /api/b11/model` says `trained: false` with a `problem`.
 - Given a cold server, when `GET /api/b11/model` is called, then it answers in under 200 ms with `warm: false`, and later calls say `warm: true` without any request having waited on the load.
 - Given `HF_TOKEN` and `CINDIA_HF_REPO`, when `publish.py` runs, then the repo is private, only model files, the card and the report are uploaded, and `report.json` gets `hubRepo` and `hubRevision`. `fetch_model.py` on a clean folder restores a model that `is_trained()` accepts.
-- `npm run test:server` passes, with no model download and no Claude call in any unit test. **G5 for v2** (fix-plan 1.4) passes as `npm run gate -- G5 b11-embed search-live-map`: `npm run test:server`, then the live feature spec `tests/features/search-live-map.spec.ts` (F-search's feature-lead writes it), where a person's own search in live mode gets a live `search.mapped` from the trained model through B12's adapter, with every event valid, and the scripted tour still passing with `b11-embed` in live mode.
+- `npm run test:server` passes, with no model download and no Claude call in any unit test. **G5 for v2** (fix-plan 1.4) passes as `npm run gate -- G5 b11-embed tests/features/search-live-map.spec.ts`: `npm run test:server`, then that live feature spec (F-search's feature-lead writes it), where a person's own search in live mode gets a live `search.mapped` from the trained model through B12's adapter, with every event valid, and the scripted tour still passing with `b11-embed` in live mode. B12's adapter makes that call, so this G5 runs after B12's T6, right before B12's own G5.
 
 ## Out of scope
 
@@ -201,7 +203,7 @@ One backend-builder does these in order, except T5's run, which the orchestrator
 ## Contract additions needed
 
 FX1 writes these into `docs/v2/contracts.md`. I2-core merges them.
-- Section 1: `CINDIA_HF_REPO` (read as `config.HF_REPO`), the private Hugging Face model repo such as `<user>/cindia-embed-v1`, not secret, used by `train.py`, `publish.py` and `fetch_model.py`. `HF_TOKEN` is needed for publishing and for fetching the private model on another machine, so it's no longer only optional.
+- Section 1: `CINDIA_HF_REPO` (read as `config.HF_REPO`), the private Hugging Face model repo `<account>/cindia-embed`, not secret, used by `train.py`, `publish.py` and `fetch_model.py`. `HF_TOKEN` is needed for publishing and for fetching the private model on another machine, so it's no longer only optional.
 - Section 5, B11: `GET /api/b11/model` returns `{ trained, warm, modelId, baseModel, dims, fingerprint, problem }`. `report.json` and `vectors.json` carry `modelSha256`, `passagesHash` and `fingerprint` as above, and B12 writes `fingerprint` into every Elastic document. The query embedding rule replaces section 2's "the chips joined with commas": `query: <text>`, then each chip whose words aren't in the text, never a price chip.
 - Section 2, `SearchQuery`: "Written by hand" becomes "written separately by our data agent and never used for training", plus a marker for queries Gordon wrote or edited if fix-plan 1.5's step happens.
 - `tests/demo/beats.ts` (I2-tour T6): `ALLOWED_EMPTY_FALLBACKS` adds `b11-embed` for `search.mapped`, `model.trained` and `proof.search_scored`, and `REQUIRED_SERVICES` has `b11-embed: model`.

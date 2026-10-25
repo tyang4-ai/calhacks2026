@@ -41,8 +41,8 @@ Read with `docs/v2/brief.md` (what and why), `docs/v2/contracts.md` (names) and 
 | M-maker-statement | feature-lead | V2 | G1b, G2b | P1 |
 | B11-embed | backend-builder | V2 | I2-core (code), S3-catalog (training) | P0 |
 | B13-live | backend-builder | V2 | I2-core, S3-catalog (the data it seeds) | P0 |
-| B12-search | backend-builder | V2 | B11-embed | P0 |
-| B16-bank-books | backend-builder | V2 | B13-live green or cut, `NESSIE_KEY` | P1 |
+| B12-search | backend-builder | V2 | B11-embed T5 and T6. The G5s for B11 and B12 run back to back after B12's tasks | P0 |
+| B16-bank-books | backend-builder | V2 | B04-bank live (v1 G5 green), B01-match, R0-reskin, `NESSIE_KEY` | P1 |
 | B14-swarm | backend-builder | V2 | B13-live, B12-search | P0 |
 | B15-watch | backend-builder | V2 | B11-embed. Live scans need the public site (D-deploy), and it plays on its fixture until then | P1 |
 | D-deploy | integrator, then Gordon for the upload | V2 | G1b, G2b | P0 |
@@ -53,7 +53,7 @@ Read with `docs/v2/brief.md` (what and why), `docs/v2/contracts.md` (names) and 
 **Queue order:**
 - V1: `R0-reskin` first, alone, then `I2-core` with its fallout step, then `I2-kit`, `I2-shell` and `S3-catalog`, then `I2-art`.
 - V2 features, P0: `F-search`, `M-buyer`, `F-support`, `F-process`, `F-communities`, `M-approvals`, `M-desktop`, `F-seller-hub`. Then P1: `F-watch`, `F-storefront`, `M-maker-statement`. `M-desktop` runs right after `M-approvals` because `d06` to `d10` are the finance tracks' moment, and `F-seller-hub` is P0 because its `d15-listing` beat is in the tour's spine.
-- V2 upgrades: `B11-embed`, then `B13-live` and `B12-search`, then `B16-bank-books` once B13 is green or cut, then `B14-swarm`, then `B15-watch`.
+- V2 upgrades: `B11-embed` through T8, then `B12-search`, then G5 for `b11-embed` and `b12-search` back to back. `B13-live` starts beside them as early as the cap allows, because its B08 owner-route task gates M-approvals' G3. Then `B16-bank-books` once B04 is live, then `B14-swarm`, then `B15-watch`.
 - `D-deploy` as soon as G1b and G2b are green, beside the features.
 - V3 `I2-tour`, then V4 `I3-redesign` for each design drop.
 
