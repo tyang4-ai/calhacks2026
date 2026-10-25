@@ -115,7 +115,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
-| B11-embed | running | | | T1-T4 code, T6 committed; T3 pairs 1,045 (Claude); probe 14.7 s a step at batch 32, peak 5.18 GB, so batch 16; training run started in the background |
+| B11-embed | T1-T8 built, trained and published; G5 after T9 pass 2 | pairs by Claude (Haiku, one Sonnet retry); Hub publish 11:57 PM | | trained 45.8 min at batch 16; recall@5 custom 0.789, keyword 0.784, hybrid 0.825; private repo Fireclaw2396/cindia-embed rev 5ad57138 |
 | B12-search | todo | | | |
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
 | B14-swarm | first spawn green (T1-T3, T5, T6) | Intake on Haiku 2.2 s | | T4, T7-T10 after B12 |
