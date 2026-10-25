@@ -2,11 +2,12 @@
 // - seekToEvent is re-exported from tests/smoke/lib.ts, never copied. Specs seek by event, never by
 //   a fixed time, because I2-tour moves every beat.
 // - openMaker(page, makerId) opens /maker/<makerId> and waits for maker.main to fill.
-// - toChinese(page) switches the language toggle to Chinese.
+// - expectEnglishOnly(el) checks the site is English only (decisions.md, Oct 24 11:35 and 11:55 PM):
+//   no language toggle on the page, and no Chinese character in the element's text.
 // - expectInsideFrame and expectNoClippedText check the page at 1440 by 900: "inside the frame"
 //   means fully inside frame-maker and every clipping ancestor.
 // Expected values come from src/mock/, never typed in, except the figures the plan names.
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 import type { Payloads } from "../../src/core/events";
 import { communities } from "../../src/mock/communities";
 import { pieces } from "../../src/mock/catalog";
@@ -87,13 +88,19 @@ export async function beatEndAfterStatement(page: Page, makerId: string = MAKER_
   return end!;
 }
 
-/** The toggle cycles auto, en, zh. The maker page starts in English, so two clicks give Chinese. */
-export async function toChinese(page: Page): Promise<void> {
-  const toggle = page.getByTestId("demo-lang-toggle");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("data-lang", "en");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("data-lang", "zh");
+/** Han ideographs, CJK punctuation and fullwidth forms: any of them in English text is Chinese. */
+const CHINESE = /[\u3000-\u303f\u3400-\u9fff\uf900-\ufaff\uff00-\uffef]+/g;
+
+/**
+ * English only (decisions.md, Oct 24 11:35 and 11:55 PM): the page has no language toggle, and the
+ * element's text holds no Chinese character. Retried with the default expect timeout.
+ */
+export async function expectEnglishOnly(el: Locator): Promise<void> {
+  await expect(el.page().getByTestId("demo-lang-toggle")).toHaveCount(0);
+  await expect(el).toBeVisible();
+  await expect
+    .poll(async () => ((await el.textContent()) ?? "").match(CHINESE) ?? [], { message: "Chinese text on screen" })
+    .toEqual([]);
 }
 
 /** The language the shell gave maker.main, from its data-slot-props. */

@@ -5,7 +5,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { UI } from "../../src/features/maker-statement/strings";
 import { watchPage } from "../smoke/lib";
-import { FRAME_VIEWPORT, beatEndAfterStatement, openMaker, overlaps, seekToStatement, toChinese } from "./maker-statement-lib";
+import { FRAME_VIEWPORT, beatEndAfterStatement, expectEnglishOnly, openMaker, overlaps, seekToStatement } from "./maker-statement-lib";
 
 test.use({ viewport: FRAME_VIEWPORT });
 
@@ -88,14 +88,15 @@ test("seeking from the toast to the end of the beat clears it", async ({ page })
   watch.expectClean();
 });
 
-test("the toggle turns the paid toast Chinese, and it still covers nothing", async ({ page }) => {
+test("with no language toggle the paid toast stays English, and it still covers nothing", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
   await seekToStatement(page, 300);
   await expect(toast(page, UI.paidToast.en)).toBeVisible();
-  await toChinese(page);
-  await expect(toast(page, UI.paidToast.zh)).toBeVisible();
-  await expect(toast(page, UI.paidToast.en)).toHaveCount(0);
-  await expectCoversNothing(page, UI.paidToast.zh);
+  await expect(page.getByTestId("demo-lang-toggle")).toHaveCount(0);
+  await expect(toast(page, UI.paidToast.en)).toHaveCount(1);
+  await expectEnglishOnly(toast(page, UI.paidToast.en));
+  await expectEnglishOnly(page.getByTestId("maker-statement-header"));
+  await expectCoversNothing(page, UI.paidToast.en);
   watch.expectClean();
 });

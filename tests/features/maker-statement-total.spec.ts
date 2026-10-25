@@ -1,7 +1,8 @@
 // M-maker-statement T2: the header on /maker/mkr_01 at 1440 by 900. The maker, her community and
 // the Demo data badge, the month, "This month's income" with the payload's total (Acceptance 2), the
-// payout date, paid (Acceptance 3), and the header in Chinese (Acceptance 5). Every seek is anchored
-// on an event, never a fixed time.
+// payout date, paid (Acceptance 3), and the header in English only, the site's one language
+// (Acceptance 5; decisions.md, Oct 24 11:35 and 11:55 PM). Every seek is anchored on an event, never
+// a fixed time.
 import { expect, test } from "@playwright/test";
 import { GLOSSARY } from "../../src/features/maker-statement/strings";
 import { formatCents } from "../../src/ui/formatCents";
@@ -15,10 +16,10 @@ import {
   MPO_01,
   MST_01,
   eventAt,
+  expectEnglishOnly,
   openMaker,
   seekToStatement,
   statementFor,
-  toChinese,
 } from "./maker-statement-lib";
 
 test.use({ viewport: FRAME_VIEWPORT });
@@ -113,20 +114,24 @@ test("Acceptance 3: paid reads Paid, because payout.sent for mpo_01 fired earlie
   watch.expectClean();
 });
 
-test("Acceptance 5: in Chinese the header labels and date are Chinese and the total is unchanged", async ({ page }) => {
+test("Acceptance 5 (English only): with no language toggle, the header labels and date stay English and the total is unchanged", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
   await seekToStatement(page, 300);
   const st = await statementFor(page);
-  await toChinese(page);
+  await expect(page.getByTestId("demo-lang-toggle")).toHaveCount(0);
   const total = page.getByTestId("maker-statement-total");
-  await expect(total).toContainText(GLOSSARY.makerStatement.zh);
-  await expect(total).not.toContainText(GLOSSARY.makerStatement.en);
+  await expect(total).toContainText(GLOSSARY.makerStatement.en);
   await expect(total).toContainText(formatCents(st!.totalCents));
-  await expect(page.getByTestId("maker-statement-payout-date")).toHaveText("2026年10月2日");
-  await expect(page.getByTestId("maker-statement-paid")).toHaveText(GLOSSARY.paid.zh);
+  const date = page.getByTestId("maker-statement-payout-date");
+  await expect(date).toHaveText(formatDate(st!.payoutDate, "en"));
+  await expect(date).toHaveText("Oct 2, 2026");
+  await expect(page.getByTestId("maker-statement-paid")).toHaveText(GLOSSARY.paid.en);
   const header = page.getByTestId("maker-statement-header");
-  await expect(header).toContainText(DINE.name.zh);
-  await expect(header).toContainText(formatMonth(MST_01.monthId, "zh"));
+  await expect(header).toContainText(DINE.name.en);
+  await expect(header).toContainText(formatMonth(MST_01.monthId, "en"));
+  for (const id of ["maker-statement-header", "maker-statement-total", "maker-statement-payout-date", "maker-statement-paid"]) {
+    await expectEnglishOnly(page.getByTestId(id));
+  }
   watch.expectClean();
 });

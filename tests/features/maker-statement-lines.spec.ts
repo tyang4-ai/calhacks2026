@@ -8,7 +8,7 @@ import { formatDate } from "../../src/ui/formatDate";
 import { pieces } from "../../src/mock/catalog";
 import { orders } from "../../src/mock/month";
 import { watchPage } from "../smoke/lib";
-import { FRAME_VIEWPORT, ORD_001, PC_01, openMaker, seekToStatement, statementFor, toChinese } from "./maker-statement-lib";
+import { FRAME_VIEWPORT, ORD_001, PC_01, expectEnglishOnly, openMaker, seekToStatement, statementFor } from "./maker-statement-lib";
 
 test.use({ viewport: FRAME_VIEWPORT });
 
@@ -57,12 +57,12 @@ test("Acceptance 2 (held): $95.00 with the held note and the line about the gall
   await expect(held).toContainText(formatCents(st!.heldCents));
   await expect(held).toContainText(GLOSSARY.heldNote.en);
   await expect(held).toContainText(UI.heldWhy.en);
-  // Seal-red text (#B23A2E) with no alarm styling: no wash behind it.
+  // Seal-red text (--c-color-seal, #A0302A since design drop 3) with no alarm styling: no wash behind it.
   const look = await held.evaluate((el) => {
     const cs = getComputedStyle(el);
     return { color: cs.color, background: cs.backgroundColor };
   });
-  expect(look.color).toBe("rgb(178, 58, 46)");
+  expect(look.color).toBe("rgb(160, 48, 42)");
   expect(look.background).toBe("rgba(0, 0, 0, 0)");
   // The held note sits under the table.
   const tableBox = (await page.getByTestId("maker-statement-lines").boundingBox())!;
@@ -95,21 +95,23 @@ test("the held note hides when nothing is held", async ({ page }) => {
   watch.expectClean();
 });
 
-test("Acceptance 5 (lines): in Chinese the title is pc_01's Chinese title, the date is Chinese and the amounts are unchanged", async ({ page }) => {
+test("Acceptance 5 (lines, English only): with no language toggle, the column heading, pc_01's title and the date stay English, and the amounts are unchanged", async ({ page }) => {
   const watch = watchPage(page);
   await openMaker(page);
   await seekToStatement(page, 300);
-  await toChinese(page);
+  await expect(page.getByTestId("demo-lang-toggle")).toHaveCount(0);
   const lines = page.getByTestId("maker-statement-lines");
-  await expect(lines).toContainText(COLUMNS.share.zh);
+  await expect(lines).toContainText(COLUMNS.share.en);
   const ord1 = page.getByTestId("maker-statement-line-ord_001");
-  await expect(ord1).toContainText(PC_01.title.zh);
-  await expect(ord1).not.toContainText(PC_01.title.en);
-  await expect(ord1).toContainText("2026年9月1日");
+  await expect(ord1).toContainText(PC_01.title.en);
+  await expect(ord1).toContainText(formatDate(ORD_001.date, "en"));
   await expect(ord1).toContainText("$134.48");
   const held = page.getByTestId("maker-statement-held");
   await expect(held).toContainText("$95.00");
-  await expect(held).toContainText(GLOSSARY.heldNote.zh);
-  await expect(held).toContainText(UI.heldWhy.zh);
+  await expect(held).toContainText(GLOSSARY.heldNote.en);
+  await expect(held).toContainText(UI.heldWhy.en);
+  await expectEnglishOnly(lines);
+  await expectEnglishOnly(ord1);
+  await expectEnglishOnly(held);
   watch.expectClean();
 });
