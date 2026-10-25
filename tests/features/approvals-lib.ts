@@ -62,3 +62,27 @@ export async function logged(page: Page, type: string) {
     return s.log.entries.filter((e) => e.type === t);
   }, type);
 }
+
+/**
+ * The approval IDs the loaded timeline requests at or before `ms` (every one when left out), in the
+ * order the player plays them: by `at`, then the timeline's own order on a tie. Specs read the
+ * order and contents of the list from here, never from fixed IDs or times, because the tour moves
+ * the beats (I2-tour requests apr_04 in d15-listing, before apr_01 and apr_02).
+ */
+export async function requestedBy(page: Page, ms: number = Number.MAX_SAFE_INTEGER): Promise<string[]> {
+  return page.evaluate((t) => {
+    const events = window.__cindia!.player.getTimeline()?.events ?? [];
+    return events
+      .map((e, i) => ({ e, i }))
+      .filter(({ e }) => e.type === "approval.requested" && e.at <= t)
+      .toSorted((a, b) => a.e.at - b.e.at || a.i - b.i)
+      .map(({ e }) => (e.payload as { approvalId: string }).approvalId);
+  }, ms);
+}
+
+/** The test IDs of the cards the list shows, top to bottom, once there are `count` of them. */
+export async function listedCards(page: Page, count: number): Promise<(string | null)[]> {
+  const cards = page.locator('[data-testid^="approvals-item-"]');
+  await expect(cards).toHaveCount(count);
+  return cards.evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")));
+}

@@ -9,7 +9,7 @@ import type { Payloads } from "../../src/core/events";
 import { allApprovals, getById, swarmRuns } from "../../src/mock/index";
 import { formatCents } from "../../src/ui/formatCents";
 import { GLOSSARY, KIND_TITLE, heldLine, listingSummary, payoutsSummary, shortPaymentSummary } from "../../src/features/approvals/strings";
-import { openApprovals, seed, seekToEvent } from "./approvals-lib";
+import { listedCards, openApprovals, requestedBy, seed, seekToEvent } from "./approvals-lib";
 
 const APR_01 = getById<Approval>("apr_01")!;
 const APR_02 = getById<Approval>("apr_02")!;
@@ -97,15 +97,20 @@ test("Acceptance 3: around every request and grant, each card and the detail say
 test("cards list in request order, the newest is selected, and a click selects another", async ({ page }) => {
   const watch = watchPage(page);
   await openApprovals(page);
-  await seekToEvent(page, "approval.requested", { approvalId: "apr_02" }, 300);
-  const ids = await page.locator('[data-testid^="approvals-item-"]').evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")));
-  expect(ids).toEqual(["approvals-item-apr_01", "approvals-item-apr_02"]);
+  const at = await seekToEvent(page, "approval.requested", { approvalId: "apr_02" }, 300);
+  // The order and contents come from the loaded timeline: in the tour, apr_04 (d15-listing) is
+  // requested before apr_01 and apr_02, so the list reads apr_04, apr_01, apr_02.
+  const order = await requestedBy(page, at);
+  expect(order).toContain("apr_01");
+  expect(order.indexOf("apr_01")).toBeLessThan(order.indexOf("apr_02"));
+  expect(order.at(-1)).toBe("apr_02");
+  expect(await listedCards(page, order.length)).toEqual(order.map((id) => `approvals-item-${id}`));
   await expect(page.getByTestId("approvals-item-apr_02")).toHaveAttribute("aria-current", "true");
-  await expect(page.getByTestId("approvals-item-apr_01")).not.toHaveAttribute("aria-current", "true");
+  for (const id of order.filter((x) => x !== "apr_02")) await expect(page.getByTestId(`approvals-item-${id}`), id).not.toHaveAttribute("aria-current", "true");
 
   await page.getByTestId("approvals-item-apr_01").click();
   await expect(page.getByTestId("approvals-item-apr_01")).toHaveAttribute("aria-current", "true");
-  await expect(page.getByTestId("approvals-item-apr_02")).not.toHaveAttribute("aria-current", "true");
+  for (const id of order.filter((x) => x !== "apr_01")) await expect(page.getByTestId(`approvals-item-${id}`), id).not.toHaveAttribute("aria-current", "true");
   await expect(page.getByTestId("approvals-detail")).toContainText(KIND_TITLE.follow_up.en);
   watch.expectClean();
 });

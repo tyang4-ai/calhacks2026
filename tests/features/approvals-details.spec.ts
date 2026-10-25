@@ -10,7 +10,7 @@ import { allFollowUps, counterfeitCandidates, getById, swarmRuns } from "../../s
 import { CHECK_KIND, GLOSSARY, KIND_TITLE, KIND_WAITING, LABELS, UI, textMatchLine } from "../../src/features/approvals/strings";
 import { formatCents } from "../../src/ui/formatCents";
 import { formatDate } from "../../src/ui/formatDate";
-import { openApprovals, seed, seekToEvent, type Seed } from "./approvals-lib";
+import { listedCards, openApprovals, requestedBy, seed, seekToEvent, type Seed } from "./approvals-lib";
 
 type Text = { en: string; zh: string };
 type FollowUps = Record<string, { approvalId: string; to?: Text; subject?: Text; body?: Text; sent: boolean }>;
@@ -60,12 +60,29 @@ async function pause(page: Page) {
   await page.evaluate(() => window.__cindia!.player.pause());
 }
 
-test("before followup.drafted nothing is requested and the view says so", async ({ page }) => {
+test("before apr_01's followup.drafted its draft and card aren't there, and only what the timeline requested earlier is listed", async ({ page }) => {
   const watch = watchPage(page);
   await openApprovals(page);
-  await seekToEvent(page, "followup.drafted", { approvalId: "apr_01" }, -100);
+  const at = await seekToEvent(page, "followup.drafted", { approvalId: "apr_01" }, -100);
   expect(await draftFor(page, "apr_01")).toBeNull();
   await expect(page.getByTestId("approvals-item-apr_01")).toHaveCount(0);
+  // In the tour apr_04 (d15-listing) is already requested here, so the list holds it and the view
+  // isn't empty. Read from the loaded timeline, not assumed.
+  const earlier = await requestedBy(page, at);
+  expect(earlier).not.toContain("apr_01");
+  expect(await listedCards(page, earlier.length)).toEqual(earlier.map((id) => `approvals-item-${id}`));
+  await expect(page.getByTestId("approvals-empty")).toHaveCount(earlier.length === 0 ? 1 : 0);
+  watch.expectClean();
+});
+
+test("before the timeline's first request nothing is requested and the view says so", async ({ page }) => {
+  const watch = watchPage(page);
+  await openApprovals(page);
+  const [first] = await requestedBy(page);
+  expect(first).toBeTruthy();
+  await seekToEvent(page, "approval.requested", { approvalId: first }, -100);
+  expect(await draftFor(page, "apr_01")).toBeNull();
+  await expect(page.locator('[data-testid^="approvals-item-"]')).toHaveCount(0);
   await expect(page.getByTestId("approvals-empty")).toBeVisible();
   watch.expectClean();
 });

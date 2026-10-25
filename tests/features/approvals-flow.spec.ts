@@ -8,7 +8,7 @@ import type { Payloads } from "../../src/core/events";
 import type { Approval, CounterfeitCandidate, FollowUp, InlineApproval } from "../../src/core/types";
 import { allFollowUps, counterfeitCandidates, getById, swarmRuns } from "../../src/mock/index";
 import { GLOSSARY, KIND_TITLE } from "../../src/features/approvals/strings";
-import { approvalItem, openApprovals, seed, seekToEvent, type Seed } from "./approvals-lib";
+import { approvalItem, openApprovals, requestedBy, seed, seekToEvent, type Seed } from "./approvals-lib";
 
 const CFT_01 = counterfeitCandidates.find((c) => c.id === "cft_01")! as CounterfeitCandidate;
 const FUP_02 = allFollowUps.find((f) => f.id === "fup_02")! as FollowUp;
@@ -74,7 +74,11 @@ function overlaps(a: { x: number; y: number; width: number; height: number }, b:
 test("before any request the view says nothing is waiting, with no cards and no toast", async ({ page }) => {
   const watch = watchPage(page);
   await openApprovals(page);
-  await seekToEvent(page, "approval.requested", { approvalId: "apr_01" }, -300);
+  // The timeline's first request, read from the loaded timeline: in the tour that's apr_04
+  // (d15-listing), well before apr_01.
+  const [first] = await requestedBy(page);
+  expect(first).toBeTruthy();
+  await seekToEvent(page, "approval.requested", { approvalId: first }, -300);
   await expect(page.getByTestId("approvals-empty")).toBeVisible();
   await expect(page.locator('[data-testid^="approvals-item-"]')).toHaveCount(0);
   await expect(page.getByTestId("approvals-toast")).toHaveCount(0);
