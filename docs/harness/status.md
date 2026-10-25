@@ -39,6 +39,7 @@ v1 (desktop session, history):
 | R0 | PASS | Oct 24 6:46 PM | `artifacts/gates/R0-1836.md`, `artifacts/gates/R0-verifier-screens.md`, `-numbers.md`, `-words.md` (first run `R0-1828.md` FAIL: d10 held line out of frame, fixed) | v2-reskin |
 | core | PASS | Oct 24 7:58 PM | `artifacts/gates/core-1940.md` (first run `core-1935.md`: smoke source count and B09's 4 s budget, fixed), `artifacts/gates/core-verifier-code.md`, `-docs.md`, `-server.md` | v2-core |
 | G5 b09 | PASS | Oct 24 8:23 PM | `/home/user/cindia-g5/artifacts/gates/G5-2023.md` (worktree), `artifacts/gates/G5-b09-verifier.md` | demo-ok-b09 |
+| G5 b04 (worktree, keyed) | FAIL 11/13, rerun on the tour after G4v2 | Oct 25 12:45 AM | `artifacts/gates/G5-b04-bank-wt-0028.md`: live pytest 2 passed, scripted demo 3/3, offline, live-mode demo runs 1 and 2 passed; run 3 failed modes.spec's start-at-catch clock step and offline live sampled d06-month late (v1 harness timing checks I2-tour replaces); B04's own live calls held | |
 | G2b | PASS | Oct 24 21:37 | `artifacts/gates/G2b-2112.md`, `artifacts/gates/G2b-verifier-data.md` | v2-data |
 | G1b | PASS | Oct 24 22:05 | `artifacts/gates/G1b-2113.md` (main tree), `artifacts/gates/G1b-wt-2152.md` (worktree rerun after the fix: check, build, smoke 123, demo 60.006 s, offline), `G1b-verifier-screens.md` PASS, `G1b-verifier-code.md` FAIL (14 px floor) then `G1b-verifier-recheck.md` PASS | v2-shell |
 | G3 support | PASS | Oct 24 10:05 PM | `artifacts/gates/G3-2145.md` (check:scope, feature 19 + 1 skipped; smoke 122/123: the shell's seekToEvent test hit a Vite full reload from another lead's edit, passed twice alone), `artifacts/gates/G3-support-verifier.md` PASS | v2-support |
@@ -123,7 +124,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
 | B14-swarm | T1-T10 built and committed; G5 after G4v2 | d04 live median 5.87 s (L15 quoted), listing 6.6 s, storefront 3.3 s | | Agent Builder times out at 9.4 s, find answers on B12 search at about 17 s |
 | B15-watch | T1-T6 built and committed; G5 blocked on PUBLIC_SITE_URL | Haiku claims and Sonnet Reporter (3.3 s) live; Apify crawl waits for the market | | threshold 0.22 measured; T7 not built |
-| B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
+| B16-bank-books | T1-T4 running | | | B04's live calls pass; its G5 after G4v2 |
 
 ## Tags
 
@@ -403,3 +404,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:29 PT · T9 data worktree gate invalid (T1's timeline landed in src/mock/ first); T9 commits with I2-tour at G4v2 (decisions.md); search spec 4 and 17 go to F-search after T8 · status.md
 - 2026-10-25 00:51 PT · B14 second spawn done (Finder, Curator, listing run, Designer, router, adapter): test_b14_swarm 132 non-live + 2 live, test:server 780, smoke 124; support-live.spec passed once (12.3 s) before an HMR of src/core broke its store import (dev-server restart before G5); committed; G5 b14 after G4v2 · status.md
 - 2026-10-25 00:53 PT · B15 done (Scout, Comparer, claims, Reporter, router, adapter): test_b15_watch 72 + 1 live skipped (no market), test:server 799, smoke 124; threshold 0.22; committed; its G5 waits for Gordon's upload and PUBLIC_SITE_URL · status.md
+- 2026-10-25 00:53 PT · G5 b04 in the worktree 11/13 (both failures v1 harness timing, B04's live calls pass; rerun on the tour after G4v2); B02 and B07 G5s running next; B16 spawned (its build doesn't wait on B04's G5, only its gate does) · artifacts/gates/G5-b04-bank-wt-0028.md
