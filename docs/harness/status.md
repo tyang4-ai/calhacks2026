@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:23 PT
+UPDATED: 2026-10-24 23:25 PT
 
 # Status board
 
@@ -47,6 +47,7 @@ v1 (desktop session, history):
 | I2-art | PASS | Oct 24 10:58 PM | `artifacts/gates/I2-art-verifier.md` PASS (six bullets; art --check 54 valid; images.spec 54), smoke 123 in the buyer worktree run `artifacts/gates/G3-buyer-wt-2243.md` | v2-art |
 | G3 buyer | PASS | Oct 24 10:58 PM | shared tree `artifacts/gates/G3-2218.md` 2/3 (smoke failed on F-seller-hub's unfinished file), worktree `artifacts/gates/G3-buyer-wt-2243.md` 3/3 (check:scope, feature 62, smoke 123), `artifacts/gates/G3-buyer-verifier.md` PASS (F1 non-piece ID crash, F2 verification below the fold on 20 pieces: polish queue) | v2-buyer |
 | D-deploy | PASS | Oct 24 11:25 PM | `artifacts/gates/D-deploy-wt-2306.md` in the worktree (export, make-market + test 13, build:public with check-public 17 and secrets-scan 0 findings, check-public.test 21, laptop dry-run 9 steps, laptop test 26, preflight port 3000 and v2 names, check, smoke 123, build back to localhost); verifiers `D-deploy-verifier-public.md`, `D-deploy-verifier-laptop.md` PASS; fix round 1 for their notes; market pages regenerated after data round 1 (test 13, all scripts tests 60) | v2-deploy |
+| G3 seller-hub | PASS | Oct 24 11:33 PM | worktree `artifacts/gates/G3-seller-hub-wt-2316.md` 3/3 (check:scope, feature 30, smoke 123), `artifacts/gates/G3-seller-hub-verifier.md` PASS (F1-F5, F10 to the polish queue) | v2-seller-hub |
 | G3 process | FAIL, fix round 1 | Oct 24 11:05 PM | `artifacts/gates/G3-process-verifier.md` FAIL on screens only: F1 swarm tool node over the Finder's name, F2 data chips cut, F3 reconcile labels truncated, F4 model name truncated; contracts, labels and 20 Acceptance lines pass | |
 | G6 | | | | |
 
@@ -101,7 +102,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
 | M-approvals | V2 P0 | built, G3 queued (worktree) and verifier | feature-lead | | live two-screen spec runs (B13 T7 in place); OwnerInbox deleted |
 | M-desktop | V2 P0 | running | feature-lead | | T2, T3 first |
-| F-seller-hub | V2 P0 | built, G3 queued (worktree) and verifier | feature-lead | | lead wrote T0-T7 itself; specs mock the HMR socket |
+| F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | built, G3 queued (worktree) and verifier | feature-lead | | live spec skips until B15 |
 | F-storefront | V2 P1 | running | feature-lead | | |
 | M-maker-statement | V2 P1 | running | feature-lead | | |
@@ -361,3 +362,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:17 PT · D-deploy PASS in the worktree (all Acceptance commands, smoke 123) after fix round 1; market pages regenerated with Lantern Lane Home Goods; committed, tag v2-deploy; Gordon's upload and laptop steps under Needs Gordon; F-watch built (15 specs, live skips), verifier and worktree G3 next · artifacts/gates/D-deploy-wt-2306.md
 - 2026-10-24 23:20 PT · API stopped at its 2-hour limit, restarted (all keys true; B13 reseeded from SpacetimeDB: catalog 54, orders 38, approvals 5); B11 T7 (adapter, liveMap for B12) and T8 (publish, fetch, card, train_akbari.sh) done: test_b11_embed 239, test:server 619, check:scope PASS; committed with scripts/train-akbari.sh; F-seller-hub verifier PASS (findings to the polish queue) · status.md
 - 2026-10-24 23:23 PT · M-approvals built (T0-T5, every spec file passes alone, smoke 123, live two-screen spec passes); its worktree G3 queued and verifier spawned; demo regression on main queued before I2-tour · status.md
+- 2026-10-24 23:25 PT · G3 seller-hub PASS in the worktree (feature 30, smoke 123) plus verifier PASS; committed, tag v2-seller-hub · artifacts/gates/G3-seller-hub-wt-2316.md
