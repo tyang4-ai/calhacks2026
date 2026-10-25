@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:12 PT
+UPDATED: 2026-10-25 00:14 PT
 
 # Status board
 
@@ -51,6 +51,7 @@ v1 (desktop session, history):
 | G3 watch | PASS | Oct 24 11:44 PM | worktree `artifacts/gates/G3-watch-wt-2324.md` 3/3 (check:scope, feature 15 + live skipped, smoke 123); `artifacts/gates/G3-watch-verifier.md` FAIL on F1 only (the Chinese card 21 px past the frame), moot under Gordon's English only (decisions.md); F2 to the polish queue | v2-watch |
 | G3 storefront | PASS | Oct 25 12:05 AM | worktree `artifacts/gates/G3-storefront-wt-2351.md` 3/3 (check:scope, feature 27, smoke 123), `artifacts/gates/G3-storefront-verifier.md` PASS (N1-N4 to the polish queue) | v2-storefront |
 | G3 maker-statement | PASS | Oct 25 12:20 AM | worktree `artifacts/gates/G3-maker-statement-wt-2359.md` 3/3 (check:scope, feature 29, smoke 123), `artifacts/gates/G3-maker-statement-verifier.md` PASS (ten minors) | v2-maker-statement |
+| G3 process | PASS (after fix round 1) | Oct 25 12:25 AM | worktree rerun `artifacts/gates/G3-process2-wt-2343.md` 3/3 (check:scope 71 unit, feature 38 with the new layout spec, smoke 123), `artifacts/gates/G3-process-verifier-recheck.md` PASS | v2-process |
 | G3 process | FAIL, fix round 1 | Oct 24 11:05 PM | `artifacts/gates/G3-process-verifier.md` FAIL on screens only: F1 swarm tool node over the Finder's name, F2 data chips cut, F3 reconcile labels truncated, F4 model name truncated; contracts, labels and 20 Acceptance lines pass | |
 | G6 | | | | |
 
@@ -101,10 +102,10 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-search | V2 P0 | green | feature-lead | v2-search | |
 | M-buyer | V2 P0 | green (T0-T6) | feature-lead | v2-buyer | T7 after G4v2; F1, F2 in the polish queue |
 | F-support | V2 P0 | green | feature-lead | v2-support | |
-| F-process | V2 P0 | fix round 1 done (38/38), worktree G3 and verifier recheck running | feature-lead | | lead wrote T0-T8 itself (no Agent tool) |
+| F-process | V2 P0 | green | feature-lead | v2-process | lead wrote T0-T8 itself (no Agent tool); fix round 1 for the screens |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
 | M-approvals | V2 P0 | fix round 1 done (41/41), worktree G3 rerun and two-lens recheck running | feature-lead | | worktree G3 3/3 PASS; live two-screen spec runs; OwnerInbox deleted |
-| M-desktop | V2 P0 | built, worktree G3 queued and verifier | feature-lead | | needs FlagState.nessieId in src/core/state.ts (integrator) |
+| M-desktop | V2 P0 | G3 verifier FAIL (B1-B7: text under 14 px, ellipsized labels), fix round 1 | feature-lead | | needs FlagState.nessieId in src/core/state.ts (integrator) |
 | F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | green | feature-lead | v2-watch | live spec skips until B15; F2 in the polish queue |
 | F-storefront | V2 P1 | green | feature-lead | v2-storefront | theme field on storefront.published (integrator); N1-N4 in the polish queue |
@@ -191,7 +192,8 @@ Run once the V2 leads are done, so a shared-code edit can't reload the dev serve
 
 - M-buyer: F1 a piece route with another entity's ID crashes the slot (`PiecePage.tsx:36-38`, treat a non-piece as missing, plus a spec); F2 the story column's verification block ends below y 876 on 20 of 54 pieces in English (pc_27 to pc_42, pc_45, pc_46, pc_49, pc_51; worst pc_38), move `PieceVerification` to the price column or shorten the story column, plus a multi-piece fit spec (`artifacts/gates/G3-buyer-verifier.md`). With T7 after G4v2.
 - F-seller-hub (`artifacts/gates/G3-seller-hub-verifier.md`): F1 steps list keeps its scroll offset after a language toggle (`ListingSteps.tsx:34-37`, add `lang`), F2 the steps list scrolls so Cindy's route and the Lister sit out of view at the final d15 state (the design shows all seven), F3 the embedded passage clamped to two lines, F4 "Vibe words" on its own row, F5 "September"/九月 typed in strings.ts, F10 the maker side panel 912 px in a 732 px view; F6 `--c-font-mono` for I3-redesign.
-- **English only (Gordon, 11:35 PM; decisions.md).** Integrator: hide `demo-lang-toggle` and the top bar's language toggle everywhere (the `l` key too), English-only strings for anything new (zh reuses en where a type needs it), keep the existing Chinese in the code, the contracts updated (ui-contract.md, glossary.md, design-system.md). F-seller-hub and M-approvals: don't render `seller-listing-translated-<lang>` / L27's translated version. Every spec that clicks the toggle or checks Chinese or the translated version is updated by its owner. The search eval set stays. Fonts: Source Sans 3 and Source Code Pro (approved), installed by the integrator; Noto Sans SC can stop loading if nothing renders Chinese (it is 794 of the public build's 891 files).
+- **Chinese out, step 2, after G4v2 (Gordon, 11:55 PM; decisions.md):** the integrator makes the shared text type English only and drops the Chinese column from the glossary and L1 to L30; then each owner removes zh from its own files (mock data, strings.ts, specs) in one sweep, each landing only when its checks pass; plain-English rewrites for anything that only made sense in two languages. B11's training pairs and the 50-query test set stay. Leftover zh is fine if nothing renders it; the tour comes first.
+- **English only, step 1, before G4v2 (Gordon, 11:35 PM; decisions.md).** Integrator: hide `demo-lang-toggle` and the top bar's language toggle everywhere (the `l` key too), English-only strings for anything new (zh reuses en where a type needs it), keep the existing Chinese in the code, the contracts updated (ui-contract.md, glossary.md, design-system.md). F-seller-hub and M-approvals: don't render `seller-listing-translated-<lang>` / L27's translated version. Every spec that clicks the toggle or checks Chinese or the translated version is updated by its owner. The search eval set stays. Fonts: Source Sans 3 and Source Code Pro (approved), installed by the integrator; Noto Sans SC can stop loading if nothing renders Chinese (it is 794 of the public build's 891 files).
 - F-storefront (`G3-storefront-verifier.md`): N1 preview cards are live links that lose an unpublished edit (plain wrapper when density is preview), N2 the 11 specs that click `demo-lang-toggle` through setLang (English only), N3 the Blocks heading cut after the Designer's steps, N4 the public Visit block shows editor labels. English only, integrator: the kit badges print Chinese beside English on English pages (N8; e.g. "Rule-based 规则程序"), so the kit renders one language.
 - F-watch F2: the checked list's first title is ellipsized (`.checkedTitle` should wrap); undo is a hand-built button where the kit has Button.
 - F-search: search-live-map.spec.ts line 116 accepts approx true (decisions 00:1x).
@@ -392,3 +394,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:10 PT · B11's trained outputs committed (report.json with hubRepo and hubRevision, vectors.json, unjudged.json, the filled model card, the snapshot) and the card test now holds for the filled card (test:server 671); SpacetimeDB restarted after its 2-hour limit (B13 reseeded: catalog 54, orders 42, approvals 5) · status.md
 - 2026-10-25 00:11 PT · G3 maker-statement PASS in the worktree plus verifier PASS; committed, tag v2-maker-statement; G3 approvals rerun PASS in the worktree (41, smoke 123) and its confirm recheck PASS, adversarial lens pending; desktop's first worktree run broke on over-long log names (script bug, not the feature), rerun queued; desktop verifier FAIL, findings next · status.md
 - 2026-10-25 00:12 PT · merged the planning session's docs/v2/video-brief.md (a brief for the separate demo-video conversation; its section 7 holds the pitch card draft, which I2-tour T4 uses for src/app/demo/pitch.ts until Gordon pastes the final text) · docs/v2/video-brief.md
+- 2026-10-25 00:14 PT · Gordon: Chinese goes entirely, in two steps (decisions.md); G3 process PASS after fix round 1 (worktree 3/3, verifier recheck PASS), committed, tag v2-process; M-desktop verifier FAIL on B1-B7 (all specs pass; text under 14 px and ellipsized labels), fix round 1 sent with English-only spec updates · status.md
