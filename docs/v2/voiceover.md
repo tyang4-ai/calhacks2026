@@ -33,7 +33,7 @@ The optional `d17` scene is out, because it would take the cut past 3:00. Each l
 
 ## Reading it
 
-- **Names:** "Cindy" (SIN-dee) is the agent, in the cold open and the seller lines. "Cindia" (sin-DEE-uh) is the platform, on the first card and the end card.
+- **Names:** "Cindy" is the agent, in the cold open and the seller lines. "Cindia" is the platform, on the first card and the end card. The first take swapped them at both ends.
 - **Numbers:** say $180 as "a hundred eighty", $134.48 as "a hundred thirty-four forty-eight", $1,700 as "seventeen hundred" and $340 as "three hundred forty". The first take's $180 transcribed as $108.
 - **Words to land:** "wove", not "wrote", "churro" (CHUR-oh), and "their say".
 - **The catch:** pause one beat after "Here's the catch."
