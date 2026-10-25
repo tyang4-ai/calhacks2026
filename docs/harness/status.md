@@ -41,6 +41,7 @@ v1 (desktop session, history):
 | G5 b09 | PASS | Oct 24 8:23 PM | `/home/user/cindia-g5/artifacts/gates/G5-2023.md` (worktree), `artifacts/gates/G5-b09-verifier.md` | demo-ok-b09 |
 | G2b | PASS | Oct 24 21:37 | `artifacts/gates/G2b-2112.md`, `artifacts/gates/G2b-verifier-data.md` | v2-data |
 | G1b | PASS | Oct 24 22:05 | `artifacts/gates/G1b-2113.md` (main tree), `artifacts/gates/G1b-wt-2152.md` (worktree rerun after the fix: check, build, smoke 123, demo 60.006 s, offline), `G1b-verifier-screens.md` PASS, `G1b-verifier-code.md` FAIL (14 px floor) then `G1b-verifier-recheck.md` PASS | v2-shell |
+| G3 support | PASS | Oct 24 10:05 PM | `artifacts/gates/G3-2145.md` (check:scope, feature 19 + 1 skipped; smoke 122/123: the shell's seekToEvent test hit a Vite full reload from another lead's edit, passed twice alone), `artifacts/gates/G3-support-verifier.md` PASS | v2-support |
 | G6 | | | | |
 
 ## Features
@@ -89,7 +90,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | I2-art | V1 | running | integrator | | T0 54 placeholders (54288bd); T1-T3 drawings running |
 | F-search | V2 P0 | running | feature-lead | | |
 | M-buyer | V2 P0 | running | feature-lead | | |
-| F-support | V2 P0 | built, G3 running | feature-lead | | |
+| F-support | V2 P0 | green | feature-lead | v2-support | |
 | F-process | V2 P0 | running | feature-lead | | |
 | F-communities | V2 P0 | running | feature-lead | | |
 | M-approvals | V2 P0 | todo | feature-lead | | G3 waits for B13 T7 |
@@ -130,6 +131,7 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | v2-core | b5f9b24f1c78ba38074680fea245e8911c23c485 | core | Oct 24 7:58 PM |
 | demo-ok-b09 | e8423db82e25182b94b4e128be7ea6cbe1a90495 | G5 b09 | Oct 24 9:02 PM |
 | v2-data | 84f0e9fd94a5f5d9f21d29e29b1cdbb36d4671e5 | G2b | Oct 24 9:38 PM |
+| v2-shell | 310e917c09523cbae65449f39adde7098ce03f39 | G1b | Oct 24 10:05 PM |
 
 ## Environment
 
@@ -306,3 +308,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 21:38 PT · after G2b: export:mock (100), B11 snapshot (50 eval queries); spawned B11 T3 (pairs) and I2-art T1-T3 (drawings); running: 4 leads, G1b kit fix, B11 T3, I2-art · status.md
 - 2026-10-24 21:45 PT · F-support built (19 passed, live spec skips until B14; lead wrote all tasks, no Agent tool); G3 support and its verifier running; commit waits for G1b; F-communities lead spawned · status.md
 - 2026-10-24 22:05 PT · G1b PASS after one fix round (kit 14 px floor): worktree rerun of exactly main plus the shell and kit (check, build, smoke 123, demo 60.006 s, offline), verifier recheck PASS; committed with tag v2-shell · artifacts/gates/G1b-verifier-recheck.md
+- 2026-10-24 10:05 PM PT · G3 support PASS (verifier PASS; the one smoke failure was a Vite full reload from another lead's edit mid-test, rerun alone 2/2); committed, tag v2-support · artifacts/gates/G3-support-verifier.md
