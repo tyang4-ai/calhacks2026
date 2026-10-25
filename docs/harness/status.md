@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:31 PT
+UPDATED: 2026-10-24 22:40 PT
 
 # Status board
 
@@ -93,12 +93,12 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-search | V2 P0 | green | feature-lead | v2-search | |
 | M-buyer | V2 P0 | T0-T6 built, G3 queued | feature-lead | | T7 after G4v2 | |
 | F-support | V2 P0 | green | feature-lead | v2-support | |
-| F-process | V2 P0 | running | feature-lead | | |
+| F-process | V2 P0 | built, G3 running (worktree) and verifier | feature-lead | | lead wrote T0-T8 itself (no Agent tool) |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
 | M-approvals | V2 P0 | todo | feature-lead | | G3 waits for B13 T7 |
 | M-desktop | V2 P0 | running | feature-lead | | T2, T3 first |
 | F-seller-hub | V2 P0 | running | feature-lead | | |
-| F-watch | V2 P1 | todo | feature-lead | | |
+| F-watch | V2 P1 | running | feature-lead | | |
 | F-storefront | V2 P1 | todo | feature-lead | | |
 | M-maker-statement | V2 P1 | todo | feature-lead | | |
 | D-deploy | V2 | running | integrator | | then Gordon uploads |
@@ -322,3 +322,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:22 PT · G3 communities PASS (verifier PASS; F1 Shop home strip clipped at 1440x900 for polish before G4v2); committed, tag v2-communities; I2-art T1-T3 done (54 drawn, art --check PASS), contact-sheet verifier next · artifacts/gates/G3-communities-verifier.md
 - 2026-10-24 22:25 PT · heartbeat: 5173, 8000, 3000 up, mock.json fresh, load 19; contracts docs round 1 running (integrator, docs/common/ only, then two verifiers); code items from the verifiers wait for the polish round before I2-tour · status.md
 - 2026-10-24 22:31 PT · G3 buyer 2/3 in the shared tree (check:scope, feature 62 passed; smoke 122/123, the failure in F-seller-hub's unfinished MakerSide.tsx); rerun in the worktree with buyer plus I2-art's drawings (I2-art verifier PASS) · artifacts/gates/G3-2218.md
+- 2026-10-24 22:40 PT · F-process built (check:scope 71 unit, feature 35/35 on rerun); its verifier and F-watch's lead spawned; worktree G3 now uses its own dev server on 5174 (the preview can't serve the dev-only /src imports two v1 buyer specs use); buyer and process worktree G3s running; integrator fixing the offline-font flake in shell.spec.ts:447 · status.md
