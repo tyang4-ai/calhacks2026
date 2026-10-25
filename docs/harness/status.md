@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:59 PT
+UPDATED: 2026-10-24 23:03 PT
 
 # Status board
 
@@ -348,3 +348,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:56 PT · B11 training done in 45.8 min (sha256 dee48137…, fingerprint f7181c7d…): recall@5 / MRR@10 keyword 0.790 / 0.875, base 0.711 / 0.763, Cindia's model 0.782 / 0.892, local hybrid 0.826 / 0.940; /api/health services.model true; next S3 T9 spawn 4 after data round 1 (both touch searchEval.ts and watch.ts), then --eval-only, T9 spawn 5, publish after T8 · artifacts/b11/train-run.out
 - 2026-10-24 22:58 PT · G3 process verifier FAIL on four clipping defects (F1-F4), fix round 1 sent to its lead; F-seller-hub built (30 specs), its verifier spawned and its worktree G3 queued after process (a lock now keeps worktree gates one at a time) · artifacts/gates/G3-process-verifier.md
 - 2026-10-24 22:59 PT · F-storefront and M-maker-statement leads spawned (all eleven V2 leads now spawned; target: features green or cut by about 1:30 AM so I2-tour can start) · status.md
+- 2026-10-24 23:03 PT · dev server stopped at its 2-hour limit, restarted on 5173 (leads' runs in that minute may fail on the reload) · status.md
