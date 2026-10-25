@@ -3,9 +3,10 @@
 // timeline) and a fake fetch, on fake timers.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { userEvent, type CindiaEvent, type Payloads } from "../../core/events";
+import type { Timeline } from "../../core/player";
 import { emit, getState, reset, resetEvents, setStoreMode, subscribe } from "../../core/store";
-import { pieces } from "../../mock/catalog";
-import { demoTimeline } from "../../mock/timelines/demo";
+import { curatedSet, pieces } from "../../mock/catalog";
+import { draft, finalize } from "../../mock/events";
 import { createRegistry, type Registry } from "../registry";
 import { createConciergeAdapter } from "./b09-concierge";
 
@@ -13,8 +14,26 @@ const KEY = "b09-concierge";
 /** About what Haiku takes on the server. */
 const LATENCY_MS = 2000;
 
-const asked = demoTimeline.events.find((e) => e.type === "concierge.asked")!;
-const answered = demoTimeline.events.find((e) => e.type === "concierge.answered")!;
+/**
+ * v1's d01-ask beat as its own timeline: the tour's timeline (I2-tour) no longer plays the gift
+ * finder, so the test keeps the two concierge events it read from v1's demo timeline, built the
+ * same way: the scripted request at 300 ms and its keyed answer at 1800 ms with the curated set.
+ */
+const V1_QUERY = "a gift under $200 for my mom, she loves red wool";
+const conciergeTimeline: Timeline = {
+  id: "b09-concierge-test",
+  durationMs: 4000,
+  events: finalize(
+    [
+      draft("concierge.asked", 300, { query: V1_QUERY, lang: "en" }),
+      draft("concierge.answered", 1800, { query: V1_QUERY, pieceIds: [...curatedSet.pieceIds], reasons: { ...curatedSet.reasons } }),
+    ],
+    "evt_",
+  ),
+};
+
+const asked = conciergeTimeline.events.find((e) => e.type === "concierge.asked")!;
+const answered = conciergeTimeline.events.find((e) => e.type === "concierge.answered")!;
 const DEMO_QUERY = (answered.payload as Payloads["concierge.answered"]).query;
 
 interface Post {
@@ -54,7 +73,7 @@ function fakeFetch(url: string, init: RequestInit = {}) {
 /** The fake player. */
 let epoch = 1;
 let clock = 0;
-const playerDeps = { epoch: () => epoch, now: () => clock, timeline: () => demoTimeline };
+const playerDeps = { epoch: () => epoch, now: () => clock, timeline: () => conciergeTimeline };
 
 let registry: Registry | null = null;
 
