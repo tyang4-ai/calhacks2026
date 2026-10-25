@@ -1,5 +1,5 @@
-// The Sell site (frame-studio): a header with the co-op's name (English only), L2 beside it and
-// Cindy's latest line; the left nav (shell-nav-<view>, 184 px) in route order; the view area; and
+// The Sell site (frame-studio): a 48 px header on the mat with the co-op's name (English only),
+// Cindy's latest line whole on up to two lines, and L2 at the right; the left nav (shell-nav-<view>, 184 px) in route order; the view area; and
 // the drawers support, ask and audit. It takes its view and drawer as props, so the stage sets
 // them without a URL.
 import { SELL_VIEWS, type SellView } from "../../core/featureTypes";
@@ -34,10 +34,10 @@ function SellHeader({ lang }: { lang: "en" | "zh" }) {
           {name.en}
         </span>
       </div>
+      <p className={latest ? styles.cindy : styles.cindyIdle} aria-live="polite">
+        <strong className={styles.cindyName}>Cindy ·</strong> {line}
+      </p>
       <p className={styles.l2}>{L2[lang]}</p>
-      <div className={latest ? styles.cindy : styles.cindyIdle} aria-live="polite" title={line}>
-        <strong style={{ fontWeight: 600 }}>Cindy</strong> · {line}
-      </div>
     </div>
   );
 }

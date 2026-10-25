@@ -35,9 +35,10 @@ describe("badge variants", () => {
 });
 
 describe("kit gallery", () => {
-  for (const lang of ["en", "zh"] as const) {
+  // English only (decisions.md, Oct 24, 11:35 PM and 11:55 PM): no language switch, English words.
+  for (const lang of ["en"] as const) {
     it(`renders every component with its own test ID, each once (${lang})`, () => {
-      const html = renderToStaticMarkup(createElement(KitGallery, { lang }));
+      const html = renderToStaticMarkup(createElement(KitGallery));
       const ids = [...html.matchAll(/data-testid="([^"]+)"/g)].map((m) => m[1]).filter((id) => id !== "simulated-badge");
       const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
       expect(dupes).toEqual([]);
@@ -76,13 +77,55 @@ describe("kit gallery", () => {
         "kit-thread",
         "kit-toast",
         "kit-console",
+        // Design drop 3
+        "kit-beam-summary",
+        "kit-badge-beam",
+        "kit-badge-simulated-beam",
+        "kit-icon-check",
+        "kit-icon-sheet",
+        "kit-tag-limit",
+        "kit-field",
+        "kit-checkbox",
+        "kit-agentsteps",
+        "kit-agentstep-active",
+        "kit-tabs-segmented",
       ]) {
         expect(ids, id).toContain(id);
       }
       // Every sample says so.
-      expect(html).toContain(lang === "en" ? ">Sample<" : ">示例<");
+      expect(html).toContain(">Sample<");
+      // No language switch, and no Chinese on the page.
+      expect(ids).not.toContain("kit-gallery-lang");
+      expect(ids).not.toContain("kit-langtoggle");
+      expect(html).not.toMatch(/[\u4e00-\u9fff]/);
     });
   }
+});
+
+describe("drop 3 kit additions", () => {
+  it("draws each of the sixteen icons in currentColor, with no fixed color", () => {
+    expect(kit.ICON_NAMES).toHaveLength(16);
+    for (const name of kit.ICON_NAMES) {
+      const html = renderToStaticMarkup(createElement(kit.Icon, { name }));
+      expect(html, name).toMatch(/<(path|circle|rect) /);
+      expect(html, name).toContain("currentColor");
+      expect(html, name).not.toMatch(/#[0-9a-fA-F]{3,6}/);
+      expect(html, name).toContain('aria-hidden="true"');
+    }
+    expect(renderToStaticMarkup(createElement(kit.Icon, { name: "check", label: "Done" }))).toContain('aria-label="Done"');
+  });
+  it("draws the beam's Simulated badge with its own tone and keeps its words", () => {
+    const html = renderToStaticMarkup(createElement(Badge, { variant: "simulated", tone: "beam" }));
+    expect(html).toContain("c-badge--tone-beam");
+    expect(textOf(html)).toBe("Simulated");
+    expect(html).toContain('data-testid="simulated-badge"');
+  });
+  it("gives the Limit tag its flag icon", () => {
+    const html = renderToStaticMarkup(createElement(kit.Tag, { variant: "limit" }, "Over your $500 limit"));
+    expect(html).toContain("c-tag--limit");
+    expect(html).toContain('data-icon="flag"');
+    expect(textOf(html)).toBe("Over your $500 limit");
+  });
 });
 
 describe("kit index", () => {
@@ -114,6 +157,9 @@ describe("kit index", () => {
       "BlockEditor",
       "Badge",
       "ConsoleFrame",
+      "Icon",
+      "Tag",
+      "AgentSteps",
     ]) {
       expect(typeof (kit as Record<string, unknown>)[name], name).toBe("function");
     }

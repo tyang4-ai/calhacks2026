@@ -1,4 +1,5 @@
 import type { Lang, Text } from "../core/types";
+import { Icon } from "./Icon";
 import { pickText, SEARCH_WORDS } from "./strings";
 
 export interface ChipProps {
@@ -45,9 +46,7 @@ export function Chip({ testId, label, selected = false, onRemove, onClick, remov
           title={pickText(SEARCH_WORDS.remove, lang)}
           onClick={onRemove}
         >
-          <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
-            <path d="M3.5 3.5 L10.5 10.5 M10.5 3.5 L3.5 10.5" stroke="currentColor" strokeWidth="1.6" />
-          </svg>
+          <Icon name="close" size={16} />
         </button>
       )}
     </span>

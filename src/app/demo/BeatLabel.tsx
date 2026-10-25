@@ -34,10 +34,14 @@ export function beatTitle(beatId: string | null): string {
 
 /**
  * sell-catch fills the stage with the zoomed Sell view, so the bottom left would sit on the
- * month's records. There the label moves to the top right, above the side column.
+ * month's records, and the pitch cards keep their foot for L1: there the label moves to the top
+ * right. The store page's piece cards reach the bottom edge, so there it sits under the beam on the
+ * right (the G4v2 review's F2: it covered the first card's verification line).
  */
-function labelPlace(camera: string | null): "left" | "right" {
-  return camera === "sell-catch" ? "right" : "left";
+function labelPlace(camera: string | null): "left" | "right" | "under-beam" {
+  if (camera === "sell-catch" || camera === "pitch") return "right";
+  if (camera === "store") return "under-beam";
+  return "left";
 }
 
 export function BeatLabel({ beatId, camera = null }: { beatId: string | null; camera?: string | null }) {

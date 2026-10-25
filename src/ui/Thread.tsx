@@ -10,7 +10,7 @@ export interface ThreadProps {
   testId?: string;
   from: Point;
   to: Point;
-  /** Player time (ms) when the money started moving. The stitch takes 900 ms from here. */
+  /** Player time (ms) when the money started moving. The thread draws in 700 ms (--c-motion-stitch) from here. */
   startAt: number;
   amountCents?: number;
   tone?: "in" | "out" | "neutral" | "pending";
@@ -31,9 +31,14 @@ function lerp(a: Point, b: Point, t: number): Point {
   return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
 }
 
+/** The short-paid pattern, the same as --c-thread-dash-attention. */
+const SHORT_DASH = "8 6";
+
 /**
- * One movement of money, drawn as a running stitch that sews itself from `from` to `to` on the
- * player clock. Render it inside an <svg>. Under reduced motion it appears finished.
+ * One movement of money (design drop 3, kit change 9): a solid 4 px thread (--c-stroke-thread-map)
+ * that draws itself along its path from `from` to `to` on the player clock, ease-out over 700 ms
+ * (past half by 300 ms, so the amount shows by then). A short-paid thread (tone "out") is madder and dashed. The amount sits on a paper label at
+ * the midpoint, in mono. Render it inside an <svg>. Under reduced motion it appears finished.
  */
 export function Thread({ testId, from, to, startAt, amountCents, tone = "neutral", bow = 0.18, now }: ThreadProps) {
   const playerNow = usePlayerTime();
@@ -52,18 +57,26 @@ export function Thread({ testId, from, to, startAt, amountCents, tone = "neutral
   const d = `M ${from.x} ${from.y} Q ${c1.x} ${c1.y} ${head.x} ${head.y}`;
   const mid = lerp(lerp(from, ctrl, 0.5), lerp(ctrl, to, 0.5), 0.5);
   const color = TONE[tone];
-  // The dash offset runs while sewing, so it reads as a stitch being pulled through.
-  const offset = p < 1 ? -(t - startAt) / 40 : 0;
+  const label = amountCents !== undefined ? formatCents(amountCents) : "";
+  // Mono figures: about 0.6 em each at 14 px, plus 8 px each side.
+  const labelW = Math.max(56, Math.round(label.length * 8.4) + 16);
 
   return (
     <g data-testid={testId} data-progress={p.toFixed(2)}>
-      <path d={d} fill="none" stroke={color} strokeWidth={2.5} strokeLinecap="round" strokeDasharray="10 7" strokeDashoffset={offset} />
-      {p < 1 && <circle cx={head.x} cy={head.y} r={3.5} fill={color} />}
+      <path
+        d={d}
+        fill="none"
+        stroke={color}
+        style={{ strokeWidth: "var(--c-stroke-thread-map)" }}
+        strokeLinecap="butt"
+        strokeDasharray={tone === "out" ? SHORT_DASH : undefined}
+      />
+      {p < 1 && <circle cx={head.x} cy={head.y} r={4} fill={color} />}
       {amountCents !== undefined && p >= 0.5 && (
         <g transform={`translate(${mid.x} ${mid.y})`} opacity={Math.min(1, (p - 0.5) * 4)}>
-          <rect x={-44} y={-13} width={88} height={26} rx={2} fill="var(--c-color-paper)" stroke="var(--c-color-line)" />
+          <rect x={-labelW / 2} y={-13} width={labelW} height={26} rx={2} fill="var(--c-color-paper)" stroke="var(--c-color-line)" />
           <text className="c-thread__label" textAnchor="middle" dominantBaseline="central" fill={color}>
-            {formatCents(amountCents)}
+            {label}
           </text>
         </g>
       )}

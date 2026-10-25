@@ -18,8 +18,9 @@
   gap: 4px;
   padding: 4px;
   background: var(--c-color-paper);
-  border: 1px solid var(--c-color-line);
+  border: var(--c-stroke-hairline) solid var(--c-color-line);
   border-radius: var(--c-radius-control);
+  box-shadow: var(--c-shadow-overlay);
   opacity: 0;
   transition: opacity var(--c-motion-ui);
 }
@@ -31,7 +32,7 @@
 .c-demo-controls__row button {
   font: inherit;
   font-size: 14px;
-  border: 1px solid var(--c-color-line);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
   background: var(--c-color-paper);
   color: var(--c-color-ink);
   border-radius: var(--c-radius-control);
@@ -45,14 +46,14 @@
   font-variant-numeric: tabular-nums;
 }
 .c-demo-controls__row button:hover {
-  background: var(--c-color-mat);
+  background: var(--c-color-ground);
 }
 .c-demo-controls__handle {
   font: inherit;
   font-size: 14px;
-  border: 1px solid var(--c-color-ink);
-  background: var(--c-color-ink);
-  color: var(--c-color-paper);
+  border: var(--c-stroke-hairline) solid var(--c-color-beam-line);
+  background: var(--c-color-beam);
+  color: var(--c-color-beam-text);
   border-radius: var(--c-radius-chip);
   padding: 4px 12px;
   min-height: 32px;
@@ -65,7 +66,7 @@
 .c-demo-controls__dot {
   width: 7px;
   height: 7px;
-  border-radius: 999px;
+  border-radius: var(--c-radius-dot);
   border: 1px solid var(--c-color-ink-soft);
   box-sizing: border-box;
 }

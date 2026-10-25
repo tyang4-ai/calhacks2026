@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Lang, Text } from "../core/types";
 import { Badge } from "./Badge";
+import { Icon } from "./Icon";
 import { CLOSE_WORD, pickText } from "./strings";
 
 export interface ProcessViewProps {
@@ -40,9 +41,7 @@ export function ProcessView({ testId, title, live, lang, children, log, onClose,
           {live ? <Badge variant="live" /> : <Badge variant="simulated" testId="simulated-badge" />}
           {onClose && (
             <button type="button" className="c-pview__close" data-testid={closeTestId} onClick={() => onClose()}>
-              <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
-                <path d="M3 3 L11 11 M11 3 L3 11" stroke="currentColor" strokeWidth="1.6" />
-              </svg>
+              <Icon name="close" size={16} />
               <span>{pickText(CLOSE_WORD, lang)}</span>
             </button>
           )}

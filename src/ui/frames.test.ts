@@ -116,18 +116,34 @@ describe("process block markup", () => {
     expect(html).toMatch(/data-testid="process-block-live-reconcile"[^>]*>.*Live<\/span><\/span>/);
     expect(html).not.toContain("simulated-badge");
   });
-  it("puts the status icon and word inside statusTestId, and the count inside countTestId", () => {
+  it("reads line 2 as the count, a middle dot, then the status word inside statusTestId (drop 3)", () => {
     for (const lang of ["en", "zh"] as const) {
       const html = renderToStaticMarkup(createElement(ProcessBlock, { label, lang, status: "attention", count: 2, live: false, ...ids }));
       const status = html.indexOf(`data-testid="${ids.statusTestId}"`);
       const count = html.indexOf(`data-testid="${ids.countTestId}"`);
-      const between = html.slice(status, count);
-      expect(status).toBeGreaterThan(-1);
-      expect(between).toContain("<svg");
-      expect(between).toContain(`>${STATUS_WORDS.attention[lang]}<`);
+      expect(count).toBeGreaterThan(-1);
+      expect(status).toBeGreaterThan(count);
+      expect(html.slice(count, status)).toContain("·");
+      expect(html.slice(status)).toContain(`>${STATUS_WORDS.attention[lang]}<`);
       expect(html).toContain(`data-testid="${ids.countTestId}">2</span>`);
       expect(html).toContain(`>${label[lang]}<`);
+      // Attention draws its "!" mark at the top right.
+      expect(html).toContain("c-pblock__mark");
     }
+  });
+  it("keeps a zero count in its test ID but out of sight, so an idle block reads just Idle", () => {
+    const html = renderToStaticMarkup(createElement(ProcessBlock, { label, lang: "en", status: "idle", count: 0, live: false, ...ids }));
+    expect(html).toContain(`class="c-pblock__count c-visually-hidden" data-testid="${ids.countTestId}">0</span>`);
+    expect(html).not.toContain("c-pblock__sep");
+    expect(html).not.toContain("c-pblock__mark");
+  });
+  it("is 104 px wide, or 124 px when its label needs it", () => {
+    const narrow = renderToStaticMarkup(createElement(ProcessBlock, { label, lang: "en", status: "idle", live: false }));
+    expect(narrow).toContain("width:104px");
+    const wide = renderToStaticMarkup(
+      createElement(ProcessBlock, { label: { en: "Counterfeit watch", zh: "仿冒监测" }, lang: "en", status: "idle", live: false }),
+    );
+    expect(wide).toContain("width:124px");
   });
   it("renders a working block, and no count element without a count", () => {
     const html = renderToStaticMarkup(createElement(ProcessBlock, { label, lang: "en", status: "working", live: false, ...ids }));

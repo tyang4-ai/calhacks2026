@@ -62,6 +62,29 @@ export function PieceCard({
   const name = pickText(title, lang);
   const line = pieceVerificationText(verification, demo, lang);
   const maker = pickText(makerName, lang);
+  const heading = (
+    <h3 className="c-piececard__title">
+      {onClick ? (
+        <button type="button" className="c-card__action" onClick={onClick}>
+          {name}
+        </button>
+      ) : (
+        name
+      )}
+    </h3>
+  );
+  const price = (
+    <p className="c-piececard__price">
+      <Money cents={priceCents} testId={priceTestId} />
+    </p>
+  );
+  const verif = line && (
+    <p className={`c-piececard__verif${demo ? " c-piececard__verif--demo" : ""}`} data-testid={verificationTestId} data-role="verification">
+      <VerificationDot />
+      <span>{line}</span>
+    </p>
+  );
+  const foot = footer !== undefined && <div className="c-piececard__footer">{footer}</div>;
   return (
     <article
       className={`c-piececard${compact ? " c-piececard--compact" : ""}${onClick ? " c-piececard--action" : ""}`}
@@ -78,33 +101,25 @@ export function PieceCard({
         </span>
       </div>
       <div className="c-piececard__body">
-        <h3 className="c-piececard__title">
-          {onClick ? (
-            <button type="button" className="c-card__action" onClick={onClick}>
-              {name}
-            </button>
-          ) : (
-            name
-          )}
-        </h3>
+        {compact ? (
+          <div className="c-piececard__toprow">
+            {heading}
+            {price}
+          </div>
+        ) : (
+          heading
+        )}
         <p className="c-piececard__maker">
-          <MakerMark char={makerChar} size={28} label={maker} />
+          <MakerMark char={makerChar} size={24} label={maker} />
           <span className="c-piececard__makername">
             {maker}
             {DOT_SEPARATOR}
             {pickText(communityName, lang)}
           </span>
         </p>
-        <p className="c-piececard__price">
-          <Money cents={priceCents} testId={priceTestId} />
-        </p>
-        {line && (
-          <p className={`c-piececard__verif${demo ? " c-piececard__verif--demo" : ""}`} data-testid={verificationTestId} data-role="verification">
-            <VerificationDot />
-            <span>{line}</span>
-          </p>
-        )}
-        {footer !== undefined && <div className="c-piececard__footer">{footer}</div>}
+        {!compact && price}
+        {compact ? foot : verif}
+        {compact ? verif : foot}
       </div>
     </article>
   );

@@ -13,11 +13,30 @@
   --color-amber: var(--c-color-amber);
   --color-seal-wash: var(--c-color-seal-wash);
   --color-jade-wash: var(--c-color-jade-wash);
+  --color-ground: var(--c-color-ground);
+  --color-edge: var(--c-color-edge);
+  --color-indigo: var(--c-color-indigo);
+  --color-indigo-wash: var(--c-color-indigo-wash);
+  --color-amber-wash: var(--c-color-amber-wash);
+  --color-ink-wash: var(--c-color-ink-wash);
+  --color-plum: var(--c-color-plum);
+  --color-plum-wash: var(--c-color-plum-wash);
+  --color-teal: var(--c-color-teal);
+  --color-teal-wash: var(--c-color-teal-wash);
+  --color-clay: var(--c-color-clay);
+  --color-clay-wash: var(--c-color-clay-wash);
+  --color-beam: var(--c-color-beam);
+  --color-beam-raised: var(--c-color-beam-raised);
+  --color-beam-line: var(--c-color-beam-line);
+  --color-beam-text: var(--c-color-beam-text);
+  --color-beam-soft: var(--c-color-beam-soft);
 
   --font-sans: var(--c-font-body);
   --font-heading: var(--c-font-heading-en);
   --font-heading-zh: var(--c-font-heading-zh);
   --font-zh: var(--c-font-body-zh);
+  --font-mono: var(--c-font-mono);
+  --font-seal: var(--c-font-seal);
 
   --text-sm: 14px;
   --text-base: 16px;
@@ -26,13 +45,16 @@
   --text-2xl: 24px;
   --text-3xl: 36px;
   --text-4xl: 48px;
+  --text-5xl: 64px;
 
   --radius-panel: var(--c-radius-panel);
   --radius-control: var(--c-radius-control);
   --radius-chip: var(--c-radius-chip);
   --radius-phone: var(--c-radius-phone);
+  --radius-dot: var(--c-radius-dot);
 
   --shadow-phone: var(--c-shadow-phone);
+  --shadow-overlay: var(--c-shadow-overlay);
 }
 
 html,
@@ -43,7 +65,7 @@ body,
 }
 
 body {
-  background: var(--c-color-paper);
+  background: var(--c-color-ground);
   color: var(--c-color-ink);
   font-family: var(--c-font-body);
   font-size: var(--c-text-16);
@@ -61,8 +83,7 @@ h2,
 h3,
 h4 {
   font-family: var(--c-font-heading-en);
-  font-weight: 600;
-  font-optical-sizing: auto;
+  font-weight: var(--c-weight-bold);
   line-height: var(--c-leading-heading);
   margin: 0;
 }
@@ -78,8 +99,15 @@ h4 {
   font-variant-numeric: tabular-nums;
 }
 
+/* Amounts in tables, ledgers and logs, IDs and timestamps (design/tokens.md, kit change 10). */
+.c-mono {
+  font-family: var(--c-font-mono);
+  font-weight: var(--c-weight-medium);
+  line-height: var(--c-leading-mono);
+}
+
 :focus-visible {
-  outline: 2px solid var(--c-color-ink);
+  outline: var(--c-stroke-focus) solid var(--c-color-indigo);
   outline-offset: 2px;
 }
 

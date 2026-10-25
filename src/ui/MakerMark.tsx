@@ -14,7 +14,10 @@ function makerMarkGlyphPx(size: number): number {
   return Math.max(MIN_TEXT_PX, Math.round(size * 0.55));
 }
 
-/** A small square ink seal with the maker's surname character, used instead of photo avatars. */
+/**
+ * A small square ink mark with the maker's initial, used instead of photo avatars: a 1 px ink border,
+ * paper inside, the letter in the seal face (--c-font-seal). 24 px on cards, 48 px on the maker page.
+ */
 export function MakerMark({ testId, char, size = 36, label }: MakerMarkProps) {
   return (
     <span

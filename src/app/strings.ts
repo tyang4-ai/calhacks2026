@@ -100,6 +100,8 @@ export const SHELL = {
   sell: { en: "Sell", zh: "卖家" },
   help: { en: "Help", zh: "客服" },
   askCindy: { en: "Ask Cindy", zh: "问Cindy" },
+  /** The glossary's label for a maker, after the maker's name in the maker page's top bar. */
+  maker: { en: "Maker", zh: "Maker" },
   close: { en: "Close", zh: "关闭" },
   cindyIdle: { en: "Waiting for the month's records.", zh: "正在等待本月记录。" },
   views: { en: "Sell views", zh: "卖家后台视图" },

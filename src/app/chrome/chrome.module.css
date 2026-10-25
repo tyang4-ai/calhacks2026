@@ -1,33 +1,43 @@
-/* The page chrome on every surface: the top bar (56 px), the process bar band (64 px), and the
-   page body under them, which holds the page, the process overlay and the drawers. */
+/* The page chrome on every surface (design/layout.md): the beam, which is the top bar (56 px) and
+   the process bar band (64 px) on walnut, then the page body under them on the ground, which holds
+   the page, the process overlay and the drawers. */
 
 .wordmark {
-  font-family: var(--c-font-heading-en);
-  font-weight: 700;
-  font-size: var(--c-text-21);
+  font-family: var(--c-font-body);
+  font-weight: var(--c-weight-bold);
+  font-size: 22px;
   line-height: 1;
-  color: var(--c-color-ink);
+  color: var(--c-color-beam-text);
 }
 
-/* L1: small, never hidden. It may wrap to two lines inside the 56 px bar. */
+/* L1: small, never hidden, at the right on two lines before Ask Cindy and Help. */
 .notice {
   font-size: var(--c-text-14);
-  line-height: 1.3;
-  color: var(--c-color-ink-soft);
-  max-width: 600px;
-  min-width: 320px;
+  line-height: 1.4;
+  color: var(--c-color-beam-soft);
+  max-width: 300px;
   text-align: right;
 }
 
+/* The process bar band, the beam's second row: the blocks from the 48 px margin, 8 px from its top
+   and bottom. The top bar's beam-line hairline divides the two rows. */
 .band {
-  flex: 0 0 64px;
-  height: 64px;
+  flex: 0 0 var(--c-size-processbar);
+  height: var(--c-size-processbar);
   box-sizing: border-box;
-  padding: 1px var(--c-space-24) 2px;
-  border-bottom: 1px solid var(--c-color-line);
+  padding: var(--c-space-8) var(--c-grid-margin-shop);
   display: flex;
   align-items: stretch;
-  background: var(--c-color-paper);
+  background: var(--c-color-beam);
+  color: var(--c-color-beam-text);
+}
+
+/* The bar's one Simulated badge sits on the beam. Until process.bar passes the kit's tone="beam",
+   the band gives the badge the beam's colors, so it never shows ink-soft on walnut. */
+.band :global(.c-badge--simulated) {
+  background: transparent;
+  border-color: var(--c-color-beam-soft);
+  color: var(--c-color-beam-text);
 }
 
 .band > * {
@@ -37,6 +47,7 @@
 
 .body {
   position: relative;
+  background: var(--c-color-ground);
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
@@ -61,17 +72,19 @@
   background: var(--c-color-scrim);
 }
 
+/* Centered under the beam: x 120, y 150 on the page. Paper, the overlay shadow, 2 px corners. */
 .panel {
   position: relative;
   box-sizing: border-box;
-  width: 1200px;
-  height: 720px;
+  width: var(--c-size-overlay-w);
+  height: var(--c-size-overlay-h);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   background: var(--c-color-paper);
-  border: 1px solid var(--c-color-line);
+  border: var(--c-stroke-hairline) solid var(--c-color-line);
   border-radius: var(--c-radius-panel);
+  box-shadow: var(--c-shadow-overlay);
 }
 
 .drawerSlot {

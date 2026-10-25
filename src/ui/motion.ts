@@ -2,7 +2,8 @@
 import { useSyncExternalStore } from "react";
 import { player } from "../core/player";
 
-export const STITCH_MS = 900;
+/** --c-motion-stitch: a money thread drawing along its path, like a passing shuttle. */
+export const STITCH_MS = 700;
 export const SEAL_MS = 220;
 export const UI_MS = 160;
 
@@ -44,16 +45,20 @@ export function progress(now: number, startAt: number, durationMs: number, reduc
   return clamp01((now - startAt) / durationMs);
 }
 
-/** The stitch: 900 ms, ease-out. Finished at once under reduced motion. */
+/**
+ * The stitch: 700 ms (--c-motion-stitch), ease-out. It stays ease-out, not the token's ease in and
+ * out, so a thread is past half by 300 ms and its amount label (drawn from 0.5) shows by then, as
+ * M-desktop's acceptance and the money map specs read it. Finished at once under reduced motion.
+ */
 export function stitchProgress(now: number, startAt: number, reduced = false): number {
   return easeOut(progress(now, startAt, STITCH_MS, reduced));
 }
 
-/** The seal landing: scale 1.15 to 1, opacity 0 to 1, a -4 degree turn. No turn under reduced motion. */
+/** The seal pressing in (drop 3): scale 1.06 to 1, opacity 0 to 1 over 220 ms, never a turn. */
 export function sealPose(now: number, startAt: number, reduced = false): { scale: number; opacity: number; rotate: number } {
   if (reduced) return { scale: 1, opacity: 1, rotate: 0 };
   const t = easeOut(progress(now, startAt, SEAL_MS));
-  return { scale: 1 + 0.15 * (1 - t), opacity: t, rotate: -4 * t };
+  return { scale: 1 + 0.06 * (1 - t), opacity: t, rotate: 0 };
 }
 
 /** UI transitions: 160 ms. */

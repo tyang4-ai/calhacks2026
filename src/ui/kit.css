@@ -1,10 +1,10 @@
 /* UI kit styles. Every value comes from tokens.css. */
 
-/* Panel: a mounted scroll. 1px line border, 6px mat band, paper face. */
+/* Panel: a carded face on the ground. 1 px line border, 2 px corners, no mat, no shadow (drop 3). */
 .c-panel {
-  border: 1px solid var(--c-color-line);
+  border: var(--c-stroke-hairline) solid var(--c-color-line);
   border-radius: var(--c-radius-panel);
-  background: var(--c-color-mat);
+  background: var(--c-color-paper);
   padding: var(--c-space-mat);
   box-sizing: border-box;
   min-width: 0;
@@ -29,6 +29,9 @@
 }
 .c-panel__title {
   font-size: var(--c-text-21);
+  font-weight: var(--c-weight-bold);
+  line-height: var(--c-leading-heading);
+  color: var(--c-color-ink);
 }
 .c-panel__actions {
   display: flex;
@@ -37,34 +40,36 @@
   flex-shrink: 0;
 }
 
-/* Button */
+/* Button: 40 px, 2 px corners, Label/16. Primary indigo, quiet paper with an edge border, seal madder. */
 .c-button {
   font: inherit;
+  font-family: var(--c-font-body);
   font-size: var(--c-text-16);
-  font-weight: 500;
+  font-weight: var(--c-weight-semibold);
+  line-height: 1.25;
   border-radius: var(--c-radius-control);
   padding: var(--c-space-8) var(--c-space-16);
-  min-height: 40px;
+  min-height: var(--c-size-control-h);
+  box-sizing: border-box;
   cursor: pointer;
-  border: 1px solid transparent;
+  border: var(--c-stroke-hairline) solid transparent;
   transition: background-color var(--c-motion-ui), color var(--c-motion-ui), border-color var(--c-motion-ui);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--c-space-8);
 }
-.c-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
 .c-button--primary {
-  background: var(--c-color-ink);
+  background: var(--c-color-indigo);
   color: var(--c-color-paper);
 }
+.c-button--primary:hover:not(:disabled) {
+  background: var(--c-color-ink);
+}
 .c-button--quiet {
-  background: transparent;
+  background: var(--c-color-paper);
   color: var(--c-color-ink);
-  border-color: var(--c-color-line);
+  border-color: var(--c-color-edge);
 }
 .c-button--quiet:hover:not(:disabled) {
   background: var(--c-color-mat);
@@ -73,16 +78,55 @@
   background: var(--c-color-seal);
   color: var(--c-color-paper);
 }
+.c-button--seal:hover:not(:disabled) {
+  background: var(--c-color-ink);
+}
+/* Disabled reads by its fill, not by fading: mat with ink-soft words. */
+.c-button:disabled,
+.c-button:disabled:hover {
+  cursor: not-allowed;
+  background: var(--c-color-mat);
+  color: var(--c-color-ink-soft);
+  border-color: var(--c-color-mat);
+}
 .c-button--small {
-  min-height: 32px;
+  min-height: 36px;
   padding: var(--c-space-4) var(--c-space-12);
   font-size: var(--c-text-14);
 }
 
-/* Money */
+/* Focus (tokens.md kit change 11): every focusable control shows a 2 px indigo ring, 2 px out. */
+.c-button:focus-visible,
+.c-sideswitch__opt:focus-visible,
+.c-pblock:focus-visible,
+.c-chip__label--button:focus-visible,
+.c-chip__remove:focus-visible,
+.c-tabs__tab:focus-visible,
+.c-drawer__close:focus-visible,
+.c-pview__close:focus-visible,
+.c-block__title:focus-visible,
+.c-block__ctl:focus-visible,
+.c-link:focus-visible,
+.c-langtoggle:focus-visible,
+.c-searchbar__add:focus-visible,
+.c-field:focus-visible,
+.c-checkbox__box:focus-visible {
+  outline: var(--c-stroke-focus) solid var(--c-color-indigo);
+  outline-offset: 2px;
+}
+
+/* Money: body digits are tabular already. Inside tables, ledgers and logs it sets in mono (kit change 10). */
 .c-money {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+.c-ledger .c-money,
+.c-eventlog .c-money,
+.c-evidence__rows .c-money,
+.c-evidence__figure .c-money,
+.c-money--mono {
+  font-family: var(--c-font-mono);
+  font-weight: var(--c-weight-medium);
 }
 .c-money--in {
   color: var(--c-color-jade);
@@ -95,22 +139,36 @@
   color: var(--c-color-amber);
 }
 
-/* Badge */
+/* Badge: 26 px, a woven label with 2 px corners */
 .c-badge {
   display: inline-flex;
   align-items: center;
   gap: var(--c-space-4);
-  border: 1px solid var(--c-color-ink-soft);
+  box-sizing: border-box;
+  min-height: 26px;
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
   color: var(--c-color-ink-soft);
   border-radius: var(--c-radius-chip);
   padding: 0 var(--c-space-8);
   font-size: var(--c-text-14);
-  line-height: 22px;
+  font-weight: var(--c-weight-semibold);
+  line-height: 24px;
   white-space: nowrap;
   font-family: var(--c-font-body);
 }
+/* No fill and a dashed edge border, so it reads as provisional. */
 .c-badge--simulated {
+  background: transparent;
   border-style: dashed;
+  border-color: var(--c-color-edge);
+  color: var(--c-color-ink-soft);
+}
+/* On the dark beam: the process bar's one Simulated badge (tone="beam"). */
+.c-badge--tone-beam,
+.c-badge--simulated.c-badge--tone-beam {
+  background: transparent;
+  border-color: var(--c-color-beam-soft);
+  color: var(--c-color-beam-text);
 }
 .c-badge--jade {
   border-color: var(--c-color-jade);
@@ -142,49 +200,75 @@
   color: var(--c-color-seal);
 }
 
-/* Evidence card */
+/* Evidence card: 20 px padding, 12 px gaps. The key figure sits in a washed band with a 3 px left rule:
+   jade for the record Cindy trusts, seal for the one that disagrees. Figures in mono. */
 .c-evidence {
-  border: 1px solid var(--c-color-line);
+  border: var(--c-stroke-hairline) solid var(--c-color-line);
   border-radius: var(--c-radius-panel);
   background: var(--c-color-paper);
-  padding: var(--c-space-12) var(--c-space-16);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: var(--c-space-8);
+  gap: var(--c-space-12);
   min-width: 0;
-}
-.c-evidence--flagged {
-  background: var(--c-color-seal-wash);
-  border-color: var(--c-color-seal);
-}
-.c-evidence--trusted {
-  border-color: var(--c-color-jade);
+  box-sizing: border-box;
 }
 .c-evidence__kind {
   font-size: var(--c-text-14);
+  font-weight: var(--c-weight-semibold);
   color: var(--c-color-ink-soft);
 }
 .c-evidence__title {
-  font-weight: 600;
+  font-size: var(--c-text-18);
+  font-weight: var(--c-weight-semibold);
+  line-height: 1.3;
+}
+.c-evidence__band {
+  padding: var(--c-space-8) var(--c-space-12);
+  border-left: var(--c-stroke-rule) solid var(--c-color-ink-soft);
+  background: var(--c-color-mat);
+}
+.c-evidence--trusted .c-evidence__band {
+  border-left-color: var(--c-color-jade);
+  background: var(--c-color-jade-wash);
+  color: var(--c-color-jade);
+}
+.c-evidence--flagged .c-evidence__band {
+  border-left-color: var(--c-color-seal);
+  background: var(--c-color-seal-wash);
+  color: var(--c-color-seal);
 }
 .c-evidence__figure {
+  font-family: var(--c-font-mono);
   font-size: var(--c-text-24);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: var(--c-weight-medium);
 }
 .c-evidence__figure-label {
   font-size: var(--c-text-14);
   color: var(--c-color-ink-soft);
 }
+.c-evidence--trusted .c-evidence__figure-label,
+.c-evidence--flagged .c-evidence__figure-label {
+  color: var(--c-color-ink);
+}
 .c-evidence__rows {
-  font-size: var(--c-text-14);
+  font-size: var(--c-text-16);
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 2px var(--c-space-12);
+  margin: 0;
+}
+.c-evidence__rows dt,
+.c-evidence__rows dd {
+  padding: 6px 0;
+  border-top: var(--c-stroke-hairline) solid var(--c-color-line);
 }
 .c-evidence__rows dd {
   margin: 0;
+  padding-left: var(--c-space-12);
   text-align: right;
+  font-family: var(--c-font-mono);
+  font-weight: var(--c-weight-medium);
   font-variant-numeric: tabular-nums;
 }
 .c-evidence__rows dt {
@@ -194,22 +278,22 @@
 /* Share bar */
 .c-sharebar__bar {
   display: flex;
-  height: 16px;
+  gap: 2px;
+  height: 24px;
   border-radius: var(--c-radius-panel);
   overflow: hidden;
-  border: 1px solid var(--c-color-line);
 }
 .c-sharebar__seg--maker {
   background: var(--c-color-jade);
 }
 .c-sharebar__seg--materials {
-  background: var(--c-color-amber);
+  background: var(--c-color-clay);
 }
 .c-sharebar__seg--platform {
-  background: var(--c-color-ink-soft);
+  background: var(--c-color-indigo);
 }
 .c-sharebar__seg--card {
-  background: var(--c-color-line);
+  background: var(--c-color-edge);
 }
 .c-sharebar__seg--other {
   background: var(--c-color-mat);
@@ -219,26 +303,47 @@
   margin: var(--c-space-12) 0 0;
   padding: 0;
   display: grid;
-  gap: var(--c-space-4);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--c-space-12);
 }
+/* The costs: three equal columns, the swatch and label in Caption/14 over the amount in Body/16. */
 .c-sharebar__item {
   display: flex;
-  justify-content: space-between;
-  gap: var(--c-space-12);
-  align-items: baseline;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  font-size: var(--c-text-16);
+}
+.c-sharebar__item > span:first-child {
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
 }
 .c-sharebar__swatch {
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   margin-right: var(--c-space-8);
   border-radius: 1px;
+  vertical-align: -1px;
 }
+/* The maker share: its own row first, Label/16 in jade. */
 .c-sharebar__item--maker {
-  font-weight: 600;
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--c-space-12);
+  font-weight: var(--c-weight-semibold);
+  color: var(--c-color-jade);
+}
+.c-sharebar__item--maker > span:first-child {
+  font-size: var(--c-text-16);
+  color: var(--c-color-jade);
 }
 
-/* Ledger table */
+/* Ledger table: RecordRow, 44 px rows. Dates, IDs and amounts in mono. Matched, waiting and flagged
+   rows each have their own mark as well as their wash. */
 .c-ledger {
   width: 100%;
   border-collapse: collapse;
@@ -248,26 +353,38 @@
 .c-ledger th {
   background: var(--c-color-mat);
   text-align: left;
-  font-weight: 600;
-  padding: var(--c-space-8) var(--c-space-12);
-  border-bottom: 1px solid var(--c-color-line);
+  font-size: var(--c-text-14);
+  font-weight: var(--c-weight-semibold);
+  height: 36px;
+  padding: 0 var(--c-space-16);
+  border-bottom: var(--c-stroke-hairline) solid var(--c-color-line);
 }
 .c-ledger td {
-  padding: var(--c-space-8) var(--c-space-12);
-  border-bottom: 1px solid var(--c-color-line);
+  height: var(--c-size-row-h);
+  box-sizing: border-box;
+  padding: var(--c-space-8) var(--c-space-16);
+  border-bottom: var(--c-stroke-hairline) solid var(--c-color-line);
+  line-height: var(--c-leading-mono);
 }
 .c-ledger .c-ledger__num {
   text-align: right;
+}
+.c-ledger td.c-ledger__num {
+  font-family: var(--c-font-mono);
+  font-weight: var(--c-weight-medium);
 }
 .c-ledger__row--matched {
   background: var(--c-color-jade-wash);
 }
 .c-ledger__row--flagged {
   background: var(--c-color-seal-wash);
-  box-shadow: inset 3px 0 0 var(--c-color-seal);
+  box-shadow: inset var(--c-stroke-rule) 0 0 var(--c-color-seal);
+}
+.c-ledger__row--pending {
+  background: var(--c-color-amber-wash);
 }
 .c-ledger__row--pending td:first-child {
-  box-shadow: inset 3px 0 0 var(--c-color-amber);
+  box-shadow: inset var(--c-stroke-rule) 0 0 var(--c-color-amber);
 }
 .c-ledger__row--selected {
   background: var(--c-color-mat);
@@ -279,8 +396,9 @@
   left: var(--c-space-16);
   right: var(--c-space-16);
   bottom: var(--c-space-24);
-  background: var(--c-color-ink);
-  color: var(--c-color-paper);
+  background: var(--c-color-beam);
+  color: var(--c-color-beam-text);
+  box-shadow: var(--c-shadow-overlay);
   border-radius: var(--c-radius-control);
   padding: var(--c-space-12) var(--c-space-16);
   display: flex;
@@ -289,10 +407,10 @@
   z-index: 5;
 }
 .c-toast--seal {
-  border-left: 4px solid var(--c-color-seal);
+  border-left: var(--c-stroke-rule) solid var(--c-color-beam-flag);
 }
 .c-toast--jade {
-  border-left: 4px solid var(--c-color-jade);
+  border-left: var(--c-stroke-rule) solid var(--c-color-beam-done);
 }
 
 /* Seal */
@@ -304,15 +422,17 @@
   background: var(--c-color-seal);
   color: var(--c-color-paper);
   border-radius: var(--c-radius-seal);
-  font-family: var(--c-font-heading-zh);
-  font-weight: 700;
+  font-family: var(--c-font-seal);
+  font-weight: 600;
   line-height: 1;
+  letter-spacing: 0.02em;
   transform-origin: center;
 }
 /* Its own class, so the global :lang(zh) body font and 1.7 line height can't stretch it past the seal. */
 .c-seal__char {
-  font-family: var(--c-font-heading-zh);
+  font-family: var(--c-font-seal);
   line-height: 1;
+  white-space: nowrap;
 }
 /* The month and day on one line, always at 14 px. Seal.tsx leaves it out of a seal too small to hold it. */
 .c-seal__date {
@@ -330,11 +450,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid var(--c-color-ink);
+  box-sizing: border-box;
+  border: var(--c-stroke-hairline) solid var(--c-color-ink);
   color: var(--c-color-ink);
   border-radius: 0;
-  font-family: var(--c-font-heading-zh);
-  font-weight: 700;
+  font-family: var(--c-font-seal);
+  font-weight: 600;
   line-height: 1;
   background: var(--c-color-paper);
   flex-shrink: 0;
@@ -385,7 +506,7 @@
 /* Language toggle */
 .c-langtoggle {
   display: inline-flex;
-  border: 1px solid var(--c-color-line);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
   border-radius: var(--c-radius-chip);
   overflow: hidden;
   font-size: var(--c-text-14);
@@ -404,12 +525,12 @@
   color: var(--c-color-paper);
 }
 
-/* Thread */
+/* Thread: the amount label at the midpoint, in mono (kit change 9) */
 .c-thread__label {
-  font-family: var(--c-font-body);
-  font-size: 14px;
+  font-family: var(--c-font-mono);
+  font-size: var(--c-text-14);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: var(--c-weight-medium);
 }
 
 /* ---- v2 frames (I2-kit T1) ---- */
@@ -427,7 +548,7 @@
   border: 0;
 }
 
-/* Page frame: the 1440 by 900 desktop page on the paper ground */
+/* Page frame: the 1440 by 900 desktop page on the undyed ground (kit change 1) */
 .c-page {
   position: relative;
   box-sizing: border-box;
@@ -435,21 +556,41 @@
   flex-direction: column;
   flex-shrink: 0;
   overflow: hidden;
-  background: var(--c-color-paper);
+  background: var(--c-color-ground);
   color: var(--c-color-ink);
+  font-family: var(--c-font-body);
 }
 
-/* Top bar: 56 px with a hairline bottom */
+/* Top bar: 56 px on the beam, a beam-line rule under it (kit change 2) */
 .c-topnav {
   flex: 0 0 auto;
   box-sizing: border-box;
-  height: 56px;
+  height: var(--c-size-topnav);
   display: flex;
   align-items: center;
   gap: var(--c-space-16);
-  padding: 0 var(--c-space-24);
-  border-bottom: 1px solid var(--c-color-line);
-  background: var(--c-color-paper);
+  padding: 0 var(--c-grid-margin-shop);
+  border-bottom: var(--c-stroke-hairline) solid var(--c-color-beam-line);
+  background: var(--c-color-beam);
+  color: var(--c-color-beam-text);
+}
+/* Buttons on the beam: a beam-soft outline and beam-text words, 36 px. */
+.c-topnav .c-button--quiet {
+  min-height: 36px;
+  background: transparent;
+  color: var(--c-color-beam-text);
+  border-color: var(--c-color-beam-soft);
+}
+.c-topnav .c-button--quiet:hover:not(:disabled) {
+  background: var(--c-color-beam-raised);
+}
+.c-topnav .c-button:focus-visible,
+.c-topnav .c-sideswitch__opt:focus-visible,
+.c-topnav .c-link:focus-visible {
+  outline-color: var(--c-color-beam-live);
+}
+.c-topnav .c-link {
+  color: var(--c-color-beam-text);
 }
 .c-topnav__left {
   flex: 0 0 auto;
@@ -464,6 +605,9 @@
   align-items: center;
   justify-content: center;
   min-width: 0;
+  font-size: var(--c-text-16);
+  font-weight: var(--c-weight-semibold);
+  color: var(--c-color-beam-soft);
 }
 .c-topnav__right {
   flex: 0 1 auto;
@@ -474,105 +618,115 @@
   min-width: 0;
 }
 
-/* Shop and Sell switch: the selected side by fill and weight */
+/* Shop and Sell switch on the beam (kit change 3): a beam-soft outline, 2 px corners. The selected
+   side is filled beam-text with ink words in 600, so it reads by fill and weight, not color alone. */
 .c-sideswitch {
   display: inline-flex;
-  border: 1px solid var(--c-color-ink-soft);
+  border: var(--c-stroke-hairline) solid var(--c-color-beam-soft);
   border-radius: var(--c-radius-control);
-  overflow: hidden;
-  background: var(--c-color-paper);
+  background: transparent;
 }
 .c-sideswitch__opt {
   font: inherit;
+  font-family: var(--c-font-body);
   font-size: var(--c-text-16);
-  font-weight: 400;
-  color: var(--c-color-ink);
-  background: var(--c-color-paper);
+  font-weight: var(--c-weight-regular);
+  color: var(--c-color-beam-text);
+  background: transparent;
   border: 0;
   min-height: 36px;
   padding: var(--c-space-4) var(--c-space-16);
   cursor: pointer;
+  transition: background-color var(--c-motion-ui), color var(--c-motion-ui);
 }
 .c-sideswitch__opt + .c-sideswitch__opt {
-  border-left: 1px solid var(--c-color-ink-soft);
+  border-left: var(--c-stroke-hairline) solid var(--c-color-beam-soft);
 }
 .c-sideswitch__opt:hover {
-  background: var(--c-color-mat);
+  background: var(--c-color-beam-raised);
 }
-.c-sideswitch .c-sideswitch__opt--on {
-  background: var(--c-color-ink);
-  color: var(--c-color-paper);
-  font-weight: 600;
+.c-sideswitch .c-sideswitch__opt--on,
+.c-sideswitch .c-sideswitch__opt--on:hover {
+  background: var(--c-color-beam-text);
+  color: var(--c-color-ink);
+  font-weight: var(--c-weight-semibold);
+}
+.c-sideswitch__opt:focus-visible {
+  outline-color: var(--c-color-beam-live);
 }
 
-/* Process block: at most 120 px, 60 px high, so eleven fit one row of the 64 px band */
+/* Process block on the beam (kit change 4): 104 by 48 (124 for a long label), beam-raised with a
+   beam-line border. Line 1 the label, line 2 the count and the status word. A 3 px thread 4 px above
+   the foot carries the state with its pattern, done and attention add a mark at the top right. */
 .c-pblock {
   position: relative;
   box-sizing: border-box;
-  flex: 1 1 0;
-  max-width: 120px;
+  flex: 0 0 104px;
+  width: 104px;
   min-width: 0;
-  height: 60px;
-  padding: 3px 4px 7px;
+  height: var(--c-size-process-block-h);
+  padding: var(--c-space-4) 6px var(--c-space-8);
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   text-align: left;
   font: inherit;
-  color: var(--c-color-ink);
-  background: var(--c-color-paper);
-  border: 1px solid var(--c-color-line);
+  font-family: var(--c-font-body);
+  color: var(--c-color-beam-text);
+  background: var(--c-color-beam-raised);
+  border: var(--c-stroke-hairline) solid var(--c-color-beam-line);
   border-radius: var(--c-radius-panel);
   cursor: pointer;
   overflow: hidden;
+  transition: border-color var(--c-motion-ui);
 }
 .c-pblock:hover {
-  background: var(--c-color-mat);
+  border-color: var(--c-color-beam-soft);
 }
-.c-pblock--attention {
-  background: var(--c-color-seal-wash);
+.c-pblock:focus-visible {
+  outline-color: var(--c-color-beam-live);
 }
+/* Selected (its view is open): a 3 px beam-text rule on the top edge and the label in 700. */
 .c-pblock--selected,
 .c-pblock--selected:hover {
-  background: var(--c-color-mat);
-  box-shadow: inset 0 2px 0 var(--c-color-ink);
+  box-shadow: inset 0 var(--c-stroke-rule) 0 var(--c-color-beam-text);
 }
 .c-pblock .c-pblock__label {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  display: block;
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: var(--c-text-14);
-  line-height: 16px;
-  font-weight: 600;
-  overflow-wrap: break-word;
+  line-height: 18px;
+  font-weight: var(--c-weight-semibold);
+  color: var(--c-color-beam-text);
 }
 .c-pblock--selected .c-pblock__label {
-  font-weight: 700;
+  font-weight: var(--c-weight-bold);
+}
+.c-pblock--live .c-pblock__label {
+  padding-right: 10px;
 }
 .c-pblock .c-pblock__meta {
   display: flex;
-  align-items: center;
-  gap: var(--c-space-4);
+  align-items: baseline;
+  gap: 0;
   font-size: var(--c-text-14);
-  line-height: 16px;
+  font-weight: var(--c-weight-regular);
+  line-height: 18px;
   white-space: nowrap;
   min-width: 0;
+  color: var(--c-color-beam-soft);
 }
-/* The meta line keeps its 16 px in Chinese too: the global :lang(zh) 1.7 line height would squeeze the label to one line. */
+/* The meta line keeps its line height in Chinese too: the global :lang(zh) 1.7 would push it out of the block. */
 .c-pblock .c-pblock__meta * {
   line-height: inherit;
 }
 .c-pblock__status {
   display: inline-flex;
-  align-items: center;
-  gap: 2px;
+  align-items: baseline;
   min-width: 0;
   overflow: hidden;
-}
-.c-pblock__icon {
-  flex: 0 0 auto;
 }
 .c-pblock__word {
   overflow: hidden;
@@ -580,49 +734,80 @@
 }
 .c-pblock__count {
   flex: 0 0 auto;
-  margin-left: auto;
-  font-weight: 600;
   font-variant-numeric: tabular-nums;
+  color: var(--c-color-beam-text);
 }
+.c-pblock__sep {
+  flex: 0 0 auto;
+  white-space: pre;
+}
+/* The mark after the status word: a check (done) or "!" (attention). */
+.c-pblock__mark {
+  flex: 0 0 auto;
+  align-self: center;
+  margin-left: var(--c-space-4);
+}
+/* At the top right when the label leaves room for it. */
+.c-pblock__mark--top {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+  margin: 0;
+}
+.c-pblock--mark-top .c-pblock__label {
+  padding-right: 12px;
+}
+.c-pblock--mark-top.c-pblock--live .c-pblock__label {
+  padding-right: 24px;
+}
+.c-pblock--mark-top .c-pblock__live {
+  right: 20px;
+}
+/* The Live mark: a 6 px beam-live dot at the top right. */
 .c-pblock__live {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 10px;
+  right: 6px;
   display: inline-flex;
 }
 .c-pblock__live-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--c-radius-chip);
-  background: var(--c-color-jade);
+  width: 6px;
+  height: 6px;
+  border-radius: var(--c-radius-dot);
+  background: var(--c-color-beam-live);
 }
 .c-pblock__thread {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
+  left: 6px;
+  right: 6px;
+  bottom: 4px;
+  width: calc(100% - 12px);
   height: 3px;
   overflow: visible;
 }
 .c-pblock__thread line {
   stroke: currentColor;
 }
+/* Status colors on the beam. Done's status word stays beam-soft: its check and full thread carry it. */
 .c-pblock--tone-soft .c-pblock__status,
 .c-pblock--tone-soft .c-pblock__thread {
-  color: var(--c-color-ink-soft);
+  color: var(--c-color-beam-soft);
 }
 .c-pblock--tone-ink .c-pblock__status,
 .c-pblock--tone-ink .c-pblock__thread {
-  color: var(--c-color-ink);
+  color: var(--c-color-beam-live);
 }
-.c-pblock--tone-jade .c-pblock__status,
-.c-pblock--tone-jade .c-pblock__thread {
-  color: var(--c-color-jade);
+.c-pblock--tone-jade .c-pblock__status {
+  color: var(--c-color-beam-soft);
+}
+.c-pblock--tone-jade .c-pblock__thread,
+.c-pblock--tone-jade .c-pblock__mark {
+  color: var(--c-color-beam-done);
 }
 .c-pblock--tone-seal .c-pblock__status,
-.c-pblock--tone-seal .c-pblock__thread {
-  color: var(--c-color-seal);
+.c-pblock--tone-seal .c-pblock__thread,
+.c-pblock--tone-seal .c-pblock__mark {
+  color: var(--c-color-beam-flag);
 }
 
 /* Drawer: from the right edge of its frame, 440 px, above the process overlay */
@@ -645,33 +830,40 @@
   display: flex;
   flex-direction: column;
   background: var(--c-color-paper);
-  border-left: 1px solid var(--c-color-line);
+  border-left: var(--c-stroke-hairline) solid var(--c-color-line);
+  box-shadow: var(--c-shadow-overlay);
 }
 .c-drawer__head {
   flex: 0 0 auto;
+  box-sizing: border-box;
+  min-height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--c-space-12);
-  padding: var(--c-space-16) var(--c-space-24);
-  border-bottom: 1px solid var(--c-color-line);
+  padding: var(--c-space-8) 20px;
+  border-bottom: var(--c-stroke-hairline) solid var(--c-color-line);
 }
 .c-drawer__title {
   font-size: var(--c-text-21);
+  font-weight: var(--c-weight-bold);
+  line-height: var(--c-leading-heading);
   min-width: 0;
 }
 .c-drawer__close {
   flex: 0 0 auto;
   font: inherit;
+  font-family: var(--c-font-body);
   font-size: var(--c-text-14);
+  font-weight: var(--c-weight-semibold);
   display: inline-flex;
   align-items: center;
   gap: var(--c-space-4);
-  min-height: 32px;
+  min-height: var(--c-size-control-h);
   padding: var(--c-space-4) var(--c-space-12);
   color: var(--c-color-ink);
-  background: transparent;
-  border: 1px solid var(--c-color-line);
+  background: var(--c-color-paper);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
   border-radius: var(--c-radius-control);
   cursor: pointer;
 }
@@ -682,7 +874,7 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
-  padding: var(--c-space-24);
+  padding: 20px;
 }
 
 /* Tabs: the selected tab by its underline and weight */
@@ -693,13 +885,14 @@
 }
 .c-tabs__tab {
   font: inherit;
+  font-family: var(--c-font-body);
   font-size: var(--c-text-16);
   color: var(--c-color-ink-soft);
   background: transparent;
   border: 0;
-  border-bottom: 2px solid transparent;
+  border-bottom: var(--c-stroke-rule) solid transparent;
   margin-bottom: -1px;
-  min-height: 40px;
+  min-height: var(--c-size-control-h);
   padding: var(--c-space-8) var(--c-space-12);
   cursor: pointer;
 }
@@ -707,9 +900,9 @@
   color: var(--c-color-ink);
 }
 .c-tabs .c-tabs__tab--on {
-  color: var(--c-color-ink);
-  font-weight: 600;
-  border-bottom-color: var(--c-color-ink);
+  color: var(--c-color-indigo);
+  font-weight: var(--c-weight-semibold);
+  border-bottom: var(--c-stroke-rule) solid var(--c-color-indigo);
 }
 
 /* Link: a real anchor */
@@ -717,13 +910,14 @@
   color: inherit;
 }
 .c-link--text {
+  color: var(--c-color-indigo);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  text-decoration-color: var(--c-color-ink-soft);
+  text-decoration-color: currentColor;
 }
 .c-link--text:hover {
-  text-decoration-color: var(--c-color-ink);
+  text-decoration-thickness: 2px;
 }
 .c-link--block {
   display: block;
@@ -738,20 +932,30 @@
   align-items: center;
   font-family: var(--c-font-body);
   font-size: var(--c-text-14);
-  font-weight: 600;
+  font-weight: var(--c-weight-semibold);
   line-height: 20px;
   padding: 0 var(--c-space-8);
+  gap: var(--c-space-4);
   color: var(--c-color-ink-soft);
   background: var(--c-color-paper);
-  border: 1px solid var(--c-color-line);
-  border-radius: var(--c-radius-panel);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
+  border-radius: var(--c-radius-chip);
   white-space: nowrap;
 }
 .c-tag--sample {
   color: var(--c-color-ink);
-  background: var(--c-color-mat);
-  border-style: dashed;
-  border-color: var(--c-color-ink-soft);
+  background: var(--c-color-ink-wash);
+  border-color: var(--c-color-ink-wash);
+}
+.c-tag--match {
+  color: var(--c-color-indigo);
+  background: var(--c-color-indigo-wash);
+  border-color: var(--c-color-indigo-wash);
+}
+.c-tag--limit {
+  color: var(--c-color-amber);
+  background: var(--c-color-amber-wash);
+  border-color: var(--c-color-amber-wash);
 }
 
 /* Chip: a keyword or a facet. Selected by border and weight as well as color */
@@ -763,10 +967,11 @@
   box-sizing: border-box;
   padding: 0 var(--c-space-12);
   font-size: var(--c-text-14);
+  font-weight: var(--c-weight-semibold);
   line-height: 20px;
   color: var(--c-color-ink);
   background: var(--c-color-paper);
-  border: 1px solid var(--c-color-line);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
   border-radius: var(--c-radius-chip);
   white-space: nowrap;
 }
@@ -774,9 +979,10 @@
   padding-right: var(--c-space-4);
 }
 .c-chip--selected {
-  background: var(--c-color-mat);
-  border-color: var(--c-color-ink);
-  font-weight: 600;
+  color: var(--c-color-indigo);
+  background: var(--c-color-indigo-wash);
+  border-color: var(--c-color-indigo);
+  font-weight: var(--c-weight-bold);
 }
 .c-chip__label--button {
   font: inherit;
@@ -790,8 +996,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   padding: 0;
   color: var(--c-color-ink-soft);
   background: transparent;
@@ -819,7 +1025,7 @@
   box-sizing: border-box;
   padding: 0 var(--c-space-8) 0 var(--c-space-16);
   background: var(--c-color-paper);
-  border: 1px solid var(--c-color-ink-soft);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
   border-radius: var(--c-radius-control);
 }
 .c-searchbar__icon {
@@ -842,7 +1048,7 @@
   color: var(--c-color-ink-soft);
 }
 .c-searchbar__form:focus-within {
-  outline: 2px solid var(--c-color-ink);
+  outline: var(--c-stroke-focus) solid var(--c-color-indigo);
   outline-offset: 2px;
 }
 .c-searchbar__submit {
@@ -869,7 +1075,7 @@
   padding: 0 var(--c-space-12);
   color: var(--c-color-ink);
   background: var(--c-color-paper);
-  border: 1px dashed var(--c-color-ink-soft);
+  border: var(--c-stroke-hairline) dashed var(--c-color-edge);
   border-radius: var(--c-radius-chip);
 }
 
@@ -893,7 +1099,7 @@
   outline: none;
 }
 .c-card__action:focus-visible::after {
-  outline: 2px solid var(--c-color-ink);
+  outline: var(--c-stroke-focus) solid var(--c-color-indigo);
   outline-offset: 2px;
 }
 
@@ -910,7 +1116,7 @@
   display: flex;
   align-items: baseline;
   gap: var(--c-space-8);
-  font-weight: 600;
+  font-weight: var(--c-weight-semibold);
   color: var(--c-color-jade);
 }
 .c-verif__dot {
@@ -939,13 +1145,13 @@
   overflow: hidden;
 }
 .c-piececard--action:hover {
-  border-color: var(--c-color-ink-soft);
+  border-color: var(--c-color-edge);
 }
 .c-piececard__pic {
   position: relative;
   aspect-ratio: 1 / 1;
-  background: var(--c-color-mat);
-  border-bottom: 1px solid var(--c-color-line);
+  background: var(--c-color-paper);
+  border-bottom: var(--c-stroke-hairline) solid var(--c-color-line);
 }
 .c-piececard--compact .c-piececard__pic {
   aspect-ratio: auto;
@@ -977,12 +1183,12 @@
 }
 .c-piececard--compact .c-piececard__body {
   gap: var(--c-space-4);
-  padding: var(--c-space-12) var(--c-space-16);
+  padding: 10px var(--c-space-16);
 }
 .c-piececard__title {
   font-family: var(--c-font-body);
   font-size: var(--c-text-18);
-  font-weight: 600;
+  font-weight: var(--c-weight-semibold);
   line-height: 1.3;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -1009,7 +1215,26 @@
 }
 .c-piececard__price {
   font-size: var(--c-text-18);
-  font-weight: 600;
+  font-weight: var(--c-weight-semibold);
+}
+.c-piececard--compact .c-piececard__price {
+  font-size: var(--c-text-16);
+}
+/* Compact: the title and the price on one row. */
+.c-piececard__toprow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--c-space-12);
+  min-width: 0;
+}
+.c-piececard__toprow .c-piececard__title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.c-piececard__toprow .c-piececard__price {
+  flex: 0 0 auto;
+  line-height: 1.3;
 }
 .c-piececard__verif {
   display: flex;
@@ -1017,7 +1242,7 @@
   gap: var(--c-space-8);
   font-size: var(--c-text-14);
   line-height: 20px;
-  font-weight: 600;
+  font-weight: var(--c-weight-semibold);
   color: var(--c-color-jade);
 }
 .c-piececard__footer,
@@ -1039,7 +1264,7 @@
   overflow: hidden;
 }
 .c-commcard--action:hover {
-  border-color: var(--c-color-ink-soft);
+  border-color: var(--c-color-edge);
 }
 .c-commcard__pic {
   position: relative;
@@ -1063,6 +1288,7 @@
 }
 .c-commcard__name {
   font-size: var(--c-text-21);
+  font-weight: var(--c-weight-bold);
 }
 .c-commcard__people {
   font-size: var(--c-text-16);
@@ -1087,6 +1313,7 @@
 }
 .c-projcard__title {
   font-size: var(--c-text-21);
+  font-weight: var(--c-weight-bold);
 }
 .c-projcard__summary {
   color: var(--c-color-ink-soft);
@@ -1210,7 +1437,7 @@
 .c-score {
   display: inline-flex;
   align-items: center;
-  gap: var(--c-space-8);
+  gap: 10px;
   font-size: var(--c-text-14);
   vertical-align: middle;
 }
@@ -1229,7 +1456,7 @@
 .c-score__fill {
   display: block;
   height: 100%;
-  background: var(--c-color-ink);
+  background: var(--c-color-indigo);
 }
 .c-score--jade .c-score__fill {
   background: var(--c-color-jade);
@@ -1241,8 +1468,9 @@
   background: var(--c-color-seal);
 }
 .c-score__value {
+  font-family: var(--c-font-mono);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: var(--c-weight-medium);
 }
 
 /* Stat tile: a title, one big figure, lines under it, and an attention rule */
@@ -1261,16 +1489,18 @@
   top: -1px;
   bottom: -1px;
   left: -1px;
-  width: 4px;
+  width: var(--c-stroke-rule);
   background: var(--c-color-seal);
 }
 .c-stattile__title {
   font-size: var(--c-text-16);
+  font-weight: var(--c-weight-semibold);
+  color: var(--c-color-ink-soft);
 }
 .c-stattile__value {
   margin-top: var(--c-space-8);
   font-size: var(--c-text-36);
-  font-weight: 600;
+  font-weight: var(--c-weight-bold);
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
@@ -1322,19 +1552,22 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: var(--c-space-4);
+  gap: 6px;
   max-width: 384px;
   padding: var(--c-space-12) var(--c-space-16);
   border-radius: var(--c-radius-panel);
 }
 .c-bubble--agent {
   background: var(--c-color-paper);
-  border: 1px solid var(--c-color-line);
+  border: var(--c-stroke-hairline) solid var(--c-color-line);
 }
 .c-bubble--person {
   max-width: 320px;
-  background: var(--c-color-mat);
-  border: 1px solid var(--c-color-mat);
+  background: var(--c-color-indigo-wash);
+  border: var(--c-stroke-hairline) solid var(--c-color-indigo-wash);
+}
+.c-bubble--person .c-bubble__name {
+  color: var(--c-color-indigo);
 }
 .c-bubble--note {
   max-width: 100%;
@@ -1351,7 +1584,7 @@
   font-size: var(--c-text-14);
 }
 .c-bubble__name {
-  font-weight: 600;
+  font-weight: var(--c-weight-semibold);
 }
 .c-bubble__detail {
   font-size: var(--c-text-14);
@@ -1371,15 +1604,15 @@
 }
 .c-agentgraph__edge--used {
   stroke: var(--c-color-jade);
-  stroke-width: 2;
+  stroke-width: 3;
 }
 .c-agentgraph__edge--latest {
-  stroke: var(--c-color-ink);
+  stroke: var(--c-color-indigo);
   stroke-width: 3;
 }
 .c-agentgraph__shape {
   fill: var(--c-color-paper);
-  stroke: var(--c-color-line);
+  stroke: var(--c-color-edge);
   stroke-width: 1.5;
 }
 .c-agentgraph__node--tool .c-agentgraph__shape {
@@ -1390,14 +1623,14 @@
   stroke-width: 2;
 }
 .c-agentgraph__node--active .c-agentgraph__shape {
-  fill: var(--c-color-mat);
-  stroke: var(--c-color-ink);
+  fill: var(--c-color-indigo-wash);
+  stroke: var(--c-color-indigo);
   stroke-width: 3;
 }
 .c-agentgraph__steps {
-  font-family: var(--c-font-body);
+  font-family: var(--c-font-mono);
   font-size: var(--c-text-14);
-  font-weight: 600;
+  font-weight: var(--c-weight-medium);
   font-variant-numeric: tabular-nums;
   fill: var(--c-color-ink);
 }
@@ -1418,7 +1651,8 @@
   fill: var(--c-color-ink);
 }
 .c-agentgraph__node--active .c-agentgraph__name {
-  font-weight: 700;
+  font-weight: var(--c-weight-bold);
+  fill: var(--c-color-indigo);
 }
 .c-agentgraph__kind {
   font-weight: 400;
@@ -1436,8 +1670,8 @@
   display: block;
   max-width: 100%;
   height: auto;
-  background: var(--c-color-paper);
-  border: 1px solid var(--c-color-line);
+  background: var(--c-color-ground);
+  border: var(--c-stroke-hairline) solid var(--c-color-line);
   border-radius: var(--c-radius-panel);
 }
 .c-embmap__point {
@@ -1463,10 +1697,10 @@
 .c-embmap__qlabel {
   font-family: var(--c-font-body);
   font-size: var(--c-text-14);
-  font-weight: 600;
+  font-weight: var(--c-weight-semibold);
   fill: var(--c-color-ink);
   paint-order: stroke;
-  stroke: var(--c-color-paper);
+  stroke: var(--c-color-ground);
   stroke-width: 3px;
   stroke-linejoin: round;
 }
@@ -1488,7 +1722,7 @@
   min-width: 0;
 }
 .c-eventlog__title {
-  font-weight: 600;
+  font-weight: var(--c-weight-semibold);
   margin-bottom: var(--c-space-4);
 }
 .c-eventlog__empty {
@@ -1498,6 +1732,11 @@
   width: 100%;
   border-collapse: collapse;
   font-variant-numeric: tabular-nums;
+}
+.c-eventlog__table td {
+  font-family: var(--c-font-mono);
+  font-weight: var(--c-weight-medium);
+  line-height: var(--c-leading-mono);
 }
 .c-eventlog__table th {
   text-align: left;
@@ -1518,8 +1757,8 @@
   width: 72px;
 }
 .c-eventlog__source--live {
-  color: var(--c-color-jade);
-  font-weight: 600;
+  color: var(--c-color-indigo);
+  font-weight: var(--c-weight-semibold);
 }
 .c-eventlog__source--user {
   font-weight: 600;
@@ -1534,23 +1773,28 @@
   height: 100%;
   min-height: 0;
   background: var(--c-color-paper);
-  border: 1px solid var(--c-color-line);
+  border: var(--c-stroke-hairline) solid var(--c-color-line);
   border-radius: var(--c-radius-panel);
+  box-shadow: var(--c-shadow-overlay);
 }
 .c-pview__head {
   flex: 0 0 auto;
+  box-sizing: border-box;
+  min-height: 64px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--c-space-16);
-  padding: var(--c-space-16) var(--c-space-24);
-  border-bottom: 1px solid var(--c-color-line);
+  padding: var(--c-space-8) var(--c-space-24);
+  border-bottom: var(--c-stroke-hairline) solid var(--c-color-line);
 }
 .c-pview__titles {
   min-width: 0;
 }
 .c-pview__title {
   font-size: var(--c-text-24);
+  font-weight: var(--c-weight-bold);
+  line-height: var(--c-leading-heading);
 }
 .c-pview__subtitle {
   margin-top: var(--c-space-4);
@@ -1565,15 +1809,17 @@
 }
 .c-pview__close {
   font: inherit;
+  font-family: var(--c-font-body);
   font-size: var(--c-text-14);
+  font-weight: var(--c-weight-semibold);
   display: inline-flex;
   align-items: center;
   gap: var(--c-space-4);
-  min-height: 36px;
+  min-height: var(--c-size-control-h);
   padding: var(--c-space-4) var(--c-space-12);
   color: var(--c-color-ink);
-  background: transparent;
-  border: 1px solid var(--c-color-line);
+  background: var(--c-color-paper);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
   border-radius: var(--c-radius-control);
   cursor: pointer;
 }
@@ -1591,7 +1837,7 @@
   max-height: 160px;
   overflow: auto;
   padding: var(--c-space-12) var(--c-space-24);
-  border-top: 1px solid var(--c-color-line);
+  border-top: var(--c-stroke-hairline) solid var(--c-color-line);
 }
 
 /* Side by side: two cards and the similarity bar between them */
@@ -1636,7 +1882,7 @@
 }
 .c-block--selected {
   background: var(--c-color-mat);
-  box-shadow: inset 3px 0 0 var(--c-color-ink);
+  box-shadow: inset var(--c-stroke-rule) 0 0 var(--c-color-indigo);
 }
 .c-block__n {
   flex: 0 0 auto;
@@ -1684,8 +1930,8 @@
   height: 32px;
   padding: 0;
   color: var(--c-color-ink);
-  background: transparent;
-  border: 1px solid var(--c-color-line);
+  background: var(--c-color-paper);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
   border-radius: var(--c-radius-control);
   cursor: pointer;
 }
@@ -1699,15 +1945,15 @@
 
 /* ---- v2 badges (I2-kit T4): each has its own border or mark, not only a color ---- */
 .c-badge--live {
-  border-color: var(--c-color-jade);
-  color: var(--c-color-jade);
-  font-weight: 600;
+  border-color: var(--c-color-indigo);
+  background: var(--c-color-indigo-wash);
+  color: var(--c-color-indigo);
 }
 .c-badge__dot {
   width: 8px;
   height: 8px;
-  border-radius: var(--c-radius-chip);
-  background: var(--c-color-jade);
+  border-radius: var(--c-radius-dot);
+  background: currentColor;
 }
 .c-badge--demo {
   border-color: var(--c-color-ink);
@@ -1715,7 +1961,7 @@
 }
 .c-badge--rule {
   border-style: dotted;
-  border-color: var(--c-color-ink);
+  border-color: var(--c-color-ink-soft);
   color: var(--c-color-ink);
 }
 .c-badge--estimate {
@@ -1733,8 +1979,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--c-space-32);
-  background: var(--c-color-paper);
+  background: var(--c-color-ground);
   color: var(--c-color-ink);
+  font-family: var(--c-font-body);
 }
 .c-gallery__head {
   display: flex;
@@ -1746,6 +1993,7 @@
 }
 .c-gallery__title {
   font-size: var(--c-text-36);
+  font-weight: var(--c-weight-bold);
 }
 .c-gallery__intro {
   margin-top: var(--c-space-8);
@@ -1799,12 +2047,233 @@
 .c-gallery__band {
   flex: 0 0 auto;
   box-sizing: border-box;
-  height: 64px;
+  height: var(--c-size-processbar);
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   gap: 6px;
   padding: 0 var(--c-space-48);
-  border-bottom: 1px solid var(--c-color-line);
+  background: var(--c-color-beam);
+  color: var(--c-color-beam-text);
+}
+/* The beam's summary in the gallery: "Live: N of 11" over the one Simulated badge. */
+.c-gallery__summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-left: var(--c-space-4);
+  font-size: var(--c-text-14);
+  font-weight: var(--c-weight-semibold);
+  white-space: nowrap;
+}
+/* A strip of the beam for the switch and the top bar's buttons. */
+.c-gallery__beam {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-16);
+  padding: var(--c-space-12) var(--c-space-16);
+  background: var(--c-color-beam);
+  color: var(--c-color-beam-text);
+  border-radius: var(--c-radius-panel);
+}
+
+/* ---- Design drop 3 additions (I3-redesign T4) ---- */
+
+/* Icon: a 20 px line icon in currentColor */
+.c-icon {
+  display: inline-block;
+  flex: 0 0 auto;
+  vertical-align: middle;
+  overflow: visible;
+}
+
+/* Field: 40 px, paper, an edge border, 2 px corners, Body/16. Put it on an input or a textarea. */
+.c-field {
+  box-sizing: border-box;
+  min-height: var(--c-size-control-h);
+  padding: 0 var(--c-space-12);
+  font: inherit;
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-16);
+  color: var(--c-color-ink);
   background: var(--c-color-paper);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
+  border-radius: var(--c-radius-control);
+}
+textarea.c-field {
+  padding: var(--c-space-8) var(--c-space-12);
+  line-height: var(--c-leading-body);
+}
+.c-field::placeholder {
+  color: var(--c-color-ink-soft);
+}
+.c-field:disabled {
+  background: var(--c-color-mat);
+  color: var(--c-color-ink-soft);
+}
+
+/* Checkbox: a 20 px box with 2 px corners, 12 px from its Label/16 words. Checked is indigo with a paper check. */
+.c-checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--c-space-12);
+  font-size: var(--c-text-16);
+  font-weight: var(--c-weight-semibold);
+  color: var(--c-color-ink);
+  cursor: pointer;
+}
+.c-checkbox__box {
+  appearance: none;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  background: var(--c-color-paper);
+  border: 1.5px solid var(--c-color-edge);
+  border-radius: var(--c-radius-control);
+  cursor: pointer;
+}
+.c-checkbox__box {
+  position: relative;
+}
+.c-checkbox__box:checked {
+  background: var(--c-color-indigo);
+  border-color: var(--c-color-indigo);
+}
+/* The check, drawn in paper: a short and a long stroke, square caps. */
+.c-checkbox__box:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--c-color-paper);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.c-checkbox__note {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--c-text-14);
+  font-weight: var(--c-weight-regular);
+  color: var(--c-color-ink-soft);
+}
+
+/* Toast and quiet buttons on it sit on the beam colors. */
+.c-toast .c-button--quiet {
+  background: transparent;
+  color: var(--c-color-beam-text);
+  border-color: var(--c-color-beam-soft);
+}
+
+/* Tabs as drop 3's ModePicker: three equal 36 px segments, borders overlapping by 1 px. */
+.c-tabs--segmented {
+  gap: 0;
+  border-bottom: 0;
+}
+.c-tabs--segmented .c-tabs__tab {
+  flex: 1 1 0;
+  min-height: 36px;
+  margin: 0 0 0 -1px;
+  padding: var(--c-space-4) var(--c-space-12);
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink);
+  background: var(--c-color-paper);
+  border: var(--c-stroke-hairline) solid var(--c-color-edge);
+}
+.c-tabs--segmented .c-tabs__tab:first-child {
+  margin-left: 0;
+  border-radius: var(--c-radius-control) 0 0 var(--c-radius-control);
+}
+.c-tabs--segmented .c-tabs__tab:last-child {
+  border-radius: 0 var(--c-radius-control) var(--c-radius-control) 0;
+}
+.c-tabs.c-tabs--segmented .c-tabs__tab--on {
+  position: relative;
+  z-index: 1;
+  color: var(--c-color-indigo);
+  font-weight: var(--c-weight-semibold);
+  background: var(--c-color-indigo-wash);
+  border: var(--c-stroke-hairline) solid var(--c-color-indigo);
+}
+
+/* Agent steps: one knot per agent on the run's thread, the name under it (drop 3's AgentStep). */
+.c-agentsteps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-width: 0;
+}
+.c-agentstep {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--c-space-4);
+  font-size: var(--c-text-14);
+  font-weight: var(--c-weight-semibold);
+  color: var(--c-color-ink);
+}
+.c-agentstep__row {
+  position: relative;
+  width: 100%;
+  height: 20px;
+}
+.c-agentstep__thread {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 8.5px;
+  border-top: var(--c-stroke-thread) solid var(--c-color-jade);
+}
+.c-agentstep:first-child .c-agentstep__thread {
+  left: 50%;
+}
+.c-agentstep:last-child .c-agentstep__thread {
+  right: 50%;
+}
+.c-agentstep__knot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: var(--c-radius-dot);
+  background: var(--c-color-jade);
+  box-shadow: 0 0 0 2px var(--c-color-paper);
+}
+.c-agentstep__name {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.c-agentstep--active {
+  color: var(--c-color-indigo);
+}
+.c-agentstep--active .c-agentstep__thread {
+  border-top-color: var(--c-color-indigo);
+}
+.c-agentstep--active .c-agentstep__knot {
+  background: var(--c-color-indigo);
+  box-shadow: 0 0 0 2px var(--c-color-paper), 0 0 0 4px var(--c-color-indigo);
+}
+.c-agentstep--waiting {
+  color: var(--c-color-ink-soft);
+  font-weight: var(--c-weight-regular);
+}
+.c-agentstep--waiting .c-agentstep__thread {
+  border-top-style: dotted;
+  border-top-color: var(--c-color-edge);
+}
+.c-agentstep--waiting .c-agentstep__knot {
+  background: var(--c-color-paper);
+  border: 2px solid var(--c-color-edge);
+  box-shadow: none;
 }

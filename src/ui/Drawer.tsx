@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { player } from "../core/player";
 import type { Lang, Text } from "../core/types";
 import { DRAWER_WIDTH, drawerOffset, isDrawerCloseKey } from "./frames";
+import { Icon } from "./Icon";
 import { usePlayerTime, useReducedMotion } from "./motion";
 import { CLOSE_WORD, pickText } from "./strings";
 
@@ -73,9 +74,7 @@ function DrawerPanel({ testId, onClose, title, lang, children, width = DRAWER_WI
             {pickText(title, lang)}
           </h2>
           <button type="button" className="c-drawer__close" data-testid={closeTestId} onClick={() => close.current()}>
-            <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true">
-              <path d="M3 3 L11 11 M11 3 L3 11" stroke="currentColor" strokeWidth="1.6" />
-            </svg>
+            <Icon name="close" size={16} />
             <span>{pickText(CLOSE_WORD, lang)}</span>
           </button>
         </header>

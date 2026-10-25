@@ -45,6 +45,12 @@ export { ProcessView, type ProcessViewProps } from "./ProcessView";
 export { SideBySide, type SideBySideProps } from "./SideBySide";
 export { BlockEditor, type BlockEditorProps, type EditorBlock } from "./BlockEditor";
 export { HANDOFF_MS, type GraphEdgeIn, type GraphStepIn } from "./views";
+// Design drop 3 (I3-redesign T4): the line icons and the woven Tag
+export { Icon, type IconProps } from "./Icon";
+export { ICON_NAMES, type IconName } from "./icons/shapes";
+export { Tag, type TagProps, type TagVariant } from "./Tag";
+export { AgentSteps, type AgentStepsProps, type AgentStepItem } from "./AgentSteps";
+export { PROCESS_BLOCK_WIDTH, PROCESS_BLOCK_WIDE, processBlockWidth } from "./frames";
 // The kit's words, in both languages
 export {
   pickText,

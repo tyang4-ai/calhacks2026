@@ -4,24 +4,54 @@
 import type { ProcessStatus } from "../core/events";
 import { clamp01, easeOut, UI_MS } from "./motion";
 
-/** How a process block's status looks. The icon and the word carry it as well as the color. */
+/**
+ * How a process block's status looks on the beam (design drop 3). The word carries it as well as
+ * the color and the thread; done and attention also draw a mark at the top right.
+ */
 export interface ProcessStatusLook {
-  /** The color group: ink-soft, ink, jade or seal. */
+  /** The color group, mapped to the beam colors in kit.css: soft (beam-soft), ink (beam-live), jade (beam-done), seal (beam-flag). */
   tone: "soft" | "ink" | "jade" | "seal";
-  /** The icon beside the status word. */
+  /** The status icon. Only check and bang draw a mark, at the block's top right. */
   icon: "ring" | "dots" | "check" | "bang";
-  /** The thread along the block's foot. */
-  thread: "dotted" | "dashed" | "solid" | "broken";
+  /** The 3 px thread along the block's foot: dotted (idle), partial (working, drawn partway), solid (done), broken (attention, dashed). */
+  thread: "dotted" | "partial" | "solid" | "broken";
   /** Only a working block pulses, on the player clock. */
   pulses: boolean;
 }
 
 export const PROCESS_STATUS_LOOK: Record<ProcessStatus, ProcessStatusLook> = {
   idle: { tone: "soft", icon: "ring", thread: "dotted", pulses: false },
-  working: { tone: "ink", icon: "dots", thread: "dashed", pulses: true },
+  working: { tone: "ink", icon: "dots", thread: "partial", pulses: true },
   done: { tone: "jade", icon: "check", thread: "solid", pulses: false },
   attention: { tone: "seal", icon: "bang", thread: "broken", pulses: false },
 };
+
+/** A process block's width on the beam: 104 px, or 124 px for a label too long for that at 14 px (Counterfeit watch). */
+export const PROCESS_BLOCK_WIDTH = 104;
+export const PROCESS_BLOCK_WIDE = 124;
+/** The longest English label that fits a 104 px block on one line at 14 px, in characters. */
+const NARROW_LABEL_MAX = 12;
+
+/** The block takes its width from its label (components.md, Needs: ProcessBlock width). */
+export function processBlockWidth(label: string): number {
+  return label.length > NARROW_LABEL_MAX ? PROCESS_BLOCK_WIDE : PROCESS_BLOCK_WIDTH;
+}
+
+/** The longest English label that leaves room for the done or attention mark at the block's top right. */
+const MARK_TOP_LABEL_MAX = 9;
+
+/**
+ * Where the done or attention mark goes: at the top right, as drop 3 draws it, when the label leaves
+ * room; otherwise at the end of line 2, so a long label is never cut.
+ */
+export function markAtTop(label: string): boolean {
+  return label.length <= MARK_TOP_LABEL_MAX;
+}
+
+/** A count of zero is left out of line 2, so an idle block reads just "Idle". */
+export function countVisible(count: number | string | undefined | null): boolean {
+  return countShown(count) && String(count) !== "0";
+}
 
 /** The block's class list: its status, and whether its view is open. */
 export function processBlockClass(status: ProcessStatus, selected = false): string {

@@ -53,3 +53,10 @@ export function makerLang(makerId: string | undefined): Lang | undefined {
   const p = findPerson(makerId);
   return p && p.role === "maker" && (p.lang === "en" || p.lang === "zh") ? p.lang : undefined;
 }
+
+/** A maker's name from src/mock/people.ts, for the maker page's top bar, or undefined when the maker isn't found. */
+export function makerName(makerId: string | undefined): Text | undefined {
+  if (!makerId) return undefined;
+  const p = findPerson(makerId);
+  return p && p.role === "maker" ? p.name : undefined;
+}

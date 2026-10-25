@@ -16,6 +16,8 @@ export interface BadgeProps {
   /** Ignored for the labeled variants (simulated, live, demo, rule, estimate), which read their glossary labels. */
   children?: ReactNode;
   title?: string;
+  /** "beam" draws it for the dark beam: a beam-soft border and beam-text words, as the process bar's one Simulated badge. */
+  tone?: "default" | "beam";
 }
 
 function isLabeled(variant: BadgeVariant): variant is LabeledBadgeVariant {
@@ -27,12 +29,13 @@ function isLabeled(variant: BadgeVariant): variant is LabeledBadgeVariant {
  * simulated-badge test ID when none is given. Each labeled variant has its own border or mark, so
  * its color is never the only cue.
  */
-export function Badge({ testId, variant = "neutral", children, title }: BadgeProps) {
+export function Badge({ testId, variant = "neutral", children, title, tone = "default" }: BadgeProps) {
+  const toneClass = tone === "beam" ? " c-badge--tone-beam" : "";
   if (isLabeled(variant)) {
     const words = BADGE_WORDS[variant];
     return (
       <span
-        className={`c-badge c-badge--${variant}`}
+        className={`c-badge c-badge--${variant}${toneClass}`}
         data-testid={testId ?? (variant === "simulated" ? "simulated-badge" : undefined)}
         data-variant={variant}
         title={title ?? BADGE_TITLES[variant].en}
@@ -43,7 +46,7 @@ export function Badge({ testId, variant = "neutral", children, title }: BadgePro
     );
   }
   return (
-    <span className={`c-badge c-badge--${variant}`} data-testid={testId} title={title}>
+    <span className={`c-badge c-badge--${variant}${toneClass}`} data-testid={testId} title={title}>
       {children}
     </span>
   );

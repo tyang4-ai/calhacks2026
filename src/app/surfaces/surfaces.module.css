@@ -12,21 +12,23 @@
   overflow: auto;
 }
 
-/* Shop home: shop.home.main above shop.home.communities. */
+/* Shop home (design/layout.md, Home): shop.home.main above shop.home.communities, each at its own
+   height, so the page scrolls under the beam: the search, Surprise me and the first row of featured
+   pieces above the fold, the communities strip below it. */
 .stack {
   composes: page;
   gap: var(--c-space-24);
 }
 
 .stackMain {
-  flex: 3 1 0;
+  flex: 0 0 auto;
   min-height: 160px;
   display: flex;
   flex-direction: column;
 }
 
 .stackSecond {
-  flex: 2 1 0;
+  flex: 0 0 auto;
   min-height: 120px;
   display: flex;
   flex-direction: column;
@@ -55,55 +57,65 @@
   overflow: auto;
 }
 
-/* The Sell site: the header, then the left nav and the view area. */
+/* The Sell site (design/layout.md, Sell): the 48 px header on the mat under the beam, then the
+   184 px nav on paper and the view area on the ground. */
 .sellHeader {
-  flex: 0 0 56px;
-  height: 56px;
+  flex: 0 0 var(--c-size-sell-header);
+  height: var(--c-size-sell-header);
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: var(--c-space-24);
+  gap: var(--c-space-16);
   padding: 0 var(--c-space-24);
-  border-bottom: 1px solid var(--c-color-line);
-  background: var(--c-color-paper);
+  border-bottom: var(--c-stroke-hairline) solid var(--c-color-line);
+  background: var(--c-color-mat);
+  color: var(--c-color-ink);
+  overflow: hidden;
 }
 
 .coopName {
   flex: 0 0 auto;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
   line-height: 1.15;
 }
 
 .coopEn {
   font-family: var(--c-font-heading-en);
-  font-weight: 600;
-  font-size: var(--c-text-16);
+  font-weight: var(--c-weight-bold);
+  font-size: var(--c-text-21);
+  white-space: nowrap;
 }
 
-/* L2, beside the co-op's name. */
-.l2 {
-  flex: 0 1 460px;
-  min-width: 300px;
-  margin: 0;
-  font-size: var(--c-text-14);
-  line-height: 1.3;
-  color: var(--c-color-ink-soft);
-}
-
+/* Cindy's latest line, whole: it wraps to a second line rather than cutting off (G4v2 recheck). */
 .cindy {
   flex: 1 1 0;
   min-width: 0;
-  font-size: var(--c-text-14);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: right;
+  margin: 0;
+  font-size: var(--c-text-16);
+  line-height: 1.2;
+  color: var(--c-color-ink-soft);
 }
 
 .cindyIdle {
   composes: cindy;
+}
+
+.cindyName {
+  font-weight: var(--c-weight-semibold);
+  color: var(--c-color-ink);
+  white-space: nowrap;
+}
+
+/* L2 at the right, on two lines. */
+.l2 {
+  flex: 0 0 auto;
+  max-width: 380px;
+  text-wrap: balance;
+  margin: 0;
+  font-size: var(--c-text-14);
+  line-height: 1.3;
+  text-align: right;
   color: var(--c-color-ink-soft);
 }
 
@@ -113,37 +125,43 @@
   display: flex;
 }
 
+/* The nav: the eleven views as 44 px rows with 16 px labels. The selected view has the mat fill, a
+   3 px indigo rule on its left and weight 600. */
 .sellNav {
-  flex: 0 0 184px;
-  width: 184px;
+  flex: 0 0 var(--c-size-sell-nav);
+  width: var(--c-size-sell-nav);
   box-sizing: border-box;
-  border-right: 1px solid var(--c-color-line);
+  border-right: var(--c-stroke-hairline) solid var(--c-color-line);
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: var(--c-space-8) 0;
+  padding: var(--c-space-12) 0;
   overflow: auto;
   background: var(--c-color-paper);
 }
 
 .navItem {
-  display: block;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  min-height: var(--c-size-row-h);
   box-sizing: border-box;
   font-size: var(--c-text-16);
-  font-weight: 500;
+  font-weight: var(--c-weight-regular);
+  line-height: 1.2;
   color: var(--c-color-ink);
-  padding: var(--c-space-8) var(--c-space-16);
-  border-left: 3px solid transparent;
+  padding: 0 var(--c-space-16) 0 21px;
+  border-left: var(--c-stroke-rule) solid transparent;
+  text-decoration: none;
 }
 
 .navItem:hover {
-  background: var(--c-color-mat);
+  background: var(--c-color-ground);
 }
 
 .navItemOn {
   composes: navItem;
-  font-weight: 600;
-  border-left-color: var(--c-color-ink);
+  font-weight: var(--c-weight-semibold);
+  border-left-color: var(--c-color-indigo);
   background: var(--c-color-mat);
 }
 

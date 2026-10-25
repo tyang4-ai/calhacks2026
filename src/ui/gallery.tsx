@@ -1,12 +1,14 @@
 // The kit gallery (I2-kit T4): every kit component in each of its states, with sample props, for
 // /dev/kit. The shell renders it inside dev-kit-gallery. Every name, amount and sentence here is a
 // sample: none comes from src/mock/, and no real nation or person is named. Every sample's root
-// carries a kit- test ID, so a check can find each one.
+// carries a kit- test ID, so a check can find each one. Design drop 3 (I3-redesign T4): each in its new
+// look, on the ground with the beam, in English only (decisions.md, Oct 24, 11:35 PM and 11:55 PM).
 import "./kit.css";
-import { useState, type ReactNode } from "react";
+import { useState, type ReactElement, type ReactNode } from "react";
 import type { ProcessStatus } from "../core/events";
 import type { Lang, Text } from "../core/types";
 import { AgentGraph, type AgentGraphNode } from "./AgentGraph";
+import { AgentSteps } from "./AgentSteps";
 import { Badge, type BadgeVariant } from "./Badge";
 import { BlockEditor, type EditorBlock } from "./BlockEditor";
 import { Button } from "./Button";
@@ -23,7 +25,8 @@ import { EventLog, type EventLogRow } from "./EventLog";
 import { EvidenceCard } from "./EvidenceCard";
 import { Flag } from "./Flag";
 import { formatDate } from "./formatDate";
-import { LangToggle } from "./LangToggle";
+import { Icon } from "./Icon";
+import { ICON_NAMES } from "./icons/shapes";
 import { LedgerTable } from "./LedgerTable";
 import { Link } from "./Link";
 import { MakerMark } from "./MakerMark";
@@ -44,6 +47,7 @@ import { SideSwitch, type Side } from "./SideSwitch";
 import { StatTile } from "./StatTile";
 import { GALLERY_WORDS as W, pickText, SAMPLE_WORD, VERIFICATION_METHOD_WORDS } from "./strings";
 import { Tabs } from "./Tabs";
+import { Tag } from "./Tag";
 import { Thread } from "./Thread";
 import { Toast } from "./Toast";
 import { TopNav } from "./TopNav";
@@ -54,18 +58,19 @@ const s = (en: string, zh: string): Text => ({ en, zh });
 /** The sample picture: the site's own mark, so no sample shows a catalog piece. */
 const SAMPLE_PICTURE = "/favicon.svg";
 
+/** The beam's eleven blocks with the process bar's own words and sample counts and states. */
 const PROCESS_SAMPLES: { status: ProcessStatus; live: boolean; count?: number; label: Text }[] = [
-  { status: "done", live: false, count: 1, label: s("Sample search", "示例搜索") },
-  { status: "working", live: false, count: 4, label: s("Sample swarm", "示例团队") },
-  { status: "idle", live: false, label: s("Sample checkout", "示例结账") },
-  { status: "done", live: true, count: 7, label: s("Sample money", "示例资金") },
-  { status: "attention", live: false, count: 2, label: s("Sample reconcile", "示例对账") },
-  { status: "attention", live: true, count: 1, label: s("Sample approvals", "示例批准") },
-  { status: "idle", live: false, label: s("Sample close", "示例月结") },
-  { status: "done", live: false, count: 3, label: s("Sample proof", "示例验证") },
-  { status: "working", live: true, count: 2, label: s("Sample watch long label", "示例监测长标签") },
-  { status: "idle", live: false, label: s("Sample model", "示例模型") },
-  { status: "done", live: false, count: 8, label: s("Sample data", "示例数据") },
+  { status: "done", live: false, count: 1, label: s("Vibe search", "按感觉搜索") },
+  { status: "working", live: false, count: 4, label: s("Agent swarm", "智能体团队") },
+  { status: "idle", live: false, count: 0, label: s("Checkout", "结账") },
+  { status: "done", live: true, count: 7, label: s("Money", "资金") },
+  { status: "attention", live: false, count: 2, label: s("Reconcile", "对账") },
+  { status: "attention", live: true, count: 1, label: s("Approvals", "审批") },
+  { status: "idle", live: false, label: s("Close", "月结") },
+  { status: "done", live: false, count: 3, label: s("Proof", "验证") },
+  { status: "attention", live: false, count: 1, label: s("Counterfeit watch", "仿冒监测") },
+  { status: "idle", live: false, label: s("Model", "模型") },
+  { status: "working", live: true, count: 8, label: s("Data", "数据") },
 ];
 
 const BADGES: { variant: BadgeVariant; words?: Text }[] = [
@@ -212,13 +217,12 @@ function Scaled({ width, height, scale, children }: { width: number; height: num
 }
 
 export interface KitGalleryProps {
-  /** The language it opens in. Default English. A switch at the top changes it. */
+  /** Kept for callers. The gallery renders in English only, as the site does, and has no language switch. */
   lang?: Lang;
 }
 
-/** Every kit component in each of its states, with sample props labeled Sample. */
-export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
-  const [lang, setLang] = useState<Lang>(startLang);
+/** Every kit component in each of its states, with sample props labeled Sample, in English. */
+export function KitGallery(): ReactElement {
   const [side, setSide] = useState<Side>("shop");
   const [tab, setTab] = useState("one");
   const [drawerOpen, setDrawerOpen] = useState(true);
@@ -230,7 +234,7 @@ export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
   const [reachedSteps, setReachedSteps] = useState("6");
   const [pickedSelected, setPickedSelected] = useState<number>(4);
 
-  const L = lang;
+  const L: Lang = "en";
   // Between steps: after the latest handoff has drawn (600 ms), before the next step lands.
   const graphNow = Number(reachedSteps) === 0 ? 0 : GRAPH_STEPS[Number(reachedSteps) - 1].at + 700;
 
@@ -252,16 +256,6 @@ export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
           <h1 className="c-gallery__title">{pickText(W.title, L)}</h1>
           <p className="c-gallery__intro">{pickText(W.intro, L)}</p>
         </div>
-        <Tabs
-          testId="kit-gallery-lang"
-          tabs={[
-            { id: "en", label: W.english },
-            { id: "zh", label: W.chinese },
-          ]}
-          value={L}
-          onChange={(id) => setLang(id as Lang)}
-          lang={L}
-        />
       </header>
 
       {/* ---- Frames ---- */}
@@ -274,11 +268,19 @@ export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
                 lang={L}
                 left={
                   <>
-                    <strong style={{ fontSize: "var(--c-text-21)" }}>Cindia</strong>
+                    <strong style={{ fontSize: 22, fontWeight: "var(--c-weight-bold)" }}>Cindia</strong>
                     <SideSwitch value={side} onChange={setSide} labels={{ shop: s("Shop", "选购"), sell: s("Sell", "售卖") }} testId="kit-sideswitch" testIds={{ shop: "kit-side-shop", sell: "kit-side-sell" }} lang={L} />
                   </>
                 }
-                right={<Badge variant="simulated" testId="kit-topnav-badge" />}
+                right={
+                  <>
+                    <span style={{ fontSize: "var(--c-text-14)", color: "var(--c-color-beam-soft)" }}>{pickText(s("Sample notice on the beam.", "示例横梁提示。"), L)}</span>
+                    <Badge variant="simulated" tone="beam" testId="kit-topnav-badge" />
+                    <Button variant="quiet" size="small" testId="kit-topnav-help">
+                      {pickText(s("Help", "客服"), L)}
+                    </Button>
+                  </>
+                }
               />
               <div className="c-gallery__band" data-testid="kit-process-band">
                 {PROCESS_SAMPLES.map((p, i) => (
@@ -297,6 +299,10 @@ export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
                     onClick={() => setPickedSelected(i)}
                   />
                 ))}
+                <span className="c-gallery__summary" data-testid="kit-beam-summary">
+                  {pickText(s("Live: 3 of 11", "实时：11 个中的 3 个"), L)}
+                  <Badge variant="simulated" tone="beam" testId="kit-badge-beam" />
+                </span>
               </div>
               <div style={{ padding: "var(--c-space-24)", fontSize: "var(--c-text-18)" }}>{pickText(s("Sample page body.", "示例页面内容。"), L)}</div>
             </PageFrame>
@@ -541,7 +547,7 @@ export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
             lang={L}
             footer={
               <div style={{ display: "flex", gap: "var(--c-space-8)" }}>
-                <input className="c-searchbar__add" style={{ flex: 1, width: "auto" }} aria-label={pickText(s("Sample input", "示例输入"), L)} placeholder={pickText(s("Sample input", "示例输入"), L)} />
+                <input className="c-field" style={{ flex: 1, width: "auto" }} aria-label={pickText(s("Sample input", "示例输入"), L)} placeholder={pickText(s("Sample input", "示例输入"), L)} />
                 <Button testId="kit-chat-send" size="small">
                   {pickText(s("Sample send", "示例发送"), L)}
                 </Button>
@@ -654,6 +660,81 @@ export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
         </Item>
       </Section>
 
+      {/* ---- Design drop 3 additions ---- */}
+      <Section name="Icon" lang={L}>
+        {ICON_NAMES.map((name) => (
+          <Item key={name} state={s(name, name)} lang={L}>
+            <span style={{ display: "inline-flex", gap: "var(--c-space-8)", alignItems: "center" }}>
+              <Icon name={name} testId={`kit-icon-${name}`} />
+              <span style={{ color: "var(--c-color-indigo)", display: "inline-flex" }}>
+                <Icon name={name} size={16} />
+              </span>
+            </span>
+          </Item>
+        ))}
+      </Section>
+
+      <Section name="Tag" lang={L}>
+        {(["neutral", "match", "sample", "limit"] as const).map((variant) => (
+          <Item key={variant} state={s(variant, variant)} lang={L}>
+            <Tag variant={variant} testId={`kit-tag-${variant}`}>
+              {pickText(variant === "limit" ? s("Over a sample limit", "超过示例限额") : s("Sample tag", "示例标签"), L)}
+            </Tag>
+          </Item>
+        ))}
+      </Section>
+
+      <Section name="AgentSteps, Tabs (segmented)" lang={L}>
+        <Item state={W.states} lang={L} width={420}>
+          <AgentSteps
+            testId="kit-agentsteps"
+            lang={L}
+            steps={[
+              { name: "Sample lead", state: "done" },
+              { name: "Sample reader", state: "done" },
+              { name: "Sample check", state: "done" },
+              { name: "Sample clerk", state: "active", testId: "kit-agentstep-active" },
+              { name: "Sample writer", state: "waiting" },
+            ]}
+          />
+        </Item>
+        <Item state={W.selected} lang={L} width={420}>
+          <Tabs
+            testId="kit-tabs-segmented"
+            variant="segmented"
+            tabs={[
+              { id: "one", label: s("Sample one", "示例一") },
+              { id: "two", label: s("Sample two", "示例二") },
+              { id: "three", label: s("Sample three", "示例三") },
+            ]}
+            value={tab}
+            onChange={setTab}
+            lang={L}
+          />
+        </Item>
+      </Section>
+
+      <Section name="Field, Checkbox" lang={L}>
+        <Item state={W.default} lang={L} width={320}>
+          <input className="c-field" style={{ width: "100%" }} data-testid="kit-field" aria-label={pickText(s("Sample field", "示例输入框"), L)} placeholder={pickText(s("Sample placeholder", "示例占位文字"), L)} />
+        </Item>
+        <Item state={W.selected} lang={L} width={360}>
+          <label className="c-checkbox">
+            <input type="checkbox" className="c-checkbox__box" data-testid="kit-checkbox" defaultChecked />
+            <span>
+              {pickText(s("Add a sample amount to a sample project", "为示例项目添加示例金额"), L)}
+              <span className="c-checkbox__note">{pickText(s("A sample note under it.", "下方的示例说明。"), L)}</span>
+            </span>
+          </label>
+        </Item>
+        <Item state={W.default} lang={L} width={360}>
+          <label className="c-checkbox">
+            <input type="checkbox" className="c-checkbox__box" data-testid="kit-checkbox-off" />
+            <span>{pickText(s("A sample choice", "示例选项"), L)}</span>
+          </label>
+        </Item>
+      </Section>
+
       {/* ---- v1 kit ---- */}
       <Section name="Badge" lang={L}>
         {BADGES.map((b) => (
@@ -663,6 +744,11 @@ export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
             </Badge>
           </Item>
         ))}
+        <Item state={s("Simulated on the beam", "横梁上的模拟")} lang={L}>
+          <span className="c-gallery__beam">
+            <Badge variant="simulated" tone="beam" testId="kit-badge-simulated-beam" />
+          </span>
+        </Item>
       </Section>
 
       <Section name="Button" lang={L}>
@@ -698,9 +784,10 @@ export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
         </Item>
         <Item state={W.sizes} lang={L}>
           <span style={{ display: "flex", gap: "var(--c-space-16)", alignItems: "center" }}>
-            <Seal testId="kit-seal" char="印" date="2031-03-04" lang={L} size={64} />
-            {/* The approvals compact seal's size: "Oct 1" fits at 14 px, "10月1日" doesn't, so the Chinese seal shows its character alone. */}
-            <Seal testId="kit-seal-small" char="印" date="2031-10-01" lang={L} size={48} />
+            {/* The 72 px seal with sample initials, as drop 3 draws it ("RB" and "Oct 1" for Ruth B.). */}
+            <Seal testId="kit-seal" char="SA" date="2031-03-04" lang={L} size={72} />
+            {/* The approvals compact seal's size: one initial, and "Oct 1" still fits at 14 px. */}
+            <Seal testId="kit-seal-small" char="S" date="2031-10-01" lang={L} size={48} />
           </span>
         </Item>
       </Section>
@@ -757,21 +844,18 @@ export function KitGallery({ lang: startLang = "en" }: KitGalleryProps) {
         </Item>
         <Item state={W.default} lang={L} width={360}>
           <svg width="340" height="120" viewBox="0 0 340 120" data-testid="kit-thread-svg">
-            <Thread testId="kit-thread" from={{ x: 20, y: 90 }} to={{ x: 320, y: 90 }} startAt={0} now={60000} amountCents={4321} tone="in" />
+            <Thread testId="kit-thread" from={{ x: 20, y: 40 }} to={{ x: 320, y: 40 }} startAt={0} now={60000} amountCents={4321} tone="in" />
           </svg>
         </Item>
       </Section>
 
-      <Section name="Toast, LangToggle, ConsoleFrame, chartTheme" lang={L}>
+      <Section name="Toast, ConsoleFrame, chartTheme" lang={L}>
         <Item state={W.default} lang={L} width={432}>
           <div className="c-gallery__box" style={{ height: 120 }}>
             <Toast testId="kit-toast" tone="jade" action={<Button size="small" variant="quiet" testId="kit-toast-action">{pickText(s("Sample", "示例"), L)}</Button>}>
               {pickText(s("A sample notice.", "一条示例通知。"), L)}
             </Toast>
           </div>
-        </Item>
-        <Item state={W.default} lang={L}>
-          <LangToggle testId="kit-langtoggle" value={L} onToggle={() => setLang(L === "en" ? "zh" : "en")} />
         </Item>
         <Item state={W.scaled} lang={L}>
           <Scaled width={CONSOLE_WIDTH} height={CONSOLE_HEIGHT} scale={0.2}>

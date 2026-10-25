@@ -3,7 +3,10 @@ import { sealPose, usePlayerTime, useReducedMotion } from "./motion";
 
 export interface SealProps {
   testId?: string;
-  /** One Chinese character, for example 准. */
+  /**
+   * The owner's initials in Latin letters, up to two, such as "RB" for Ruth B. (design drop 3).
+   * Callers may pass a single surname initial. The seal sizes its letters for one or two.
+   */
   char: string;
   /** ISO date of the decision. The seal shows its month and day. */
   date?: string;
@@ -40,12 +43,20 @@ function sealDateFits(label: string, size: number): boolean {
   return dateEms(label) * MIN_TEXT_PX <= size - 2 * DATE_SIDE_PX;
 }
 
-/** The owner's square cinnabar stamp. Cindy never stamps anything. */
+/** The seal's letters: half the seal for one letter, 0.44 of it for two (32 px on the 72 px seal), never under 14 px. */
+function sealGlyphPx(char: string, size: number): number {
+  const letters = Array.from(char).length;
+  return Math.max(MIN_TEXT_PX, Math.round(size * (letters > 1 ? 0.44 : 0.5)));
+}
+
+/**
+ * The owner's square madder stamp with their initials and the date. It presses in over 220 ms on the
+ * player clock (scale 1.06 to 1, opacity 0 to 1) and never turns. Cindy never stamps anything.
+ */
 export function Seal({ testId, char, date, lang = "en", size = 64, startAt, now }: SealProps) {
   const playerNow = usePlayerTime();
   const reduced = useReducedMotion();
-  const pose = startAt === undefined ? { scale: 1, opacity: 1, rotate: -4 } : sealPose(now ?? playerNow, startAt, reduced);
-  const rotate = reduced ? 0 : pose.rotate;
+  const pose = startAt === undefined ? { scale: 1, opacity: 1, rotate: 0 } : sealPose(now ?? playerNow, startAt, reduced);
   const monthDay = date ? formatMonthDay(date, lang) : "";
   // The date never shrinks under 14 px. Where it can't fit, the seal drops it, and the card that
   // carries a small seal shows the decision's date in its own text.
@@ -59,9 +70,9 @@ export function Seal({ testId, char, date, lang = "en", size = 64, startAt, now 
       style={{
         width: size,
         height: size,
-        fontSize: Math.max(MIN_TEXT_PX, Math.round(size * 0.5)),
+        fontSize: sealGlyphPx(char, size),
         opacity: pose.opacity,
-        transform: `scale(${pose.scale}) rotate(${rotate}deg)`,
+        transform: `scale(${pose.scale})`,
       }}
     >
       <span className="c-seal__char">{char}</span>

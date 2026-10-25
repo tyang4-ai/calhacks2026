@@ -15,14 +15,17 @@ export interface EvidenceCardProps {
   footer?: ReactNode;
 }
 
-/** One source document, shown side by side with the others for a flag. */
+/**
+ * One source document, shown side by side with the others for a flag. The key figure sits in a band
+ * with a 3 px left rule and a wash: jade when Cindy trusts the record, seal when it disagrees.
+ */
 export function EvidenceCard({ testId, kind, title, figure, figureLabel, rows, state = "neutral", footer }: EvidenceCardProps) {
   return (
     <article className={`c-evidence${state !== "neutral" ? ` c-evidence--${state}` : ""}`} data-testid={testId}>
       <div className="c-evidence__kind">{kind}</div>
       <div className="c-evidence__title">{title}</div>
       {figure !== undefined && (
-        <div>
+        <div className="c-evidence__band">
           {figureLabel && <div className="c-evidence__figure-label">{figureLabel}</div>}
           <div className="c-evidence__figure">{figure}</div>
         </div>

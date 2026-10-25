@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className"> {
   testId?: string;
-  /** primary: ink fill. quiet: ink text, line border. seal: the one urgent action per screen. */
+  /** primary: indigo fill, paper words. quiet: paper fill, edge border, ink words. seal: madder fill, the one urgent action per screen (Approve always). */
   variant?: "primary" | "quiet" | "seal";
   size?: "normal" | "small";
   className?: string;

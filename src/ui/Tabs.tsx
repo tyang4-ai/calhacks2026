@@ -15,10 +15,15 @@ export interface TabsProps<Id extends string = string> {
   lang: Lang;
   /** When given, tab n carries `<tabTestIdPrefix><id>`. */
   tabTestIdPrefix?: string;
+  /**
+   * underline (default): a row of tabs. segmented: drop 3's ModePicker, equal 36 px segments with
+   * the selected one in indigo wash, border and weight (search-surprise-mode).
+   */
+  variant?: "underline" | "segmented";
 }
 
 /** A row of tabs. The selected tab is marked by its underline and its weight, not by color alone. */
-export function Tabs<Id extends string = string>({ testId, tabs, value, onChange, lang, tabTestIdPrefix }: TabsProps<Id>) {
+export function Tabs<Id extends string = string>({ testId, tabs, value, onChange, lang, tabTestIdPrefix, variant = "underline" }: TabsProps<Id>) {
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
     const at = tabs.findIndex((t) => t.id === value);
@@ -29,7 +34,7 @@ export function Tabs<Id extends string = string>({ testId, tabs, value, onChange
     onChange(tabs[n].id);
   }
   return (
-    <div className="c-tabs" role="tablist" data-testid={testId} lang={lang} onKeyDown={onKeyDown}>
+    <div className={`c-tabs${variant === "segmented" ? " c-tabs--segmented" : ""}`} role="tablist" data-testid={testId} lang={lang} onKeyDown={onKeyDown}>
       {tabs.map((tab) => {
         const on = tab.id === value;
         return (

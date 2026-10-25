@@ -2,6 +2,7 @@ import type { FormEvent, KeyboardEvent, ReactNode } from "react";
 import type { Lang, Text } from "../core/types";
 import { addChip, chipTestIds, removeChipAt } from "./cards";
 import { Chip } from "./Chip";
+import { Icon } from "./Icon";
 import { pickText, SEARCH_WORDS } from "./strings";
 
 export interface SearchBarProps {
@@ -72,10 +73,7 @@ export function SearchBar({
   return (
     <div className="c-searchbar" data-testid={testId} lang={lang}>
       <form className="c-searchbar__form" role="search" onSubmit={submit}>
-        <svg className="c-searchbar__icon" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
-          <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M12.5 12.5 L17 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
-        </svg>
+        <Icon name="search" className="c-searchbar__icon" />
         <input
           className="c-searchbar__input"
           data-testid={testIds.input}

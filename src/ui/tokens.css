@@ -1,24 +1,63 @@
-/* Silk and ink: every token in docs/common/design-system.md. Defined only here. */
+/* Warp and weft (design drop 3, direction B): every token in docs/common/design-system.md.
+   Values come from design/tokens.json's css object. Defined only here. */
 :root {
-  /* Color */
-  --c-color-paper: #f6f1e7;
-  --c-color-mat: #ede4d3;
-  --c-color-ink: #1c1a17;
-  --c-color-ink-soft: #5a5249;
-  --c-color-line: #d9cfbf;
-  --c-color-seal: #b23a2e;
-  --c-color-jade: #2f6b4f;
-  --c-color-amber: #8a5a0b;
-  --c-color-seal-wash: #f3dfda;
-  --c-color-jade-wash: #dfeae2;
-  /* The scrim behind an overlay: ink at 32%. */
-  --c-color-scrim: rgb(28 26 23 / 0.32);
+  /* Color: undyed ground, carded panels, natural dyes. Accents pair with a -wash for large fills. */
+  --c-color-paper: #FAF7F0;
+  --c-color-mat: #E4DCCD;
+  --c-color-ink: #211C18;
+  --c-color-ink-soft: #554E47;
+  --c-color-line: #D3C9B9;
+  --c-color-seal: #A0302A;
+  --c-color-jade: #3A6246;
+  --c-color-amber: #765600;
+  --c-color-seal-wash: #F2DCD7;
+  --c-color-jade-wash: #DDE7DE;
+  --c-color-ground: #EEE8DC;
+  --c-color-edge: #857A6C;
+  --c-color-indigo: #22406F;
+  --c-color-indigo-wash: #E1E6EF;
+  --c-color-amber-wash: #F0E5C4;
+  --c-color-ink-wash: #E4DCCD;
+  --c-color-plum: #6A3B63;
+  --c-color-plum-wash: #EEE2EB;
+  --c-color-teal: #1D5E63;
+  --c-color-teal-wash: #DCEAEA;
+  --c-color-clay: #8E4626;
+  --c-color-clay-wash: #F2E1D6;
+  --c-color-beam: #211C18;
+  --c-color-beam-raised: #2B2520;
+  --c-color-beam-line: #7A7066;
+  --c-color-beam-text: #FAF7F0;
+  --c-color-beam-soft: #C9BFB1;
+  --c-color-beam-live: #A9BDE2;
+  --c-color-beam-done: #8FC09D;
+  --c-color-beam-flag: #EE9A90;
+  --c-color-beam-wait: #DFBD63;
+  --c-color-scrim: rgba(33, 28, 24, 0.40);
 
-  /* Type families */
-  --c-font-body: "Inter Variable", "Noto Sans SC", system-ui, sans-serif;
-  --c-font-heading-en: "Fraunces Variable", "Noto Serif SC", Georgia, serif;
-  --c-font-heading-zh: "Noto Serif SC", "Fraunces Variable", serif;
-  --c-font-body-zh: "Noto Sans SC", "Inter Variable", system-ui, sans-serif;
+  /* Chart series, in order, never cycled. Status keeps jade, amber and seal. */
+  --c-chart-1: #284E99;
+  --c-chart-2: #AF5A21;
+  --c-chart-3: #B56CA6;
+  --c-chart-4: #718C39;
+  --c-chart-5: #017D9F;
+  --c-chart-grid: #D3C9B9;
+  --c-chart-axis: #554E47;
+  --c-chart-value: #211C18;
+
+  /* Type families. Source Sans 3 for everything, Source Code Pro for figures in tables and logs. */
+  --c-font-body: "Source Sans 3 Variable", "Noto Sans SC", "Noto Sans Canadian Aboriginal", system-ui, sans-serif;
+  --c-font-heading-en: "Source Sans 3 Variable", "Noto Sans SC", system-ui, sans-serif;
+  --c-font-heading-zh: "Noto Sans SC", "Source Sans 3 Variable", sans-serif;
+  --c-font-body-zh: "Noto Sans SC", "Source Sans 3 Variable", system-ui, sans-serif;
+  --c-font-mono: "Source Code Pro Variable", "Noto Sans SC", ui-monospace, monospace;
+  --c-font-seal: "Noto Serif SC", serif;
+
+  /* Weights */
+  --c-weight-regular: 400;
+  --c-weight-medium: 500;
+  --c-weight-semibold: 600;
+  --c-weight-bold: 700;
 
   /* Type scale (px) */
   --c-text-14: 14px;
@@ -28,9 +67,13 @@
   --c-text-24: 24px;
   --c-text-36: 36px;
   --c-text-48: 48px;
+  --c-text-64: 64px;
+
+  /* Leading */
   --c-leading-body: 1.5;
   --c-leading-body-zh: 1.7;
   --c-leading-heading: 1.2;
+  --c-leading-mono: 1.4;
 
   /* Space (px) */
   --c-space-4: 4px;
@@ -43,23 +86,61 @@
   --c-space-64: 64px;
   --c-space-panel-console: 24px;
   --c-space-panel-phone: 16px;
-  --c-space-mat: 6px;
+  --c-space-mat: 0px;
+
+  /* Sizes from ui-contract.md and design/layout.md */
+  --c-size-page-w: 1440px;
+  --c-size-page-h: 900px;
+  --c-size-topnav: 56px;
+  --c-size-processbar: 64px;
+  --c-size-beam: 120px;
+  --c-size-process-block-h: 48px;
+  --c-size-sell-nav: 184px;
+  --c-size-sell-header: 48px;
+  --c-size-drawer: 440px;
+  --c-size-overlay-w: 1200px;
+  --c-size-overlay-h: 720px;
+  --c-size-control-h: 40px;
+  --c-size-row-h: 44px;
+
+  /* Page grid */
+  --c-grid-columns: 12;
+  --c-grid-margin-shop: 48px;
+  --c-grid-gutter-shop: 24px;
+  --c-grid-margin-sell: 24px;
+  --c-grid-gutter-sell: 16px;
 
   /* Corners */
   --c-radius-panel: 2px;
-  --c-radius-control: 6px;
-  --c-radius-chip: 999px;
+  --c-radius-control: 2px;
+  --c-radius-chip: 2px;
   --c-radius-phone: 36px;
   --c-radius-seal: 0;
+  --c-radius-dot: 999px;
 
-  /* Shadow: phone frames only */
+  /* Strokes */
+  --c-stroke-hairline: 1px;
+  --c-stroke-rule: 3px;
+  --c-stroke-thread: 3px;
+  --c-stroke-thread-map: 4px;
+  --c-stroke-focus: 2px;
+
+  /* Thread dashes */
+  --c-thread-dash-attention: 8 6;
+  --c-thread-dash-idle: 2 6;
+
+  /* Shadows: phone frames and the centered process overlay */
   --c-shadow-phone: 0 12px 32px rgba(28, 26, 23, 0.18);
+  --c-shadow-overlay: 0 16px 40px rgba(33, 28, 24, 0.28);
 
-  /* Motion */
-  --c-motion-stitch: 900ms;
-  --c-motion-stitch-ease: cubic-bezier(0, 0, 0.2, 1);
+  /* Motion, on the player clock */
+  --c-motion-stitch: 700ms;
+  --c-motion-stitch-ease: cubic-bezier(0.45, 0, 0.55, 1);
   --c-motion-seal: 220ms;
   --c-motion-ui: 160ms;
+  --c-motion-weave-stagger: 40ms;
+  --c-motion-tighten: 160ms;
+  --c-motion-pulse: 1200ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -67,5 +148,8 @@
     --c-motion-stitch: 0ms;
     --c-motion-seal: 0ms;
     --c-motion-ui: 0ms;
+    --c-motion-weave-stagger: 0ms;
+    --c-motion-tighten: 0ms;
+    --c-motion-pulse: 0ms;
   }
 }

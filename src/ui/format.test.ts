@@ -32,11 +32,15 @@ describe("formatDate", () => {
 describe("motion helpers", () => {
   it("follow the player's time", () => {
     expect(stitchProgress(1000, 1000)).toBe(0);
-    expect(stitchProgress(1900, 1000)).toBe(1);
-    expect(stitchProgress(1450, 1000)).toBeGreaterThan(0.5);
+    // Drop 3: the stitch draws in 700 ms, ease-out, so it is past half (the amount label shows) by 300 ms.
+    expect(stitchProgress(1700, 1000)).toBe(1);
+    expect(stitchProgress(1699, 1000)).toBeLessThan(1);
+    expect(stitchProgress(1300, 1000)).toBeGreaterThan(0.5);
+    expect(stitchProgress(1350, 1000)).toBeGreaterThan(0.5);
     expect(stitchProgress(1000, 1000, true)).toBe(1);
-    expect(sealPose(0, 0)).toEqual({ scale: 1.15, opacity: 0, rotate: -0 });
-    expect(sealPose(220, 0)).toEqual({ scale: 1, opacity: 1, rotate: -4 });
+    // Drop 3: the seal presses in, scale 1.06 to 1, and never turns.
+    expect(sealPose(0, 0)).toEqual({ scale: 1.06, opacity: 0, rotate: 0 });
+    expect(sealPose(220, 0)).toEqual({ scale: 1, opacity: 1, rotate: 0 });
     expect(sealPose(0, 0, true).rotate).toBe(0);
   });
 });
