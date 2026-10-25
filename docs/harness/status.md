@@ -1,9 +1,9 @@
-STAGE: V2
-NEXT: the drop 3 review, the G5 series, then the freeze at 5:00
+STAGE: FREEZE
+NEXT: freeze (B15's G5 finishing, scribe T6, G6, tag final)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 04:07 PT
+UPDATED: 2026-10-25 05:00 PT
 
 # Status board
 
@@ -125,12 +125,12 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
-| B11-embed | T1-T8 built, trained and published; G5 after T9 pass 2 | pairs by Claude (Haiku, one Sonnet retry); Hub publish 11:57 PM | | trained 45.8 min at batch 16; recall@5 custom 0.789, keyword 0.784, hybrid 0.825; private repo Fireclaw2396/cindia-embed rev 5ad57138 |
+| B11-embed | built, trained and published; live through B12's adapter; G5 not run before the freeze | pairs by Claude (Haiku, one Sonnet retry); Hub publish 11:57 PM | | recall@5 custom 0.789, keyword 0.784, base 0.722, hybrid 0.825; MRR@10 hybrid 0.940; real text matches cft_01 0.74 |
 | B12-search | green: G5 7/7 on the tour in the worktree | Elastic hybrid live: seed ~30 s, query 0.61 s, Agent Builder 7.1 s | demo-ok-b12 | Elastic eval recall@5 0.819, MRR 0.887; T7 not built; first G5 run failed only its live tour at load 7.7 |
 | B13-live | green: G5 7/7 on the tour in the main tree | live: spacetime true, seeded 54/30/5, live round trip passes | demo-ok-b13 | T1-T7 committed; SPACETIME_TOKEN in .env |
 | B14-swarm | green: G5 7/7 on the tour in the worktree | d04 live median 5.87 s (L15 quoted), listing 6.6 s, storefront 3.3 s | demo-ok-b14 | Agent Builder times out at 9.4 s, find answers on B12 search at about 17 s |
-| B15-watch | T1-T6 built and committed; G5 blocked on PUBLIC_SITE_URL | Haiku claims and Sonnet Reporter (3.3 s) live; Apify crawl waits for the market | | threshold 0.22 measured; T7 not built |
-| B16-bank-books | T1-T4 built and committed; G5 after G4v2 | Nessie live: seed 8.3 s, reconcile 1.2 s, fund move 1.9 s | | money-map-live-bank.spec needs M-desktop's player fix |
+| B15-watch | built and committed; G5 running in the main tree at the freeze (the worktree run failed only for want of the Apify credential, which lives in .env) | Haiku claims and Sonnet Reporter (3.3 s) live; the market at https://cindia.design/market/ | | threshold 0.22 measured; T7 not built |
+| B16-bank-books | built and committed; live specs pass (6/6 with B16 live); G5 not run before the freeze | Nessie live: seed 8.3 s, reconcile 1.2 s, fund move 1.9 s | | a person's move now draws finished while paused (money-map fix) |
 
 ## Tags
 
@@ -246,21 +246,28 @@ Each item names the default already in use, so the build never waits.
 
 ## Cut and simulated
 
-Everything that ends up cut or still on scripted events, for the README and Devpost.
+Everything that ends up cut or still on scripted events, for the README and Devpost. Final at the freeze (Oct 25, 5:00 AM PT).
 
-**Cut:** nothing (as of 8:00 PM, Oct 24).
+**Cut:** no plan was cut. Not built by the freeze:
+- B12's T7 and B15's T7 (optional tasks).
+- Drop 3's feature layout rounds from `design/changes.md` and the review (`artifacts/gates/G4v2-d3-review.json`): the search result cards (only three of six results show on d01, and L3 sits under the frame's edge on the first two), the piece page and receipt layout, the support drawer's step strip, seller-hub's three columns, the money map lattice, the catch line's 48 px amount, the store hero, maker-statement, communities, the presenter hint and the drawer scrim. The kit and the shell carry drop 3; these pages keep their v2 layouts in the new look.
+- Gordon's English-only step 2: the Chinese text is still in the code and the mock data, and nothing renders it (decisions.md 11:55 PM allows this).
+- M-buyer's contract change 6 in part: the phone flow is gone, and the unfilled `buyer.main` slot ID stays in the shared list until after the freeze.
+- pc_27, pc_32, pc_35, pc_37, pc_38, pc_39 and pc_48 show their placeholders (Gordon's art check), including pc_38 on the surprise beat.
 
-**Simulated today, with the Simulated badge:**
-- Every v2 screen that doesn't exist yet. It will play scripted events, and its live source stays planned.
-- The v1 keyed upgrades B02 (the catch's explanation and follow-up), B04 (the money map's balance, the sale and payout postings), B07 (Ask Cindy) and B09 (the gift finder) have live keys in the cloud, but play scripted in the demo until each passes its G5.
+**Live, gated on the tour (G5 with a live tour run):** B12 vibe search on Elastic (`demo-ok-b12`), B13 SpacetimeDB (`demo-ok-b13`), B14 the agent swarm on Claude (`demo-ok-b14`). B15 the counterfeit watch on Apify had its G5 running in the main tree at the freeze (the result goes in the B15 row and the Gates table). v1's B01, B03, B05, B06, B08, B09 and B10 passed G5 on v1's timeline (`demo-ok-b01`, `demo-ok-b03`, `demo-ok-b05`, `demo-ok-b06`, `demo-ok-b08`, `demo-ok-b09`, `demo-ok-b10`).
+
+**Live in the cloud, built and tested, without a G5 on the tour:** B11, Cindia's own embedding model (trained, scored and published to the private Hugging Face repo; recall at 5 0.789 against 0.784 for keywords, hybrid 0.825), and B16, the bank books on Nessie (its live specs pass, 6 of 6 with B16 live). Each has its server tests and its live pytest passing; its G5 on the tour didn't fit before the freeze. B02 (the catch's explanation), B04 (the bank) and B07 (Ask Cindy) passed their live calls but not v1's timing harness under load (B04 11 of 13 at 12:45 AM).
 
 **Simulated by design, even when everything is green:**
+- The guided tour: it plays scripted events in both modes, so it always runs. A person's own request in live mode reaches the real services.
+- The public site (https://cindia.design): the scripted public build, with no Pay and no Live switch.
 - The checkout ("Demo checkout, no real charge"; the card number becomes a token).
 - Sending: the follow-up to the gallery and any counterfeit report never leave Cindia.
 - The bank: Nessie is a sandbox bank, so no real money moves.
 - The verification line on every piece: no real check was done.
 - The community pages: placeholder text by the Cindia team; in a real launch each community writes its own.
-- The guided tour: it plays scripted events in both modes.
+- Every maker, community and story is fictional (L30).
 
 ## Log
 
@@ -447,3 +454,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 03:38 PT · I3 kit half done (check:scope 182, smoke 124; stitch 700 ms ease-out); F-process bar polish (36/36 process specs); M-approvals seal shows RB; approvals T8 specs on the tour order (42/42), committed; A1 (apr_02's buttons under the list's edge on /sell/approvals after apr_01's grant) still reproduces, polish after the freeze; spec sweep running, then the d3 G4v2 rerun · status.md
 - 2026-10-25 04:07 PT · G4v2 PASS 5/5 on drop 3 with Gordon's new tagline (tour 220.0 s x3, offline); check 1046, check:data 301, contrast 79/79; committed in five groups (tagline, I3 drop 3, F-process bar, M-approvals seal, maker-statement specs) plus the earlier English-only spec sweep (5 groups, each passed by a skeptic); screenshots kept in artifacts/demo-d3/; four-lens screen review running; G5 series started (b12, b14 worktree; b13 main; b15, b16, b11 worktree; none starts after 5:05) · artifacts/gates/G4v2-0346.md
 - 2026-10-25 04:25 PT · drop 3 review: no confirmed blocker (R1, d13's Model card table overflow, real but not blocking); tag demo-ok-v2-d3 on 988d0c1; polish after the freeze: search result cards cut at the frame bottom with L3 below the edge on d01/d02 (F-search), the process panel's scroll areas (F-process), d09's first card header cut (approvals), d08's flag band (reconcile), the piece page and receipt layout (buyer), the store hero (storefront), the money map lattice, the presenter hint and drawer scrim (shell), pc_38's placeholder on d02 · artifacts/gates/G4v2-d3-review.json
+- 2026-10-25 05:00 PT · STAGE FREEZE. G5 b13 PASS 7/7 (demo-ok-b13); G5 b15 in the worktree failed (no Apify credential there: live pytest skipped, watch-live stayed scripted; a B09 live Claude test timed out once) and reruns in the main tree from 4:57 with PUBLIC_SITE_URL in its environment, per Gordon; B16 and B11 G5s don't fit; Cut and simulated final · status.md
