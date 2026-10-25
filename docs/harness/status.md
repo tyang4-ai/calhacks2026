@@ -136,6 +136,7 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | v2-shell | 310e917c09523cbae65449f39adde7098ce03f39 | G1b | Oct 24 10:05 PM |
 | v2-support | d7c780d6ddd8b793cc24b6c7fe03cf507d70d112 | G3 support | Oct 24 10:06 PM |
 | v2-search | 7891b23c5cbb43e429ed6f3aee65b3e95bd52880 | G3 search | Oct 24 10:12 PM |
+| v2-communities | 633cc5cfc3c5b68eb109e420f6175eafebab2308 | G3 communities | Oct 24 10:23 PM |
 
 ## Environment
 
