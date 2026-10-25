@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:11 PT
+UPDATED: 2026-10-24 23:15 PT
 
 # Status board
 
@@ -115,7 +115,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B11-embed | running | | | T1-T4 code, T6 committed; T3 pairs 1,045 (Claude); probe 14.7 s a step at batch 32, peak 5.18 GB, so batch 16; training run started in the background |
 | B12-search | todo | | | |
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
-| B14-swarm | running | | | first spawn T1-T3, T5, T6; T4, T7-T10 after B12 |
+| B14-swarm | first spawn green (T1-T3, T5, T6) | Intake on Haiku 2.2 s | | T4, T7-T10 after B12 |
 | B15-watch | todo | | | fixture until the public site is up |
 | B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
 
@@ -351,3 +351,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:03 PT · dev server stopped at its 2-hour limit, restarted on 5173 (leads' runs in that minute may fail on the reload) · status.md
 - 2026-10-24 23:10 PT · S3 data round 1 done (G2b M1-M5, M8: old-names term by code point, sq_007 "a young child" (leak-guard clean), run_08 one piece each from two other communities, churro（丘罗羊）, 沙盒市场, cft_01's seller Lantern Lane Home Goods); check:data 234, check:scope PASS, support+search specs pass (two reruns after the dev-server restart), server tests 396; committed · status.md
 - 2026-10-24 23:11 PT · export:mock and B11's snapshot refreshed (passagesHash unchanged, 3ef4ee3c…); S3 T9 first pass spawned (model report into model.ts, pooled grading, cft_01's real text match); R0 leftovers sent: 主理人 to F-process, 市集 to M-approvals, b14 fixture to B14; scriptedSwarm.ts 沙盒市集 and gallery.tsx to the integrator's polish round · status.md
+- 2026-10-24 23:15 PT · B14 first spawn done (T1-T3, T5, T6: call path, steps, content check, roster and tools, Intake, Cindy, the specialists, the Writer and the support run; Finder and Curator stubbed until T4): test_b14_swarm 95 passed (one live Intake call 2.2 s), test:server 619, check PASS; committed (no router yet, T9) · status.md

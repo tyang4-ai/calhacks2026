@@ -1,0 +1,2562 @@
+{
+ "_about": "B14's test fixture, written from artifacts/mock/mock.json (npm run export:mock). Every line is fictional demo data from src/mock/: the roster, contentRules, the four communities, a few pieces, the co-op's makers, the policy, three orders and their payouts, Grace N.'s maker payout and statement, the gallery flag, the approvals' decision date, the scripted runs run_01 and run_07, the demo questions and the vibe vocabulary.",
+ "agents": [
+  {
+   "agentId": "cindy",
+   "name": {
+    "en": "Cindy",
+    "zh": "Cindy"
+   },
+   "job": {
+    "en": "Picks which agents run and in what order, then merges their results. No facts of her own",
+    "zh": "决定由哪些智能体执行、按什么顺序，再汇总它们的结果。她自己不提供任何事实"
+   },
+   "kind": "claude",
+   "model": "claude-haiku-5-5",
+   "tools": [
+    "route"
+   ],
+   "never": {
+    "en": "Answer from her own knowledge",
+    "zh": "凭自己的知识作答"
+   }
+  },
+  {
+   "agentId": "intake",
+   "name": {
+    "en": "Intake",
+    "zh": "接待"
+   },
+   "job": {
+    "en": "Reads the request: intent, budget, recipient, language, the IDs it mentions",
+    "zh": "读懂请求：意图、预算、送给谁、语言，以及提到的编号"
+   },
+   "kind": "claude",
+   "model": "claude-haiku-5-5",
+   "tools": [],
+   "never": {
+    "en": "Search or answer",
+    "zh": "搜索或作答"
+   }
+  },
+  {
+   "agentId": "finder",
+   "name": {
+    "en": "Finder",
+    "zh": "检索"
+   },
+   "job": {
+    "en": "Turns the request into keywords and filters, runs the search, returns candidates and scores. Find questions go to elastic_agent (Elastic Agent Builder), chosen in code",
+    "zh": "把请求转成关键词和筛选条件，执行搜索，返回候选作品和分数。找货类问题交给elastic_agent（Elastic Agent Builder），由代码选择"
+   },
+   "kind": "claude",
+   "model": "claude-haiku-5-5",
+   "tools": [
+    "cindia_search",
+    "elastic_agent"
+   ],
+   "never": {
+    "en": "Write prose",
+    "zh": "撰写正文"
+   }
+  },
+  {
+   "agentId": "curator",
+   "name": {
+    "en": "Curator",
+    "zh": "精选"
+   },
+   "job": {
+    "en": "Puts the final few in order. Each reason is B12's code-built one",
+    "zh": "为最后几件作品排序。每条理由都是B12由代码生成的理由"
+   },
+   "kind": "claude",
+   "model": "claude-sonnet-5-5",
+   "tools": [],
+   "never": {
+    "en": "Search",
+    "zh": "搜索"
+   }
+  },
+  {
+   "agentId": "steward",
+   "name": {
+    "en": "Steward",
+    "zh": "文化与认证"
+   },
+   "job": {
+    "en": "Answers authenticity and meaning only from the community's page, the verification record and the piece's own story and heritage line, quoting its source, and says \"I'll ask the maker\" otherwise",
+    "zh": "只依据社区页面、认证记录以及作品自己的故事和传承说明，回答真伪和含义问题，并注明出处；否则就说“我去问问匠人”"
+   },
+   "kind": "claude",
+   "model": "claude-sonnet-5-5",
+   "tools": [
+    "community_page",
+    "verification_record"
+   ],
+   "never": {
+    "en": "Invent cultural meaning",
+    "zh": "编造文化含义"
+   }
+  },
+  {
+   "agentId": "clerk",
+   "name": {
+    "en": "Clerk",
+    "zh": "订单"
+   },
+   "job": {
+    "en": "Order status, shipping, returns. Read-only. Arrival dates come from arrival_window, which the run calls as code, so no model does date arithmetic. On the buyer side it looks up only the orders on screen (L17)",
+    "zh": "订单状态、配送和退货，只读不改。送达日期来自arrival_window，由流程以代码调用，不让模型计算日期。在买家端只查询屏幕上的订单（L17）"
+   },
+   "kind": "claude",
+   "model": "claude-haiku-5-5",
+   "tools": [
+    "order_lookup",
+    "policy"
+   ],
+   "never": {
+    "en": "Change anything",
+    "zh": "修改任何内容"
+   }
+  },
+  {
+   "agentId": "writer",
+   "name": {
+    "en": "Writer",
+    "zh": "撰写"
+   },
+   "job": {
+    "en": "Writes the reply in the person's language from the facts the others returned, and relays a maker's answer in her own words",
+    "zh": "根据其他智能体返回的事实，用提问者的语言撰写回复，并原话转达匠人的回答"
+   },
+   "kind": "claude",
+   "model": "claude-sonnet-5-5",
+   "tools": [],
+   "never": {
+    "en": "Add facts",
+    "zh": "添加事实"
+   }
+  },
+  {
+   "agentId": "lister",
+   "name": {
+    "en": "Lister",
+    "zh": "上架"
+   },
+   "job": {
+    "en": "Drafts a listing in English and Chinese from the maker's notes, and marks the version the maker didn't write (L27)",
+    "zh": "根据匠人的笔记起草中英文商品信息，并标出不是匠人亲自写的版本（L27）"
+   },
+   "kind": "claude",
+   "model": "claude-sonnet-5-5",
+   "tools": [],
+   "never": {
+    "en": "Publish",
+    "zh": "发布"
+   }
+  },
+  {
+   "agentId": "describer",
+   "name": {
+    "en": "Describer",
+    "zh": "看图"
+   },
+   "job": {
+    "en": "Describes what's visible in a picture, in plain shape and color words",
+    "zh": "用平实的形状和颜色词描述图片里看得见的内容"
+   },
+   "kind": "claude",
+   "model": "claude-sonnet-5-5",
+   "tools": [
+    "image"
+   ],
+   "never": {
+    "en": "Guess meaning",
+    "zh": "猜测含义"
+   }
+  },
+  {
+   "agentId": "tagger",
+   "name": {
+    "en": "Tagger",
+    "zh": "标签"
+   },
+   "job": {
+    "en": "Proposes vibe keywords for the maker to approve",
+    "zh": "提议氛围关键词，交给匠人批准"
+   },
+   "kind": "claude",
+   "model": "claude-haiku-5-5",
+   "tools": [
+    "community_page"
+   ],
+   "never": {
+    "en": "Edit facts",
+    "zh": "修改事实"
+   }
+  },
+  {
+   "agentId": "checker",
+   "name": {
+    "en": "Checker",
+    "zh": "核查"
+   },
+   "job": {
+    "en": "Checks a draft against the community's protocols and the maker's facts. content_check() backs it in code (L26)",
+    "zh": "对照社区的规定和匠人提供的事实核查草稿，并由代码中的content_check()把关（L26）"
+   },
+   "kind": "claude",
+   "model": "claude-sonnet-5-5",
+   "tools": [
+    "community_page"
+   ],
+   "never": {
+    "en": "Approve",
+    "zh": "批准"
+   }
+  },
+  {
+   "agentId": "indexer",
+   "name": {
+    "en": "Indexer",
+    "zh": "索引"
+   },
+   "job": {
+    "en": "Builds the index entry and its vector, writes it to cindia-drafts",
+    "zh": "生成索引条目及其向量，写入cindia-drafts"
+   },
+   "kind": "code",
+   "tools": [
+    "embed",
+    "index_write"
+   ],
+   "never": {
+    "en": "Call a model",
+    "zh": "调用模型"
+   }
+  },
+  {
+   "agentId": "matcher",
+   "name": {
+    "en": "Matcher",
+    "zh": "对账"
+   },
+   "job": {
+    "en": "Matches payouts to orders",
+    "zh": "把结款与订单对应起来"
+   },
+   "kind": "code",
+   "tools": [
+    "b01"
+   ],
+   "never": {
+    "en": "Move money",
+    "zh": "动用资金"
+   }
+  },
+  {
+   "agentId": "explainer",
+   "name": {
+    "en": "Explainer",
+    "zh": "解释"
+   },
+   "job": {
+    "en": "Explains the catch",
+    "zh": "解释查出的问题"
+   },
+   "kind": "claude",
+   "model": "claude-sonnet-5-5",
+   "tools": [
+    "b02"
+   ],
+   "never": {
+    "en": "Move money",
+    "zh": "动用资金"
+   }
+  },
+  {
+   "agentId": "bookkeeper",
+   "name": {
+    "en": "Bookkeeper",
+    "zh": "记账"
+   },
+   "job": {
+    "en": "Derives the books and the workbook",
+    "zh": "推算账本并生成Excel报表"
+   },
+   "kind": "code",
+   "tools": [
+    "b06",
+    "b10"
+   ],
+   "never": {
+    "en": "Move money",
+    "zh": "动用资金"
+   }
+  },
+  {
+   "agentId": "scorer",
+   "name": {
+    "en": "Scorer",
+    "zh": "评分"
+   },
+   "job": {
+    "en": "Scores the planted errors",
+    "zh": "为测试用例评分"
+   },
+   "kind": "code",
+   "tools": [
+    "b03"
+   ],
+   "never": {
+    "en": "Move money",
+    "zh": "动用资金"
+   }
+  },
+  {
+   "agentId": "scout",
+   "name": {
+    "en": "Scout",
+    "zh": "巡查"
+   },
+   "job": {
+    "en": "Crawls the sandbox market through Apify",
+    "zh": "通过Apify抓取沙盒市场"
+   },
+   "kind": "code",
+   "tools": [
+    "apify_crawl"
+   ],
+   "never": {
+    "en": "Send a report",
+    "zh": "发送举报"
+   }
+  },
+  {
+   "agentId": "comparer",
+   "name": {
+    "en": "Comparer",
+    "zh": "比对"
+   },
+   "job": {
+    "en": "Scores look-alikes",
+    "zh": "为相似商品打分"
+   },
+   "kind": "code",
+   "tools": [
+    "embed"
+   ],
+   "never": {
+    "en": "Send a report",
+    "zh": "发送举报"
+   }
+  },
+  {
+   "agentId": "claims",
+   "name": {
+    "en": "Claims",
+    "zh": "声明核查"
+   },
+   "job": {
+    "en": "Checks what a found listing claims",
+    "zh": "核查找到的商品声称了什么"
+   },
+   "kind": "claude",
+   "model": "claude-haiku-5-5",
+   "tools": [],
+   "never": {
+    "en": "Send a report",
+    "zh": "发送举报"
+   }
+  },
+  {
+   "agentId": "reporter",
+   "name": {
+    "en": "Reporter",
+    "zh": "报告"
+   },
+   "job": {
+    "en": "Picks the claim words for the report template, for the owner",
+    "zh": "为报告模板挑选声明用词，交给负责人"
+   },
+   "kind": "claude",
+   "model": "claude-sonnet-5-5",
+   "tools": [],
+   "never": {
+    "en": "Send a report",
+    "zh": "发送举报"
+   }
+  },
+  {
+   "agentId": "designer",
+   "name": {
+    "en": "Designer",
+    "zh": "设计"
+   },
+   "job": {
+    "en": "Drafts a storefront",
+    "zh": "起草店铺页面"
+   },
+   "kind": "claude",
+   "model": "claude-sonnet-5-5",
+   "tools": [
+    "community_page"
+   ],
+   "never": {
+    "en": "Publish",
+    "zh": "发布"
+   }
+  }
+ ],
+ "contentRules": {
+  "bannedObjects": [
+   "yei",
+   "yeibichai",
+   "sandpainting",
+   "sand painting",
+   "whirling log",
+   "whirling-log",
+   "katsina",
+   "kachina",
+   "naja",
+   "squash blossom",
+   "sacred",
+   "ceremonial",
+   "ceremony",
+   "prayer",
+   "medicine",
+   "pipe",
+   "tobacco bag",
+   "mask",
+   "drum",
+   "rattle",
+   "dreamcatcher",
+   "dream catcher",
+   "totem",
+   "headdress",
+   "regalia",
+   "bandolier bag",
+   "dance apron",
+   "jingle dress",
+   "bow guard",
+   "costume",
+   "feather",
+   "eagle",
+   "ivory",
+   "bone",
+   "whalebone",
+   "baleen",
+   "sealskin",
+   "fur",
+   "shell",
+   "quill",
+   "沙画",
+   "克奇纳",
+   "卡奇纳",
+   "神圣",
+   "仪式",
+   "祭祀",
+   "药包",
+   "烟斗",
+   "烟草袋",
+   "面具",
+   "手鼓",
+   "摇铃",
+   "捕梦网",
+   "图腾",
+   "头饰",
+   "典礼服饰",
+   "斜挎珠饰袋",
+   "舞蹈围裙",
+   "叮当裙",
+   "护臂",
+   "戏服",
+   "羽毛",
+   "鹰羽",
+   "象牙",
+   "鲸骨",
+   "鲸须",
+   "海豹皮",
+   "毛皮",
+   "皮草",
+   "贝壳",
+   "豪猪刺"
+  ],
+  "stereotypeWords": [
+   "exotic",
+   "tribal",
+   "primitive",
+   "ethnic",
+   "mystical",
+   "spiritual",
+   "shamanic",
+   "sacred",
+   "ceremonial",
+   "spirit",
+   "totem",
+   "boho",
+   "native-inspired",
+   "authentic",
+   "ancient",
+   "timeless",
+   "warrior",
+   "princess",
+   "chief",
+   "powwow",
+   "smudge",
+   "healing",
+   "energy",
+   "Aztec",
+   "Inca"
+  ],
+  "meaningWords": [
+   "symbolizes",
+   "represents",
+   "protects",
+   "brings luck",
+   "象征",
+   "寓意"
+  ],
+  "accusingWords": [
+   "fraud",
+   "scam",
+   "illegal",
+   "fake",
+   "counterfeit",
+   "knockoff",
+   "copy",
+   "stolen",
+   "infringe",
+   "violate",
+   "假冒",
+   "仿冒",
+   "冒充",
+   "山寨",
+   "盗版",
+   "侵权",
+   "欺诈",
+   "违法"
+  ],
+  "peopleNames": {
+   "com_dine": [
+    "Diné",
+    "Navajo",
+    "纳瓦霍"
+   ],
+   "com_ojibwe": [
+    "Ojibwe",
+    "Ojibwa",
+    "Chippewa",
+    "Anishinaabe",
+    "奥吉布瓦"
+   ],
+   "com_acoma": [
+    "Acoma",
+    "Pueblo",
+    "阿科马"
+   ],
+   "com_seminole": [
+    "Seminole",
+    "塞米诺尔"
+   ],
+   "general": [
+    "Native American",
+    "Indigenous",
+    "Native",
+    "Indian",
+    "美洲原住民",
+    "原住民",
+    "土著"
+   ]
+  },
+  "allowedHosts": [
+   "example.com",
+   "example.org"
+  ]
+ },
+ "communities": [
+  {
+   "id": "com_dine",
+   "name": {
+    "en": "Diné Weaving and Silver Co-op",
+    "zh": "纳瓦霍（Diné）编织与银饰合作社"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Diné (Navajo)",
+    "zh": "纳瓦霍（Diné）"
+   },
+   "place": {
+    "en": "Navajo Nation, Arizona, USA",
+    "zh": "美国亚利桑那州纳瓦霍保留区"
+   },
+   "craft": {
+    "en": "Wool weavings, silver and turquoise jewelry",
+    "zh": "羊毛编织与绿松石银饰"
+   },
+   "about": {
+    "en": "Diné (Navajo) weavers at the co-op weave wool on upright looms, and its smiths decorate silver with hand stamps and set turquoise in it. The co-op makes wall weavings, rugs, earrings, rings, pendant necklaces and cuff bracelets.",
+    "zh": "合作社的纳瓦霍（Diné）织工在立式织机上织羊毛，银匠用手工印模为银器压花，并在银饰上镶嵌绿松石。合作社制作壁挂编织、地毯、耳环、戒指、吊坠项链和手镯。"
+   },
+   "protocols": [
+    {
+     "en": "No ceremonial pieces or designs, such as Yei or sandpainting designs.",
+     "zh": "不收录仪式用品或仪式图案，例如Yei图案或沙画图案。"
+    },
+    {
+     "en": "No meanings for patterns. A pattern is described by its shapes and colors.",
+     "zh": "不解释图案的含义。图案只用形状和颜色来描述。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "The Navajo Nation, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由纳瓦霍（Diné）族依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of the Navajo Nation or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是纳瓦霍（Diné）族的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_01",
+   "makerIds": [
+    "mkr_01",
+    "mkr_02",
+    "mkr_03"
+   ],
+   "studioId": "std_dine",
+   "storefrontId": "sto_01",
+   "projectIds": [
+    "prj_01"
+   ],
+   "demo": true
+  },
+  {
+   "id": "com_ojibwe",
+   "name": {
+    "en": "An Ojibwe beadwork co-op",
+    "zh": "一个奥吉布瓦（Ojibwe）串珠合作社"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Ojibwe",
+    "zh": "奥吉布瓦（Ojibwe）"
+   },
+   "place": {
+    "en": "Minnesota, USA",
+    "zh": "美国明尼苏达州"
+   },
+   "craft": {
+    "en": "Floral beadwork: earrings, pouches and necklaces",
+    "zh": "花卉串珠：耳环、小包和项链"
+   },
+   "about": {
+    "en": "Ojibwe beadworkers at the co-op stitch glass seed beads onto cloth or leather, often in floral designs, and also weave beads on a loom. The co-op makes beaded earrings, pouches and necklaces.",
+    "zh": "合作社的奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠缝在布或皮革上，常做成花卉图案，也在织机上编串珠。合作社制作串珠耳环、小包和项链。"
+   },
+   "protocols": [
+    {
+     "en": "No regalia, such as bandolier bags or dance aprons.",
+     "zh": "不收录典礼服饰，例如斜挎珠饰袋或舞蹈围裙。"
+    },
+    {
+     "en": "No pipe or tobacco bags.",
+     "zh": "不收录烟斗袋或烟草袋。"
+    },
+    {
+     "en": "No meanings for flowers or plants.",
+     "zh": "不解释花卉或植物的含义。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "An Ojibwe tribe or band, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由某个奥吉布瓦（Ojibwe）部落或族群依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of an Ojibwe tribe or band or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是某个奥吉布瓦（Ojibwe）部落或族群的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_02",
+   "makerIds": [
+    "mkr_04",
+    "mkr_05",
+    "mkr_06",
+    "mkr_07",
+    "mkr_08"
+   ],
+   "storefrontId": "sto_02",
+   "projectIds": [
+    "prj_02"
+   ],
+   "demo": true
+  },
+  {
+   "id": "com_acoma",
+   "name": {
+    "en": "An Acoma pottery studio",
+    "zh": "一个阿科马（Acoma）陶艺坊"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Acoma Pueblo",
+    "zh": "阿科马（Acoma）"
+   },
+   "place": {
+    "en": "New Mexico, USA",
+    "zh": "美国新墨西哥州"
+   },
+   "craft": {
+    "en": "Coil-built, hand-painted pottery",
+    "zh": "手工盘筑、手绘的陶器"
+   },
+   "about": {
+    "en": "Acoma potters at the studio coil their pots by hand with thin walls, cover them with a white slip, polish them with a smooth stone and paint them with a yucca brush. The studio makes jars, bowls and seed pots in black, orange and white.",
+    "zh": "陶艺坊的阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，用光滑的石头打磨，再用yucca（丝兰）笔绘制。陶艺坊制作黑、橙、白三色的陶罐、陶碗和种子罐。"
+   },
+   "protocols": [
+    {
+     "en": "No ceremonial pottery or designs.",
+     "zh": "不收录仪式用陶器或仪式图案。"
+    },
+    {
+     "en": "No named designs and no meanings for designs.",
+     "zh": "不使用有名称的图案，也不解释图案的含义。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "The Pueblo of Acoma, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由阿科马（Acoma）普韦布洛依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of the Pueblo of Acoma or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是阿科马（Acoma）普韦布洛的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_03",
+   "makerIds": [
+    "mkr_09",
+    "mkr_10",
+    "mkr_11",
+    "mkr_12",
+    "mkr_13"
+   ],
+   "storefrontId": "sto_03",
+   "projectIds": [
+    "prj_03"
+   ],
+   "demo": true
+  },
+  {
+   "id": "com_seminole",
+   "name": {
+    "en": "A Seminole patchwork co-op",
+    "zh": "一个塞米诺尔（Seminole）拼布合作社"
+   },
+   "kind": "native_american",
+   "people": {
+    "en": "Seminole",
+    "zh": "塞米诺尔（Seminole）"
+   },
+   "place": {
+    "en": "Florida, USA",
+    "zh": "美国佛罗里达州"
+   },
+   "craft": {
+    "en": "Patchwork skirts and jackets",
+    "zh": "拼布裙和拼布夹克"
+   },
+   "about": {
+    "en": "Seminole sewers at the co-op sew strips of cloth into long bands on sewing machines, then cut the bands and piece them back together in rows. The co-op makes patchwork skirts and jackets, including children's sizes.",
+    "zh": "合作社的塞米诺尔（Seminole）缝纫匠人用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。合作社制作拼布裙和拼布夹克，也有儿童尺码。"
+   },
+   "protocols": [
+    {
+     "en": "No named patchwork designs and no meanings for them.",
+     "zh": "不使用有名称的拼布图案，也不解释其含义。"
+    },
+    {
+     "en": "Nothing sold as a costume.",
+     "zh": "任何作品都不作为戏服出售。"
+    }
+   ],
+   "verification": {
+    "method": "nation_attestation",
+    "by": {
+     "en": "The Seminole Tribe of Florida, under the U.S. Indian Arts and Crafts Act, in a real launch",
+     "zh": "正式上线时由佛罗里达州塞米诺尔（Seminole）部落依据美国《印第安艺术和手工艺品法》认证"
+    },
+    "note": {
+     "en": "In a real launch, makers would be enrolled members of the Seminole Tribe of Florida or certified by it as Indian artisans, as the U.S. Indian Arts and Crafts Act defines. Cindia would keep only a yes or no, never the record. No real check was done for this demo.",
+     "zh": "正式上线时，匠人须是佛罗里达州塞米诺尔（Seminole）部落的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准。Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。"
+    }
+   },
+   "languages": [
+    "en"
+   ],
+   "leadId": "own_04",
+   "makerIds": [
+    "mkr_14",
+    "mkr_15",
+    "mkr_16",
+    "mkr_17"
+   ],
+   "storefrontId": "sto_04",
+   "projectIds": [
+    "prj_04"
+   ],
+   "demo": true
+  }
+ ],
+ "pieces": [
+  {
+   "id": "pc_01",
+   "title": {
+    "en": "Small grey, red and black wool weaving",
+    "zh": "灰红黑三色小幅羊毛编织"
+   },
+   "makerId": "mkr_01",
+   "kind": "featured",
+   "hours": 26,
+   "materialsCents": 2200,
+   "priceCents": 18000,
+   "story": {
+    "en": "A small wool weaving in grey, red and black, with a stepped diamond at its center. About 30 by 40 cm, woven tight so it hangs flat.",
+    "zh": "一幅灰、红、黑三色的小幅羊毛编织，中央是一个阶梯菱形。约30×40厘米，织得紧密，挂起来平整服帖。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the yarn",
+      "zh": "整理毛线"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 17
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_01.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "wall weaving",
+     "zh": "壁挂编织"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven"
+    ],
+    "motifs": [
+     "diamond",
+     "step"
+    ],
+    "colors": [
+     "grey",
+     "red",
+     "black"
+    ],
+    "sizeCm": {
+     "w": 30,
+     "h": 40
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "warm",
+     "bold"
+    ],
+    "occasions": [
+     "birthday"
+    ],
+    "recipients": [
+     "gift for mom"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small wall weaving in grey, red and black with a stepped diamond at its center.",
+    "zh": "插图：一幅灰、红、黑三色的小幅壁挂编织，中央是一个阶梯菱形。"
+   }
+  },
+  {
+   "id": "pc_04",
+   "title": {
+    "en": "Red, black and white wool rug with stepped diamonds",
+    "zh": "红黑白三色阶梯菱形羊毛地毯"
+   },
+   "makerId": "mkr_01",
+   "kind": "featured",
+   "hours": 130,
+   "materialsCents": 8000,
+   "priceCents": 95000,
+   "story": {
+    "en": "Three stepped diamonds in red and black on a white ground. About 60 by 100 cm, with even, tight edges.",
+    "zh": "白色底上织着三个红黑两色的阶梯菱形。约60×100厘米，边缘匀整紧实。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the yarn",
+      "zh": "整理毛线"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Dyeing the yarn",
+      "zh": "染线"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 98
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 6
+    }
+   ],
+   "image": "/images/pc_04.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "rug",
+     "zh": "地毯"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven",
+     "hand-dyed"
+    ],
+    "motifs": [
+     "diamond",
+     "step"
+    ],
+    "colors": [
+     "red",
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 60,
+     "h": 100
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "warm"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for dad"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a rug with three red and black stepped diamonds on a white ground.",
+    "zh": "插图：一块白底地毯，织着三个红黑两色的阶梯菱形。"
+   }
+  },
+  {
+   "id": "pc_07",
+   "title": {
+    "en": "Red and grey wool mini weaving",
+    "zh": "红灰双色迷你羊毛编织"
+   },
+   "makerId": "mkr_02",
+   "kind": "series",
+   "hours": 6,
+   "materialsCents": 600,
+   "priceCents": 4800,
+   "story": {
+    "en": "A palm-sized weaving in red and grey, about 15 by 15 cm, for a shelf or a desk.",
+    "zh": "一幅巴掌大小的红灰双色编织，约15×15厘米，适合摆在书架或书桌上。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Preparing the yarn",
+      "zh": "整理毛线"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 1
+    }
+   ],
+   "image": "/images/pc_07.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "wall weaving",
+     "zh": "壁挂编织"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven"
+    ],
+    "motifs": [
+     "stripe"
+    ],
+    "colors": [
+     "red",
+     "grey"
+    ],
+    "sizeCm": {
+     "w": 15,
+     "h": 15
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "warm",
+     "cheerful"
+    ],
+    "occasions": [
+     "birthday",
+     "thank you"
+    ],
+    "recipients": [
+     "gift for mom",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a palm-sized weaving in red and grey stripes.",
+    "zh": "插图：一幅巴掌大小的红灰条纹编织。"
+   }
+  },
+  {
+   "id": "pc_09",
+   "title": {
+    "en": "Silver and turquoise pendant necklace",
+    "zh": "绿松石银吊坠项链"
+   },
+   "makerId": "mkr_01",
+   "kind": "series",
+   "hours": 14,
+   "materialsCents": 1200,
+   "priceCents": 12000,
+   "story": {
+    "en": "One small oval of turquoise set in silver with a stamped border, on a silver chain.",
+    "zh": "一颗小小的椭圆形绿松石，镶在带压花边框的银托里，配一条银链。"
+   },
+   "heritage": {
+    "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+    "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting and shaping the silver",
+      "zh": "裁切银料并塑形"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Stamping the design",
+      "zh": "压印花纹"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Setting the turquoise",
+      "zh": "镶嵌绿松石"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Filing and polishing",
+      "zh": "锉磨抛光"
+     },
+     "hours": 4
+    }
+   ],
+   "image": "/images/pc_09.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "pendant necklace",
+     "zh": "吊坠项链"
+    },
+    "materials": [
+     "silver",
+     "turquoise"
+    ],
+    "techniques": [
+     "hand-stamped",
+     "stone setting"
+    ],
+    "motifs": [
+     "line"
+    ],
+    "colors": [
+     "silver",
+     "turquoise"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "elegant",
+     "calm"
+    ],
+    "occasions": [
+     "birthday",
+     "holiday"
+    ],
+    "recipients": [
+     "gift for mom",
+     "gift for a sister"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a silver pendant with one small oval turquoise stone inside a stamped border, on a silver chain.",
+    "zh": "插图：一枚带压花边框的银吊坠，镶着一颗小椭圆形绿松石，配一条银链。"
+   }
+  },
+  {
+   "id": "pc_12",
+   "title": {
+    "en": "Narrow stamped silver cuff bracelet",
+    "zh": "压花细银手镯"
+   },
+   "makerId": "mkr_01",
+   "kind": "series",
+   "hours": 11,
+   "materialsCents": 1000,
+   "priceCents": 9500,
+   "story": {
+    "en": "A narrow silver cuff stamped with small dots and lines, to wear alone or with others.",
+    "zh": "一只细窄的开口银手镯，压印着小圆点和线条，可以单戴，也可以和别的手镯叠戴。"
+   },
+   "heritage": {
+    "en": "Diné smiths have worked silver since the 1850s and 1860s, decorating it mostly with hand stamps, and have set turquoise in silver since about 1880.",
+    "zh": "纳瓦霍（Diné）银匠自19世纪50至60年代开始制作银器，主要用手工印模压花装饰，约1880年起在银饰上镶嵌绿松石。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting and shaping the silver",
+      "zh": "裁切银料并塑形"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Stamping the design",
+      "zh": "压印花纹"
+     },
+     "hours": 4
+    },
+    {
+     "step": {
+      "en": "Soldering",
+      "zh": "焊接"
+     },
+     "hours": 1
+    },
+    {
+     "step": {
+      "en": "Filing and polishing",
+      "zh": "锉磨抛光"
+     },
+     "hours": 3
+    }
+   ],
+   "image": "/images/pc_12.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "cuff bracelet",
+     "zh": "手镯"
+    },
+    "materials": [
+     "silver"
+    ],
+    "techniques": [
+     "hand-stamped",
+     "soldered"
+    ],
+    "motifs": [
+     "dot",
+     "line"
+    ],
+    "colors": [
+     "silver"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 5
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "elegant"
+    ],
+    "occasions": [
+     "everyday"
+    ],
+    "recipients": [
+     "gift for dad",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a narrow silver cuff stamped with small dots and lines.",
+    "zh": "插图：一只细窄的银手镯，压印着小圆点和线条。"
+   }
+  },
+  {
+   "id": "pc_03",
+   "title": {
+    "en": "Brown, white and grey wool rug",
+    "zh": "棕白灰三色羊毛地毯"
+   },
+   "makerId": "mkr_03",
+   "kind": "featured",
+   "hours": 160,
+   "materialsCents": 9500,
+   "priceCents": 120000,
+   "story": {
+    "en": "A rug in undyed brown, white and grey wool, with bands of small diamonds across it. About 75 by 120 cm.",
+    "zh": "一块用未经染色的棕、白、灰三色羊毛织成的地毯，横贯几道小菱形纹带。约75×120厘米。"
+   },
+   "heritage": {
+    "en": "Diné weavers weave on an upright loom. Early weavings used the wool of churro sheep in natural white and brown, indigo blue and red, and commercial yarns and dyes arrived in the 1870s.",
+    "zh": "纳瓦霍（Diné）织工在立式织机上编织。早期织物用丘罗羊（churro）的羊毛，颜色有天然的白与棕、靛蓝和红色；19世纪70年代起有了商品毛线和染料。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Spinning the wool",
+      "zh": "纺毛线"
+     },
+     "hours": 30
+    },
+    {
+     "step": {
+      "en": "Setting up the warp on the loom",
+      "zh": "在织机上挂经线"
+     },
+     "hours": 10
+    },
+    {
+     "step": {
+      "en": "Weaving",
+      "zh": "编织"
+     },
+     "hours": 112
+    },
+    {
+     "step": {
+      "en": "Finishing the edges",
+      "zh": "收边"
+     },
+     "hours": 8
+    }
+   ],
+   "image": "/images/pc_03.svg",
+   "communityId": "com_dine",
+   "facets": {
+    "object": {
+     "en": "rug",
+     "zh": "地毯"
+    },
+    "materials": [
+     "wool"
+    ],
+    "techniques": [
+     "handwoven",
+     "hand-spun"
+    ],
+    "motifs": [
+     "band",
+     "diamond"
+    ],
+    "colors": [
+     "brown",
+     "white",
+     "grey"
+    ],
+    "sizeCm": {
+     "w": 75,
+     "h": 120
+    },
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "earthy",
+     "calm",
+     "warm"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a rug in brown, white and grey wool with bands of small diamonds across it.",
+    "zh": "插图：一块棕、白、灰三色的羊毛地毯，横贯几道小菱形纹带。"
+   }
+  },
+  {
+   "id": "pc_13",
+   "title": {
+    "en": "Pink and white floral beaded earrings",
+    "zh": "粉白花卉串珠耳环"
+   },
+   "makerId": "mkr_04",
+   "kind": "series",
+   "hours": 5,
+   "materialsCents": 600,
+   "priceCents": 4500,
+   "story": {
+    "en": "A pair of beaded earrings with small pink and white flowers on green stems. Each earring is about 4 cm long, with the beads stitched onto a leather backing.",
+    "zh": "一对串珠耳环，绿色花茎上缀着粉色和白色的小花。每只约4厘米长，珠子缝在皮革衬底上。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Stitching the beads",
+      "zh": "缝珠"
+     },
+     "hours": 3.5
+    },
+    {
+     "step": {
+      "en": "Backing and edging",
+      "zh": "加衬并包边"
+     },
+     "hours": 0.5
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 0.5
+    }
+   ],
+   "image": "/images/pc_13.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "earrings",
+     "zh": "耳环"
+    },
+    "materials": [
+     "glass beads",
+     "leather",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "hand-stitched"
+    ],
+    "motifs": [
+     "flower",
+     "bud"
+    ],
+    "colors": [
+     "pink",
+     "white",
+     "green"
+    ],
+    "oneOfAKind": false,
+    "leadTimeDays": 7
+   },
+   "vibe": {
+    "moods": [
+     "soft",
+     "cheerful"
+    ],
+    "occasions": [
+     "birthday",
+     "everyday"
+    ],
+    "recipients": [
+     "gift for a sister",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a pair of beaded earrings with small pink and white flowers on green stems.",
+    "zh": "插图：一对串珠耳环，绿色花茎上缀着粉白两色的小花。"
+   }
+  },
+  {
+   "id": "pc_21",
+   "title": {
+    "en": "Red, black and white loom-beaded necklace",
+    "zh": "红黑白织机串珠项链"
+   },
+   "makerId": "mkr_06",
+   "kind": "featured",
+   "hours": 40,
+   "materialsCents": 2800,
+   "priceCents": 24000,
+   "story": {
+    "en": "A flat necklace of glass beads woven on a loom, with a row of small red flowers on a black and white band. About 46 cm long and 2 cm wide.",
+    "zh": "一条在织机上编成的玻璃珠扁项链，黑白相间的珠带上排着一行红色小花。约46厘米长、2厘米宽。"
+   },
+   "heritage": {
+    "en": "Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, often in floral designs. Glass beads reached the Ojibwe through the fur trade in the 1600s.",
+    "zh": "奥吉布瓦（Ojibwe）串珠匠人把玻璃小珠直接缝在布或皮革上，常做成花卉图案。玻璃珠在17世纪随毛皮贸易传到奥吉布瓦人手中。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Drawing the design",
+      "zh": "绘制图样"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Weaving the beads on a loom",
+      "zh": "在织机上编串珠"
+     },
+     "hours": 34
+    },
+    {
+     "step": {
+      "en": "Attaching the findings",
+      "zh": "安装配件"
+     },
+     "hours": 3
+    }
+   ],
+   "image": "/images/pc_21.svg",
+   "communityId": "com_ojibwe",
+   "facets": {
+    "object": {
+     "en": "bead necklace",
+     "zh": "串珠项链"
+    },
+    "materials": [
+     "glass beads",
+     "thread"
+    ],
+    "techniques": [
+     "beadwork",
+     "loom-woven"
+    ],
+    "motifs": [
+     "flower"
+    ],
+    "colors": [
+     "red",
+     "black",
+     "white"
+    ],
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "elegant"
+    ],
+    "occasions": [
+     "holiday",
+     "birthday"
+    ],
+    "recipients": [
+     "gift for mom",
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a flat loom-beaded necklace with small red flowers on a black and white band.",
+    "zh": "插图：一条织机串珠扁项链，黑白珠带上排着一行红色小花。"
+   }
+  },
+  {
+   "id": "pc_27",
+   "title": {
+    "en": "Small black and white geometric jar",
+    "zh": "黑白几何纹小陶罐"
+   },
+   "makerId": "mkr_09",
+   "kind": "series",
+   "hours": 18,
+   "materialsCents": 1500,
+   "priceCents": 26000,
+   "story": {
+    "en": "A small jar with a white slip, painted in black with geometric bands of fine lines. About 12 cm tall.",
+    "zh": "一只施白色泥浆的小陶罐，用黑色绘出由细线组成的几何纹带。约12厘米高。"
+   },
+   "heritage": {
+    "en": "Acoma potters coil their pots by hand with thin walls, cover them with a white slip and paint them with a yucca brush. Black and orange are the traditional colors.",
+    "zh": "阿科马（Acoma）陶匠手工盘筑薄壁陶器，施白色泥浆，再用yucca（丝兰）笔绘制。传统颜色是黑色和橙色。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Coiling the walls by hand",
+      "zh": "手工盘筑器壁"
+     },
+     "hours": 5
+    },
+    {
+     "step": {
+      "en": "Smoothing the walls",
+      "zh": "修整器壁"
+     },
+     "hours": 2
+    },
+    {
+     "step": {
+      "en": "Covering it with white slip and polishing it with a smooth stone",
+      "zh": "施白色泥浆，用光滑的石头打磨"
+     },
+     "hours": 3
+    },
+    {
+     "step": {
+      "en": "Painting with a yucca brush",
+      "zh": "用yucca（丝兰）笔绘制"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Firing",
+      "zh": "烧制"
+     },
+     "hours": 2
+    }
+   ],
+   "image": "/images/pc_27.svg",
+   "communityId": "com_acoma",
+   "facets": {
+    "object": {
+     "en": "jar",
+     "zh": "陶罐"
+    },
+    "materials": [
+     "clay",
+     "slip",
+     "paint"
+    ],
+    "techniques": [
+     "coil-built",
+     "stone-polished",
+     "hand-painted"
+    ],
+    "motifs": [
+     "geometric",
+     "fine line",
+     "band"
+    ],
+    "colors": [
+     "black",
+     "white"
+    ],
+    "sizeCm": {
+     "w": 11,
+     "h": 12
+    },
+    "oneOfAKind": false,
+    "leadTimeDays": 10
+   },
+   "vibe": {
+    "moods": [
+     "calm",
+     "elegant"
+    ],
+    "occasions": [
+     "housewarming"
+    ],
+    "recipients": [
+     "for myself",
+     "gift for a friend"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a small white jar painted with black geometric bands of fine lines.",
+    "zh": "插图：一只白色小陶罐，绘有黑色细线几何纹带。"
+   }
+  },
+  {
+   "id": "pc_41",
+   "title": {
+    "en": "Black jacket with red, yellow and white patchwork bands",
+    "zh": "红黄白拼布条带黑色夹克"
+   },
+   "makerId": "mkr_14",
+   "kind": "featured",
+   "hours": 60,
+   "materialsCents": 6000,
+   "priceCents": 68000,
+   "story": {
+    "en": "A black cotton jacket with three bands of red, yellow and white patchwork across the back and sleeves. Rickrack runs between the bands, and it fits a women's medium.",
+    "zh": "一件黑色棉质夹克，背部和袖子上横着三道红、黄、白三色的拼布条带。条带之间缝有波浪花边，适合女士中码。"
+   },
+   "heritage": {
+    "en": "Seminole patchwork is sewn from strips of cloth joined into bands on a sewing machine, then cut and pieced back together in rows. It grew after sewing machines arrived in the 1890s.",
+    "zh": "塞米诺尔（Seminole）拼布是用缝纫机把布条缝成长条，再裁开、重新拼成一排排花样。19世纪90年代缝纫机传入后，这门手艺逐渐发展起来。"
+   },
+   "process": [
+    {
+     "step": {
+      "en": "Cutting the strips",
+      "zh": "裁布条"
+     },
+     "hours": 6
+    },
+    {
+     "step": {
+      "en": "Sewing the strips into bands",
+      "zh": "把布条缝成长条"
+     },
+     "hours": 14
+    },
+    {
+     "step": {
+      "en": "Piecing the rows",
+      "zh": "拼接各排"
+     },
+     "hours": 16
+    },
+    {
+     "step": {
+      "en": "Sewing the jacket",
+      "zh": "缝制夹克"
+     },
+     "hours": 18
+    },
+    {
+     "step": {
+      "en": "Adding rickrack",
+      "zh": "缝上波浪花边"
+     },
+     "hours": 6
+    }
+   ],
+   "image": "/images/pc_41.svg",
+   "communityId": "com_seminole",
+   "facets": {
+    "object": {
+     "en": "jacket",
+     "zh": "夹克"
+    },
+    "materials": [
+     "cotton",
+     "thread",
+     "rickrack"
+    ],
+    "techniques": [
+     "patchwork",
+     "machine-sewn"
+    ],
+    "motifs": [
+     "band",
+     "square",
+     "zigzag"
+    ],
+    "colors": [
+     "black",
+     "red",
+     "yellow",
+     "white"
+    ],
+    "oneOfAKind": true,
+    "leadTimeDays": 3
+   },
+   "vibe": {
+    "moods": [
+     "bold",
+     "bright"
+    ],
+    "occasions": [
+     "holiday"
+    ],
+    "recipients": [
+     "for myself"
+    ]
+   },
+   "imageAlt": {
+    "en": "Illustration of a black jacket with red, yellow and white patchwork bands across the back and sleeves.",
+    "zh": "插图：一件黑色夹克，背部和袖子上是红黄白三色拼布条带。"
+   }
+  }
+ ],
+ "allMakers": [
+  {
+   "id": "mkr_01",
+   "role": "maker",
+   "name": {
+    "en": "Grace N.",
+    "zh": "Grace N."
+   },
+   "surnameChar": "N",
+   "lang": "en",
+   "communityId": "com_dine",
+   "receiptNote": {
+    "en": "Thank you for choosing my weaving.\nMy share of your purchase reached me on Oct 2.",
+    "zh": "谢谢您选择我的编织作品。\n您这笔购买中我的那份已在10月2日到账。"
+   }
+  },
+  {
+   "id": "mkr_02",
+   "role": "maker",
+   "name": {
+    "en": "Lena T.",
+    "zh": "Lena T."
+   },
+   "surnameChar": "T",
+   "lang": "en",
+   "communityId": "com_dine",
+   "receiptNote": {
+    "en": "Thank you for choosing a piece I made.\nMy share of your purchase reached me on Oct 2.",
+    "zh": "谢谢您选择我做的作品。\n您这笔购买中我的那份已在10月2日到账。"
+   }
+  },
+  {
+   "id": "mkr_03",
+   "role": "maker",
+   "name": {
+    "en": "Mae K.",
+    "zh": "Mae K."
+   },
+   "surnameChar": "K",
+   "lang": "en",
+   "communityId": "com_dine",
+   "receiptNote": {
+    "en": "Thank you for buying my work.\nMy share of your purchase reached me on Oct 2.",
+    "zh": "谢谢您购买我的作品。\n您这笔购买中我的那份已在10月2日到账。"
+   }
+  },
+  {
+   "id": "mkr_04",
+   "role": "maker",
+   "name": {
+    "en": "Sarah P.",
+    "zh": "Sarah P."
+   },
+   "surnameChar": "P",
+   "lang": "en",
+   "communityId": "com_ojibwe",
+   "languages": [
+    "en"
+   ]
+  },
+  {
+   "id": "mkr_09",
+   "role": "maker",
+   "name": {
+    "en": "Helen A.",
+    "zh": "Helen A."
+   },
+   "surnameChar": "A",
+   "lang": "en",
+   "communityId": "com_acoma",
+   "languages": [
+    "en"
+   ]
+  },
+  {
+   "id": "mkr_14",
+   "role": "maker",
+   "name": {
+    "en": "Brenda C.",
+    "zh": "Brenda C."
+   },
+   "surnameChar": "C",
+   "lang": "en",
+   "communityId": "com_seminole",
+   "languages": [
+    "en"
+   ]
+  }
+ ],
+ "policy": [
+  {
+   "id": "pol_01",
+   "title": {
+    "en": "Shipping",
+    "zh": "配送"
+   },
+   "body": {
+    "en": "Every community ships from its own region with tracked shipping. Each piece ships within the lead time shown on its page, then arrives 6 to 10 days after it ships.",
+    "zh": "每个社区都从各自所在的地区发货，并提供物流追踪。每件作品会在其页面标注的备货期内发出，发货后6到10天送达。"
+   },
+   "data": {
+    "transitDaysMin": 6,
+    "transitDaysMax": 10
+   }
+  },
+  {
+   "id": "pol_02",
+   "title": {
+    "en": "Returns",
+    "zh": "退货"
+   },
+   "body": {
+    "en": "A piece can be returned within 30 days of delivery, unused and as it arrived. Cindia refunds the full price once the piece is back with its maker.",
+    "zh": "作品送达后30天内可以退货，须未使用并保持收到时的样子。作品退回匠人手中后，Cindia全额退款。"
+   },
+   "data": {
+    "returnDays": 30
+   }
+  },
+  {
+   "id": "pol_03",
+   "title": {
+    "en": "Care",
+    "zh": "保养"
+   },
+   "body": {
+    "en": "Wool: hang it or lay it flat out of direct sun, and spot-clean it with cold water. Silver: wipe it with a soft dry cloth and keep it dry. Beadwork: keep it dry and store it flat. Pottery: dust it with a soft dry brush and keep it away from water. Cotton patchwork: wash it cold on a gentle cycle and hang it to dry.",
+    "zh": "羊毛：悬挂或平放，避免阳光直射，用冷水局部清洁。银饰：用柔软的干布擦拭，保持干燥。串珠：保持干燥，平放收纳。陶器：用柔软的干刷子除尘，避免接触水。棉质拼布：用冷水轻柔洗涤，挂起晾干。"
+   }
+  },
+  {
+   "id": "pol_04",
+   "title": {
+    "en": "Verification",
+    "zh": "认证"
+   },
+   "body": {
+    "en": "In a real launch, each maker would be an enrolled member of their nation or certified by it as an Indian artisan, as the U.S. Indian Arts and Crafts Act defines, and Cindia would keep only a yes or no, never the record. No real check was done for this demo. If a piece isn't as described, Cindia refunds it in full.",
+    "zh": "正式上线时，每位匠人须是其所属部族的在册成员，或经其认证为印第安手工艺人，以美国《印第安艺术和手工艺品法》的定义为准；Cindia只保存“是”或“否”，从不保存记录本身。本演示没有做任何真实核查。如果作品与描述不符，Cindia全额退款。"
+   }
+  },
+  {
+   "id": "pol_05",
+   "title": {
+    "en": "Commissions",
+    "zh": "定制"
+   },
+   "body": {
+    "en": "A commission is paid in milestones. Cindia holds the buyer's money and pays the maker each milestone's share only after the owner approves it. Money for milestones not yet released stays with Cindia, and if a commission is canceled, that money goes back to the buyer.",
+    "zh": "定制作品按里程碑付款。Cindia代为保管买家的款项，每个里程碑经负责人批准后，才把该里程碑的份额付给匠人。尚未发放的款项留在Cindia；如果定制取消，这部分款项退还给买家。"
+   }
+  }
+ ],
+ "orders": [
+  {
+   "id": "ord_001",
+   "channelId": "ch_cindia",
+   "pieceId": "pc_01",
+   "buyerId": "buy_01",
+   "date": "2026-09-01",
+   "grossCents": 18000,
+   "cardFeeCents": 552,
+   "platformFeeCents": 1800,
+   "commissionCents": 0,
+   "materialsCents": 2200,
+   "makerShareCents": 13448,
+   "status": "paid"
+  },
+  {
+   "id": "ord_002",
+   "channelId": "ch_cindia",
+   "pieceId": "pc_07",
+   "buyerId": "buy_02",
+   "date": "2026-09-02",
+   "grossCents": 4800,
+   "cardFeeCents": 169,
+   "platformFeeCents": 480,
+   "commissionCents": 0,
+   "materialsCents": 600,
+   "makerShareCents": 3551,
+   "status": "paid"
+  },
+  {
+   "id": "ord_003",
+   "channelId": "ch_cindia",
+   "pieceId": "pc_09",
+   "buyerId": "buy_03",
+   "date": "2026-09-04",
+   "grossCents": 12000,
+   "cardFeeCents": 378,
+   "platformFeeCents": 1200,
+   "commissionCents": 0,
+   "materialsCents": 1200,
+   "makerShareCents": 9222,
+   "status": "paid"
+  }
+ ],
+ "payouts": [
+  {
+   "id": "pay_001",
+   "channelId": "ch_cindia",
+   "date": "2026-09-01",
+   "grossCents": 18000,
+   "feesCents": 2352,
+   "refundCents": 0,
+   "netCents": 15648,
+   "orderIds": [
+    "ord_001"
+   ],
+   "refundIds": [],
+   "monthId": "2026-09"
+  },
+  {
+   "id": "pay_002",
+   "channelId": "ch_cindia",
+   "date": "2026-09-02",
+   "grossCents": 4800,
+   "feesCents": 649,
+   "refundCents": 0,
+   "netCents": 4151,
+   "orderIds": [
+    "ord_002"
+   ],
+   "refundIds": [],
+   "monthId": "2026-09"
+  },
+  {
+   "id": "pay_003",
+   "channelId": "ch_cindia",
+   "date": "2026-09-04",
+   "grossCents": 12000,
+   "feesCents": 1578,
+   "refundCents": 0,
+   "netCents": 10422,
+   "orderIds": [
+    "ord_003"
+   ],
+   "refundIds": [],
+   "monthId": "2026-09"
+  }
+ ],
+ "makerPayouts": [
+  {
+   "id": "mpo_01",
+   "makerId": "mkr_01",
+   "monthId": "2026-09",
+   "amountCents": 114918,
+   "orderIds": [
+    "ord_001",
+    "ord_003",
+    "ord_005",
+    "ord_009",
+    "ord_011",
+    "ord_014",
+    "ord_018",
+    "ord_021",
+    "ord_028"
+   ],
+   "heldCents": 9500,
+   "status": "proposed"
+  }
+ ],
+ "makerStatements": [
+  {
+   "id": "mst_01",
+   "makerId": "mkr_01",
+   "monthId": "2026-09",
+   "lines": [
+    {
+     "orderId": "ord_001",
+     "pieceId": "pc_01",
+     "makerShareCents": 13448
+    },
+    {
+     "orderId": "ord_003",
+     "pieceId": "pc_09",
+     "makerShareCents": 9222
+    },
+    {
+     "orderId": "ord_005",
+     "pieceId": "pc_12",
+     "makerShareCents": 7244
+    },
+    {
+     "orderId": "ord_009",
+     "pieceId": "pc_09",
+     "makerShareCents": 9222
+    },
+    {
+     "orderId": "ord_011",
+     "pieceId": "pc_12",
+     "makerShareCents": 7244
+    },
+    {
+     "orderId": "ord_014",
+     "pieceId": "pc_09",
+     "makerShareCents": 10422
+    },
+    {
+     "orderId": "ord_018",
+     "pieceId": "pc_12",
+     "makerShareCents": 8194
+    },
+    {
+     "orderId": "ord_021",
+     "pieceId": "pc_09",
+     "makerShareCents": 10422
+    },
+    {
+     "orderId": "ord_028",
+     "pieceId": "pc_04",
+     "makerShareCents": 49000
+    }
+   ],
+   "totalCents": 124418,
+   "heldCents": 9500,
+   "payoutDate": "2026-10-02"
+  }
+ ],
+ "flags": [
+  {
+   "id": "flg_01",
+   "kind": "short_payment",
+   "recordIds": [
+    "ctr_gallery_01",
+    "stm_gallery_2026_09",
+    "txn_026"
+   ],
+   "expectedCents": 204000,
+   "actualCents": 170000,
+   "deltaCents": 34000,
+   "trustRecordId": "ctr_gallery_01",
+   "explanation": {
+    "en": "The gallery's September statement charged 50% commission on all four sales and paid $1,700.00. The signed contract says 40%, which leaves the co-op $2,040.00 on $3,400.00 of sales. The bank shows $1,700.00 on Sep 30, matching the statement, not the contract. I trust the contract, so the gallery owes $340.00.",
+    "zh": "画廊9月对账单对四笔销售都按50%收取佣金，实付$1,700.00。已签合同约定40%，按$3,400.00的销售额，合作社应得$2,040.00。银行流水显示9月30日到账$1,700.00，与对账单一致，与合同不符。我以合同为准，画廊还欠$340.00。"
+   }
+  }
+ ],
+ "allApprovals": [
+  {
+   "id": "apr_01",
+   "kind": "follow_up",
+   "subjectIds": [
+    "fup_01"
+   ],
+   "proposedBy": "cindy",
+   "amountCents": 34000,
+   "overLimit": false,
+   "decisionDate": "2026-10-01",
+   "status": "pending"
+  },
+  {
+   "id": "apr_02",
+   "kind": "maker_payouts",
+   "subjectIds": [
+    "mpo_01",
+    "mpo_02",
+    "mpo_03"
+   ],
+   "proposedBy": "cindy",
+   "amountCents": 300600,
+   "overLimit": true,
+   "decisionDate": "2026-10-01",
+   "status": "pending"
+  },
+  {
+   "id": "apr_03",
+   "kind": "report_listing",
+   "subjectIds": [
+    "cft_01"
+   ],
+   "proposedBy": "cindy",
+   "overLimit": false,
+   "decisionDate": "2026-10-01",
+   "status": "pending"
+  },
+  {
+   "id": "apr_04",
+   "kind": "listing_publish",
+   "subjectIds": [
+    "lst_01"
+   ],
+   "proposedBy": "cindy",
+   "overLimit": false,
+   "decisionDate": "2026-10-01",
+   "status": "pending"
+  },
+  {
+   "id": "apr_05",
+   "kind": "milestone_release",
+   "subjectIds": [
+    "wip_01",
+    "mls_02"
+   ],
+   "proposedBy": "cindy",
+   "amountCents": 48000,
+   "overLimit": false,
+   "decisionDate": "2026-10-01",
+   "status": "pending"
+  }
+ ],
+ "swarmRuns": [
+  {
+   "runId": "run_01",
+   "side": "buyer",
+   "threadId": "thr_01",
+   "trigger": {
+    "kind": "support",
+    "matches": [
+     "did the maker weave this herself can it arrive by october 10",
+     "这是匠人亲手织的吗能在10月10日前送到吗"
+    ],
+    "pieceId": "pc_01"
+   },
+   "steps": [
+    {
+     "runId": "run_01",
+     "stepId": "stp_0001",
+     "agentId": "cindy",
+     "kind": "route",
+     "summary": {
+      "en": "Routing the question to Intake.",
+      "zh": "把问题交给接待。"
+     },
+     "ms": 500,
+     "model": "claude-haiku-5-5"
+    },
+    {
+     "runId": "run_01",
+     "stepId": "stp_0002",
+     "agentId": "intake",
+     "kind": "result",
+     "summary": {
+      "en": "Authenticity and delivery for pc_01, by Oct 10, in English.",
+      "zh": "关于pc_01的真伪和配送，10月10日前送达，英文。"
+     },
+     "ms": 800,
+     "model": "claude-haiku-5-5"
+    },
+    {
+     "runId": "run_01",
+     "stepId": "stp_0003",
+     "agentId": "cindy",
+     "kind": "call",
+     "summary": {
+      "en": "Calling the Steward for authenticity and the Clerk for delivery.",
+      "zh": "请文化与认证核对真伪，请订单核对配送。"
+     },
+     "ms": 400,
+     "model": "claude-haiku-5-5"
+    },
+    {
+     "runId": "run_01",
+     "stepId": "stp_0004",
+     "agentId": "steward",
+     "kind": "tool",
+     "summary": {
+      "en": "Reading the co-op's verification record.",
+      "zh": "查阅合作社的认证记录。"
+     },
+     "toolName": "verification_record",
+     "ms": 900,
+     "model": "claude-sonnet-5-5"
+    },
+    {
+     "runId": "run_01",
+     "stepId": "stp_0005",
+     "agentId": "steward",
+     "kind": "result",
+     "summary": {
+      "en": "The co-op attests that Grace N. made pc_01. Its record reads: \"Maker: Grace N., Diné Weaving and Silver Co-op.\"",
+      "zh": "合作社证明pc_01由 Grace N. 制作。记录原文：“匠人：Grace N.，纳瓦霍（Diné）编织与银饰合作社。”"
+     },
+     "ms": 1300,
+     "model": "claude-sonnet-5-5"
+    },
+    {
+     "runId": "run_01",
+     "stepId": "stp_0006",
+     "agentId": "steward",
+     "kind": "check",
+     "summary": {
+      "en": "Quote found word for word in the co-op's record.",
+      "zh": "在合作社的记录中逐字找到了这句引文。"
+     },
+     "ms": 500
+    },
+    {
+     "runId": "run_01",
+     "stepId": "stp_0007",
+     "agentId": "clerk",
+     "kind": "tool",
+     "summary": {
+      "en": "Reading the shipping policy (pol_01).",
+      "zh": "查阅配送政策（pol_01）。"
+     },
+     "toolName": "policy",
+     "ms": 600,
+     "model": "claude-haiku-5-5"
+    },
+    {
+     "runId": "run_01",
+     "stepId": "stp_0008",
+     "agentId": "clerk",
+     "kind": "tool",
+     "summary": {
+      "en": "arrival_window: ships by Sep 4, arrives Sep 10 to Sep 14.",
+      "zh": "arrival_window：9月4日前发出，9月10日至9月14日送达。"
+     },
+     "toolName": "arrival_window",
+     "ms": 400
+    },
+    {
+     "runId": "run_01",
+     "stepId": "stp_0009",
+     "agentId": "clerk",
+     "kind": "result",
+     "summary": {
+      "en": "An order on Sep 1 ships within 3 days and arrives Sep 10 to Sep 14, before Oct 10.",
+      "zh": "9月1日下单，3天内发出，9月10日至9月14日送达，早于10月10日。"
+     },
+     "ms": 1200,
+     "model": "claude-haiku-5-5"
+    },
+    {
+     "runId": "run_01",
+     "stepId": "stp_0010",
+     "agentId": "writer",
+     "kind": "reply",
+     "summary": {
+      "en": "Writing the reply in English, with the co-op's words and the dates.",
+      "zh": "用英文撰写回复，附上合作社的原话和日期。"
+     },
+     "ms": 1400,
+     "model": "claude-sonnet-5-5"
+    }
+   ],
+   "final": [
+    {
+     "type": "support.answered",
+     "payload": {
+      "threadId": "thr_01",
+      "runId": "run_01",
+      "agentId": "writer",
+      "reply": {
+       "en": "The co-op attests that Grace N. wove this herself. That's the co-op's record. Cindia hasn't checked it independently. Ordered on Sep 1, it ships by Sep 4 and arrives between Sep 10 and Sep 14, well before October 10.",
+       "zh": "合作社证明这件作品由 Grace N. 亲手织成。这是合作社的记录。Cindia尚未独立核实。如果9月1日下单，这件作品会在9月4日前发出，9月10日到9月14日之间送达，远早于10月10日。"
+      },
+      "refIds": [
+       "pc_01",
+       "com_dine",
+       "mkr_01",
+       "pol_01"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "runId": "run_07",
+   "side": "buyer",
+   "threadId": "thr_03",
+   "trigger": {
+    "kind": "support",
+    "matches": [
+     "what does the pattern on this weaving mean",
+     "这件编织上的图案是什么意思"
+    ],
+    "pieceId": "pc_01"
+   },
+   "steps": [
+    {
+     "runId": "run_07",
+     "stepId": "stp_0031",
+     "agentId": "cindy",
+     "kind": "route",
+     "summary": {
+      "en": "Routing the question to Intake.",
+      "zh": "把问题交给接待。"
+     },
+     "ms": 400,
+     "model": "claude-haiku-5-5"
+    },
+    {
+     "runId": "run_07",
+     "stepId": "stp_0032",
+     "agentId": "intake",
+     "kind": "result",
+     "summary": {
+      "en": "A question about meaning, for pc_01, in English.",
+      "zh": "关于pc_01含义的问题，英文。"
+     },
+     "ms": 700,
+     "model": "claude-haiku-5-5"
+    },
+    {
+     "runId": "run_07",
+     "stepId": "stp_0033",
+     "agentId": "cindy",
+     "kind": "call",
+     "summary": {
+      "en": "Calling the Steward.",
+      "zh": "请文化与认证处理。"
+     },
+     "ms": 300,
+     "model": "claude-haiku-5-5"
+    },
+    {
+     "runId": "run_07",
+     "stepId": "stp_0034",
+     "agentId": "steward",
+     "kind": "tool",
+     "summary": {
+      "en": "Reading the co-op's page.",
+      "zh": "查阅合作社页面。"
+     },
+     "toolName": "community_page",
+     "ms": 700,
+     "model": "claude-sonnet-5-5"
+    },
+    {
+     "runId": "run_07",
+     "stepId": "stp_0035",
+     "agentId": "steward",
+     "kind": "tool",
+     "summary": {
+      "en": "Reading the co-op's verification record.",
+      "zh": "查阅合作社的认证记录。"
+     },
+     "toolName": "verification_record",
+     "ms": 600,
+     "model": "claude-sonnet-5-5"
+    },
+    {
+     "runId": "run_07",
+     "stepId": "stp_0036",
+     "agentId": "steward",
+     "kind": "result",
+     "summary": {
+      "en": "Unknown: no record says what the pattern means.",
+      "zh": "未知：没有任何记录说明这个图案的含义。"
+     },
+     "ms": 900,
+     "model": "claude-sonnet-5-5"
+    },
+    {
+     "runId": "run_07",
+     "stepId": "stp_0037",
+     "agentId": "steward",
+     "kind": "check",
+     "summary": {
+      "en": "No quote about a meaning in the records, so no answer is given.",
+      "zh": "记录中没有关于含义的引文，因此不作回答。"
+     },
+     "ms": 400
+    },
+    {
+     "runId": "run_07",
+     "stepId": "stp_0038",
+     "agentId": "writer",
+     "kind": "reply",
+     "summary": {
+      "en": "Writing the reply, and forwarding the question to Grace N.",
+      "zh": "撰写回复，并把问题转给 Grace N.。"
+     },
+     "ms": 1000,
+     "model": "claude-sonnet-5-5"
+    }
+   ],
+   "final": [
+    {
+     "type": "support.answered",
+     "payload": {
+      "threadId": "thr_03",
+      "runId": "run_07",
+      "agentId": "writer",
+      "reply": {
+       "en": "Our records don't say, and I won't guess, so I'll ask Grace N. Her answer will show here in her own words.",
+       "zh": "我们的记录里没有答案，我不会乱猜，所以我会去问 Grace N.。她的回答会以她自己的原话显示在这里。"
+      },
+      "refIds": [
+       "pc_01",
+       "mkr_01",
+       "qst_01"
+      ]
+     }
+    },
+    {
+     "type": "question.forwarded",
+     "payload": {
+      "questionId": "qst_01",
+      "threadId": "thr_03",
+      "makerId": "mkr_01",
+      "pieceId": "pc_01",
+      "text": "What does the pattern on this weaving mean?",
+      "lang": "en"
+     }
+    }
+   ]
+  }
+ ],
+ "demoQuestions": [
+  {
+   "side": "buyer",
+   "text": {
+    "en": "Did the maker weave this herself? Can it arrive by October 10?",
+    "zh": "这是匠人亲手织的吗？能在10月10日前送到吗？"
+   }
+  },
+  {
+   "side": "buyer",
+   "text": {
+    "en": "What does the pattern on this weaving mean?",
+    "zh": "这件编织上的图案是什么意思？"
+   }
+  },
+  {
+   "side": "buyer",
+   "text": {
+    "en": "Anything like this under $100?",
+    "zh": "有没有100美元以内、类似这件的作品？"
+   }
+  },
+  {
+   "side": "seller",
+   "text": {
+    "en": "When do I get paid for September?",
+    "zh": "我9月的结款什么时候发？"
+   }
+  },
+  {
+   "side": "seller",
+   "text": {
+    "en": "Why is part of my September pay held?",
+    "zh": "为什么我9月的报酬有一部分暂缓发放？"
+   }
+  }
+ ],
+ "vibeVocabulary": {
+  "moods": [
+   "warm",
+   "bold",
+   "calm",
+   "bright",
+   "cheerful",
+   "quiet",
+   "earthy",
+   "playful",
+   "elegant",
+   "soft"
+  ],
+  "occasions": [
+   "birthday",
+   "housewarming",
+   "thank you",
+   "holiday",
+   "everyday"
+  ],
+  "recipients": [
+   "gift for mom",
+   "gift for dad",
+   "gift for a friend",
+   "gift for a sister",
+   "for myself"
+  ]
+ }
+}
