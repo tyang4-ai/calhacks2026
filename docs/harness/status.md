@@ -143,6 +143,7 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | v2-communities | 633cc5cfc3c5b68eb109e420f6175eafebab2308 | G3 communities | Oct 24 10:23 PM |
 | v2-art | 67be93b5d9325639081cbbbddaae99547dd3f12e | I2-art | Oct 24 10:59 PM |
 | v2-buyer | a87ab88eed9fd6276ddfbd5b27fc8dc43d92bb57 | G3 buyer | Oct 24 10:59 PM |
+| v2-deploy | 4dd9243b439e8a7007444fbd0b754edde86d59c8 | D-deploy | Oct 24 11:26 PM |
 
 ## Environment
 
