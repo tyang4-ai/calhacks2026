@@ -12,6 +12,8 @@
 // and the sandbox line, and every page carries noindex. No script, image, font, stylesheet link or
 // URL to another host. Nothing comes from anywhere but the mock data. The pages are committed, so
 // rerun this whenever src/mock/watch.ts changes.
+// English only (Gordon, Oct 24, 11:35 PM and 11:55 PM): the pages carry L1 and the claim in English
+// and nothing else. A claim's zh value in the data is never written.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -20,10 +22,9 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const DEFAULT_DATA = path.join(ROOT, 'artifacts', 'mock', 'mock.json');
 export const DEFAULT_OUT = path.join(ROOT, 'public', 'market');
 
-/** L1, word for word from glossary.md's label table (I2-shell). */
+/** L1, word for word from the English column of glossary.md's label table (I2-shell). */
 export const L1 = {
   en: 'Demo. Every maker, community and story here is fictional. Nothing is for sale.',
-  zh: '演示版。这里的每位匠人、每个社区和每个故事都是虚构的。所有物品均不出售。',
 };
 /** The market's own line, under L1 on every market page (D-deploy). */
 export const SANDBOX_LINE = "A sandbox market made for testing Cindia's copy watch. These listings are fictional.";
@@ -105,7 +106,6 @@ function page({ title, mainHtml, footerHtml }) {
     '<body>',
     '<header>',
     `<div class="notice">${escapeHtml(L1.en)}</div>`,
-    `<div class="notice" lang="zh">${escapeHtml(L1.zh)}</div>`,
     `<div class="sandbox">${escapeHtml(SANDBOX_LINE)}</div>`,
     '</header>',
     '<main>',
@@ -132,9 +132,6 @@ export function listingPage(listing) {
   const claim = listing.claim;
   if (claim && typeof claim.en === 'string' && claim.en.trim() !== '') {
     lines.push(`<p class="claim"><strong>Listing claim:</strong> ${escapeHtml(claim.en)}</p>`);
-  }
-  if (claim && typeof claim.zh === 'string' && claim.zh.trim() !== '') {
-    lines.push(`<p class="claim" lang="zh">${escapeHtml(claim.zh)}</p>`);
   }
   lines.push(`<p class="seller">${escapeHtml(sellerLine(listing))}</p>`);
   if (Number.isInteger(listing.priceCents)) lines.push(`<p class="price">${escapeHtml(formatUsd(listing.priceCents))}</p>`);

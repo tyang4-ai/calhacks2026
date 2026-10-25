@@ -98,8 +98,8 @@ export const agents: AgentSpec[] = [
     SONNET,
     [],
     {
-      en: "Drafts a listing in English and Chinese from the maker's notes, and marks the version the maker didn't write (L27)",
-      zh: "根据匠人的笔记起草中英文商品信息，并标出不是匠人亲自写的版本（L27）",
+      en: "Drafts a listing's title and summary from the maker's notes",
+      zh: "Drafts a listing's title and summary from the maker's notes",
     },
     PUBLISH,
   ),

@@ -366,6 +366,12 @@ describe("the agent roster", () => {
     expect(getAgent("designer")?.never.en).toBe("Publish");
     expect(JSON.stringify(agents)).not.toMatch(/opus|fable/i);
   });
+
+  it("the Lister drafts in English only and never translates (Gordon's English-only decision)", () => {
+    const job = "Drafts a listing's title and summary from the maker's notes";
+    expect(getAgent("lister")?.job).toEqual({ en: job, zh: job });
+    for (const a of agents) expect(a.job.en, a.agentId).not.toMatch(/chinese|translat/i);
+  });
 });
 
 describe("the copy watch", () => {

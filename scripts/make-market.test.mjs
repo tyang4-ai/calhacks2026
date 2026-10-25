@@ -48,13 +48,20 @@ async function loadMock() {
   }
 }
 
-/** L1's English and Chinese, read from glossary.md's label table. */
+/**
+ * Any Chinese, Japanese or Korean character, CJK punctuation or fullwidth form. The site is English
+ * only (Gordon, Oct 24, 11:35 PM and 11:55 PM), so no market page holds one.
+ */
+const CJK = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}　-〿＀-￯]/u;
+
+/** L1's English, read from glossary.md's label table (the column after the ID). */
 function glossaryL1() {
   const text = fs.readFileSync(path.join(ROOT, 'docs', 'common', 'glossary.md'), 'utf8');
   const row = text.split(/\r?\n/).find((l) => l.startsWith('| L1 |'));
   assert.ok(row, 'glossary.md has an L1 row');
   const cells = row.split('|').map((c) => c.trim());
-  return { en: cells[2], zh: cells[3] };
+  assert.ok(cells[2] && !CJK.test(cells[2]), 'glossary.md L1 has an English cell');
+  return { en: cells[2] };
 }
 
 const decode = (s) =>
@@ -81,7 +88,11 @@ function checkCommonRules(file, html, l1) {
   assert.ok(beforeMain.includes('<header>'), `${file}: the header sits above main`);
   const headerText = textOf(header);
   assert.ok(headerText.includes(l1.en), `${file}: the header shows L1 in English`);
-  assert.ok(headerText.includes(l1.zh), `${file}: the header shows L1 in Chinese`);
+  assert.ok(!CJK.test(html), `${file}: holds no Chinese, Japanese or Korean character (English only)`);
+  for (const m of html.matchAll(/\blang\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi)) {
+    const value = (m[1] ?? m[2] ?? m[3]).toLowerCase();
+    assert.ok(value === 'en' || value.startsWith('en-'), `${file}: lang="${value}" marks something as a language other than English`);
+  }
   assert.ok(headerText.includes(SANDBOX_LINE), `${file}: the header shows the sandbox line`);
   assert.ok(headerText.indexOf(l1.en) < headerText.indexOf(SANDBOX_LINE), `${file}: L1 comes before the sandbox line`);
   assert.ok(!/<p[\s>]/.test(beforeMain), `${file}: no paragraph before main, so the snippet is the page's first paragraph`);
@@ -168,7 +179,7 @@ describe('make-market against the current mock data', () => {
       assert.ok(main.indexOf(h1s[0][0]) < main.indexOf(firstP[0]), `${l.file}: the title comes before the snippet`);
       const mainText = textOf(main);
       if (l.claim?.en) assert.ok(mainText.includes(l.claim.en), `${l.file}: main holds the claim`);
-      if (l.claim?.zh) assert.ok(mainText.includes(l.claim.zh), `${l.file}: main holds the claim in Chinese`);
+      if (l.claim?.zh) assert.ok(!mainText.includes(l.claim.zh), `${l.file}: main leaves out the claim's Chinese (English only)`);
       if (l.seller) assert.ok(mainText.includes(`Sold by ${l.seller}`), `${l.file}: main holds the seller line`);
       if (Number.isInteger(l.priceCents)) assert.ok(mainText.includes(formatUsd(l.priceCents)), `${l.file}: main holds the price`);
     }
@@ -242,6 +253,17 @@ describe('make-market rules on made-up data', () => {
     assert.ok(!page.html.includes('class="price"'), 'no price line without priceCents');
   });
 
+  test('a claim with a zh value in the data renders its English only', () => {
+    const [index, page] = marketPages({ counterfeitCandidates: [{ ...base, url: '/market/listing-01.html' }] });
+    assert.ok(page.html.includes('<p class="claim"><strong>Listing claim:</strong> Claims nothing.</p>'));
+    assert.ok(!page.html.includes(base.claim.zh), 'the zh claim is never written');
+    assert.equal([...page.html.matchAll(/class="claim"/g)].length, 1, 'one claim line');
+    for (const p of [index, page]) {
+      assert.ok(!CJK.test(p.html), `${p.file}: no CJK character`);
+      assert.ok(!/lang="zh/i.test(p.html), `${p.file}: no lang="zh" element`);
+    }
+  });
+
   test('the page rules catch a script, an image, a stylesheet, a font and another host', () => {
     const [, page] = marketPages({ counterfeitCandidates: [{ ...base, url: '/market/listing-01.html' }] });
     const l1 = glossaryL1();
@@ -253,6 +275,8 @@ describe('make-market rules on made-up data', () => {
       '<style>@font-face { font-family: x; }</style>',
       '<a href="https://example.com/">x</a>',
       '<a href="//example.com/">x</a>',
+      '<p>演示版。</p>',
+      '<p lang="zh">Demo.</p>',
     ]) {
       assert.throws(() => checkCommonRules('bad', page.html.replace('</main>', `${bad}\n</main>`), l1), undefined, bad);
     }
