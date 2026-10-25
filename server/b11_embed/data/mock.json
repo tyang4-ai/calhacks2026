@@ -1,6 +1,6 @@
 {
  "_about": "The keys B11 uses from artifacts/mock/mock.json, written by python server/b11_embed/data.py --snapshot. Every line is fictional demo data from src/mock/.",
- "_generatedAt": "2026-10-25T04:38:11.213Z",
+ "_generatedAt": "2026-10-25T06:10:34.926Z",
  "pieces": [
   {
    "id": "pc_01",
@@ -6768,7 +6768,7 @@
   },
   {
    "id": "sq_007",
-   "text": "birthday present for a ten year old",
+   "text": "birthday present for a young child",
    "lang": "en",
    "grades": {
     "pc_50": 2,
