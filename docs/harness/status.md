@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:14 PT
+UPDATED: 2026-10-25 00:22 PT
 
 # Status board
 
@@ -396,3 +396,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:11 PT · G3 maker-statement PASS in the worktree plus verifier PASS; committed, tag v2-maker-statement; G3 approvals rerun PASS in the worktree (41, smoke 123) and its confirm recheck PASS, adversarial lens pending; desktop's first worktree run broke on over-long log names (script bug, not the feature), rerun queued; desktop verifier FAIL, findings next · status.md
 - 2026-10-25 00:12 PT · merged the planning session's docs/v2/video-brief.md (a brief for the separate demo-video conversation; its section 7 holds the pitch card draft, which I2-tour T4 uses for src/app/demo/pitch.ts until Gordon pastes the final text) · docs/v2/video-brief.md
 - 2026-10-25 00:14 PT · Gordon: Chinese goes entirely, in two steps (decisions.md); G3 process PASS after fix round 1 (worktree 3/3, verifier recheck PASS), committed, tag v2-process; M-desktop verifier FAIL on B1-B7 (all specs pass; text under 14 px and ellipsized labels), fix round 1 sent with English-only spec updates · status.md
+- 2026-10-25 00:22 PT · G3 desktop2 in the worktree: check:scope and every feature spec PASS, smoke 122/123 (a 502 from the main API mid-reload after the m key; environmental); desktop reruns after its fix round; keyed v1 G5s (b04, b02, b07) queued on a worktree API on 8001 · artifacts/gates/G3-desktop2-wt-0029.md
