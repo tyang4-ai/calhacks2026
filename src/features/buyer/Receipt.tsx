@@ -1,16 +1,15 @@
-// The buyer's receipt (F5, M-buyer T5): one order and a status line that follows receipt.updated.
-// "Received" after the sale, then "Paid to the maker" with the maker's name, share and paid date.
-// Share and paid date come from the receipt.updated payload, never the order, because a live B10
-// recomputes them.
-// - `orderId` picks the order, and defaults to the newest order in the store, as v1's buyer phone
-//   reads it. A person's ord_user_<n> lives only in the store, and a mock order such as ord_001 is
-//   found with getById() when the store doesn't hold it yet (D1-33).
-// - layout "phone" (the default) is v1's receipt in the buyer phone.
-// - layout "page" is the desktop receipt page's (M-buyer T5): the piece with its illustration and
-//   maker, the promise under the received status ("We'll show you when Grace N. is paid."), the
-//   maker's own note once she's paid, in her own words and language, with the Demo data badge,
-//   L10 in place of both for a person's own order, and the contribution that names this order.
-import type { CSSProperties, ReactNode } from "react";
+// The buyer's receipt on the desktop receipt page (F5, M-buyer T5): one order and a status line that
+// follows receipt.updated. "Received" after the sale, then "Paid to the maker" with the maker's name,
+// share and paid date. Share and paid date come from the receipt.updated payload, never the order,
+// because a live B10 recomputes them. It shows the piece with its illustration and maker, the
+// promise under the received status ("We'll show you when Grace N. is paid."), the maker's own note
+// once she's paid, in her own words and language, with the Demo data badge, L10 in place of both for
+// a person's own order, and the contribution that names this order.
+// `orderId` picks the order, and defaults to the newest order in the store when the route sets none.
+// A person's ord_user_<n> lives only in the store, and a mock order such as ord_001 is found with
+// getById() when the store doesn't hold it yet (D1-33). v1's phone layout went with the phone flow
+// (M-buyer T7).
+import type { CSSProperties } from "react";
 import type { CindiaState } from "../../core/state";
 import type { Community, Order, Person, Piece, Project } from "../../core/types";
 import { useCindia } from "../../core/store";
@@ -27,7 +26,6 @@ export interface ReceiptProps {
   lang: Lang;
   /** The order to show. Defaults to the newest order in the store. */
   orderId?: string;
-  layout?: "phone" | "page";
 }
 
 /** What the receipt shows of an order, from the store's order.placed or the mock's order. */
@@ -55,22 +53,6 @@ const selectReceipts = (s: CindiaState) => s.buyer.receipts;
 const selectContributions = (s: CindiaState) => s.projects.contributions;
 
 const softText: CSSProperties = { fontSize: "var(--c-text-14)", color: "var(--c-color-ink-soft)" };
-const rowStyle: CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "baseline",
-  gap: "var(--c-space-8)",
-  margin: 0,
-};
-
-function Row({ name, children }: { name: string; children: ReactNode }) {
-  return (
-    <div style={rowStyle}>
-      <dt style={softText}>{name}</dt>
-      <dd style={{ margin: 0, fontSize: "var(--c-text-16)", color: "var(--c-color-ink)", textAlign: "right" }}>{children}</dd>
-    </div>
-  );
-}
 
 function CheckIcon() {
   return (
@@ -81,7 +63,7 @@ function CheckIcon() {
   );
 }
 
-export function Receipt({ lang, orderId, layout = "phone" }: ReceiptProps) {
+export function Receipt({ lang, orderId }: ReceiptProps) {
   const newestId = useCindia(selectNewestOrderId);
   const orders = useCindia(selectOrders);
   const receipts = useCindia(selectReceipts);
@@ -93,7 +75,7 @@ export function Receipt({ lang, orderId, layout = "phone" }: ReceiptProps) {
   if (order === null) {
     return (
       <p data-testid="buyer-receipt" style={{ ...softText, margin: 0 }}>
-        {tr(layout === "page" && id !== null ? page.receiptMissing : ui.noReceipt, lang)}
+        {tr(id !== null ? page.receiptMissing : ui.noReceipt, lang)}
       </p>
     );
   }
@@ -133,7 +115,7 @@ export function Receipt({ lang, orderId, layout = "phone" }: ReceiptProps) {
           {tr(paid ? label.paidToMaker : label.received, lang)}
           {paid && <CheckIcon />}
         </span>
-        {paid ? (
+        {paid && (
           <>
             <span style={{ fontSize: "var(--c-text-14)", color: "var(--c-color-ink)" }}>
               {tr(label.maker, lang)} {makerName} · {tr(label.makerShare, lang)} <Money cents={receipt.makerShareCents} tone="in" />
@@ -145,35 +127,10 @@ export function Receipt({ lang, orderId, layout = "phone" }: ReceiptProps) {
             )}
             <span style={softText}>{tr(ui.paidNote, lang)}</span>
           </>
-        ) : (
-          layout === "phone" && <span style={softText}>{tr(ui.receivedNote, lang)}</span>
         )}
       </div>
     ) : null;
 
-  if (layout === "phone") {
-    return (
-      <section
-        data-testid="buyer-receipt"
-        data-order-id={order.orderId}
-        style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-8)" }}
-      >
-        <dl style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-4)", margin: 0 }}>
-          <Row name={tr(label.piece, lang)}>{piece ? tr(piece.title, lang) : order.pieceId}</Row>
-          <Row name={tr(ui.amount, lang)}>
-            <Money cents={order.grossCents} />
-          </Row>
-          <Row name={tr(ui.date, lang)}>{formatDate(order.date, lang)}</Row>
-          <Row name={tr(label.order, lang)}>
-            <code style={{ fontSize: "var(--c-text-14)" }}>{order.orderId}</code>
-          </Row>
-        </dl>
-        {status}
-      </section>
-    );
-  }
-
-  // The desktop receipt page.
   const userOrder = isUserOrder(order.orderId);
   const pieceMaker = piece ? getById<Person>(piece.makerId) : undefined;
   const community = piece ? getById<Community>(piece.communityId) : undefined;

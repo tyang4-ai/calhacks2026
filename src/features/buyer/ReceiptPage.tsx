@@ -17,7 +17,7 @@ export function ReceiptPage({ lang, orderId }: SlotProps) {
   return (
     <div data-testid="buyer-receipt-page" className="flex min-h-0 w-full flex-col items-center gap-3">
       <Panel sourceKeys={RECEIPT_KEYS} lang={lang} title={tr(page.receiptHeading, lang)} style={{ width: "100%", maxWidth: 720 }}>
-        <Receipt lang={lang} orderId={orderId} layout="page" />
+        <Receipt lang={lang} orderId={orderId} />
       </Panel>
       <div className="w-full max-w-[720px] text-sm">
         <Link to={shopRoute()}>← {tr(page.backToShop, lang)}</Link>

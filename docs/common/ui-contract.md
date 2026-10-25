@@ -82,7 +82,7 @@ An entry whose slots are all empty still shows, with its placeholder view.
 
 | Slot ID | Page and place | Feature | Wave | Source keys its panels render |
 |---|---|---|---|---|
-| `buyer.main` | No page: I2-tour removed `/shop/legacy`. M-buyer's last task deletes the slot | `buyer` | W1 | `b09-concierge`, `b10-derived`, `b04-bank` |
+| `buyer.main` | No page, and no feature fills it since M-buyer's T7 (Oct 25, 3:10 AM). The slot ID leaves the shared list after the freeze | none | W1 | `b09-concierge`, `b10-derived`, `b04-bank` |
 | `studio.map.main` | Sell view `map` | `money-map` | W1 | `b04-bank` |
 | `studio.month.main` | Sell view `month`, left two thirds | `reconcile` | W1 | `b01-match`, `b02-explain` |
 | `studio.month.side` | Sell view `month`, right third | `scenario` | W2 | `b05-scenario` |
@@ -324,8 +324,8 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 
 | Test ID | Feature | Element |
 |---|---|---|
-| `buyer-concierge-input` | buyer | The concierge's text box, in `buyer.main`, which no page renders since I2-tour. M-buyer's last task deletes it |
-| `buyer-concierge-results` | buyer | The three curated pieces, in `buyer.main`, which no page renders since I2-tour. M-buyer's last task deletes it |
+| `buyer-concierge-input` | buyer | The concierge's text box, in `buyer.main`, which no page renders since I2-tour. Deleted with the phone flow in M-buyer's T7; the row leaves after the freeze |
+| `buyer-concierge-results` | buyer | The three curated pieces, in `buyer.main`, which no page renders since I2-tour. Deleted with the phone flow in M-buyer's T7; the row leaves after the freeze |
 | `buyer-story-card` | buyer | The open piece's maker story card |
 | `buyer-process-timeline` | buyer | The process steps with their hours, inside the story card |
 | `buyer-split-bar` | buyer | The price split bar (`ShareBar`) |

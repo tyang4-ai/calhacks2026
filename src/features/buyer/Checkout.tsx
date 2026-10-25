@@ -10,6 +10,8 @@
 //   person's own order), and the contribution once one belongs to this checkout.
 // With `publicSite`, buyer-pay-blocked shows L6 in pay's place on both layouts, and nothing here can
 // emit a checkout or a contribution. The tour's own token and status still render from its events.
+// M-buyer T7 retired the phone flow, but kept the phone layout here: checkoutRules.test.ts still
+// checks the public build's block on it.
 import type { CSSProperties } from "react";
 import { userEvent } from "../../core/events";
 import { receiptRoute } from "../../core/nav";

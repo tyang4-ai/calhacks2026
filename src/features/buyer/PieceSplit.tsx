@@ -38,7 +38,7 @@ export function PieceSplit({ lang, pieceId }: PieceSplitProps) {
       <Money testId="buyer-split-price" cents={split?.grossCents ?? piece.priceCents} className="text-3xl leading-none font-bold" />
       {split !== null ? (
         <div className="flex flex-col gap-2">
-          <PriceSplit lang={lang} pieceId={pieceId} layout="page" />
+          <PriceSplit lang={lang} pieceId={pieceId} />
           <PriceCompare lang={lang} pieceId={pieceId} />
         </div>
       ) : (
