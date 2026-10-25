@@ -52,6 +52,7 @@ Why: Cindia is a platform for underrepresented makers, starting with Native Amer
 | End card title "Cindia · 顾绣" | "Cindia · Diné Weaving and Silver Co-op" |
 | B04's Nessie customer "Gu Embroidery" "Studio" and account "Gu studio operating" | "Dine Weaving and Silver" "Co-op" and "Dine co-op operating", in plain ASCII, because the sandbox bank finds them by exact string. Every `Text` people read keeps "Diné" |
 | B04's opening line "Opening balance std_gu 2026-09" | "Opening balance std_dine 2026-09" |
+| B04's line fallback "Studio record" (`_line_description`) | "Co-op record" |
 | B04's customer address (1450 Grant Avenue, San Francisco) | unchanged. Nessie needs one, nobody sees it, and the test checks only its keys |
 
 People's Chinese names are the same romanized names, as v1 already does for buyers. Buyers `buy_01` to `buy_20` don't change.
@@ -222,7 +223,7 @@ One lead, no builders: the change is mechanical.
 
 **SCOPE:** `server/routers/b02_explain.py, server/routers/b04_bank.py, server/routers/b07_ask.py, server/routers/b09_concierge.py, tests/server/test_b02_explain.py, tests/server/test_b04_bank.py, tests/server/test_b07_ask.py, tests/server/test_b09_concierge.py, tests/server/b01_month.json, tests/server/b02_records.json, tests/server/b03_month.json, tests/server/b04_history.json, tests/server/b05_month.json, tests/server/b06_month.json, tests/server/b07_records.json, tests/server/b09_catalog.json, tests/server/b10_records.json`
 
-- Routers: the Server prompts table and the B04 constants.
+- Routers: the Server prompts table and the B04 constants: `CUSTOMER_FIRST`, `CUSTOMER_LAST`, `ACCOUNT_NICKNAME`, `OPENING_DESCRIPTION` and the "Studio record" fallback in `_line_description`. B16 imports these, so keep their names and change only their values. The seed's other line descriptions are built from the mock's memos, so the three purchase lines take R0's new memos on their own.
 - Tests: `test_b04_bank.py` lines 281 and 285 take the new customer and nickname, and lines 361, 381 and 438 `std_dine`. `test_b02_explain.py` lines 53 and 54 the new signature. `test_b09_concierge.py` line 29 the new query, lines 137 and 139 the parser cases, and line 212's needles the new `pc_01` title and "Grace N.". `test_b07_ask.py` lines 334 and 389 the new answers.
 - **Fixtures.** The nine JSON files were dumped from `src/mock/`. Wait for the data-smith's T1 report, then rebuild each one's text from the new `src/mock/` with a throwaway dump under `artifacts/r0/`: a Vitest file and its own config there, run with `npx vitest run --config artifacts/r0/vitest.config.ts`. Nothing under `artifacts/` is committed. **Evidence:** a second throwaway script walks each old and new fixture side by side and proves every number, ID, date, key and array length is unchanged, and only strings differ. Its output goes in the report.
 - **Nessie.** The first seed after R0 creates the new customer and account on the sandbox. The old Gu account stays there unused. Nothing to clean up.

@@ -90,7 +90,7 @@ Checked against the sources below on Oct 24, 2026. Write nothing about these cra
 |---|---|---|---|---|
 | `com_dine`, weaving | Diné weavers weave on an upright loom. Early weavings used handspun wool of churro sheep, in natural white and brown, indigo blue and red. Commercial machine-spun yarns and aniline dyes arrived in the 1870s. Sash belts are woven too, warp-faced, in wool | rug, wall weaving, sash belt | Yei and sandpainting designs, ceremonial weavings, regional style names (most are named after trading posts), pattern meanings, "Navajo" as a product word | [CU Museum of Natural History, Navajo weaving](https://cumuseum-archive.colorado.edu/Exhibits/ThreeCultures/additional.html), [MFA Boston, sash belt 2018.207](https://mfaboston6.emuseum.com/objects/656907/sisichii-sash-belt), [Moab Sun News on Yei weaving](https://moabsunnews.com/2023/06/29/moab-history-what-is-the-yeibechai-style-of-weaving/) |
 | `com_dine`, silver | Diné smiths have worked silver since the 1850s and 1860s. Silver was never mined by Native people of the Southwest: smiths melted coins, later worked silver stock. Hand stamps became the main way to decorate silver, alongside sand casting. Turquoise has been set in silver since about 1880 | cuff bracelet, ring, earrings, pendant necklace | named forms (naja, squash blossom), bow guards, any spiritual story about a form (the Heard calls those false), meanings | [Heard Museum, Southwest silverwork 1850 to 1940](https://heard.org/southwest-silverwork-1850-1940/), [Penn Museum, Navajo silver and turquoise ring NA10808](https://penn.museum/collections/object/230755) |
-| `com_ojibwe`, beadwork | Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, and also weave beads on a loom. Floral designs are common. Glass beads reached the Ojibwe through the fur trade in the 1600s, most of them made in Murano, Italy | earrings, pouch, bag, pendant necklace, bead necklace | regalia (bandolier bags, dance aprons), pipe and tobacco bags, culturally sensitive items, what flowers or plants mean or are used for | [Minnesota Historical Society, Ojibwe artists](https://www.mnhs.org/sites/default/files/2025-05/ft-06-ojibwe-artists.pdf), [MNHS, Ojibwe material culture](https://www.mnhs.org/ojibwematerialculture), [Smithsonian NMNH, floral beaded phone grip, Red Lake](https://dashboard.si.edu/object/beaded-popsocket-and-cellphone-case:nmnhanthropology_16792271), [Smithsonian NMNH, beaded shoulder bag](https://si.edu/object/beaded-shoulder-bag%3Anmnhanthropology_8450754), [Spencer Museum, necklace with flower pendant](https://spencerart.ku.edu/art/collections-online/object/36949), [Wisconsin Historical Society, Ojibwe beaded earrings workshop](https://calendar.wisconsinhistory.org/?p=11208), [Hood Museum, Anishinaabe beaded belt](https://hoodmuseum.dartmouth.edu/objects/985.47.26580), [U of Minnesota, bandolier bag as regalia](https://ojibwe.lib.umn.edu/collection/bandolier-bag-326d557f-cf8f-490a-aacb-2a9669300584) |
+| `com_ojibwe`, beadwork | Ojibwe beadworkers stitch glass seed beads directly onto cloth or leather, and also weave beads on a loom. Floral designs are common. Glass beads reached the Ojibwe through the fur trade in the 1600s, most of them made in Murano, Italy | earrings, pouch, pendant necklace, bead necklace | regalia (bandolier bags, dance aprons), pipe and tobacco bags, culturally sensitive items, what flowers or plants mean or are used for | [Minnesota Historical Society, Ojibwe artists](https://www.mnhs.org/sites/default/files/2025-05/ft-06-ojibwe-artists.pdf), [MNHS, Ojibwe material culture](https://www.mnhs.org/ojibwematerialculture), [Smithsonian NMNH, floral beaded phone grip, Red Lake](https://dashboard.si.edu/object/beaded-popsocket-and-cellphone-case:nmnhanthropology_16792271), [Smithsonian NMNH, beaded shoulder bag](https://si.edu/object/beaded-shoulder-bag%3Anmnhanthropology_8450754), [Spencer Museum, necklace with flower pendant](https://spencerart.ku.edu/art/collections-online/object/36949), [Wisconsin Historical Society, Ojibwe beaded earrings workshop](https://calendar.wisconsinhistory.org/?p=11208), [Hood Museum, Anishinaabe beaded belt](https://hoodmuseum.dartmouth.edu/objects/985.47.26580), [U of Minnesota, bandolier bag as regalia](https://ojibwe.lib.umn.edu/collection/bandolier-bag-326d557f-cf8f-490a-aacb-2a9669300584) |
 | `com_acoma`, pottery | Acoma potters coil their pots by hand, with thin walls. The clay is mixed with finely ground shards of old pottery. A white slip covers the pot, which is polished with a smooth stone, painted with a yucca brush and fired. Black and orange are the traditional colors, in geometric designs with fine lines | jar, bowl, seed pot | what designs mean (the sources name rain, sun and others: keep them all out), named designs (parrots, deer, rainbow bands), where the clay comes from, ceremonial pottery, katsina | [Acoma Sky City Cultural Center, Acoma pottery](https://acomaskycity.org/page/acoma_pottery), [National Trust, Preservation magazine, Fall 2021](https://savingplaces.org/stories/the-ancient-art-of-pottery-at-new-mexicos-acoma-pueblo) |
 | `com_seminole`, patchwork | Seminole patchwork is made by sewing strips of cloth into long bands on a sewing machine, cutting the bands and sewing the pieces back together in rows. Sewing machines arrived in the 1890s, the earliest known patchwork dates from around World War I, and rickrack later replaced appliquéd ribbon. Women make skirts, jackets, shirts, dresses and children's clothes | skirt, jacket | named designs and what they stand for, presenting any piece as a costume, copying a living artist's design | [Ah-Tah-Thi-Ki Museum, It's Not a Costume: history](https://www.ahtahthiki.com/its-not-a-costume/history/), [Florida Seminole Tourism, Seminole patchwork](https://floridaseminoletourism.com/seminole-patchwork/), [NPR, Seminole patchwork: admiration and appropriation](https://www.npr.org/sections/codeswitch/2017/02/18/510241789/seminole-patchwork-admiration-and-appropriation) |
 
@@ -137,7 +137,7 @@ FX1 copies these two paragraphs into the `[FIGURE11]` and `[FIGURE12]` places.
 
 **11. The vibe query** in `d01-vibe` is exactly `a warm, bold gift for my mom. she loves red wool. under $200`. Its keywords are exactly `warm`, `bold`, `red`, `wool`, `gift for mom`, `under $200`, in that order (moods, then facet words, then the recipient through the alias `mom`, then the price). The scripted results are six pieces, all priced at 20000 or less, in this order: `pc_01` (Grace N.'s small grey, red and black wool weaving, matching all five word chips), `pc_07` (Lena T.'s red and grey wool mini weaving, four) and `pc_11` (Lena T.'s red and white wool weaving, four), then `pc_14` (red and green floral beaded earrings, Ojibwe, three), `pc_30` (a small black and orange seed pot, Acoma, three) and `pc_43` (a red, yellow and black patchwork skirt, Seminole, three). Each result's `matched` lists exactly the chips that piece carries. Every other piece at 20000 or less carries at most two of the five word chips.
 
-**12. Surprise me** in `d02-surprise` uses keyword `geometric`, method `fair_random` and seed 7, and draws `pc_27`, an Acoma seed pot by Helen A. (`mkr_09`), who sold nothing this month. `geometric` is carried only by Acoma and Seminole pieces, twelve at most, so every one of them is a candidate and the candidates come from two communities. `pc_27` is the first candidate in score-then-`pieceId` order, its `salesThisMonth` is 0, so its weight is the largest, and its maker has the fewest sales this month among the candidates' makers. mulberry32 seeded with 7 returns 0.0117 first, so seed 7 draws the first candidate.
+**12. Surprise me** in `d02-surprise` uses keyword `geometric`, method `fair_random` and seed 10, and draws `pc_38`, an Acoma jar by Julie M. (`mkr_12`), who sold nothing this month. Exactly nine pieces carry `geometric`, from two communities, so all nine are candidates. In candidate order (score, then `pieceId`, since every candidate scores the same on one keyword), with each piece's `salesThisMonth` and its weight as the payload carries it (raw weight `1 / (1 + salesThisMonth)` over their total, 194/60): `pc_27` (4) 0.0619, `pc_30` (3) 0.0773, `pc_32` (2) 0.1031, `pc_35` (5) 0.0515, `pc_38` (0) 0.3093, `pc_42` (3) 0.0773, `pc_45` (2) 0.1031, `pc_48` (4) 0.0619, `pc_51` (1) 0.1546. mulberry32 seeded with 10 returns 0.50199 first, so the draw walks to 0.50199 of the total and lands on `pc_38`, the fifth candidate and the one with the largest weight. Any first value from 0.2938 to 0.6031 would land on it. Every piece by `mkr_12` has `salesThisMonth` 0, and every other candidate's maker has at least one sale.
 
 ## The scripted runs, for contracts section 11
 
@@ -164,7 +164,7 @@ The data-smith does each spawn's tasks in order, one at a time, so a later task 
 - **Spawn 1** (V1 step 2): T1 alone. The orchestrator commits it as soon as `npm run check` passes, because I2-core T5's responders import the stubs.
 - **Spawn 2** (V1 step 3): T2, T3, T4, T5 and T7. None needs I2-core T5.
 - **Spawn 3** (V1 step 4, after I2-core T5 is committed): T6 and T8, which test through `src/sources/`.
-- **Spawn 4**, after B11's first real training run: T9.
+- **Spawn 4**, after B11's first real training run: T9's first pass. **Spawn 5**, after the orchestrator runs `python server/b11_embed/train.py --eval-only`: T9's second pass.
 
 | ID | Task | Files it owns | Depends on | Model |
 |---|---|---|---|---|
@@ -176,7 +176,7 @@ The data-smith does each spawn's tasks in order, one at a time, so a later task 
 | T6 | The demo search and surprise, and the 50 eval queries | `src/mock/search.ts`, `src/mock/searchEval.ts`, `tests/data/v2-search.test.ts` | T5, I2-core T5 committed | opus |
 | T7 | Splits, projects, storefronts, the listing, policy, the roster, the watch, the empty model | `src/mock/splits.ts`, `src/mock/projects.ts`, `src/mock/storefronts.ts`, `src/mock/listings.ts`, `src/mock/policy.ts`, `src/mock/agents.ts`, `src/mock/watch.ts`, `src/mock/model.ts`, `tests/data/v2-records.test.ts` | T5 | opus |
 | T8 | The scripted runs, the question, the database snapshot, the lookups, and the integrity and figures tests | `src/mock/swarm.ts`, `src/mock/database.ts`, `src/mock/index.ts`, `tests/data/v2-figures.test.ts`, `tests/data/v2-integrity.test.ts` | T6, T7 | opus |
-| T9 | After B11's first real run: copy `report.json` and the PCA points into `model.ts`, and compute `cft_01`'s real text match | `src/mock/model.ts`, `tests/data/v2-model.test.ts`, `tests/data/v2-records.test.ts`, `tests/data/v2-figures.test.ts` | B11 T5 | sonnet |
+| T9 | After B11's first real run: copy the report and the PCA points into `model.ts`, grade `unjudged.json`, and compute `cft_01`'s real text match. After `train.py --eval-only`: copy the report again | `src/mock/model.ts`, `src/mock/searchEval.ts`, `src/mock/watch.ts`, `tests/data/v2-model.test.ts`, `tests/data/v2-records.test.ts`, `tests/data/v2-figures.test.ts` | B11 T5 | sonnet |
 
 ### T1 · Stubs
 
@@ -209,14 +209,14 @@ Fourteen pieces per community, in the contracts' ID ranges. Makers in ID order: 
   - `vibe` from R18 (two to four moods, one to three occasions, one to three recipients),
   - `imageAlt` (en, zh) saying what the illustration shows.
 
-The mix: Ojibwe five earrings, four pouches, two bags, two pendant necklaces and one bead necklace. Acoma six seed pots, five jars and three bowls. Seminole eight skirts and six jackets, with at least one child's piece. Prices are believable for handmade work, from about $25 to about $4,500, and each community gets at least one piece under $60 and one over $400.
+The mix: Ojibwe five earrings, six pouches, two pendant necklaces and one bead necklace. Acoma six seed pots, five jars and three bowls. Seminole eight skirts and six jackets, with at least one child's piece. Prices are believable for handmade work, from about $25 to about $4,500, and each community gets at least one piece under $60 and one over $400.
 
 Pieces the figures and runs name:
 - **`pc_14`** (Ojibwe, `mkr_04`): "Red and green floral beaded earrings", under 6000, object earrings, materials glass beads and leather, colors red and green, motifs flower and leaf, moods bold and bright, recipients `gift for mom` and `gift for a friend`. It matches `bold`, `red` and `gift for mom` of figure 11, and never `warm` or `wool`.
-- **`pc_27`** (Acoma, `mkr_09` Helen A.): a seed pot carrying the motif `geometric`, `salesThisMonth` 0. Every piece by `mkr_09` has `salesThisMonth` 0.
+- **`pc_38`** (Acoma, `mkr_12` Julie M.): a jar carrying the motif `geometric`, figure 12's draw. Every piece by `mkr_12` (`pc_36` to `pc_38`) has `salesThisMonth` 0.
 - **`pc_30`** (Acoma, `mkr_10`): "Small black and orange seed pot", at most 20000, colors black, orange and white, motifs `geometric` and `fine line`, moods warm and bold, recipients `gift for mom`. It matches `warm`, `bold` and `gift for mom`, and never `red` or `wool`.
 - **`pc_43`** (Seminole): "Red, yellow and black patchwork skirt", at most 20000, materials cotton and rickrack, colors red, yellow and black, motifs stripe and zigzag, moods warm and bright, recipients `gift for mom`. It matches `warm`, `red` and `gift for mom`, and never `bold` or `wool`.
-- **`geometric`** goes on five to seven Acoma pieces and three to five Seminole pieces, twelve at most in all, and on no Diné or Ojibwe piece. `pc_27` has the lowest ID among them.
+- **`geometric`** goes on exactly nine pieces and no others: `pc_27`, `pc_30`, `pc_32`, `pc_35` and `pc_38` (Acoma) and `pc_42`, `pc_45`, `pc_48` and `pc_51` (Seminole), with figure 12's `salesThisMonth` values.
 - **Figure 11's ceiling:** no other piece at 20000 or less carries more than two of `warm`, `bold`, `red`, `wool` and `gift for mom`.
 - **For `run_08`:** at least two pieces from other communities under 10000 that share two or more of `pc_01`'s words. `pc_14` is one.
 
@@ -239,7 +239,7 @@ Pieces the figures and runs name:
 - `searchIndex.ts`:
   - **Rule:** a local, non-exported helper implements the passage rule in contracts section 2 exactly, including the sentence split and the `for:` join.
   - **Entries:** one `IndexEntry` per piece, with `storefrontSlug` from the community's storefront, `provenance` (`facts: "maker"`, `culture: "community"`, `vibe: "agent:tagger"`, `picture: "agent:describer"`), `approvedBy` the piece's maker, `pictureNote` (what the illustration shows, en and zh), `status: "active"`, and `salesThisMonth`. A comment says provenance shows who writes each layer in a real launch, that in this demo the Cindia team wrote every layer, and that the Describer never ran (A2-18).
-  - `salesThisMonth` for `pc_01` to `pc_12` is computed from R0's September paid orders, refunds excluded (`pc_01` 1, `pc_02` 5, `pc_07` 4 and so on). For the other 42 it's a typed number from 0 to 6 with a comment saying it's demo data, set so figure 12 holds.
+  - `salesThisMonth` for `pc_01` to `pc_12` is computed from R0's September paid orders, refunds excluded (`pc_01` 1, `pc_02` 5, `pc_07` 4 and so on). For the other 42 it's a typed number from 0 to 6 with a comment saying it's demo data: figure 12's nine candidates take its values, every piece by `mkr_12` is 0, and every other candidate's maker has at least one sale.
   - The closed vibe list (R18) is exported for B14's Tagger as part of `searchIndex.ts`'s module, under the name the contracts give (see Needs).
   - **Aliases:** `keywordAliases` maps `mom`, `mother` and `mum` to `gift for mom`, `dad` and `father` to `gift for dad`, and nothing from `stereotypeWords` (R24).
 - **`tests/data/reconcile.test.ts`:** line 66's check that `pieces` equals the twelve-piece table narrows to the co-op's twelve (`communityId` `com_dine`), keeping every v1 field check. The orchestrator logs it in `decisions.md` as a planned update, not a weakening (B1-21).
@@ -254,7 +254,7 @@ Pieces the figures and runs name:
 
 - `search.ts`: `demoSearch` and `demoSurprise` with I2-core's `DemoSearch` and `DemoSurprise` fields. The tour's timeline adds `qry_01` and `srp_01` (D1-49).
   - **Figure 11:** the text, keywords, `lang: "en"`, `filters.maxPriceCents: 20000`, and the six results in order. Each result's `score` and `matched` are what `scoreKeywords` returns for that piece on figure 11's keywords and filters, and its `reason` is I2-core's code-built one. Engine `keyword_scripted`, `modelId` unset.
-  - **Figure 12:** keyword `geometric`, `fair_random`, seed 7, drawing `pc_27`, with `candidates` and weights as the real draw gives them (weights sum to 1).
+  - **Figure 12:** keyword `geometric`, `fair_random`, seed 10, drawing `pc_38`, with `candidates` and weights as the real draw gives them (weights sum to 1, and they equal figure 12's to 4 decimals). If `scoreKeywords` orders the nine differently from `pieceId`, retune the typed `salesThisMonth` values so seed 10 still lands on a piece by the maker with the fewest sales, and report the new weights so FX1's figure 12 can follow.
 - `searchEval.ts`: 50 queries, `sq_001` to `sq_050`, `author: "data_agent"`, held out (R25).
   - About ten in Chinese, at least eight.
   - Mixed voices: a mood only ("something calm for a reading corner"), an occasion, who it's for, what it looks like, a material, a technique, a craft word ("seed pot", "patchwork", "beadwork", "turquoise"), a misspelling, very short and long.
@@ -265,7 +265,7 @@ Pieces the figures and runs name:
   - figure 11 field by field, and `extractKeywords()` on its text gives its six keywords in order,
   - each result's `matched` equals the chips that piece carries, and `scoreKeywords` puts the same six first in the same order,
   - figure 11's ceiling holds over all 54 pieces,
-  - figure 12 through the real scripted draw: `src/sources/surprise.ts` with seed 7 draws `pc_27`, the candidates come from at least two communities, `pc_27` has the largest weight, and `mkr_09` has the fewest sales among the candidates' makers,
+  - figure 12 through the real scripted draw: `src/sources/surprise.ts` with seed 10 draws `pc_38`, the nine candidates come from two communities, `pc_38` isn't the first candidate and has the largest weight, and `mkr_12` has the fewest sales among the candidates' makers,
   - every graded piece exists, at least 8 eval queries are Chinese, every one has `author: "data_agent"`, and no eval text equals the demo query.
 
 ### T7 · Records
@@ -280,7 +280,7 @@ Pieces the figures and runs name:
     - `prj_04`: "Two sewing machines": two new machines for the co-op's sewing room, $1,400.
   - Three works in progress, each with three milestones whose `shareBps` sum to 10000:
     - `wip_01`: a co-op rug commission by `mkr_01`. `mls_01` paid, `mls_02` pending, `mls_03` pending (B1-12, D1-15).
-    - `wip_02`: an Ojibwe beaded bag commission. `wip_03`: a Seminole patchwork jacket commission.
+    - `wip_02`: an Ojibwe beaded pouch commission. `wip_03`: a Seminole patchwork jacket commission.
   - `apr_05`: kind `milestone_release`, `subjectIds: ["wip_01", "mls_02"]`, `proposedBy: "cindy"`, `amountCents` the milestone's share of the price, `overLimit` by the v1 rule, `decisionDate: "2026-10-01"`, pending.
   - `demoContribution`: `ctb_01`, 500 to `prj_01`, `buy_01`, `ord_001`. `demoFundMoves`: `mv_0101` (`project_fund`, buyer to Cindia) and `mv_0102` (`project_fund`, Cindia to `community_fund` `prj_01`), each 500, `refId` `ctb_01`, date `2026-09-01` (D1-37, D1-38).
 - **`storefronts.ts`:** four, with the contracts' slugs, `theme.accent` a kit color token's short name (`jade`, `seal`, `amber` or `ink`), four to six blocks each, block IDs `blk_01` onward. Props are strings or string lists only: hero `tagline` (R23), story `title` and `body` (the body is the community's `about`), pieces `pieceIds` from its community, process `title` and `body`, projects `projectIds`, visit `address` (the region) and `hours` ("Visits by arrangement", R22). All four are `published`.
@@ -359,14 +359,19 @@ The tour keeps each run's step order and gaps (`I2-tour.md`), so the two tour ru
   - **the old-names scan:** no `src/mock/` text holds a Gu-era name from R0's acceptance grep, or the name of a dropped People (Māori, Sámi, Inuit, Quechua, Maasai, Miao, Hmong),
   - the v1 determinism test still covers the new files.
 
-### T9 · The real model report
+### T9 · The real model report and the pooled grading
 
-When `server/b11_embed/report.json` and `vectors.json` exist from B11's training run:
-- copy them into `model.ts`'s `report`, with the fields of `ModelReport`, rounded to 4 decimals and never edited, plus a comment with the report's `modelId` and the run's date,
-- compute `cft_01`'s real normalized text match against `pc_01` with B15's formula and the trained model, and write it in a comment beside the scripted 0.91. Whether figure 14 then takes the real number is the orchestrator's call (Needs),
-- update the null checks in `v2-records.test.ts` and `v2-figures.test.ts` to compare with the files.
+T9 runs twice, as `B11-embed.md`'s orchestrator steps say.
 
-**Test** (`v2-model.test.ts`): the values in `model.ts` equal the JSON files' values.
+1. **First pass,** when `server/b11_embed/report.json`, `vectors.json` and `unjudged.json` exist from B11's training run:
+   - Copy the report and the PCA points into `model.ts`'s `report`, with the fields of `ModelReport`, rounded to 4 decimals and never edited, plus a comment with the report's `modelId` and the run's date.
+   - Grade `unjudged.json` once (pooled grading, B2-8). For each eval query it lists the pieces any system put in its top 5 that the query doesn't grade. Add a 2 or a 1 by T6's rules wherever a listed piece really matches, judged from its words, and leave the rest ungraded, so they count as misses. `author` doesn't change. A comment in `searchEval.ts` says how many grades the pooled pass added.
+   - Set `cft_01.similarity` to its real normalized text match against `pc_01`, computed with B15's formula and the trained model, rounded to 2 decimals (B2-9). Until then the comment in `watch.ts` marks the scripted 0.91 as illustrative.
+2. **Second pass,** after the orchestrator runs `python server/b11_embed/train.py --eval-only` on the new grades: copy the new `report.json` into `report` again, the same way.
+
+In both passes, the checks in `v2-records.test.ts` and `v2-figures.test.ts` compare `report` with the files, and figure 14's test takes 0.91 before T9 and the computed number after it.
+
+**Test** (`v2-model.test.ts`): the values in `model.ts` equal the JSON files' values, and every piece `unjudged.json` lists for a query is either graded now or still ungraded, never removed from the catalog.
 
 ## Acceptance
 
@@ -374,7 +379,7 @@ When `server/b11_embed/report.json` and `vectors.json` exist from B11's training
 - Given `ord_001`, when its figures are read, then they're v1's to the cent, and `splits.pc_01` gives the same split with figure 16's comparison.
 - Given `searchIndex`, when each `embedText` is rebuilt by the rule, then all 54 match.
 - Given figure 11's text, when `extractKeywords()` runs, then it gives the six keywords in order, `demoSearch` holds figure 11, and `scoreKeywords` ranks the same six first.
-- Given seed 7, when the scripted draw runs for `geometric`, then it draws `pc_27`, from candidates in two communities.
+- Given seed 10, when the scripted draw runs for `geometric`, then it draws `pc_38`, the fifth of nine candidates from two communities, by the maker with the fewest sales this month.
 - Given `swarmRuns`, when each run's events are validated, then all pass, every `demoQuestions` entry has a run, and `run_01`'s reply cites only `pc_01`, `com_dine`, `mkr_01` and `pol_01`.
 - Given `run_07` and `run_09`, then the buyer gets L14, `qst_01` goes to Grace N., and her answer comes back word for word.
 - Given `run_02`, then its one failing check is the planted claim, labeled as a planted test, and it ends with `listing.indexed` before `apr_04`.
@@ -397,7 +402,8 @@ When `server/b11_embed/report.json` and `vectors.json` exist from B11's training
 - **I2-core (`ScriptedRun`):** a support trigger gains `makerId?`, matched against the request's `contextIds` the way `pieceId` is, so `run_04` and `run_10` answer only on Grace N.'s pages. Until then they answer on every seller page.
 - **The draft's piece ID** in the tour's `listing.indexed` for `lst_01`: proposed `pc_55`, event-only, joining the catalog only when `apr_04` is granted.
 - **I2-core (`planRun`):** a person's own `question.answered` must have its text quoted in `run_09`'s reply, so `planRun` substitutes the answer's text where the reply quotes `ans_01`.
-- **Figure 12's seed:** mulberry32 seeded with 7 returns 0.0117 first, so seed 7 always draws the first candidate whatever the weights. Figure 12 is still honest, because the first candidate also has the largest weight. If Gordon wants the weights to pick visibly, seed 10 (first value 0.5020) would do, and T6 retunes `salesThisMonth`.
+- **Figure 14 and L19 (FX1, contracts sections 2 and 12):** the scripted 0.91 is illustrative until T9 computes `cft_01`'s real text match, which then replaces it in `watch.ts`. Word figure 14 and L19 as "0.91 until the model's first run, then the computed number", and F-watch renders the number from the data.
+- **Figure 12** uses seed 10, decided at 5 PM, so the weights visibly pick the piece. FX1 copies this plan's figure 12 paragraph, seed, piece and weights included.
 - **R0-reskin:** its acceptance grep includes 工作室, so the Acoma studio's Chinese name here is 陶艺坊.
 </content>
 </invoke>
