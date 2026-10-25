@@ -21,6 +21,8 @@ Gordon Yang wrote this brief with the Cindia planning session on Oct 25, 2026, j
 
 The cut follows the tour's video mode (`/demo?video=1`). If Gordon gives you a voiceover with an .srt, time each scene to his timestamps instead of these lengths.
 
+**The voiceover script, `docs/v2/voiceover.md`, now sets each scene's length in the edit.** It adds holds, trims `d04` and `d05`, and adds an optional `d17-ask-maker` scene, for 2:59 in all. Where it and the table below differ, the script wins. If the cut runs over 3:00, drop `d17` first.
+
 | Part | Seconds | Beat | What's on screen |
 |---|---|---|---|
 | Cold open | 5 | `d08-catch` | The flag on the co-op's month: "The gallery paid $340 less than the contract says." |
@@ -51,11 +53,17 @@ Gordon's voiceover script, timed to video mode, is `docs/v2/voiceover.md`. If he
   - Never commit, push or open a pull request there.
   - Never open `.env`, and never print or echo any key.
 - **Running it:** clone it into a scratch folder of your own, then run `npm ci`, `npm run build` and `npx vite preview --port 4173 --strictPort`. Scripted mode makes no requests beyond localhost.
+  - **If `npm ci` stops on a 403 from cdn.sheetjs.com,** your network blocks SheetJS's download. The planning session hit the same block.
+    - In your scratch clone only, run `npm pkg set dependencies.xlsx=0.18.5`, then `npm install --no-audit --no-fund`, then `npm run build`. At 4:40 AM the planning session confirmed this installs and builds.
+    - Never commit it. The repo stays on SheetJS 0.20.3.
 - **Desktop only.** The design size is 1440 by 900.
-- **The tour is at `/demo`, and it's being built tonight.**
-  - Until it lands, `/demo` plays v1's older 60-second demo. Check the I2-tour row and the newest log lines in `docs/harness/status.md`. The tour should land around 3:30 to 4:00 AM.
-  - Build the pipeline, the review page and the pitch scenes first. Film the product after the tour lands.
-  - `git pull` again after the 6:00 AM freeze and refilm anything that changed.
+- **The tour is at `/demo`, and it has landed.** G4v2 passed on design drop 3 at 4:25 AM, with the tour at 220 s three times and offline. Film it now.
+  - `git pull` again after the 6:00 AM freeze, and refilm anything that changed.
+  - Three bits of copy may change in Gordon's local session after the freeze:
+    - the Why card's last line
+    - the verification line on the piece cards ("Nation attestation")
+    - the end card's Live line
+  - Build the pitch scenes so their text is easy to swap.
 - **Capture by seeking, not by screen recording.**
   - Every build exposes `window.__cindia.player`, with `pause()`, `seek(ms)` and `getTimeline()`.
   - `seekToEvent()` in `tests/smoke/lib.ts` shows how the tests find a beat's events and seek to them.
@@ -157,7 +165,7 @@ This is Gordon's workflow, and the order matters.
 ## 9b. Notes for the edit, from the 4:30 AM review
 
 - **Beats with a process panel shrink the product.** In `d01-vibe` (from 66.5 s), `d04-support` (from 90 s), `d05-pay` (from 107 s), `d15-listing` (from 122 s), `d07-month` (from 142 s) and `d09-approve` (from 155 s), the product frame drops to 0.66 scale and its text to about 9 px at 1080p. Zoom into the product frame for the line that matters, or film those moments from a still at device scale 2.
-- **Cold open:** the 1.35 zoom on `d08-catch` hides the top bar, so add the "Demo. Every maker, community and story here is fictional. Nothing is for sale." notice as a caption. Don't repeat the flag's headline word for word. Use three callouts instead: "Contract: 40%", "Charged: 50%", "$340 short. Cindy caught it."
+- **Cold open:** the 1.35 zoom on `d08-catch` hides the top bar, so add the "Demo. Every maker, community and story here is fictional. Nothing is for sale." notice as a caption. Don't repeat the flag's headline word for word. Use three callouts instead: "Contract: 40%", "Charged: 50%", "$340 short". The voiceover says "Cindy caught it".
 - **Spend the spare seconds on holds.** The cut runs about 2:40. Use about 15 of the 20 spare seconds to hold zooms on:
   - `d03-piece`: the gallery comparison, $86.00 against $134.48
   - `d15-listing`: the check that strikes the claim
@@ -177,9 +185,9 @@ This is Gordon's workflow, and the order matters.
 
 | By (PT) | What |
 |---|---|
-| 3:30 AM | Pipeline, storyboard OK, pitch scenes, review page up |
-| 4:30 AM | The tour has landed. Product footage filmed, first review cut published |
-| 7:30 AM | Approved, final render delivered |
-| 8:30 AM | Gordon finishes in Premiere and uploads for the 9:00 AM Devpost close |
+| 5:30 AM | Pipeline, storyboard OK, pitch scenes, review page up |
+| 6:30 AM | Product footage filmed, first review cut published |
+| 7:45 AM | Approved, final render delivered |
+| 8:30 AM | Gordon adds the voiceover in Premiere and uploads, for the 9:00 AM Devpost close |
 
 If the clock runs short, deliver the best approved cut. A plainer video on time beats a perfect one late.
