@@ -19,7 +19,7 @@ test("a fresh store in scripted mode: eleven idle blocks in order, no Live marks
   watch.expectClean();
 });
 
-test("the bar fits the 1440 px page in one 64 px row, each block at least 108 px wide", async ({ page }) => {
+test("the bar fits the 1440 px page in one 64 px row, each block 104 px wide and Counterfeit watch 124 (design drop 3)", async ({ page }) => {
   await open(page, "/sell/month");
   const frame = (await page.getByTestId("frame-studio").boundingBox())!;
   const bar = (await page.getByTestId("process-bar").boundingBox())!;
@@ -28,11 +28,10 @@ test("the bar fits the 1440 px page in one 64 px row, each block at least 108 px
     .getByTestId("process-bar")
     .locator(':scope > [data-testid^="process-block-"]')
     .evaluateAll((els) => els.map((e) => e.getBoundingClientRect().toJSON() as { x: number; y: number; width: number; height: number; right: number }));
-  for (const b of boxes) {
-    expect(b.width).toBeGreaterThanOrEqual(108);
-    expect(b.width).toBeLessThanOrEqual(120.5);
+  boxes.forEach((b, i) => {
+    expect(Math.abs(b.width - (PROCESS_IDS[i] === "watch" ? 124 : 104))).toBeLessThan(0.5);
     expect(Math.abs(b.y - boxes[0].y)).toBeLessThan(1);
-  }
+  });
   const summary = (await page.getByTestId("process-live-summary").boundingBox())!;
   expect(summary.x).toBeGreaterThanOrEqual(boxes[10].right - 1);
   expect(summary.x + summary.width).toBeLessThanOrEqual(Math.min(frame.x + frame.width, bar.x + bar.width + 0.5));
