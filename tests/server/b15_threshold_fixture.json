@@ -1,0 +1,149 @@
+{
+  "_about": "B15's threshold fixture (docs/plans/B15-watch.md, Comparer): for each of the Diné co-op's 12 pieces, 3 look-alike and 3 unrelated listing texts, written once by the builder, invented, on example.com. No listing names the co-op or a maker, so only the text match tells them apart. server/b15_watch/calibrate.py scores them with the trained model and writes server/b15_watch/threshold.json.",
+  "pieces": {
+    "pc_01": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc01-l1", "title": "Small wool wall weaving, grey red and black", "snippet": "Handwoven wool weaving with a stepped diamond in the middle, about 30 x 40 cm."},
+        {"url": "https://example.com/t/pc01-l2", "title": "Grey, red and black diamond wall hanging", "snippet": "A small woven wool piece with a stepped red diamond at the center, made to hang flat on a wall."},
+        {"url": "https://example.com/t/pc01-l3", "title": "Stepped diamond wool tapestry, small", "snippet": "Tight-woven wool tapestry in black, grey and red with one stepped diamond. Roughly 12 by 16 inches."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc01-u1", "title": "Stainless steel water bottle, 750 ml", "snippet": "Double-wall insulated bottle that keeps drinks cold for 24 hours."},
+        {"url": "https://example.com/t/pc01-u2", "title": "Gold-plated hoop earrings", "snippet": "Lightweight gold-plated hoops, 30 mm, with a click closure."},
+        {"url": "https://example.com/t/pc01-u3", "title": "Blue and white cotton patchwork quilt", "snippet": "A queen size quilt pieced from blue and white cotton squares."}
+      ]
+    },
+    "pc_02": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc02-l1", "title": "Small oval silver earrings with stamped dots", "snippet": "A pair of light silver oval earrings, each with a ring of stamped dots around the edge."},
+        {"url": "https://example.com/t/pc02-l2", "title": "Hand-stamped silver oval studs", "snippet": "Two small silver ovals stamped with tiny dots, light enough for everyday wear."},
+        {"url": "https://example.com/t/pc02-l3", "title": "Dot-stamped sterling oval earrings", "snippet": "Lightweight sterling silver ovals with a circle of punched dots."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc02-u1", "title": "Plastic storage bins, set of three", "snippet": "Stackable clear bins with lids for closets and shelves."},
+        {"url": "https://example.com/t/pc02-u2", "title": "Wool knit beanie, navy", "snippet": "A warm ribbed beanie in navy merino wool."},
+        {"url": "https://example.com/t/pc02-u3", "title": "Rainbow glass bead bracelet", "snippet": "A stretch bracelet with bright round glass beads in rainbow colors."}
+      ]
+    },
+    "pc_03": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc03-l1", "title": "Undyed brown, white and grey wool rug", "snippet": "A natural wool rug in brown, white and grey with rows of small diamonds, about 75 by 120 cm."},
+        {"url": "https://example.com/t/pc03-l2", "title": "Natural wool area rug with diamond bands", "snippet": "Handwoven rug in undyed browns, greys and white, with bands of little diamonds across it."},
+        {"url": "https://example.com/t/pc03-l3", "title": "Earth-tone wool rug, small diamonds", "snippet": "Brown and grey wool rug with white bands of tiny diamonds. Roughly 2.5 by 4 feet."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc03-u1", "title": "Memory foam pillow, queen", "snippet": "A contoured foam pillow with a washable cover."},
+        {"url": "https://example.com/t/pc03-u2", "title": "Copper saucepan, 2 quart", "snippet": "Tri-ply copper pan with a stainless steel lid."},
+        {"url": "https://example.com/t/pc03-u3", "title": "Bright floral cotton beach towel", "snippet": "A large cotton towel printed with pink and yellow flowers."}
+      ]
+    },
+    "pc_04": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc04-l1", "title": "Red and black stepped diamond rug on white", "snippet": "Wool rug, three red and black stepped diamonds set on white, about 60 by 100 cm."},
+        {"url": "https://example.com/t/pc04-l2", "title": "Three-diamond wool rug, red black white", "snippet": "A handwoven wool rug: three red and black stepped diamonds across a white field, with tight even edges."},
+        {"url": "https://example.com/t/pc04-l3", "title": "White wool rug with red stepped diamonds", "snippet": "Hand-dyed wool rug, white background with three bold stepped diamonds in red and black."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc04-u1", "title": "LED desk lamp with USB port", "snippet": "Adjustable arm lamp with three brightness levels."},
+        {"url": "https://example.com/t/pc04-u2", "title": "White ceramic plant pot, 20 cm", "snippet": "A matte white pot with a drainage hole and a saucer."},
+        {"url": "https://example.com/t/pc04-u3", "title": "Children's rain boots, yellow", "snippet": "Rubber boots with easy pull-on handles, sizes 8 to 13."}
+      ]
+    },
+    "pc_05": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc05-l1", "title": "Indigo and white striped wool wall weaving", "snippet": "Indigo blue and natural white wool woven in wide and narrow stripes, about 60 by 90 cm."},
+        {"url": "https://example.com/t/pc05-l2", "title": "Blue and white stripe wool hanging", "snippet": "A handwoven wool piece with indigo and cream stripes, for a wall or a bench."},
+        {"url": "https://example.com/t/pc05-l3", "title": "Indigo stripe woven wool runner", "snippet": "Hand-dyed indigo and undyed white wool in stripes of two widths. Roughly 2 by 3 feet."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc05-u1", "title": "Espresso machine with milk frother", "snippet": "A 15-bar pump espresso maker with a steam wand."},
+        {"url": "https://example.com/t/pc05-u2", "title": "Leather dog collar, medium", "snippet": "A brown leather collar with a brass buckle."},
+        {"url": "https://example.com/t/pc05-u3", "title": "Red silk scarf with polka dots", "snippet": "A light silk scarf in red with small white dots."}
+      ]
+    },
+    "pc_06": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc06-l1", "title": "Grey and white zigzag wool weaving", "snippet": "Woven wool bands in grey and white that bend into zigzags, about 45 by 60 cm."},
+        {"url": "https://example.com/t/pc06-l2", "title": "Zigzag pattern wool wall piece, grey", "snippet": "A handwoven wall weaving with grey and white zigzag bands."},
+        {"url": "https://example.com/t/pc06-l3", "title": "Chevron-band grey wool tapestry", "snippet": "Grey and white wool woven in bending zigzag rows. Roughly 18 by 24 inches."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc06-u1", "title": "Wireless computer mouse", "snippet": "A quiet two-button mouse with a USB receiver."},
+        {"url": "https://example.com/t/pc06-u2", "title": "Lavender soy candle", "snippet": "A 200 g soy wax candle in a glass jar."},
+        {"url": "https://example.com/t/pc06-u3", "title": "Sea blue drinking glasses, set of four", "snippet": "Hand-blown tumblers in sea blue glass."}
+      ]
+    },
+    "pc_07": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc07-l1", "title": "Tiny red and grey wool weaving", "snippet": "Palm-sized red and grey wool weave, roughly 15 cm square, for a shelf or a desk."},
+        {"url": "https://example.com/t/pc07-l2", "title": "Mini woven wall art, red and grey", "snippet": "Small square wool weaving in red and grey stripes, sized for a desk."},
+        {"url": "https://example.com/t/pc07-l3", "title": "Little red and grey wool weave, 6 inch", "snippet": "A miniature handwoven square in red and grey, six inches across."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc07-u1", "title": "Garden hose, 50 feet", "snippet": "A kink-resistant hose with a brass fitting."},
+        {"url": "https://example.com/t/pc07-u2", "title": "Folding wooden chess set", "snippet": "A walnut and maple board with carved pieces."},
+        {"url": "https://example.com/t/pc07-u3", "title": "Black cotton t-shirt, crew neck", "snippet": "A plain black tee in soft combed cotton."}
+      ]
+    },
+    "pc_08": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc08-l1", "title": "Thin silver chevron ring", "snippet": "Small chevrons stamped around a narrow silver band."},
+        {"url": "https://example.com/t/pc08-l2", "title": "Stamped chevron band, sterling", "snippet": "A slim sterling ring with a row of little stamped V shapes around it."},
+        {"url": "https://example.com/t/pc08-l3", "title": "Narrow hand-stamped silver ring", "snippet": "A thin silver stacking ring with chevron stamps."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc08-u1", "title": "Cast iron skillet, 10 inch", "snippet": "A pre-seasoned skillet for the stove or the oven."},
+        {"url": "https://example.com/t/pc08-u2", "title": "Grey fleece throw blanket", "snippet": "A soft grey fleece blanket, 50 by 60 inches."},
+        {"url": "https://example.com/t/pc08-u3", "title": "Kids' watercolor paint set", "snippet": "Twelve washable colors with two brushes."}
+      ]
+    },
+    "pc_09": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc09-l1", "title": "Turquoise oval pendant in silver", "snippet": "A small oval of turquoise in silver, the border stamped, hung on a silver chain."},
+        {"url": "https://example.com/t/pc09-l2", "title": "Silver and turquoise necklace, stamped edge", "snippet": "A small turquoise oval in a silver bezel with a stamped rim, on a fine chain."},
+        {"url": "https://example.com/t/pc09-l3", "title": "Sterling turquoise pendant necklace", "snippet": "Oval turquoise set in hand-stamped sterling, hung on an 18 inch chain."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc09-u1", "title": "Purple yoga mat, 6 mm", "snippet": "A non-slip mat with a carrying strap."},
+        {"url": "https://example.com/t/pc09-u2", "title": "Striped cotton dish towels, set of 3", "snippet": "Absorbent kitchen towels in blue and white stripes."},
+        {"url": "https://example.com/t/pc09-u3", "title": "Stainless steel kitchen scale", "snippet": "A digital scale that weighs up to 5 kg."}
+      ]
+    },
+    "pc_10": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc10-l1", "title": "Turquoise drop earrings in silver", "snippet": "Two small turquoise stones, each in a plain silver setting, hanging from short wires."},
+        {"url": "https://example.com/t/pc10-l2", "title": "Small turquoise dangle earrings", "snippet": "Simple silver bezels with little turquoise stones that hang from short ear wires."},
+        {"url": "https://example.com/t/pc10-l3", "title": "Sterling and turquoise drops", "snippet": "A pair of plain sterling drops, each set with one small turquoise."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc10-u1", "title": "Waterproof Bluetooth speaker", "snippet": "A portable speaker with 12 hours of play."},
+        {"url": "https://example.com/t/pc10-u2", "title": "Wool hiking socks, two pairs", "snippet": "Cushioned merino socks for long walks."},
+        {"url": "https://example.com/t/pc10-u3", "title": "Oak bookshelf, five shelves", "snippet": "A tall solid oak shelf for books and plants."}
+      ]
+    },
+    "pc_11": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc11-l1", "title": "Red and white striped wool weaving", "snippet": "Stripes of red and white, crossed in the middle by one band of red diamonds, about 30 by 40 cm."},
+        {"url": "https://example.com/t/pc11-l2", "title": "Red diamond band wool wall hanging", "snippet": "A small handwoven piece in red and white stripes with a row of red diamonds at its center."},
+        {"url": "https://example.com/t/pc11-l3", "title": "Small red and white wool tapestry with diamonds", "snippet": "Hand-dyed red wool and white wool in stripes, with one band of diamonds. Roughly 12 by 16 inches."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc11-u1", "title": "Braided phone charging cable, 2 m", "snippet": "A USB-C cable for fast charging."},
+        {"url": "https://example.com/t/pc11-u2", "title": "Porcelain dinner plates, set of six", "snippet": "Plain white plates, dishwasher safe."},
+        {"url": "https://example.com/t/pc11-u3", "title": "Green wool winter coat", "snippet": "A long coat in forest green wool with horn buttons."}
+      ]
+    },
+    "pc_12": {
+      "lookalike": [
+        {"url": "https://example.com/t/pc12-l1", "title": "Narrow stamped silver cuff", "snippet": "A slim silver cuff bracelet with stamped dots and lines, worn alone or stacked."},
+        {"url": "https://example.com/t/pc12-l2", "title": "Thin hand-stamped sterling cuff bracelet", "snippet": "A narrow sterling cuff with rows of stamped dots and short lines."},
+        {"url": "https://example.com/t/pc12-l3", "title": "Dot and line stamped silver cuff", "snippet": "A thin open cuff in silver, stamped all over with dots and lines."}
+      ],
+      "unrelated": [
+        {"url": "https://example.com/t/pc12-u1", "title": "Electric kettle, 1.7 liter", "snippet": "A fast-boil kettle with auto shut-off."},
+        {"url": "https://example.com/t/pc12-u2", "title": "Men's running shoes, size 10", "snippet": "Lightweight mesh trainers with cushioned soles."},
+        {"url": "https://example.com/t/pc12-u3", "title": "Natural canvas tote bag", "snippet": "A sturdy cotton tote with long handles and an inside pocket."}
+      ]
+    }
+  }
+}

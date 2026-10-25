@@ -1,0 +1,10 @@
+{
+  "fingerprint": "f7181c7ddb90af25",
+  "threshold": 0.22,
+  "precision": 0.9,
+  "recall": 1.0,
+  "n": 72,
+  "pieceAccuracy": 1.0,
+  "measuredAt": "2026-10-25T07:34:17Z",
+  "fixture": "tests/server/b15_threshold_fixture.json"
+}

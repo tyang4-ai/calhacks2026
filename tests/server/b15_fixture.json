@@ -1,0 +1,109 @@
+{
+  "_about": "B15's synthetic crawl items, written by hand for the tests: fictional listings by invented sellers on example.com and example.org, shaped as the Scout's page function returns them ({ url, title, snippet, text }). Never a recorded Apify response. The tests set PUBLIC_SITE_URL to the site below, so the market is https://example.com/market/. A text starting with REPEAT_TO_2500 is expanded by the test to over 2,000 characters of the mug's snippet, to check the text cap.",
+  "site": "https://example.com",
+  "sellers": [
+    "Juniper Mesa Trading",
+    "Red Rock Rug Barn",
+    "Prairie Loom Goods",
+    "Bright Kitchen Supply",
+    "Harbor Mug Co.",
+    "Linen Lane Home"
+  ],
+  "items": [
+    {
+      "url": "https://example.com/market/listing-11.html",
+      "title": "Handwoven wall weaving from the Diné Weaving and Silver Co-op, grey red black",
+      "snippet": "A small wool weaving in grey, red and black, with a stepped diamond at its center. Ships in two days.",
+      "text": "Handwoven wall weaving from the Diné Weaving and Silver Co-op, grey red black A small wool weaving in grey, red and black, with a stepped diamond at its center. Ships in two days. Sold by Juniper Mesa Trading $88.00"
+    },
+    {
+      "url": "https://example.com/market/listing-12.html",
+      "title": "Authentic Native American made wool rug, red and grey",
+      "snippet": "Authentic Native American made rug in red and grey wool, about 60 by 90 cm. Free shipping.",
+      "text": "Authentic Native American made wool rug, red and grey Authentic Native American made rug in red and grey wool, about 60 by 90 cm. Free shipping. Sold by Red Rock Rug Barn $140.00"
+    },
+    {
+      "url": "https://example.com/market/listing-13.html",
+      "title": "Southwest inspired wool wall hanging, grey and red",
+      "snippet": "A machine made wall hanging inspired by Southwest weaving, in grey and red with a stepped diamond.",
+      "text": "Southwest inspired wool wall hanging, grey and red A machine made wall hanging inspired by Southwest weaving, in grey and red with a stepped diamond. Sold by Prairie Loom Goods $45.00"
+    },
+    {
+      "url": "https://example.com/market/listing-14.html",
+      "title": "Stainless steel water bottle, 750 ml",
+      "snippet": "A double-wall insulated bottle that keeps drinks cold for a whole day.",
+      "text": "Stainless steel water bottle, 750 ml A double-wall insulated bottle that keeps drinks cold for a whole day. Sold by Bright Kitchen Supply $24.00"
+    },
+    {
+      "url": "https://example.com/market/listing-11",
+      "title": "Handwoven wall weaving from the Diné Weaving and Silver Co-op, grey red black",
+      "snippet": "A small wool weaving in grey, red and black, with a stepped diamond at its center. Ships in two days.",
+      "text": "The same listing at its path without .html, as Cloudflare Pages may answer it. Sold by Juniper Mesa Trading"
+    },
+    {
+      "url": "https://example.com/market/",
+      "title": "Sandbox market",
+      "snippet": "Fictional listings by invented sellers.",
+      "text": "Sandbox market Fictional listings by invented sellers."
+    },
+    {
+      "url": "https://example.com/market/index.html",
+      "title": "Sandbox market",
+      "snippet": "Fictional listings by invented sellers.",
+      "text": "Sandbox market Fictional listings by invented sellers."
+    },
+    {
+      "url": "https://example.org/shop/item-9.html",
+      "title": "Grey wool throw",
+      "snippet": "A grey wool throw from another site. The Scout keeps only the market's pages.",
+      "text": "Grey wool throw Sold by Linen Lane Home"
+    },
+    {
+      "url": "https://example.com/shop/listing-20.html",
+      "title": "Linen napkins, set of four",
+      "snippet": "Plain linen napkins on the site but outside the market.",
+      "text": "Linen napkins, set of four Sold by Linen Lane Home"
+    },
+    {
+      "url": "ftp://example.com/market/listing-17.html",
+      "title": "Cotton tea towel",
+      "snippet": "Not http or https, so it's dropped.",
+      "text": "Cotton tea towel Sold by Linen Lane Home"
+    },
+    {
+      "url": "/market/listing-18.html",
+      "title": "Wool socks",
+      "snippet": "A relative URL, so it's dropped.",
+      "text": "Wool socks Sold by Linen Lane Home"
+    },
+    {
+      "url": "https://example.com/market/listing-19.html",
+      "title": "   ",
+      "snippet": "A page with no title, so it's dropped.",
+      "text": "Sold by Linen Lane Home"
+    },
+    {
+      "url": "https://example.com/market/listing-15.html",
+      "title": "Speckled white ceramic coffee mug, 350 ml, dishwasher safe, microwave safe, stoneware with a matte glaze, made for daily coffee and tea, sold as one mug, ships in a recycled box, speckled white ceramic coffee mug, 350 ml, dishwasher safe, microwave safe, stoneware with a matte glaze, made for daily coffee and tea, sold as one mug, ships in a recycled box",
+      "snippet": "A plain stoneware mug with a speckled white glaze and a wide handle. It holds 350 ml and goes in the dishwasher and the microwave. A plain stoneware mug with a speckled white glaze and a wide handle. It holds 350 ml and goes in the dishwasher and the microwave. A plain stoneware mug with a speckled white glaze and a wide handle. It holds 350 ml.",
+      "text": "REPEAT_TO_2500 Sold by Harbor Mug Co. $18.00"
+    }
+  ],
+  "expect": {
+    "kept": [
+      "https://example.com/market/listing-11.html",
+      "https://example.com/market/listing-12.html",
+      "https://example.com/market/listing-13.html",
+      "https://example.com/market/listing-14.html",
+      "https://example.com/market/listing-15.html"
+    ],
+    "verdicts": {
+      "https://example.com/market/listing-11.html": "possible_copy",
+      "https://example.com/market/listing-12.html": "claim_only",
+      "https://example.com/market/listing-13.html": "neither",
+      "https://example.com/market/listing-14.html": "neither",
+      "https://example.com/market/listing-15.html": "neither"
+    },
+    "copyPiece": "pc_01"
+  }
+}

@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:51 PT
+UPDATED: 2026-10-25 00:53 PT
 
 # Status board
 
@@ -122,7 +122,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B12-search | T1-T6 built and committed; G5 after G4v2 | Elastic hybrid live: seed ~30 s, query 0.61 s, Agent Builder 7.1 s | | Elastic eval recall@5 0.819, MRR 0.887; T7 not built |
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
 | B14-swarm | T1-T10 built and committed; G5 after G4v2 | d04 live median 5.87 s (L15 quoted), listing 6.6 s, storefront 3.3 s | | Agent Builder times out at 9.4 s, find answers on B12 search at about 17 s |
-| B15-watch | T1-T6 running | | | fixture until the public site is up |
+| B15-watch | T1-T6 built and committed; G5 blocked on PUBLIC_SITE_URL | Haiku claims and Sonnet Reporter (3.3 s) live; Apify crawl waits for the market | | threshold 0.22 measured; T7 not built |
 | B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
 
 ## Tags
@@ -196,7 +196,7 @@ Run once the V2 leads are done, so a shared-code edit can't reload the dev serve
 - **Chinese out, step 2, after G4v2 (Gordon, 11:55 PM; decisions.md):** the integrator makes the shared text type English only and drops the Chinese column from the glossary and L1 to L30; then each owner removes zh from its own files (mock data, strings.ts, specs) in one sweep, each landing only when its checks pass; plain-English rewrites for anything that only made sense in two languages. B11's training pairs and the 50-query test set stay. Leftover zh is fine if nothing renders it; the tour comes first.
 - **English only, step 1, before G4v2 (Gordon, 11:35 PM; decisions.md).** Integrator: hide `demo-lang-toggle` and the top bar's language toggle everywhere (the `l` key too), English-only strings for anything new (zh reuses en where a type needs it), keep the existing Chinese in the code, the contracts updated (ui-contract.md, glossary.md, design-system.md). F-seller-hub and M-approvals: don't render `seller-listing-translated-<lang>` / L27's translated version. Every spec that clicks the toggle or checks Chinese or the translated version is updated by its owner. The search eval set stays. Fonts: Source Sans 3 and Source Code Pro (approved), installed by the integrator; Noto Sans SC can stop loading if nothing renders Chinese (it is 794 of the public build's 891 files).
 - F-storefront (`G3-storefront-verifier.md`): N1 preview cards are live links that lose an unpublished edit (plain wrapper when density is preview), N2 the 11 specs that click `demo-lang-toggle` through setLang (English only), N3 the Blocks heading cut after the Designer's steps, N4 the public Visit block shows editor labels. English only, integrator: the kit badges print Chinese beside English on English pages (N8; e.g. "Rule-based 规则程序"), so the kit renders one language.
-- F-watch F2: the checked list's first title is ellipsized (`.checkedTitle` should wrap); undo is a hand-built button where the kit has Button.
+- F-watch: watch-live.spec.ts should test.skip when GET /api/b15/status says market false (B15's needs); F2: the checked list's first title is ellipsized (`.checkedTitle` should wrap); undo is a hand-built button where the kit has Button.
 - F-search: search-live-map.spec.ts line 116 accepts approx true (decisions 00:1x); search-results.spec.ts test 4 assumes no score, but the tour plays proof.search_scored at 60.2 s from T9's report, so the test seeks before it or checks the model line (T8 item).
 - I2-tour T6: ALLOWED_EMPTY_FALLBACKS gains b12-search (search.answered, surprise.drawn, tourScripted) beside b11-embed and b13-live.
 - Feature leads: F-search F1 (only the first row of the six tour results above the fold, `ResultsGrid.tsx`, `ResultCard.tsx`); F-communities F1 (Shop home strip clipped at 1440x900, `_stripBody` scroll) and F2 (`/shop/projects` inner scroll). If either can't be fixed in the feature, the integrator changes the Shop home stack ratio in `src/app/surfaces/surfaces.module.css`.
@@ -402,3 +402,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:27 PT · B09 and B11 adapter tests committed (B09's builds its own v1 concierge fixture, so it passes before and after the tour; B11's 7 cases placed); merged the planning session's design/HANDOFF.md update: still drop 3, the Figma files are shared · design/HANDOFF.md
 - 2026-10-25 00:29 PT · T9 data worktree gate invalid (T1's timeline landed in src/mock/ first); T9 commits with I2-tour at G4v2 (decisions.md); search spec 4 and 17 go to F-search after T8 · status.md
 - 2026-10-25 00:51 PT · B14 second spawn done (Finder, Curator, listing run, Designer, router, adapter): test_b14_swarm 132 non-live + 2 live, test:server 780, smoke 124; support-live.spec passed once (12.3 s) before an HMR of src/core broke its store import (dev-server restart before G5); committed; G5 b14 after G4v2 · status.md
+- 2026-10-25 00:53 PT · B15 done (Scout, Comparer, claims, Reporter, router, adapter): test_b15_watch 72 + 1 live skipped (no market), test:server 799, smoke 124; threshold 0.22; committed; its G5 waits for Gordon's upload and PUBLIC_SITE_URL · status.md
