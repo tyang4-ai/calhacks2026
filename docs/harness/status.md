@@ -128,6 +128,7 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | v2-reskin | 2b0823ede8b197784bb4e52a9deed9c956d9cd55 | R0 | Oct 24 6:56 PM |
 | v2-core | b5f9b24f1c78ba38074680fea245e8911c23c485 | core | Oct 24 7:58 PM |
 | demo-ok-b09 | e8423db82e25182b94b4e128be7ea6cbe1a90495 | G5 b09 | Oct 24 9:02 PM |
+| v2-data | 84f0e9fd94a5f5d9f21d29e29b1cdbb36d4671e5 | G2b | Oct 24 9:38 PM |
 
 ## Environment
 
