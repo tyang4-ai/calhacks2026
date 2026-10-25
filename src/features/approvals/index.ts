@@ -1,10 +1,10 @@
-// The approvals feature module: fills owner.main with the owner's inbox.
+// The approvals feature module: fills owner.main, the Sell site's approvals view.
 import type { FeatureModule } from "../../core/featureTypes";
-import { OwnerInbox } from "./OwnerInbox";
+import { ApprovalsView } from "./ApprovalsView";
 
 const approvals: FeatureModule = {
   id: "approvals",
-  slots: { "owner.main": OwnerInbox },
+  slots: { "owner.main": ApprovalsView },
 };
 
 export default approvals;

@@ -1,9 +1,11 @@
-// The three maker payouts inside apr_02's card: each maker's mark, name, amount, held amount and
-// the over-limit mark, then the total held. On payout.sent a line reads sent with its date.
+// The maker payouts of a maker_payouts approval (apr_02): each maker's mark, name, amount, held
+// amount and the over-limit mark, then the total held. On payout.sent after a grant a line reads sent
+// with its date; a declined batch never reads sent.
 import { useCindia } from "../../core/store";
-import type { Approval, MakerPayout, Person, Studio } from "../../core/types";
+import type { Person, Studio } from "../../core/types";
 import { getById } from "../../mock";
 import { Badge, MakerMark, Money, formatDate } from "../../ui";
+import { payoutsOf, recordFromState } from "./approvalSummary";
 import { GLOSSARY, UI, t, type Lang } from "./strings";
 
 export interface PayoutLinesProps {
@@ -15,19 +17,22 @@ const softStyle = { color: "var(--c-color-ink-soft)", fontSize: "var(--c-text-14
 
 export function PayoutLines({ approvalId, lang }: PayoutLinesProps) {
   const sentPayouts = useCindia((s) => s.approvals.payouts);
-  const approval = getById<Approval>(approvalId);
+  // A payout reads Sent only once its approval is granted: a declined batch never does, even if a
+  // later payout.sent arrives (the timeline's own, after the owner said no).
+  const granted = useCindia((s) => s.approvals.items[approvalId]?.status === "granted");
+  const record = useCindia((s) => recordFromState(s, approvalId));
   const limitCents = getById<Studio>("std_dine")?.payoutLimitCents;
-  if (!approval) return null;
+  if (!record) return null;
 
-  const payouts = approval.subjectIds.map((id) => getById<MakerPayout>(id)).filter((p): p is MakerPayout => Boolean(p));
+  const payouts = payoutsOf(record);
   const heldTotal = payouts.reduce((acc, p) => acc + p.heldCents, 0);
 
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-8)", fontSize: "var(--c-text-16)" }}>
-      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "var(--c-space-8)" }}>
+      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "var(--c-space-4)" }}>
         {payouts.map((p) => {
           const maker = getById<Person>(p.makerId);
-          const sent = sentPayouts[p.id];
+          const sent = granted ? sentPayouts[p.id] : undefined;
           const over = limitCents !== undefined && p.amountCents > limitCents;
           return (
             <li
@@ -41,11 +46,16 @@ export function PayoutLines({ approvalId, lang }: PayoutLinesProps) {
                 borderBottom: "1px solid var(--c-color-line)",
               }}
             >
-              {maker && <MakerMark char={maker.surnameChar} label={t(maker.name, lang)} size={36} />}
-              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "var(--c-space-4)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--c-space-8)" }}>
+              {maker && <MakerMark char={maker.surnameChar} label={t(maker.name, lang)} size={28} />}
+              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
+                {/* Two rows: the maker, sent once paid out, and the amount; then the held amount, the
+                    over-limit mark and the payout date. */}
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--c-space-8)" }}>
                   <span style={{ fontWeight: 600 }}>{maker ? t(maker.name, lang) : p.makerId}</span>
-                  <Money cents={p.amountCents} />
+                  {sent && <Badge variant="jade">{t(GLOSSARY.sent, lang)}</Badge>}
+                  <span style={{ marginLeft: "auto" }}>
+                    <Money cents={p.amountCents} />
+                  </span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "var(--c-space-8)" }}>
                   {p.heldCents > 0 && (
@@ -55,11 +65,8 @@ export function PayoutLines({ approvalId, lang }: PayoutLinesProps) {
                   )}
                   {over && <Badge variant="seal">{t(GLOSSARY.overLimit, lang)}</Badge>}
                   {sent && (
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--c-space-8)" }}>
-                      <Badge variant="jade">{t(GLOSSARY.sent, lang)}</Badge>
-                      <span style={softStyle}>
-                        {t(GLOSSARY.payoutDate, lang)} {formatDate(sent.date, lang)}
-                      </span>
+                    <span style={softStyle} title={t(GLOSSARY.payoutDate, lang)}>
+                      {formatDate(sent.date, lang)}
                     </span>
                   )}
                 </div>

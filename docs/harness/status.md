@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:53 PT
+UPDATED: 2026-10-25 00:55 PT
 
 # Status board
 
@@ -53,6 +53,7 @@ v1 (desktop session, history):
 | G3 storefront | PASS | Oct 25 12:05 AM | worktree `artifacts/gates/G3-storefront-wt-2351.md` 3/3 (check:scope, feature 27, smoke 123), `artifacts/gates/G3-storefront-verifier.md` PASS (N1-N4 to the polish queue) | v2-storefront |
 | G3 maker-statement | PASS | Oct 25 12:20 AM | worktree `artifacts/gates/G3-maker-statement-wt-2359.md` 3/3 (check:scope, feature 29, smoke 123), `artifacts/gates/G3-maker-statement-verifier.md` PASS (ten minors) | v2-maker-statement |
 | G3 process | PASS (after fix round 1) | Oct 25 12:25 AM | worktree rerun `artifacts/gates/G3-process2-wt-2343.md` 3/3 (check:scope 71 unit, feature 38 with the new layout spec, smoke 123), `artifacts/gates/G3-process-verifier-recheck.md` PASS | v2-process |
+| G3 approvals | PASS (after fix round 1) | Oct 25 1:00 AM | worktree rerun `artifacts/gates/G3-approvals2-wt-0005.md` 3/3 (check:scope, feature 41, smoke 123), `artifacts/gates/G3-approvals-verifier-recheck.md` PASS; the adversarial lens (`G3-approvals-verifier-adversarial.md`) confirmed the toast fix over 94 states and failed only on the tour (three specs assume apr_01 comes first; apr_02's buttons below the fold with the tour's apr_04 pending): T8 items | v2-approvals |
 | G3 process | FAIL, fix round 1 | Oct 24 11:05 PM | `artifacts/gates/G3-process-verifier.md` FAIL on screens only: F1 swarm tool node over the Finder's name, F2 data chips cut, F3 reconcile labels truncated, F4 model name truncated; contracts, labels and 20 Acceptance lines pass | |
 | G6 | | | | |
 
@@ -105,7 +106,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-support | V2 P0 | green | feature-lead | v2-support | |
 | F-process | V2 P0 | green | feature-lead | v2-process | lead wrote T0-T8 itself (no Agent tool); fix round 1 for the screens |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
-| M-approvals | V2 P0 | fix round 1 done (41/41), worktree G3 rerun and two-lens recheck running | feature-lead | | worktree G3 3/3 PASS; live two-screen spec runs; OwnerInbox deleted |
+| M-approvals | V2 P0 | green | feature-lead | v2-approvals | worktree G3 3/3 PASS; live two-screen spec runs; OwnerInbox deleted |
 | M-desktop | V2 P0 | G3 verifier FAIL (B1-B7: text under 14 px, ellipsized labels), fix round 1 | feature-lead | | needs FlagState.nessieId in src/core/state.ts (integrator) |
 | F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | green | feature-lead | v2-watch | live spec skips until B15; F2 in the polish queue |
@@ -192,6 +193,7 @@ Filled in from `artifacts/preflight.md` at G0.
 
 Run once the V2 leads are done, so a shared-code edit can't reload the dev server under another lead's tests.
 
+- M-approvals (on the tour, T8): approvals-cards.spec.ts 97-104, approvals-details.spec.ts 63-70, approvals-flow.spec.ts 74-82 assume apr_01 is the first request (the tour requests apr_04 at 128.0 s); with apr_04 pending, apr_02's Approve and Decline sit at 894-936 px in the 900 px frame after apr_01's grant (A1, keep the pending card's buttons in view); R1 selection.ts:128 fallback; decidedAt into events.md (integrator).
 - M-buyer: F1 a piece route with another entity's ID crashes the slot (`PiecePage.tsx:36-38`, treat a non-piece as missing, plus a spec); F2 the story column's verification block ends below y 876 on 20 of 54 pieces in English (pc_27 to pc_42, pc_45, pc_46, pc_49, pc_51; worst pc_38), move `PieceVerification` to the price column or shorten the story column, plus a multi-piece fit spec (`artifacts/gates/G3-buyer-verifier.md`). With T7 after G4v2.
 - F-seller-hub (`artifacts/gates/G3-seller-hub-verifier.md`): F1 steps list keeps its scroll offset after a language toggle (`ListingSteps.tsx:34-37`, add `lang`), F2 the steps list scrolls so Cindy's route and the Lister sit out of view at the final d15 state (the design shows all seven), F3 the embedded passage clamped to two lines, F4 "Vibe words" on its own row, F5 "September"/九月 typed in strings.ts, F10 the maker side panel 912 px in a 732 px view; F6 `--c-font-mono` for I3-redesign.
 - **Chinese out, step 2, after G4v2 (Gordon, 11:55 PM; decisions.md):** the integrator makes the shared text type English only and drops the Chinese column from the glossary and L1 to L30; then each owner removes zh from its own files (mock data, strings.ts, specs) in one sweep, each landing only when its checks pass; plain-English rewrites for anything that only made sense in two languages. B11's training pairs and the 50-query test set stay. Leftover zh is fine if nothing renders it; the tour comes first.
@@ -405,3 +407,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:51 PT · B14 second spawn done (Finder, Curator, listing run, Designer, router, adapter): test_b14_swarm 132 non-live + 2 live, test:server 780, smoke 124; support-live.spec passed once (12.3 s) before an HMR of src/core broke its store import (dev-server restart before G5); committed; G5 b14 after G4v2 · status.md
 - 2026-10-25 00:53 PT · B15 done (Scout, Comparer, claims, Reporter, router, adapter): test_b15_watch 72 + 1 live skipped (no market), test:server 799, smoke 124; threshold 0.22; committed; its G5 waits for Gordon's upload and PUBLIC_SITE_URL · status.md
 - 2026-10-25 00:53 PT · G5 b04 in the worktree 11/13 (both failures v1 harness timing, B04's live calls pass; rerun on the tour after G4v2); B02 and B07 G5s running next; B16 spawned (its build doesn't wait on B04's G5, only its gate does) · artifacts/gates/G5-b04-bank-wt-0028.md
+- 2026-10-25 00:55 PT · G3 approvals PASS (worktree rerun 3/3, confirm recheck PASS; the adversarial lens's FAIL is the tour's new order, a T8 item); committed, tag v2-approvals; the keyed v1 G5s stopped (rerun on the tour after G4v2) · status.md

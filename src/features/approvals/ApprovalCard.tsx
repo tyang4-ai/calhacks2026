@@ -1,27 +1,31 @@
-// One approval Cindy asked for: its title, summary line, amount, over-limit mark, status and the
-// line saying Cindy proposed it and only the owner can approve it. Room below for the details (T2)
-// and the decision bar (T3). Once granted, the seal sits in the header beside the title. A decided
-// card that is no longer the newest renders compact: title, figure, status and a small seal.
-import type { ReactNode } from "react";
+// One approval Cindy asked for, as a card in the list: the kind's tag and the approval's ID, its
+// title and amount, its summary, the held amount or the over-limit mark when they apply, the line
+// saying Cindy proposed it and only the owner can approve it, and its status. While it's pending the
+// owner decides on the card itself. Once granted, the owner's small seal sits at the card's top right
+// (approvals-seal-<approvalId>) and the status line carries the decision's date, so the date shows
+// even where a small seal leaves it out. Clicking the card selects it.
+import type { MouseEvent } from "react";
 import { useCindia } from "../../core/store";
+import type { CindiaState } from "../../core/state";
 import type { ApprovalStatus } from "../../core/types";
-import { Badge, Money, type BadgeVariant } from "../../ui";
-import { summarizeApproval } from "./approvalSummary";
-import { GLOSSARY, UI, t, type Lang } from "./strings";
+import { Badge, Money, formatCents, formatMonthDay, type BadgeVariant } from "../../ui";
+import { payoutsOf, recordFromState, summarizeApproval } from "./approvalSummary";
+import { DecisionBar, OwnerSeal } from "./DecisionBar";
+import { isLiveHit } from "./selection";
+import styles from "./approvals.module.css";
+import { GLOSSARY, UI, decidedLine, heldLine, t, type Lang } from "./strings";
 
 export interface ApprovalCardProps {
   approvalId: string;
   lang: Lang;
-  /** The card's details: FollowUpDraft or PayoutLines (T2). */
-  details?: ReactNode;
-  /** The decision bar and the seal (T3). */
-  decision?: ReactNode;
-  /**
-   * Decided and no longer the newest card: one or two lines with the title, the key figure, the
-   * status and the small seal (passed in as decision), so the newer card keeps the phone's room.
-   */
-  compact?: boolean;
+  selected?: boolean;
+  onSelect?: (approvalId: string) => void;
+  /** Hits whose counterfeit.flagged came from a live scan: a report on one waits for the owner's own check. */
+  liveHits?: string[];
 }
+
+/** The seal's size on a card: 10月1日 fits at 14 px from 62 px up (the kit's Seal), so the date shows in both languages. */
+export const CARD_SEAL = 64;
 
 const STATUS_LABEL = {
   pending: GLOSSARY.needsApproval,
@@ -35,119 +39,173 @@ const STATUS_VARIANT: Record<ApprovalStatus, BadgeVariant> = {
   declined: "neutral",
 };
 
-export function ApprovalCard({ approvalId, lang, details, decision, compact = false }: ApprovalCardProps) {
-  const status = useCindia((s) => s.approvals.items[approvalId]?.status) ?? "pending";
-  const followUpSent = useCindia((s) => Object.values(s.approvals.followUps).some((f) => f.approvalId === approvalId && f.sent));
-  const summary = summarizeApproval(approvalId);
+/** Whether everything the approval sent out has gone: its follow-up, or all its payouts. */
+function selectSent(s: CindiaState, approvalId: string): boolean {
+  const record = recordFromState(s, approvalId);
+  if (!record) return false;
+  if (record.kind === "maker_payouts") {
+    const payouts = payoutsOf(record);
+    return payouts.length > 0 && payouts.every((p) => Boolean(s.approvals.payouts[p.id]));
+  }
+  return Object.values(s.approvals.followUps).some((f) => f.approvalId === approvalId && f.sent);
+}
+
+const softSmall = { fontSize: "var(--c-text-14)", color: "var(--c-color-ink-soft)", lineHeight: 1.35 } as const;
+
+export function ApprovalCard({ approvalId, lang, selected = false, onSelect, liveHits = [] }: ApprovalCardProps) {
+  const item = useCindia((s) => s.approvals.items[approvalId]);
+  const reportOn = useCindia((s) => {
+    const record = recordFromState(s, approvalId);
+    return record?.kind === "report_listing" ? record.subjectIds[0] : undefined;
+  });
+  const needsCheck = reportOn !== undefined && isLiveHit(reportOn, liveHits);
+  const summary = useCindia((s) => summarizeApproval(approvalId, s));
+  const sent = useCindia((s) => selectSent(s, approvalId));
+  const status: ApprovalStatus = item?.status ?? "pending";
   const headingFont = lang === "zh" ? "var(--c-font-heading-zh)" : "var(--c-font-heading-en)";
 
-  if (compact) {
-    return (
-      <article
-        data-testid={`approvals-item-${approvalId}`}
-        data-compact="true"
-        lang={lang}
-        style={{
-          position: "relative",
-          borderTop: "1px solid var(--c-color-line)",
-          borderBottom: "1px solid var(--c-color-line)",
-          padding: "var(--c-space-8) 0",
-          display: "flex",
-          alignItems: "center",
-          gap: "var(--c-space-12)",
-          color: "var(--c-color-ink)",
-          fontSize: "var(--c-text-14)",
-        }}
-      >
-        {decision}
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "var(--c-space-4)" }}>
-          <h3
-            style={{
-              margin: 0,
-              fontFamily: headingFont,
-              fontSize: "var(--c-text-16)",
-              fontWeight: 600,
-              lineHeight: 1.3,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {summary ? t(summary.title, lang) : approvalId}
-          </h3>
-          <span style={{ fontSize: "var(--c-text-14)", color: "var(--c-color-ink-soft)", lineHeight: 1.3 }}>
-            {t(GLOSSARY.proposedByCindy, lang)}
-          </span>
-        </div>
-        <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "var(--c-space-4)" }}>
-          {summary?.amountCents !== undefined && (
-            <span data-part="amount">
-              <Money cents={summary.amountCents} style={{ fontSize: "var(--c-text-16)", fontWeight: 600 }} />
-            </span>
-          )}
-          <span style={{ display: "flex", alignItems: "center", gap: "var(--c-space-4)" }}>
-            <Badge variant={STATUS_VARIANT[status]}>{t(STATUS_LABEL[status], lang)}</Badge>
-            {followUpSent && <Badge variant="jade">{t(GLOSSARY.sent, lang)}</Badge>}
-          </span>
-        </div>
-      </article>
-    );
-  }
+  const select = (e: MouseEvent) => {
+    if (e.defaultPrevented) return;
+    onSelect?.(approvalId);
+  };
 
   return (
     <article
       data-testid={`approvals-item-${approvalId}`}
+      data-status={status}
+      aria-current={selected ? "true" : undefined}
       lang={lang}
+      onClick={select}
       style={{
         position: "relative",
-        borderTop: "1px solid var(--c-color-line)",
-        borderBottom: "1px solid var(--c-color-line)",
-        padding: "var(--c-space-16) 0",
+        flexShrink: 0,
+        background: "var(--c-color-paper)",
+        border: selected ? "2px solid var(--c-color-ink)" : "1px solid var(--c-color-line)",
+        borderRadius: "var(--c-radius-panel)",
+        // The border grows by a pixel when selected, so the padding gives that pixel back.
+        padding: selected ? "15px 19px" : "16px 20px",
         display: "flex",
         flexDirection: "column",
-        gap: "var(--c-space-12)",
+        gap: "var(--c-space-8)",
         color: "var(--c-color-ink)",
         fontSize: "var(--c-text-16)",
+        cursor: onSelect ? "pointer" : undefined,
       }}
     >
-      <header style={{ display: "flex", alignItems: "center", gap: "var(--c-space-12)" }}>
-        {/* Once granted, the seal lands here beside the title, in view with the card's figures. */}
-        {status === "granted" && decision}
-        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "var(--c-space-8)" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--c-space-8)" }}>
-          <Badge variant={STATUS_VARIANT[status]}>{t(STATUS_LABEL[status], lang)}</Badge>
-          {summary?.overLimit && <Badge variant="seal">{t(GLOSSARY.overLimit, lang)}</Badge>}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--c-space-16)" }}>
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "var(--c-space-4)" }}>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "var(--c-space-8)" }}>
+            <span style={{ ...softSmall, fontWeight: 600 }}>{summary ? t(summary.tag, lang) : ""}</span>
+            <span style={{ ...softSmall, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>{approvalId}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "var(--c-space-12)", flexWrap: "wrap" }}>
+            <h3
+              style={{
+                margin: 0,
+                minWidth: 0,
+                fontFamily: headingFont,
+                fontSize: "var(--c-text-18)",
+                fontWeight: 600,
+                lineHeight: 1.3,
+              }}
+            >
+              {/* The title is the card's keyboard way in: a button that selects the card. */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSelect?.(approvalId);
+                }}
+                className={styles.titleButton}
+              >
+                {summary ? t(summary.title, lang) : approvalId}
+              </button>
+            </h3>
+            {summary?.amountCents !== undefined && (
+              <span data-part="amount" style={{ flexShrink: 0 }}>
+                <Money cents={summary.amountCents} style={{ fontSize: "var(--c-text-24)", fontWeight: 700 }} />
+              </span>
+            )}
+          </div>
         </div>
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "var(--c-space-12)" }}>
-          <h3
-            style={{
-              margin: 0,
-              fontFamily: headingFont,
-              fontSize: "var(--c-text-18)",
-              fontWeight: 600,
-              lineHeight: 1.3,
-            }}
-          >
-            {summary ? t(summary.title, lang) : approvalId}
-          </h3>
-          {summary?.amountCents !== undefined && (
-            <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", flexShrink: 0 }}>
-              <span style={{ fontSize: "var(--c-text-14)", color: "var(--c-color-ink-soft)" }}>{t(UI.amount, lang)}</span>
-              <Money cents={summary.amountCents} style={{ fontSize: "var(--c-text-18)", fontWeight: 600 }} />
+        <div style={{ width: CARD_SEAL, height: CARD_SEAL, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {status === "granted" && item ? (
+            <OwnerSeal
+              testId={`approvals-seal-${approvalId}`}
+              lang={lang}
+              size={CARD_SEAL}
+              date={item.date}
+              decidedAt={item.decidedAt}
+              byUser={item.source === "user"}
+            />
+          ) : status === "declined" ? null : (
+            <span
+              aria-hidden="true"
+              style={{
+                width: CARD_SEAL - 2,
+                height: CARD_SEAL - 2,
+                border: "1px dashed var(--c-color-line)",
+                color: "var(--c-color-ink-soft)",
+                fontSize: "var(--c-text-14)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                lineHeight: 1.2,
+              }}
+            >
+              {t(UI.sealPlaceholder, lang)}
             </span>
           )}
         </div>
+      </div>
+
+      {summary ? (
+        <p
+          title={t(summary.summary, lang)}
+          style={{
+            margin: 0,
+            lineHeight: 1.4,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {t(summary.summary, lang)}
+          {summary.extra && <span style={{ color: "var(--c-color-ink-soft)" }}> {t(summary.extra, lang)}</span>}
+        </p>
+      ) : (
+        <p style={{ margin: 0, color: "var(--c-color-ink-soft)" }}>{t(UI.noDetails, lang)}</p>
+      )}
+
+      {(summary?.overLimit || (summary?.heldCents ?? 0) > 0) && (
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "var(--c-space-8)" }}>
+          {summary?.overLimit && <Badge variant="seal">{t(GLOSSARY.overLimit, lang)}</Badge>}
+          {summary?.heldCents !== undefined && summary.heldCents > 0 && (
+            <span data-part="held-total" style={{ fontSize: "var(--c-text-14)", fontWeight: 600, color: "var(--c-color-amber)" }}>
+              {t(heldLine(formatCents(summary.heldCents)), lang)}
+            </span>
+          )}
         </div>
-      </header>
+      )}
 
-      {summary && <p style={{ margin: 0, lineHeight: 1.5 }}>{t(summary.summary, lang)}</p>}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "var(--c-space-8)" }}>
+        <span style={softSmall}>{t(GLOSSARY.proposedByCindy, lang)}</span>
+        <span style={{ display: "inline-flex", alignItems: "center", flexWrap: "wrap", gap: "var(--c-space-8)" }}>
+          <Badge variant={STATUS_VARIANT[status]}>
+            {t(decidedLine(STATUS_LABEL[status], status === "granted" && item?.date ? formatMonthDay(item.date, lang) : undefined), lang)}
+          </Badge>
+          {status === "granted" && sent && <Badge variant="jade">{t(GLOSSARY.sent, lang)}</Badge>}
+        </span>
+      </div>
 
-      <p style={{ margin: 0, fontSize: "var(--c-text-14)", color: "var(--c-color-ink-soft)" }}>
-        {t(GLOSSARY.proposedByCindy, lang)}
-      </p>
-
-      {details}
-      {status !== "granted" && decision}
+      {status === "pending" && <DecisionBar approvalId={approvalId} lang={lang} needsCheck={needsCheck} />}
+      {status === "declined" && item?.reason && (
+        <span style={softSmall}>
+          {t(UI.reasonLabel, lang)}: {t(item.reason, lang)}
+        </span>
+      )}
     </article>
   );
 }

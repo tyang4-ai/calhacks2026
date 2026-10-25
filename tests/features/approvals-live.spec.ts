@@ -1,7 +1,9 @@
-// F-approvals with B08 live: the owner approves on a real second screen and the console sees it.
+// M-approvals with B08 live: the owner approves on a real second screen and the console sees it.
 // Two pages in one browser context, both in live mode:
-// - page A, the console on /demo, plays the demo from 35 s through the approval requests;
-// - page B, /owner, polls the pending list (B08 start()) and shows the approvals. The test taps
+// - page A, the console on /demo, plays the demo from 1 s before apr_01's approval.requested through
+//   both requests (times read from the loaded timeline, so it holds when I2-tour moves the beats);
+// - page B, the owner screen on /sell/approvals?screen=owner (the route B13-live's T7 makes the B08
+//   adapter poll, D1-19), polls the pending list (B08 start()) and shows the approvals. The test taps
 //   Approve there.
 // The console must not grant on its own while the owner screen is connected: each scripted
 // approval.granted waits on the long-poll, and the decision that lands is the owner's, live.
@@ -17,9 +19,24 @@ import { waitForHooks, watchPage } from "../smoke/lib";
 
 const KEY = "b08-approvals";
 const IDS = ["apr_01", "apr_02"] as const;
-/** The scripted grants in src/mock/timelines/demo.ts: apr_01 at 39.8 s, apr_02 at 41.0 s. */
-const LAST_SCRIPTED_GRANT_MS = 41000;
-const START_MS = 35000;
+/** The console starts this long before the timeline's approval.requested for apr_01. */
+const LEAD_IN_MS = 1000;
+
+/**
+ * Event-anchored times from the console's loaded timeline (conventions.md, Specs): the start, 1 s
+ * before apr_01's approval.requested, and the last scripted grant, the timeline's approval.granted
+ * for apr_02.
+ */
+async function timelineTimes(page: Page): Promise<{ startMs: number; lastScriptedGrantMs: number }> {
+  const times = await page.evaluate(() => {
+    const events = (window.__cindia as unknown as { player: { getTimeline(): { events: { type: string; at: number; payload: unknown }[] } | null } }).player.getTimeline()?.events ?? [];
+    const at = (type: string, id: string) => events.find((e) => e.type === type && (e.payload as { approvalId?: string }).approvalId === id)?.at ?? null;
+    return { request: at("approval.requested", "apr_01"), grant: at("approval.granted", "apr_02") };
+  });
+  expect(times.request, "the loaded timeline has approval.requested for apr_01").not.toBeNull();
+  expect(times.grant, "the loaded timeline has approval.granted for apr_02").not.toBeNull();
+  return { startMs: Math.max(0, times.request! - LEAD_IN_MS), lastScriptedGrantMs: times.grant! };
+}
 
 type Hooks = {
   player: { now(): number; play(): void; pause(): void; seek(ms: number): void };
@@ -39,7 +56,6 @@ interface Logged {
   page: "console" | "owner";
   method: string;
   path: string;
-  /** -1 while the request is still open. */
   /** -1 while the request is still open. */
   status: number;
   body: string;
@@ -80,11 +96,19 @@ async function relayB08(page: Page, who: Logged["page"], log: Logged[]) {
   });
 }
 
-async function goLive(page: Page, url: string) {
+/** The owner screen: the Sell site's approvals view with screen=owner, which the B08 adapter polls for. */
+const OWNER_URL = "/sell/approvals?screen=owner";
+
+/**
+ * Opens a page and turns on live mode. `slot` is the slot to wait for: owner.main on the owner
+ * screen. The console's /demo stage opens on another Sell view, so it waits for its first filled slot.
+ */
+async function goLive(page: Page, url: string, slot?: string) {
   await page.goto(url);
   await waitForHooks(page);
   await page.evaluate(() => (window.__cindia as unknown as Hooks).player.pause());
-  await expect(page.locator('[data-slot="owner.main"]').first()).toHaveAttribute("data-slot-state", "filled");
+  if (slot) await expect(page.locator(`[data-slot="${slot}"]`).first()).toHaveAttribute("data-slot-state", "filled");
+  else await expect(page.locator('[data-slot][data-slot-state="filled"]').first()).toBeAttached();
   await page.getByTestId("demo-mode-toggle").click();
   await expect(page.getByTestId("demo-mode-toggle")).toHaveText(/Live/);
   await expect(page.locator(`[data-testid="demo-mode-toggle"] [data-source-key="${KEY}"]`)).toHaveAttribute("data-healthy", "true", { timeout: 15000 });
@@ -110,7 +134,7 @@ async function cleanUp(request: APIRequestContext) {
   }
 }
 
-test("live: the owner approves on /owner and the console's long-poll receives the decision", async ({ browser, request, baseURL }) => {
+test("live: the owner approves on /sell/approvals?screen=owner and the console's long-poll receives the decision", async ({ browser, request, baseURL }) => {
   test.setTimeout(120000);
   const health = await request.get("/api/health", { timeout: 5000 }).catch(() => null);
   const routers = health && health.ok() ? (((await health.json()) as { routers?: unknown }).routers ?? []) : [];
@@ -126,13 +150,15 @@ test("live: the owner approves on /owner and the console's long-poll receives th
     await relayB08(owner, "owner", log);
     await relayB08(consolePage, "console", log);
 
-    // Page B: the owner's phone, live, paused at 0 so only the server's approvals reach it.
-    await goLive(owner, "/owner");
+    // Page B: the owner screen, live, paused at 0 so only the server's approvals reach it.
+    await goLive(owner, OWNER_URL, "owner.main");
     await expect.poll(() => log.some((l) => l.page === "owner" && l.method === "GET" && l.path.startsWith("/api/b08/approvals?")), { timeout: 10000 }).toBe(true);
     await expect(owner.getByTestId("approvals-item-apr_01")).toHaveCount(0);
 
-    // Page A: the console, live, plays from 35 s through both requests and both scripted grants.
+    // Page A: the console, live, plays from just before apr_01's request through both requests and
+    // both scripted grants.
     await goLive(consolePage, "/demo");
+    const { startMs: START_MS, lastScriptedGrantMs: LAST_SCRIPTED_GRANT_MS } = await timelineTimes(consolePage);
     await consolePage.evaluate((ms) => {
       const h = window.__cindia as unknown as Hooks & { store: { subscribe(l: () => void): () => void } };
       const p = h.player;
