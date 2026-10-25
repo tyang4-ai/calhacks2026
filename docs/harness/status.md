@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:52 PT
+UPDATED: 2026-10-24 23:56 PT
 
 # Status board
 
@@ -101,7 +101,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-support | V2 P0 | green | feature-lead | v2-support | |
 | F-process | V2 P0 | fix round 1 done (38/38), worktree G3 and verifier recheck running | feature-lead | | lead wrote T0-T8 itself (no Agent tool) |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
-| M-approvals | V2 P0 | G3 verifier FAIL (F1 toast over L20 and Cindy's line), fix round 1 | feature-lead | | worktree G3 3/3 PASS; live two-screen spec runs; OwnerInbox deleted |
+| M-approvals | V2 P0 | fix round 1 done (41/41), worktree G3 rerun and two-lens recheck running | feature-lead | | worktree G3 3/3 PASS; live two-screen spec runs; OwnerInbox deleted |
 | M-desktop | V2 P0 | built, worktree G3 queued and verifier | feature-lead | | needs FlagState.nessieId in src/core/state.ts (integrator) |
 | F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | green | feature-lead | v2-watch | live spec skips until B15; F2 in the polish queue |
@@ -376,3 +376,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:47 PT · B11 model published to the private Hugging Face repo Fireclaw2396/cindia-embed (revision 5ad57138…, 11 files, secrets scan 0 findings); report.json has hubRepo, hubRevision, hubUrl; S3 T9 second pass sent (report copy with hubUrl, real text matches for cft_02 to cft_04) · artifacts/b11/publish.out
 - 2026-10-24 23:48 PT · F-storefront built (T0-T6, smoke 123, feature specs pass alone; shared-tree runs lose a test to reloads); its worktree G3 queued and verifier spawned; all eleven V2 leads have reported · status.md
 - 2026-10-24 23:52 PT · S3 T9 second pass done (report copied again: keyword 0.7843 / 0.8745, base 0.722 / 0.7809, custom 0.7893 / 0.8922, hybrid 0.8247 / 0.94; real text matches cft_01 0.74, cft_02 0.34, cft_03 0.40, cft_04 0.32): check:data 244, check:scope PASS; snapshot refreshed; its worktree gate (search specs and smoke) is queued · status.md
+- 2026-10-24 23:56 PT · M-approvals fix round 1 done (F1 toast in its own strip, F2, F3, F4, F9, English-only listing card; 41/41 first run); worktree G3 rerun queued and a two-lens recheck (confirm, adversarial overlap hunt) running; F-process worktree rerun PASS (38, smoke 123), its verifier recheck pending · status.md
