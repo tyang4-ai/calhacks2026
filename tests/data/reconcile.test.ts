@@ -95,8 +95,12 @@ describe("people and catalog", () => {
     expect(buyers.every((b) => b.role === "buyer" && b.lang === "en")).toBe(true);
   });
 
-  it("the twelve pieces match the catalog table, and process hours add up", () => {
-    expect(pieces.map((p) => [p.id, p.title.en, p.title.zh, p.makerId, p.kind, p.priceCents, p.hours, p.materialsCents])).toEqual(CATALOG);
+  it("the co-op's twelve pieces match the catalog table, and process hours add up", () => {
+    // S3-catalog T5: pieces holds all 54, the co-op's twelve first, so the table check narrows to the
+    // co-op's (communityId com_dine). Every field check below still runs on every piece.
+    const coop = pieces.filter((p) => p.communityId === "com_dine");
+    expect(coop.map((p) => [p.id, p.title.en, p.title.zh, p.makerId, p.kind, p.priceCents, p.hours, p.materialsCents])).toEqual(CATALOG);
+    expect(pieces.slice(0, 12)).toEqual(coop);
     for (const p of pieces) {
       expect(total(p.process.map((s) => s.hours)), p.id).toBe(p.hours);
       expect(p.image).toBe(`/images/${p.id}.svg`);

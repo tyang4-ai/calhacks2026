@@ -1,6 +1,6 @@
 // The demo listing lst_01 and the approval apr_04 that proposes publishing it. The scripted draft
-// itself is run_02's listing.drafted in swarm.ts. S3-catalog T1 stub: both records are the plan's
-// exact values already.
+// itself is run_02's listing.drafted in swarm.ts. DEMO DATA: the notes are Lena T.'s placeholder
+// words, written by the Cindia team in her plain voice, with no price (S3-catalog T7).
 import type { Approval, ListingDraft } from "../core/types";
 
 export const listings: ListingDraft[] = [

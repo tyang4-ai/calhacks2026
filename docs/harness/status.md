@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy); G1b/G2b verifiers finishing
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 21:29 PT
+UPDATED: 2026-10-24 21:37 PT
 
 # Status board
 
@@ -39,6 +39,7 @@ v1 (desktop session, history):
 | R0 | PASS | Oct 24 6:46 PM | `artifacts/gates/R0-1836.md`, `artifacts/gates/R0-verifier-screens.md`, `-numbers.md`, `-words.md` (first run `R0-1828.md` FAIL: d10 held line out of frame, fixed) | v2-reskin |
 | core | PASS | Oct 24 7:58 PM | `artifacts/gates/core-1940.md` (first run `core-1935.md`: smoke source count and B09's 4 s budget, fixed), `artifacts/gates/core-verifier-code.md`, `-docs.md`, `-server.md` | v2-core |
 | G5 b09 | PASS | Oct 24 8:23 PM | `/home/user/cindia-g5/artifacts/gates/G5-2023.md` (worktree), `artifacts/gates/G5-b09-verifier.md` | demo-ok-b09 |
+| G2b | PASS | Oct 24 21:37 | `artifacts/gates/G2b-2112.md`, `artifacts/gates/G2b-verifier-data.md` | v2-data |
 | G6 | | | | |
 
 ## Features
@@ -83,7 +84,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | I2-core | V1 | green (both spawns) | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
 | I2-kit | V1 | done, commit at G1b | integrator | | T1-T4 done: check 738, smoke 123/123; /dev/kit gallery |
 | I2-shell | V1 | done, commit at G1b | integrator | | check 755, smoke 123, build, demo 60.0 s (0 beat problems), offline; T7: buyer 30 specs to M-buyer, approvals-frame 2 and approvals-live 1 to M-approvals and B13 T7 |
-| S3-catalog | V1 | done, G2b checks PASS | data-smith | | T1-T8 done (check:data 232); commit at G2b after the verifier |
+| S3-catalog | V1 | green | data-smith | v2-data | G2b 3/3, verifier PASS; minors M1-M5, M8 for a later data round; T9 after B11's training |
 | I2-art | V1 | T0 committed | integrator | | T0 54 placeholders (54288bd); T1-T3 after G2b |
 | F-search | V2 P0 | running | feature-lead | | |
 | M-buyer | V2 P0 | running | feature-lead | | |
@@ -298,3 +299,5 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 21:19 PT · B13: save_token.py wrote SPACETIME_TOKEN to .env; API restarted (routers b11, b13 loaded); /api/b13/status spacetime true; seeded 54 catalog, 30 orders, 5 approvals; test_b13_live 62 passed incl. the live round trip; T2-T6 committed · status.md
 - 2026-10-24 21:20 PT · V2 started: leads for F-search, M-buyer (T0-T6), F-support, F-process; B11 T4/T6 running; next: I2-art T1-T3, D-deploy, B11 T3 after G2b's verifier · status.md
 - 2026-10-24 21:29 PT · B11 T4 code and T6 committed (108 passed; /api/b11/model answers its no-model problem); training requirements installed · status.md
+- 2026-10-24 21:37 PT · G2b PASS: checks 3/3, verifier PASS (minors for a data round: an unmarked old-name term in a test, sq_007's grades, run_08's two Ojibwe picks, churro's Chinese order, 沙盒市集 vs L21's 沙盒市场, the Red Mesa name); tag v2-data · artifacts/gates/G2b-verifier-data.md
+- 2026-10-24 21:37 PT · G1b: screens verifier PASS; code verifier FAIL on the kit's 14 px floor (Seal date 11 px, MakerMark glyph 11 px, a test locking it in); integrator fix round 1 running · artifacts/gates/G1b-verifier-code.md
