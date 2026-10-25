@@ -2,6 +2,8 @@
 
 Gordon Yang wrote this brief with the Cindia planning session on Oct 25, 2026, just after midnight PT. Paste it into a new conversation, or attach it there, and follow it. It's everything you need. Gordon is busy finishing the build tonight, so only ask him at the two checkpoints below. Make every other call yourself and say what you chose.
 
+**Work in this one conversation and spawn no subagents.** The build runs on the same Claude plan, and it must not run out of usage before its 6:00 AM freeze.
+
 ## 1. Who and what
 
 - **Gordon Yang** is competing solo at Cal Hacks 13.0. His project, **Cindia**, is a platform for underrepresented makers, starting with Native American makers. Selling online takes time, broadband and marketing reach that many makers on tribal lands don't have, so Cindia does the selling, the marketing and the books for them. Buyers find a piece by describing a feeling. A swarm of small Claude agents answers customers and runs the makers' money, and a person approves anything that moves money.
@@ -105,15 +107,17 @@ Gordon asked for proven, widely used skills, not home-made code. Read each skill
   - ffmpeg is installed.
   - Most hosts other than npm, PyPI and GitHub are blocked.
 
-## 7. Pitch card text (draft, waiting for Gordon's OK)
+## 7. Pitch card text (approved by Gordon)
 
-He may edit this. Use the final text from `src/app/demo/pitch.ts` once the tour lands.
+`src/app/demo/pitch.ts` holds the same text once the tour lands. If the two ever differ, the file wins.
+
+**The tagline is "Made by hand. Paid in full."** It opens the pitch and the end card repeats it, so give it the strongest typographic moment in the video.
 
 **Cindia**
+- Made by hand. Paid in full.
 - A platform for underrepresented makers, starting with Native American makers.
 - Yes, it's like Etsy. But we do the selling, the marketing and the books for them.
-- Buyers find a piece by describing a feeling.
-- Each sale pays the maker who made it, and the receipt shows the payout.
+- Buyers find a piece by describing a feeling, and watch the maker get paid.
 
 **Why**
 - Selling online takes time, broadband and marketing reach that many makers on tribal lands don't have.
