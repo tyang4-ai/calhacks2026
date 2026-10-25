@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:20 PT
+UPDATED: 2026-10-24 23:23 PT
 
 # Status board
 
@@ -99,7 +99,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-support | V2 P0 | green | feature-lead | v2-support | |
 | F-process | V2 P0 | G3 verifier FAIL (screens F1-F4), fix round 1 | feature-lead | | lead wrote T0-T8 itself (no Agent tool) |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
-| M-approvals | V2 P0 | todo | feature-lead | | G3 waits for B13 T7 |
+| M-approvals | V2 P0 | built, G3 queued (worktree) and verifier | feature-lead | | live two-screen spec runs (B13 T7 in place); OwnerInbox deleted |
 | M-desktop | V2 P0 | running | feature-lead | | T2, T3 first |
 | F-seller-hub | V2 P0 | built, G3 queued (worktree) and verifier | feature-lead | | lead wrote T0-T7 itself; specs mock the HMR socket |
 | F-watch | V2 P1 | built, G3 queued (worktree) and verifier | feature-lead | | live spec skips until B15 |
@@ -188,6 +188,7 @@ Run once the V2 leads are done, so a shared-code edit can't reload the dev serve
 - Integrator code (from G3 process): `src/ui/views.ts` graphLayout puts a tool node over an agent's name (F1, the lead works around it); the search map note renders at 13.95 px (N4); `swarm.steps` carry no event ID (N8). B13: the live data view's `processes` row reads 0 (N7).
 - Integrator docs round 2: F-process's 24 internal test IDs into ui-contract.md (N10); the v1 store sub-fields features read (`buyer.splits`, `orders`, `receipts` and the rest) in events.md (buyer N1, process N9); design-system.md "the 48 px compact seal" → "a 48 px seal", `formatMonthDay` in the kit table; ui-contract.md Test hooks rule wording (data-slot* sits on a wrapper with no test ID), add data-role, data-status, data-video-phase, data-catch-phase to the data-attributes table, the Test IDs intro now that Internal rows are many; events.md Player `setDispatch`, `subscribe` comment names reset and seek; glossary L1 Where cell "except /dev/kit"; api-contract 503/502 rows.
 - I2-tour: L1 at the end card's foot (decisions 22:5x).
+- Phase A regression before I2-tour: `npm run test:demo` and `npm run test:offline` on main (worktree, raised priority, the VM as quiet as possible) once the V2 migrations (M-buyer, M-approvals, M-desktop, M-maker-statement) are committed: they change demo beats, and G3 doesn't run the demo. M-approvals' lead saw the demo stop early on late-sampled beats at load 16 to 26, d08 clean on the dev server.
 - S3 data round 1 (M1-M5, M8) running now; then regenerate `public/market/` with `node scripts/make-market.mjs` (cft_01's seller is renamed to Lantern Lane Home Goods: Red Mesa is a real Navajo Nation place).
 
 ## Needs Gordon
@@ -359,3 +360,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 23:15 PT · B14 first spawn done (T1-T3, T5, T6: call path, steps, content check, roster and tools, Intake, Cindy, the specialists, the Writer and the support run; Finder and Curator stubbed until T4): test_b14_swarm 95 passed (one live Intake call 2.2 s), test:server 619, check PASS; committed (no router yet, T9) · status.md
 - 2026-10-24 23:17 PT · D-deploy PASS in the worktree (all Acceptance commands, smoke 123) after fix round 1; market pages regenerated with Lantern Lane Home Goods; committed, tag v2-deploy; Gordon's upload and laptop steps under Needs Gordon; F-watch built (15 specs, live skips), verifier and worktree G3 next · artifacts/gates/D-deploy-wt-2306.md
 - 2026-10-24 23:20 PT · API stopped at its 2-hour limit, restarted (all keys true; B13 reseeded from SpacetimeDB: catalog 54, orders 38, approvals 5); B11 T7 (adapter, liveMap for B12) and T8 (publish, fetch, card, train_akbari.sh) done: test_b11_embed 239, test:server 619, check:scope PASS; committed with scripts/train-akbari.sh; F-seller-hub verifier PASS (findings to the polish queue) · status.md
+- 2026-10-24 23:23 PT · M-approvals built (T0-T5, every spec file passes alone, smoke 123, live two-screen spec passes); its worktree G3 queued and verifier spawned; demo regression on main queued before I2-tour · status.md
