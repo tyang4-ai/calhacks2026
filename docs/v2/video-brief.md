@@ -61,10 +61,10 @@ Gordon's voiceover script, timed to video mode, is `docs/v2/voiceover.md`. If he
 - **Desktop only.** The design size is 1440 by 900.
 - **The tour is at `/demo`, and it has landed.** G4v2 passed on design drop 3 at 4:25 AM, with the tour at 220 s three times and offline. Film it now.
   - `git pull` again after the 6:00 AM freeze, and refilm anything that changed.
-  - Three bits of copy may change in Gordon's local session after the freeze:
-    - the Why card's last line
-    - the verification line on the piece cards ("Nation attestation")
-    - the end card's Live line
+  - Gordon's local session changes three bits of copy after the 5:30 AM freeze. He approved them at 4:58 AM:
+    - the Why card's last line, "Their craft, their prices, their say. We do the paperwork."
+    - the verification line on the piece cards, which reads "Demo verification · Nation attestation, not checked"
+    - the end card's Live line, "The tour is scripted, so it always plays. In live mode, real services answer your own questions."
   - Build the pitch scenes so their text is easy to swap.
 - **Capture by seeking, not by screen recording.**
   - Every build exposes `window.__cindia.player`, with `pause()`, `seek(ms)` and `getTimeline()`.
@@ -119,7 +119,7 @@ Gordon asked for proven, widely used skills, not home-made code. Read each skill
 
 ## 7. Pitch card text (approved by Gordon)
 
-`src/app/demo/pitch.ts` holds the same text once the tour lands. If the two ever differ, the file wins.
+`src/app/demo/pitch.ts` holds the same text. If the two ever differ, the file wins, except for the Why card's last line below: Gordon approved it at 4:58 AM, and `pitch.ts` gets it in the freeze tweaks.
 
 **The tagline is "Describe the vibe. Gift the piece. Pay the person."** Gordon changed it at 3:25 AM, and it replaces "Made by hand. Paid in full." everywhere. It opens the pitch and the end card repeats it, so give it the strongest typographic moment in the video. If you already built a pitch scene or an end card with the old tagline, rebuild it from `src/app/demo/pitch.ts`.
 
@@ -133,7 +133,7 @@ Gordon asked for proven, widely used skills, not home-made code. Read each skill
 - Selling online takes time, broadband and marketing reach that many makers on tribal lands don't have.
 - On a marketplace, a co-op gets one payout and splits it by hand.
 - Fakes sell as Native-made. In August, one eBay seller admitted to selling more than $92,000 of them.
-- If we don't help them, who will?
+- Their craft, their prices, their say. We do the paperwork.
 
 **How it works**
 - A swarm of small Claude agents, each with one job, on Haiku and Sonnet.

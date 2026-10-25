@@ -30,7 +30,7 @@ Each line is sized at about 2.5 words a second and starts when its scene starts.
 ## Notes
 
 - **Recording:** record over the final render in Premiere, one take per scene. The times above are the render's.
-- **The Why card's last line:** the culture review rules that "If we don't help them, who will?" reads as a savior line, so this script uses "Their craft, their prices, their say. We do the paperwork." That depends on Gordon's yes, since the card in `src/app/demo/pitch.ts` must change to match. If he keeps the old card, end the p02 line after "Native-made".
+- **The Why card's last line** is "Their craft, their prices, their say. We do the paperwork." `src/app/demo/pitch.ts` gets it in the freeze tweaks.
 - **`d15` is a planted test,** and the screen labels it that way, so the line says "we planted".
 - **The figures** all come from the mock data:
   - the $180 weaving, $134.48 to Grace N. and $86 through the gallery
