@@ -1,7 +1,7 @@
 // The parties on the money map, as HTML nodes laid over the SVG threads. The parent is
 // position: relative with aspect ratio 1000/600, so nodes are placed by percentage.
 import type { CSSProperties } from "react";
-import { useCindia, type MoneyMove, type Party, type Person, type Studio } from "../../core";
+import { useCindia, type MoneyMove, type Party, type Person, type Project, type Studio } from "../../core";
 import { MakerMark, Money } from "../../ui";
 import { getById } from "../../mock";
 import { CANVAS_H, CANVAS_W, NODE_W, partyKey, partyPoint, studioMakerIds } from "./partyLayout";
@@ -17,7 +17,7 @@ interface NodeInfo {
 }
 
 /** Order the nodes are drawn in, so the DOM is the same on every render. */
-const KIND_ORDER: Party["kind"][] = ["buyer", "card_network", "cindia", "processor", "gallery", "studio", "supplier", "maker"];
+const KIND_ORDER: Party["kind"][] = ["buyer", "card_network", "cindia", "processor", "gallery", "studio", "supplier", "maker", "community_fund"];
 
 /** Every node to draw: the studio and its makers always, plus each party named in a move. Pure. */
 function collectNodes(moves: readonly MoneyMove[]): NodeInfo[] {
@@ -34,7 +34,10 @@ function collectNodes(moves: readonly MoneyMove[]): NodeInfo[] {
   add({ kind: "studio", id: "std_dine" });
   for (const id of studioMakerIds()) add({ kind: "maker", id });
   for (const m of moves) {
-    add(m.from).netCents -= m.amountCents;
+    // A milestone is paid out of a commission Cindia already holds, which the map doesn't draw, so
+    // it doesn't count against what Cindia kept from this month's sales.
+    const from = add(m.from);
+    if (m.kind !== "milestone") from.netCents -= m.amountCents;
     const to = add(m.to);
     to.netCents += m.amountCents;
     to.hasIn = true;
@@ -55,6 +58,13 @@ function nodeName(p: Party, lang: Lang): string {
     if (m) return m.name[lang];
   }
   return t(partyNames[p.kind], lang);
+}
+
+/** A community fund's project title, from src/mock/ through getById(). */
+function fundTitle(p: Party, lang: Lang): string | null {
+  if (p.kind !== "community_fund" || !p.id) return null;
+  const project = getById<Project>(p.id);
+  return project ? project.title[lang] : null;
 }
 
 const nodeStyle = (x: number, y: number, lang: Lang, studio: boolean): CSSProperties => ({
@@ -92,12 +102,21 @@ export function PartyNodes({ lang }: { lang: Lang }) {
         const { x, y } = partyPoint(n.party);
         const name = nodeName(n.party, lang);
         const maker = n.party.kind === "maker" && n.party.id ? getById<Person>(n.party.id) : undefined;
-        // A party money only left (the buyer) doesn't show a negative "kept" figure.
-        const showKept = n.netCents !== 0 && n.hasIn;
+        const title = fundTitle(n.party, lang);
+        // A party money only left (the buyer) doesn't show a negative "kept" figure. A fund shows
+        // its project instead: the amount it received is on its thread.
+        const showKept = n.netCents !== 0 && n.hasIn && n.party.kind !== "community_fund";
         return (
           <div key={n.key} data-testid={`money-map-node-${n.key}`} style={nodeStyle(x, y, lang, n.party.kind === "studio")}>
             {maker ? <MakerMark char={maker.surnameChar} size={28} label={name} /> : null}
-            <span style={{ fontWeight: 600 }}>{name}</span>
+            {title !== null ? (
+              <>
+                <span style={{ color: "var(--c-color-ink-soft)" }}>{name}</span>
+                <span style={{ fontWeight: 600 }}>{title}</span>
+              </>
+            ) : (
+              <span style={{ fontWeight: 600 }}>{name}</span>
+            )}
             {showKept ? (
               <span style={{ color: "var(--c-color-ink-soft)", fontSize: "var(--c-text-14)" }}>
                 {t(strings.kept, lang)} <Money cents={n.netCents} tone="in" />

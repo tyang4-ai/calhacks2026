@@ -53,10 +53,6 @@ const memoStyle: CSSProperties = {
   margin: 0,
   color: "var(--c-color-ink-soft)",
   fontSize: "var(--c-text-14)",
-  display: "-webkit-box",
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: "vertical",
-  overflow: "hidden",
   overflowWrap: "anywhere",
 };
 

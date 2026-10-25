@@ -73,6 +73,8 @@ export const UI = {
   issued: { en: "Issued", zh: "出具日期" },
   explanationTitle: { en: "Cindy's explanation", zh: "Cindy的说明" },
   explaining: { en: "Cindy is checking the three records", zh: "Cindy正在核对三份记录" },
+  /** M-desktop's label: under the bank card's figures when the flag's flag.raised carries nessieId (B16). */
+  checkedNessie: { en: "Checked against Nessie", zh: "已与Nessie银行记录核对" },
 } as const satisfies Record<string, Text>;
 
 /** "12 of 20 payouts matched" */

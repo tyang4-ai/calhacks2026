@@ -5,7 +5,10 @@ import { formatBps, formatCents } from "../../src/ui/formatCents";
 import { formatDate } from "../../src/ui/formatDate";
 import { monthId, orders, refunds } from "../../src/mock";
 import { UI } from "../../src/features/dashboard/strings";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, expectInsideFrame, expectReadableText, openSell, watchPage } from "./sell-views-lib";
+
+// M-desktop: the dashboard on /sell/dashboard at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 interface TimelineEvent {
   type: string;
@@ -30,8 +33,7 @@ interface Synced {
 const TILE_IDS = ["dashboard-tile-revenue", "dashboard-tile-cash", "dashboard-tile-flags", "dashboard-tile-maker-share"] as const;
 
 async function open(page: Page) {
-  await page.goto("/studio/dashboard");
-  await waitForHooks(page);
+  await openSell(page, "dashboard");
   await page.evaluate(() => window.__cindia!.player.pause());
   await expect(page.getByTestId("dashboard-tiles")).toBeVisible();
 }
@@ -220,5 +222,17 @@ test("in scripted mode the dashboard shows the simulated badge", async ({ page }
   await seekTo(page, first(events, "month.closed").at + 500);
   const panel = page.locator('[data-slot="studio.dashboard.main"]');
   await expect(panel.getByTestId("simulated-badge")).toBeVisible();
+  watch.expectClean();
+});
+
+test("M-desktop: past the close the four tiles flow into the wider view and sit inside the frame", async ({ page }) => {
+  const watch = watchPage(page);
+  await open(page);
+  const events = await timeline(page);
+  await seekTo(page, first(events, "month.closed").at + 500);
+  await expectInsideFrame(page, [...TILE_IDS]);
+  // The G3 screen rule: no text under 14 px, none cut with an ellipsis or clipped, at 1440 by 900.
+  await expectReadableText(page, '[data-slot="studio.dashboard.main"]');
+  await expect(page.locator('[data-slot="studio.dashboard.main"]').getByTestId("simulated-badge")).toBeVisible();
   watch.expectClean();
 });

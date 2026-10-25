@@ -4,6 +4,10 @@ import { expect, test, type Page } from "@playwright/test";
 import { flags, makerPayouts, orders } from "../../src/mock/index";
 import { formatCents } from "../../src/ui/formatCents";
 import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, expectReadableText } from "./sell-views-lib";
+
+// M-desktop: the audit drawer on /sell/close?drawer=audit at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 const buyersOrder = orders.toSorted((a, b) => (a.date === b.date ? a.id.localeCompare(b.id) : a.date.localeCompare(b.date)))[0];
 const flag = flags[0];
@@ -37,7 +41,7 @@ test("the dataset has the figures the plan names", () => {
 
 test("after the close the start list lists each figure with its amount", async ({ page }) => {
   const watch = watchPage(page);
-  await openAfterClose(page, "/studio/close?drawer=audit");
+  await openAfterClose(page, "/sell/close?drawer=audit");
   const list = page.getByTestId("audit-start-list");
   await expect(list).toBeVisible();
   for (const f of FIGURES) {
@@ -46,19 +50,21 @@ test("after the close the start list lists each figure with its amount", async (
     await expect(item).toContainText(formatCents(f.cents));
   }
   await expect(list.locator('[data-testid^="audit-start-"]')).toHaveCount(FIGURES.length);
+  // The G3 screen rule: no text under 14 px, none cut with an ellipsis or clipped, at 1440 by 900.
+  await expectReadableText(page, '[data-slot="studio.drawer.audit"]');
   watch.expectClean();
 });
 
 test("the drawer shows the Simulated badge in scripted mode", async ({ page }) => {
   const watch = watchPage(page);
-  await openAfterClose(page, "/studio/close?drawer=audit");
+  await openAfterClose(page, "/sell/close?drawer=audit");
   await expect(page.getByTestId("audit-drawer").getByTestId("simulated-badge")).toBeVisible();
   watch.expectClean();
 });
 
 test("clicking a maker payout shows its trail through the order to the bank record", async ({ page }) => {
   const watch = watchPage(page);
-  await openAfterClose(page, "/studio/close?drawer=audit");
+  await openAfterClose(page, "/sell/close?drawer=audit");
   await page.getByTestId("audit-start-mpo_01").click();
   const trail = page.getByTestId("audit-trail");
   await expect(trail).toBeVisible();
@@ -77,7 +83,7 @@ test("clicking a maker payout shows its trail through the order to the bank reco
 
 test("a ref in the URL opens straight on that record's trail", async ({ page }) => {
   const watch = watchPage(page);
-  await openAfterClose(page, "/studio/close?drawer=audit&ref=mpo_01");
+  await openAfterClose(page, "/sell/close?drawer=audit&ref=mpo_01");
   const trail = page.getByTestId("audit-trail");
   await expect(trail).toBeVisible();
   await expect(trail.getByTestId("audit-step-ord_001")).toBeVisible();
@@ -87,7 +93,7 @@ test("a ref in the URL opens straight on that record's trail", async ({ page }) 
 
 test("clicking the flag shows the contract, the statement and the bank deposit", async ({ page }) => {
   const watch = watchPage(page);
-  await openAfterClose(page, "/studio/close?drawer=audit");
+  await openAfterClose(page, "/sell/close?drawer=audit");
   await page.getByTestId(`audit-start-${flag.id}`).click();
   const trail = page.getByTestId("audit-trail");
   await expect(trail).toBeVisible();

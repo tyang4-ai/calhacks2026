@@ -1,32 +1,31 @@
-// F-proof T2: the error list. Acceptance 2 (each planted error shows caught, with its kind and
+// F-proof T2, on M-desktop's /sell/proof: the error list. Acceptance 2 (each planted error shows caught, with its kind and
 // records), 3 (an emitted proof.scored with err_03 missed) and 4 (before proof.scored, each item
 // shows its expected result and no verdict). Elements are found by test ID only. Expected copy is
 // computed from the mock and the feature's strings, never typed in.
 import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, openSell, seekToEvent, timelineAt, watchPage } from "./sell-views-lib";
 import type { Order, Piece, PlantedError } from "../../src/core/types";
 import { answerKey, getById } from "../../src/mock/index";
 import { formatCents } from "../../src/ui/formatCents";
 import { formatMonth } from "../../src/ui/formatDate";
 import { EXPECTED, KIND_LABELS, UI, recordTypeLabel } from "../../src/features/proof/strings";
 
-/** proof.scored fires at 59.0 s in the demo timeline. */
-const SCORED_AT = 59000;
-const AFTER = 59500;
-const BEFORE = 58000;
+/** Moments around the timeline's proof.scored, as offsets from its own time. */
+const AFTER = 500;
+const BEFORE = -1000;
 
-async function openAt(page: Page, ms: number) {
-  await page.goto("/studio/proof");
-  await waitForSlots(page);
-  await waitForHooks(page);
-  await page.evaluate((t) => {
-    const p = window.__cindia!.player;
-    p.pause();
-    p.seek(t);
-  }, ms);
+// M-desktop: the proof view on /sell/proof at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
+
+/** Opens /sell/proof and seeks to proof.scored plus `offsetMs`. */
+async function openAt(page: Page, offsetMs: number) {
+  await openSell(page, "proof");
+  await seekToEvent(page, "proof.scored", {}, offsetMs);
 }
 
-/** The studio console starts in English. */
+const scoredAt = async (page: Page) => (await timelineAt(page, "proof.scored"))!;
+
+/** The Sell site starts in English. */
 function expectedEn(err: PlantedError): string {
   const e = err.expected as Record<string, unknown>;
   switch (err.kind) {
@@ -58,7 +57,7 @@ async function expectRecords(page: Page, err: PlantedError) {
 test("Acceptance 2: after proof.scored every planted error shows caught, with its kind and records", async ({ page }) => {
   const watch = watchPage(page);
   await openAt(page, AFTER);
-  expect(await page.evaluate(() => window.__cindia!.player.now())).toBeGreaterThanOrEqual(SCORED_AT);
+  expect(await page.evaluate(() => window.__cindia!.player.now())).toBeGreaterThanOrEqual(await scoredAt(page));
 
   expect(answerKey.map((e) => e.id)).toEqual(["err_01", "err_02", "err_03", "err_04"]);
   for (const err of answerKey) {
@@ -109,7 +108,7 @@ test("Acceptance 3: a proof.scored with err_03 not caught shows err_03 missed an
 test("Acceptance 4: before proof.scored each item shows its expected result and no verdict", async ({ page }) => {
   const watch = watchPage(page);
   await openAt(page, BEFORE);
-  expect(await page.evaluate(() => window.__cindia!.player.now())).toBeLessThan(SCORED_AT);
+  expect(await page.evaluate(() => window.__cindia!.player.now())).toBeLessThan(await scoredAt(page));
 
   for (const err of answerKey) {
     const item = page.getByTestId(`proof-item-${err.id}`);

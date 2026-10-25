@@ -3,15 +3,17 @@
 // the other nine alone). Elements are found by test ID only. Expected copy comes from the feature's
 // strings, never typed in.
 import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, openSell, watchPage } from "./sell-views-lib";
 import { SOURCE_KEYS } from "../../src/core/events";
 import { matches } from "../../src/mock/index";
 import { SOURCE_LABELS, UI } from "../../src/features/proof/strings";
 
+
+// M-desktop: the proof view on /sell/proof at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
+
 async function openProof(page: Page) {
-  await page.goto("/studio/proof");
-  await waitForSlots(page);
-  await waitForHooks(page);
+  await openSell(page, "proof");
   // Pause, so no scripted event with the same key lands after the live one in Acceptance 6.
   await page.evaluate(() => window.__cindia!.player.pause());
   await expect(page.getByTestId("proof-sources")).toBeVisible();

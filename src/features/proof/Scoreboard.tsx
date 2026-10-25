@@ -38,10 +38,9 @@ export function Scoreboard({ lang }: { lang: Lang }) {
   const headingFont = lang === "zh" ? "var(--c-font-heading-zh)" : "var(--c-font-heading-en)";
 
   return (
-    <section
-      lang={lang}
-      style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-12)" }}
-    >
+    // On the desktop view the score and its bar share one row, so the four test cases fit under it.
+    <section lang={lang} style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-8)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--c-space-24)" }}>
       <div
         data-testid="proof-score"
         data-state={score ? (allCaught ? "all-caught" : "missed") : "not-scored"}
@@ -49,6 +48,7 @@ export function Scoreboard({ lang }: { lang: Lang }) {
           fontFamily: headingFont,
           fontSize: score ? "var(--c-text-36)" : "var(--c-text-24)",
           lineHeight: 1.2,
+          flex: "0 0 auto",
           color: score ? (allCaught ? "var(--c-color-jade)" : "var(--c-color-seal)") : "var(--c-color-ink-soft)",
         }}
       >
@@ -62,6 +62,7 @@ export function Scoreboard({ lang }: { lang: Lang }) {
         aria-valuenow={score?.caught ?? 0}
         style={{
           position: "relative",
+          flex: "1 1 auto",
           height: "var(--c-space-12)",
           background: "var(--c-color-mat)",
           border: "1px solid var(--c-color-line)",
@@ -77,6 +78,7 @@ export function Scoreboard({ lang }: { lang: Lang }) {
             background: barColor,
           }}
         />
+      </div>
       </div>
       {!score && (
         <p style={{ margin: 0, fontSize: "var(--c-text-14)", color: "var(--c-color-ink-soft)" }}>

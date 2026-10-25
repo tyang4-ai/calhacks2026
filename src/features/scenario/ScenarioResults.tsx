@@ -111,7 +111,7 @@ export function ScenarioResults({ lang }: ScenarioResultsProps) {
         record: (
           <span data-record-id={r.recordId}>
             {t(RECORD_TYPE_LABEL[r.recordType], lang)}
-            {detail && <span style={{ display: "block", fontSize: "0.85em", ...muted }}>{detail}</span>}
+            {detail && <span style={{ display: "block", fontSize: "var(--c-text-14)", ...muted }}>{detail}</span>}
           </span>
         ),
         date: formatDate(r.date, lang),
@@ -128,6 +128,10 @@ export function ScenarioResults({ lang }: ScenarioResultsProps) {
           {t(STRINGS.fallbackNote, lang)}
         </p>
       )}
+      {/* The finding first, where the narrow third shows it without a scroll, then the records. */}
+      {flags.map((f) => (
+        <ScenarioFlag key={f.flagId} flag={f} lang={lang} />
+      ))}
       <LedgerTable
         testId="scenario-results"
         caption={<strong>{t(STRINGS.resultsHeading, lang)}</strong>}
@@ -139,9 +143,6 @@ export function ScenarioResults({ lang }: ScenarioResultsProps) {
         ]}
         rows={rows}
       />
-      {flags.map((f) => (
-        <ScenarioFlag key={f.flagId} flag={f} lang={lang} />
-      ))}
     </section>
   );
 }

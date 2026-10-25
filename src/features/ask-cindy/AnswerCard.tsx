@@ -171,7 +171,7 @@ export function AnswerCard({ answer, lang, latest }: AnswerCardProps) {
       {answer.chart && latest && <AnswerChart chart={answer.chart} lang={lang} />}
       {answer.refIds.length > 0 && (
         <div style={{ marginTop: 12 }}>
-          <p style={{ margin: "0 0 4px", fontSize: 12, color: "var(--c-color-ink-soft)" }}>{t(STRINGS.refsHeading, lang)}</p>
+          <p style={{ margin: "0 0 4px", fontSize: "var(--c-text-14)", color: "var(--c-color-ink-soft)" }}>{t(STRINGS.refsHeading, lang)}</p>
           <ul data-testid={latest ? "ask-cindy-refs" : undefined} style={{ listStyle: "none", margin: 0, padding: 0 }}>
             {answer.refIds.map((id) => {
               const kind = recordKind(id);
@@ -185,7 +185,7 @@ export function AnswerCard({ answer, lang, latest }: AnswerCardProps) {
                     gap: 8,
                     padding: "4px 0",
                     borderTop: "1px solid var(--c-color-line)",
-                    fontSize: 13,
+                    fontSize: "var(--c-text-14)",
                   }}
                 >
                   {maker && <MakerMark char={maker.surnameChar} size={20} label={maker.name[lang]} />}

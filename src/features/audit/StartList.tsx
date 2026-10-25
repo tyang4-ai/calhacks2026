@@ -114,7 +114,7 @@ export function StartList({ lang, onPick }: StartListProps) {
                 <span style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-4)", minWidth: 0 }}>
                   <span>{t(f.label, lang)}</span>
                   {f.detail && (
-                    <span style={{ ...quietStyle, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                    <span style={{ ...quietStyle, overflowWrap: "anywhere" }}>
                       {t(f.detail, lang)}
                     </span>
                   )}

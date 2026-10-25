@@ -1,4 +1,4 @@
-// F-ask-cindy T2: the drawer and the question box on /studio/close?drawer=ask after the close.
+// F-ask-cindy T2: the drawer and the question box on /sell/close?drawer=ask after the close (M-desktop).
 // Suggestions and typed questions emit ask.asked (source "user"), the registry answers 1.2 s later
 // in real time, the fallback covers any other question, and the drawer is marked Simulated.
 // The answer is a wall-clock timer that drops itself when the player's epoch changes, so the player
@@ -6,6 +6,10 @@
 import { expect, test, type Page } from "@playwright/test";
 import { cannedAnswers, fallbackAnswer } from "../../src/mock/index";
 import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, timelineAt, storeModuleUrl } from "./sell-views-lib";
+
+// M-desktop: the ask drawer on /sell/close?drawer=ask at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 interface AskSlice {
   questionIds: string[];
@@ -32,7 +36,7 @@ const askState = (page: Page) => page.evaluate(() => window.__cindia!.store.getS
 const drawer = (page: Page) => page.locator('[data-slot="studio.drawer.ask"]');
 
 async function openAfterClose(page: Page) {
-  await page.goto("/studio/close?drawer=ask");
+  await page.goto("/sell/close?drawer=ask");
   await waitForHooks(page);
   await waitForSlots(page);
   await page.evaluate(() => {
@@ -45,8 +49,9 @@ async function openAfterClose(page: Page) {
 
 /** Logs every event the store takes in, through the same store module the app uses (dev server). */
 async function startEventLog(page: Page) {
-  await page.evaluate(async () => {
-    const path = "/src/core/store.ts";
+  // The page's own store module, even after the dev server hot-updated it (sell-views-lib).
+  const storeUrl = await storeModuleUrl(page);
+  await page.evaluate(async (path) => {
     const mod = (await import(/* @vite-ignore */ path)) as {
       onEvent(l: (e: LoggedEvent) => void): () => void;
       getState(): unknown;
@@ -54,7 +59,7 @@ async function startEventLog(page: Page) {
     if (mod.getState() !== window.__cindia!.store.getState()) throw new Error("imported a second store instance");
     window.cindiaAskLog = [];
     mod.onEvent((e) => window.cindiaAskLog!.push({ type: e.type, source: e.source, key: e.key, payload: { questionId: e.payload.questionId } }));
-  });
+  }, storeUrl);
 }
 
 test("scripted mode: the ask drawer shows the Simulated badge and three suggestions", async ({ page }) => {
@@ -72,7 +77,7 @@ test("scripted mode: the ask drawer shows the Simulated badge and three suggesti
 test("suggestion 1: thinking shows, then about 1.2 s later the canned answer replaces it", async ({ page }) => {
   const watch = watchPage(page);
   await openAfterClose(page);
-  expect(await page.evaluate(() => window.__cindia!.player.now())).toBeGreaterThanOrEqual(43800);
+  expect(await page.evaluate(() => window.__cindia!.player.now())).toBeGreaterThanOrEqual((await timelineAt(page, "month.closed"))!);
   await startEventLog(page);
 
   const started = Date.now();

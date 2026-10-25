@@ -25,6 +25,8 @@ export const strings = {
   kept: { en: "Kept", zh: "留存" },
   /** Local: the canvas's accessible label. */
   canvasLabel: { en: "Money moving between the buyer, Cindia, the co-op and the makers", zh: "买家、Cindia、合作社与匠人之间的资金流向" },
+  /** M-desktop's label: beside a thread's amount when its money.moved carries nessieId (B04, B16). */
+  checkedNessie: { en: "Checked against Nessie", zh: "已与Nessie银行记录核对" },
 } satisfies Record<string, Str>;
 
 /**
@@ -41,13 +43,13 @@ export const partyNames: Record<Party["kind"], Str> = {
   gallery: { en: "Gallery", zh: "画廊" },
   processor: { en: "Card processor", zh: "收单机构" },
   supplier: { en: "Supplier", zh: "供应商" },
-  /** v2 placeholder (I2-core fallout). Local. */
+  /** Glossary: community fund. The node adds the project's title from src/mock/. */
   community_fund: { en: "Community fund", zh: "社区基金" },
 };
 
 /**
- * What each kind of move is called. Glossary: card fee, payout, maker payout, materials, refund.
- * "sale" and "settlement" are local.
+ * What each kind of move is called. Glossary: card fee, payout, maker payout, materials, refund,
+ * milestone. "sale", "settlement" and "project_fund" are local.
  */
 export const moveKindNames: Record<MoneyMoveKind, Str> = {
   sale: { en: "Sale", zh: "销售" },
@@ -57,9 +59,10 @@ export const moveKindNames: Record<MoneyMoveKind, Str> = {
   materials: { en: "Materials", zh: "材料费" },
   maker_pay: { en: "Maker payout", zh: "匠人结算" },
   refund: { en: "Refund", zh: "退款" },
-  /** v2 placeholders (I2-core fallout). Local. */
-  project_fund: { en: "Project funding", zh: "项目出资" },
-  milestone: { en: "Milestone payment", zh: "里程碑付款" },
+  /** Local: a buyer's contribution to a community project, passed on in full to its fund. */
+  project_fund: { en: "Project contribution", zh: "社区项目出资" },
+  /** Glossary: milestone. Cindia pays the maker a commission's stage once the owner releases it. */
+  milestone: { en: "Milestone", zh: "阶段" },
 };
 
 /** Glossary: Cindia fee. Shown with what Cindia kept from a sale. */

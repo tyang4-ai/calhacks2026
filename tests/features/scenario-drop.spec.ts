@@ -1,4 +1,4 @@
-// F-scenario T1: the drop zone on /studio/month, inside scenario-panel.
+// F-scenario T1: the drop zone on /sell/month (M-desktop), inside scenario-panel.
 // Scripted mode: a dropped or picked file shows its name and a note, and is never read or sent.
 // Live mode (demo-mode-toggle): a small .csv is read as text and sent as scenario.loaded with
 // source "user"; a file over 200 KB gets a note and no event. Selects by test ID only. The player is
@@ -7,6 +7,10 @@ import { expect, test, type Page } from "@playwright/test";
 import { scenarioId } from "../../src/mock/index";
 import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
 import { hideB05 } from "./scenario-lib";
+import { SELL_VIEWPORT, storeModuleUrl } from "./sell-views-lib";
+
+// M-desktop: the month view on /sell/month at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 interface LoggedEvent {
   type: string;
@@ -28,7 +32,7 @@ const dropzone = (page: Page) => panel(page).getByTestId("scenario-dropzone");
 const fileInput = (page: Page) => dropzone(page).locator("input[type=file]");
 
 async function openMonth(page: Page) {
-  await page.goto("/studio/month");
+  await page.goto("/sell/month");
   await waitForHooks(page);
   await waitForSlots(page);
   await page.evaluate(() => {
@@ -41,8 +45,9 @@ async function openMonth(page: Page) {
 
 /** Logs every event the store takes in, and counts every way the page could read a file. */
 async function startWatch(page: Page) {
-  await page.evaluate(async () => {
-    const path = "/src/core/store.ts";
+  // The page's own store module, even after the dev server hot-updated it (sell-views-lib).
+  const storeUrl = await storeModuleUrl(page);
+  await page.evaluate(async (path) => {
     const mod = (await import(/* @vite-ignore */ path)) as {
       onEvent(l: (e: LoggedEvent) => void): () => void;
       getState(): unknown;
@@ -63,7 +68,7 @@ async function startWatch(page: Page) {
     for (const m of ["readAsText", "readAsArrayBuffer", "readAsDataURL", "readAsBinaryString"] as const) {
       FileReader.prototype[m] = count(FileReader.prototype[m]) as never;
     }
-  });
+  }, storeUrl);
 }
 
 const scenarioLoads = (page: Page) =>

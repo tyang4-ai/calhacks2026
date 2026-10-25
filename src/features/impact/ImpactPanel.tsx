@@ -11,7 +11,14 @@ export function ImpactPanel({ lang }: SlotProps) {
   const impact = useCindia((s) => s.impact.latest);
   const estimate = impact?.estimate === true;
   return (
-    <Panel title={t(GLOSSARY.impact, lang)} sourceKeys={["b10-derived"]} lang={lang}>
+    // On the desktop Sell site the panel fills the close view's right third, level with the close
+    // panel beside it; its three numbers and the note sit at the top.
+    <Panel
+      title={t(GLOSSARY.impact, lang)}
+      sourceKeys={["b10-derived"]}
+      lang={lang}
+      style={{ height: "100%", boxSizing: "border-box", overflowY: "auto" }}
+    >
       <ImpactNumbers impact={impact} lang={lang} estimateLabel={<EstimateLabel estimate={estimate} lang={lang} />} />
       {impact === null ? (
         <p className="c-impact__not-yet" style={{ margin: "16px 0 0", fontSize: 14, color: "var(--c-color-ink-soft)" }}>

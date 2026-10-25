@@ -1,9 +1,13 @@
-// F-impact T1: the three impact numbers (acceptance 1 to 5). Expected values come from the
-// timeline's impact.updated payload, never typed in.
+// F-impact T1, on M-desktop's /sell/close at 1440 by 900: the three impact numbers (acceptance 1
+// to 5). Expected values come from the timeline's impact.updated payload, never typed in, and every
+// moment is read from the event's own time.
 import { expect, test, type Page } from "@playwright/test";
 import { formatBps } from "../../src/features/impact/formatBps";
 import { UI } from "../../src/features/impact/strings";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, openSell, waitForHooks, watchPage } from "./sell-views-lib";
+
+// M-desktop: the close view on /sell/close at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 interface ImpactPayload {
   impactId: string;
@@ -17,8 +21,7 @@ interface ImpactPayload {
 const IDS = ["impact-maker-share", "impact-days-to-payout", "impact-hours-saved"] as const;
 
 async function openClose(page: Page) {
-  await page.goto("/studio/close");
-  await waitForHooks(page);
+  await openSell(page, "close");
   await page.evaluate(() => window.__cindia!.player.pause());
 }
 
@@ -99,16 +102,24 @@ test("loading the page already past impact.updated shows the final values", asyn
 /** Player time after the event at which playAcross pauses, well inside the 900 ms count-up. */
 const PAUSE_AFTER_MS = 300;
 
+/** What playAcross saw: how far past the event the clock stopped, on the player clock. */
+interface Stop {
+  since: number;
+}
+
 /**
- * Plays (at 1x) across the event from 200 ms before it, and pauses on the first player frame at
- * or past PAUSE_AFTER_MS after it. Playing, not seek(), so the count-up runs. Returns how far past
- * the event the clock stopped.
+ * Plays (at 1x) across the event from 200 ms before it, and pauses on the first player frame at or
+ * past PAUSE_AFTER_MS after it on which the maker share already shows a number. Sampling by the
+ * player clock and by what is on screen, never by wall time: under load one frame can carry the
+ * event and the 300 ms mark together, and pausing before React has rendered that frame would make
+ * the number appear while paused (final at once, as a seek does). Waiting for the rendered number
+ * means the count-up started while playing. Playing, not seek(), so the count-up runs.
  */
-async function playAcross(page: Page, at: number): Promise<number> {
+async function playAcross(page: Page, at: number): Promise<Stop> {
   await seekTo(page, at - 200);
   return page.evaluate(
     ({ eventAt, pauseAt }) =>
-      new Promise<number>((resolve) => {
+      new Promise<Stop>((resolve) => {
         // subscribe() and setSpeed() are on the real Player (src/core/player.ts) but not in the
         // narrower window.__cindia type in tests/smoke/lib.ts.
         const p = window.__cindia!.player as NonNullable<typeof window.__cindia>["player"] & {
@@ -118,10 +129,12 @@ async function playAcross(page: Page, at: number): Promise<number> {
         let done = false;
         const off = p.subscribe(() => {
           if (done || !p.isPlaying() || p.now() < pauseAt) return;
+          const shown = document.querySelector('[data-testid="impact-maker-share"] [data-role="value"]')?.textContent ?? "";
+          if (!/\d/.test(shown)) return; // the number hasn't rendered yet: wait a frame
           done = true;
           off();
           p.pause();
-          resolve(p.now() - eventAt);
+          resolve({ since: p.now() - eventAt });
         });
         p.setSpeed(1);
         p.play();
@@ -145,14 +158,20 @@ test("playing across impact.updated counts up on the player clock and lands on t
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await openClose(page);
   const { at, payload } = await scriptedImpact(page);
-  const since = await playAcross(page, at);
-  // The pause must land inside the 900 ms count-up, or the mid-count check below means nothing.
-  expect(since, "paused this many ms of player time after impact.updated").toBeGreaterThanOrEqual(PAUSE_AFTER_MS);
-  expect(since, "paused this many ms of player time after impact.updated").toBeLessThan(900);
-  // Paused mid-count, the maker share is strictly between the start (0) and its final value.
-  const shown = parseFloat((await numberIn(page, "impact-maker-share").textContent()) ?? "");
-  expect(shown, "maker share percent mid-count").toBeGreaterThan(0);
-  expect(shown, "maker share percent mid-count").toBeLessThan(payload.makerShareBps / 100);
+  const final = payload.makerShareBps / 100;
+  // A count-up needs one player frame inside its 900 ms. On a starved machine a single frame can
+  // be longer than that, so the run is tried up to three times; the claim checked is the same.
+  let sample: { since: number; shown: number } | null = null;
+  for (let attempt = 1; attempt <= 3 && sample === null; attempt++) {
+    const { since } = await playAcross(page, at);
+    expect(since, "paused this many ms of player time after impact.updated").toBeGreaterThanOrEqual(PAUSE_AFTER_MS);
+    // Paused, the number on screen is the count at the paused player time.
+    const shown = parseFloat((await numberIn(page, "impact-maker-share").textContent()) ?? "");
+    if (shown > 0 && shown < final) sample = { since, shown };
+  }
+  expect(sample, "a paused frame inside the count-up showed a maker share between 0 and its final value").not.toBeNull();
+  expect(sample!.shown, "maker share percent mid-count").toBeGreaterThan(0);
+  expect(sample!.shown, "maker share percent mid-count").toBeLessThan(final);
   await page.evaluate(() => window.__cindia!.player.play());
   await page.waitForFunction((t) => window.__cindia!.player.now() >= t, at + 1000);
   await page.evaluate(() => window.__cindia!.player.pause());

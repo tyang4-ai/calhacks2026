@@ -1,9 +1,12 @@
-// F-money-map T2: one thread per move. Acceptance 2 (d05-money threads), 4 (maker payouts at the
-// end of d08-approve), 5 (two moves on one path show the pair's total) and 7 (seek is deterministic).
-// Checks by test ID only. Amounts come from the scripted timeline, formatted by the kit's formatter.
+// F-money-map T2, on M-desktop's /sell/map at 1440 by 900: one thread per move. Acceptance 2 (the
+// money beat's threads), 4 (maker payouts once approved), 5 (two moves on one path show the pair's
+// total) and 7 (seek is deterministic). Seeks by event; checks by test ID only. Amounts come from
+// the scripted timeline, formatted by the kit's formatter.
 import { expect, test, type Page } from "@playwright/test";
 import { formatCents } from "../../src/ui/formatCents";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, inFrame, lastTimelineAt, openSell, timelineAt, watchPage } from "./sell-views-lib";
+
+test.use({ viewport: SELL_VIEWPORT });
 
 interface MovePayload {
   moveId: string;
@@ -15,8 +18,30 @@ interface MovePayload {
   date: string;
 }
 
-const END_D05 = 20000;
-const END_D08 = 43000;
+/** The kit Thread sews a move in 900 ms on the player clock (STITCH_MS in src/ui/motion.ts). */
+const STITCH_MS = 900;
+
+/** The money beat's end: after the sync, with every sale thread sewn. */
+async function endOfMoney(page: Page): Promise<number> {
+  const at3 = (await timelineAt(page, "money.moved", { moveId: "mv_0003" }))!;
+  const sync = (await timelineAt(page, "account.synced", { accountId: "acct_studio" }))!;
+  const next = (await timelineAt(page, "money.moved", { moveId: "mv_0004" }))!;
+  const t = Math.max(sync + 300, at3 + STITCH_MS);
+  expect(t, "the money beat's threads are sewn before the maker payouts start").toBeLessThan(next);
+  return t;
+}
+
+/** After the maker payouts: the last maker_pay move, sewn. */
+async function afterPayouts(page: Page): Promise<number> {
+  return (await lastTimelineAt(page, "money.moved", { kind: "maker_pay" }))! + STITCH_MS;
+}
+
+/** Mid-stitch: halfway between the sale and the card fee. */
+async function midSale(page: Page): Promise<number> {
+  const at1 = (await timelineAt(page, "money.moved", { moveId: "mv_0001" }))!;
+  const at2 = (await timelineAt(page, "money.moved", { moveId: "mv_0002" }))!;
+  return Math.round((at1 + at2) / 2);
+}
 
 async function seekTo(page: Page, ms: number) {
   await page.evaluate((t) => {
@@ -33,18 +58,17 @@ async function timelineMoves(page: Page): Promise<MovePayload[]> {
   });
 }
 
-const thread = (page: Page, moveId: string) => page.getByTestId("money-map-canvas").getByTestId(`money-map-thread-${moveId}`);
+const thread = (page: Page, moveId: string) => inFrame(page, "money-map-canvas").getByTestId(`money-map-thread-${moveId}`);
 
 test.describe("money map threads", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/studio/map");
-    await waitForHooks(page);
+    await openSell(page, "map");
   });
 
-  test("at the end of d05-money the three sale threads are fully sewn with their amounts", async ({ page }) => {
+  test("at the end of the money beat the three sale threads are fully sewn with their amounts", async ({ page }) => {
     const watch = watchPage(page);
     const moves = await timelineMoves(page);
-    await seekTo(page, END_D05);
+    await seekTo(page, await endOfMoney(page));
     const expected: Record<string, string> = { mv_0001: "$180.00", mv_0002: "$5.52", mv_0003: "$156.48" };
     for (const [id, amount] of Object.entries(expected)) {
       const m = moves.find((x) => x.moveId === id);
@@ -58,11 +82,11 @@ test.describe("money map threads", () => {
     watch.expectClean();
   });
 
-  test("at the end of d08-approve the studio pays each maker on its own thread", async ({ page }) => {
+  test("once the payouts are approved the co-op pays each maker on its own thread", async ({ page }) => {
     const watch = watchPage(page);
     const makerMoves = (await timelineMoves(page)).filter((m) => m.kind === "maker_pay");
     expect(makerMoves.map((m) => m.moveId)).toEqual(["mv_0004", "mv_0005", "mv_0006"]);
-    await seekTo(page, END_D08);
+    await seekTo(page, await afterPayouts(page));
     for (const m of makerMoves) {
       expect(m.from.kind).toBe("studio");
       expect(m.to.kind).toBe("maker");
@@ -78,7 +102,7 @@ test.describe("money map threads", () => {
     const watch = watchPage(page);
     const first = (await timelineMoves(page)).find((m) => m.moveId === "mv_0003")!;
     const extraCents = 1000;
-    await seekTo(page, END_D05);
+    await seekTo(page, await endOfMoney(page));
     await expect(thread(page, "mv_0003")).toHaveAttribute("data-progress", "1.00");
 
     // A second move on the same pair, fired 1 s before the paused clock so its stitch is finished.
@@ -114,7 +138,10 @@ test.describe("money map threads", () => {
 
   test("a seek renders the same canvas every time", async ({ page }) => {
     const watch = watchPage(page);
-    const canvas = page.getByTestId("money-map-canvas");
+    const canvas = inFrame(page, "money-map-canvas");
+    const END_MONEY = await endOfMoney(page);
+    const AFTER_PAYOUTS = await afterPayouts(page);
+    const MID_SALE = await midSale(page);
 
     const snapshotAt = async (ms: number) => {
       await seekTo(page, ms);
@@ -123,22 +150,22 @@ test.describe("money map threads", () => {
       return canvas.innerHTML();
     };
 
-    const a = await snapshotAt(END_D05);
-    const b = await snapshotAt(END_D05);
+    const a = await snapshotAt(END_MONEY);
+    const b = await snapshotAt(END_MONEY);
     expect(b).toBe(a);
 
-    await seekTo(page, END_D08);
+    await seekTo(page, AFTER_PAYOUTS);
     await expect(thread(page, "mv_0006")).toHaveAttribute("data-progress", "1.00");
-    const c = await snapshotAt(END_D05);
+    const c = await snapshotAt(END_MONEY);
     expect(c).toBe(a);
 
     // Mid-stitch frames are deterministic too.
-    await seekTo(page, 16000);
+    await seekTo(page, MID_SALE);
     await expect(thread(page, "mv_0001")).toHaveCount(1);
     await expect(thread(page, "mv_0002")).toHaveCount(0);
     const mid1 = await canvas.innerHTML();
-    await seekTo(page, END_D05);
-    await seekTo(page, 16000);
+    await seekTo(page, END_MONEY);
+    await seekTo(page, MID_SALE);
     await expect(thread(page, "mv_0002")).toHaveCount(0);
     const mid2 = await canvas.innerHTML();
     expect(mid2).toBe(mid1);

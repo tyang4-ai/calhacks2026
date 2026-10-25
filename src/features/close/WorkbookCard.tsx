@@ -60,7 +60,7 @@ export function WorkbookCard({ workbook, lang }: WorkbookCardProps) {
           ))}
         </ul>
       </div>
-      <p style={{ color: "var(--c-color-ink-soft)", fontSize: "0.8125rem", margin: "8px 0 0" }}>
+      <p style={{ color: "var(--c-color-ink-soft)", fontSize: "var(--c-text-14)", margin: "8px 0 0" }}>
         {t(workbook.url ? UI.builtOnServer : UI.builtInBrowser, lang)}
       </p>
     </article>

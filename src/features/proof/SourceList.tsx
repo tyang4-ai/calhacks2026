@@ -21,6 +21,7 @@ function SourceRow({ sourceKey, lang }: { sourceKey: SourceKey; lang: Lang }) {
         gap: "var(--c-space-12)",
         padding: "var(--c-space-8) 0",
         borderBottom: "1px solid var(--c-color-line)",
+        breakInside: "avoid",
       }}
     >
       <span style={{ minWidth: 0 }}>{t(SOURCE_LABELS[sourceKey], lang)}</span>
@@ -37,21 +38,26 @@ export function SourceList({ lang }: { lang: Lang }) {
     <section data-testid="proof-sources" lang={lang} style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-8)" }}>
       <h3 style={{ margin: 0, fontSize: "var(--c-text-18)" }}>{t(UI.sourcesTitle, lang)}</h3>
       <p style={{ margin: 0, color: "var(--c-color-ink-soft)", fontSize: "var(--c-text-14)" }}>{t(UI.sourcesHint, lang)}</p>
-      <div
-        aria-hidden="true"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: "var(--c-text-14)",
-          color: "var(--c-color-ink-soft)",
-          borderBottom: "1px solid var(--c-color-line)",
-          paddingBottom: "var(--c-space-4)",
-        }}
-      >
-        <span>{t(UI.part, lang)}</span>
-        <span>{t(UI.state, lang)}</span>
+      {/* Two columns of parts on the desktop view, each with its own Part and State heading. */}
+      <div aria-hidden="true" style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", columnGap: "var(--c-space-24)" }}>
+        {[0, 1].map((i) => (
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "var(--c-text-14)",
+              color: "var(--c-color-ink-soft)",
+              borderBottom: "1px solid var(--c-color-line)",
+              paddingBottom: "var(--c-space-4)",
+            }}
+          >
+            <span>{t(UI.part, lang)}</span>
+            <span>{t(UI.state, lang)}</span>
+          </div>
+        ))}
       </div>
-      <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+      <ul style={{ listStyle: "none", margin: 0, padding: 0, columns: 2, columnGap: "var(--c-space-24)" }}>
         {SOURCE_KEYS.map((key) => (
           <SourceRow key={key} sourceKey={key} lang={lang} />
         ))}

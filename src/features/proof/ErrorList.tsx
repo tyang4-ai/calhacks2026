@@ -62,13 +62,14 @@ function expectedLine(err: PlantedError, lang: Lang): Text {
 }
 
 const rowStyle: CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "minmax(0, 1fr) auto",
-  gap: "var(--c-space-12)",
-  padding: "var(--c-space-16)",
+  display: "flex",
+  flexDirection: "column",
+  gap: "var(--c-space-4)",
+  padding: "10px var(--c-space-12)",
   border: "1px solid var(--c-color-line)",
   borderRadius: "var(--c-space-4)",
   background: "var(--c-color-paper)",
+  minWidth: 0,
 };
 
 const labelStyle: CSSProperties = {
@@ -77,9 +78,14 @@ const labelStyle: CSSProperties = {
   marginRight: "var(--c-space-8)",
 };
 
-function Line({ label, children }: { label: string; children: ReactNode }) {
+/** Every line shows in full: the cards grow with their text (M-desktop, nothing cut). */
+const clampStyle: CSSProperties = {
+  fontSize: "var(--c-text-14)",
+};
+
+function Line({ label, title, children }: { label: string; title: string; children: ReactNode }) {
   return (
-    <div style={{ fontSize: "var(--c-text-14)" }}>
+    <div style={clampStyle} title={title}>
       <span style={labelStyle}>{label}</span>
       <span>{children}</span>
     </div>
@@ -111,28 +117,37 @@ export function ErrorList({ lang }: { lang: Lang }) {
 
   return (
     <section lang={lang} style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-12)", minWidth: 0 }}>
-      <h3 style={{ margin: 0, fontSize: "var(--c-text-18)" }}>{t(UI.errorsTitle, lang)}</h3>
-      <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "var(--c-space-12)" }}>
+      {/* The intro above names the four test cases; the list keeps the heading as its label. */}
+      {/* Two by two, so the four test cases show together in the proof view's two thirds. */}
+      <ol aria-label={t(UI.errorsTitle, lang)} style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "10px" }}>
         {answerKey.map((err) => {
           const note = answerKeyNotes[err.id];
+          const records = err.recordIds.map((id) => recordLabel(id, lang)).join("; ");
+          const expected = t(expectedLine(err, lang), lang);
           return (
             <li key={err.id} data-testid={`proof-item-${err.id}`} style={rowStyle}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--c-space-8)", minWidth: 0 }}>
-                <div style={{ fontWeight: 600, fontSize: "var(--c-text-16)" }}>{t(KIND_LABELS[err.kind], lang)}</div>
-                <Line label={t(UI.records, lang)}>
-                  {err.recordIds.map((id, i) => (
-                    <span key={id}>
-                      {i > 0 && "; "}
-                      {recordLabel(id, lang)}
-                    </span>
-                  ))}
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--c-space-12)" }}>
+                <div style={{ fontWeight: 600, fontSize: "var(--c-text-16)", minWidth: 0 }}>{t(KIND_LABELS[err.kind], lang)}</div>
+                <div style={{ flex: "0 0 auto" }}>
+                  <VerdictMark verdict={verdictFor(err.id)} lang={lang} />
+                </div>
+              </div>
+              <Line label={t(UI.records, lang)} title={records}>
+                {err.recordIds.map((id, i) => (
+                  <span key={id}>
+                    {i > 0 && "; "}
+                    {recordLabel(id, lang)}
+                  </span>
+                ))}
+              </Line>
+              <Line label={t(UI.expected, lang)} title={expected}>
+                {expected}
+              </Line>
+              {note && (
+                <Line label={t(UI.why, lang)} title={t(note, lang)}>
+                  {t(note, lang)}
                 </Line>
-                <Line label={t(UI.expected, lang)}>{t(expectedLine(err, lang), lang)}</Line>
-                {note && <Line label={t(UI.why, lang)}>{t(note, lang)}</Line>}
-              </div>
-              <div style={{ alignSelf: "start" }}>
-                <VerdictMark verdict={verdictFor(err.id)} lang={lang} />
-              </div>
+              )}
             </li>
           );
         })}

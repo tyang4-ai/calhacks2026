@@ -7,10 +7,14 @@ import { UI } from "../../src/features/audit/strings";
 import { bankTxns, getById } from "../../src/mock/index";
 import { formatCents } from "../../src/ui/formatCents";
 import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, drawerFit, expectReadableText } from "./sell-views-lib";
+
+// M-desktop: the audit drawer on /sell/close?drawer=audit&ref= at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 /** Opens the drawer on a record's trail and seeks the paused player just past month.closed. */
 async function openTrail(page: Page, ref: string) {
-  await page.goto(`/studio/close?drawer=audit&ref=${ref}`);
+  await page.goto(`/sell/close?drawer=audit&ref=${ref}`);
   await waitForHooks(page);
   const at = await page.evaluate(() => {
     const p = window.__cindia!.player;
@@ -150,5 +154,30 @@ test("without reduced motion the steps unfold and all have landed soon after ope
       { timeout: 2500 },
     )
     .toBe(true);
+  watch.expectClean();
+});
+
+test("M-desktop acceptance 7: the trail for ord_001 fits the drawer, scrolling inside its body and never sideways", async ({ page }) => {
+  const watch = watchPage(page);
+  await openTrail(page, "ord_001");
+  const fit = await drawerFit(page, "studio.drawer.audit");
+  const right = fit.frame.x + fit.frame.width;
+  expect(fit.slot.x, "the audit slot sits in the drawer's 440 px").toBeGreaterThanOrEqual(right - 440 - 1);
+  const trail = (await page.getByTestId("audit-trail").boundingBox())!;
+  expect(trail.x).toBeGreaterThanOrEqual(fit.slot.x - 1);
+  expect(trail.x + trail.width).toBeLessThanOrEqual(fit.slot.x + fit.slot.width + 1);
+  expect(fit.scroller, "the drawer body scrolls").not.toBeNull();
+  expect(fit.scroller!.scrollWidth, "the drawer body never scrolls sideways").toBeLessThanOrEqual(fit.scroller!.clientWidth + 1);
+  // A long trail scrolls inside the drawer body, never the page.
+  expect(fit.pageScrolls).toBe(false);
+  // The G3 screen rule: no text under 14 px, none cut with an ellipsis or clipped, at 1440 by 900.
+  await expectReadableText(page, '[data-slot="studio.drawer.audit"]');
+  watch.expectClean();
+});
+
+test("the flag's trail and the start list read in full: no text under 14 px, none cut or clipped", async ({ page }) => {
+  const watch = watchPage(page);
+  await openTrail(page, "flg_01");
+  await expectReadableText(page, '[data-slot="studio.drawer.audit"]');
   watch.expectClean();
 });

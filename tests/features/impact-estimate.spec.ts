@@ -1,8 +1,11 @@
-// F-impact T2: the estimate label on each impact number and the one-line estimate note, shown only
+// F-impact T2, on M-desktop's /sell/close: the estimate label on each impact number and the one-line estimate note, shown only
 // while the impact.updated payload's estimate is true, plus the Simulated badge in scripted mode.
 import { expect, test, type Page } from "@playwright/test";
 import { GLOSSARY, UI } from "../../src/features/impact/strings";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, openSell, watchPage } from "./sell-views-lib";
+
+// M-desktop: the close view on /sell/close at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 interface ImpactPayload {
   impactId: string;
@@ -16,8 +19,7 @@ interface ImpactPayload {
 const NUMBER_IDS = ["impact-maker-share", "impact-days-to-payout", "impact-hours-saved"] as const;
 
 async function openCloseAt(page: Page, ms: number) {
-  await page.goto("/studio/close");
-  await waitForHooks(page);
+  await openSell(page, "close");
   await page.evaluate((t) => {
     window.__cindia!.player.pause();
     window.__cindia!.player.seek(t);
@@ -36,8 +38,7 @@ async function scriptedImpact(page: Page): Promise<{ at: number; payload: Impact
 
 test("impact-estimate-note and the estimate label on each number show after impact.updated", async ({ page }) => {
   const watch = watchPage(page);
-  await page.goto("/studio/close");
-  await waitForHooks(page);
+  await openSell(page, "close");
   const { at, payload } = await scriptedImpact(page);
   expect(payload.estimate).toBe(true);
   await page.evaluate((t) => {
@@ -45,7 +46,7 @@ test("impact-estimate-note and the estimate label on each number show after impa
     window.__cindia!.player.seek(t);
   }, at + 1000);
 
-  // The studio console starts in English.
+  // The Sell site starts in English.
   const note = page.getByTestId("impact-estimate-note");
   await expect(note).toBeVisible();
   await expect(note).toHaveText(UI.estimateNote.en);
@@ -57,8 +58,7 @@ test("impact-estimate-note and the estimate label on each number show after impa
 
 test("before impact.updated there is no estimate note and no estimate label", async ({ page }) => {
   const watch = watchPage(page);
-  await page.goto("/studio/close");
-  await waitForHooks(page);
+  await openSell(page, "close");
   const { at } = await scriptedImpact(page);
   await page.evaluate((t) => {
     window.__cindia!.player.pause();

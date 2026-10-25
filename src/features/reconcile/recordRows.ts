@@ -6,7 +6,7 @@ import type { MatchState, MonthState, RecordArrival } from "../../core/state";
 import type { BankTxn, Channel, ChannelPayout, Order, Piece, Refund, Statement } from "../../core/types";
 import { getById } from "../../mock";
 import { Money, formatDate, formatMonth, type LedgerRow } from "../../ui";
-import { OneLine, PARTY_MAX, matchCells } from "./MatchRow";
+import { CellText, PARTY_MAX, matchCells } from "./MatchRow";
 import { RECORD_TYPE_LABELS, RECORD_TYPE_ORDER, t } from "./strings";
 
 export type Lang = "en" | "zh";
@@ -142,8 +142,8 @@ export function isSpecialMatch(match: Pick<MatchState, "kind">): boolean {
 /** Holds a record's details and party to one line each, so a long name can't make a tall row. */
 function oneLineDetail(cells: RecordCells): RecordCells {
   const out = { ...cells };
-  if (typeof cells.detail === "string" && cells.detail) out.detail = createElement(OneLine, { title: cells.detail }, cells.detail);
-  if (typeof cells.party === "string" && cells.party) out.party = createElement(OneLine, { title: cells.party, maxWidth: PARTY_MAX }, cells.party);
+  if (typeof cells.detail === "string" && cells.detail) out.detail = createElement(CellText, { title: cells.detail }, cells.detail);
+  if (typeof cells.party === "string" && cells.party) out.party = createElement(CellText, { title: cells.party, maxWidth: PARTY_MAX }, cells.party);
   return out;
 }
 

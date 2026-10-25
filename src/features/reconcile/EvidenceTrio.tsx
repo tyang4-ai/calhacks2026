@@ -27,6 +27,12 @@ const figureRowStyle: CSSProperties = {
   flexWrap: "wrap",
 };
 
+const nessieStyle: CSSProperties = {
+  fontSize: "var(--c-text-14)",
+  fontWeight: 500,
+  color: "var(--c-color-ink)",
+};
+
 function byPrefix(ids: string[], prefix: string): string | undefined {
   return ids.find((id) => id.startsWith(prefix));
 }
@@ -69,6 +75,20 @@ export function EvidenceTrio({ flag, lang }: EvidenceTrioProps) {
   const trustId = flag.trustRecordId;
   const stateFor = (id: string | undefined) => (id !== undefined && id === trustId ? "trusted" : "neutral");
   const footerFor = (id: string | undefined) => (id !== undefined && id === trustId ? <TrustLabel lang={lang} /> : undefined);
+  // B16's live twin of flag.raised adds nessieId: the bank card says so in words. The figures stay the payload's.
+  const nessieId = (flag as FlagState & { nessieId?: string }).nessieId;
+  const checked = typeof nessieId === "string" && nessieId !== "";
+  const bankFooter =
+    checked || footerFor(txnId) ? (
+      <>
+        {checked && (
+          <div data-nessie={nessieId} style={nessieStyle}>
+            {t(UI.checkedNessie, lang)}
+          </div>
+        )}
+        {footerFor(txnId)}
+      </>
+    ) : undefined;
 
   return (
     <div style={gridStyle}>
@@ -107,7 +127,7 @@ export function EvidenceTrio({ flag, lang }: EvidenceTrioProps) {
         figure={txn ? <Money cents={txn.amountCents} /> : undefined}
         rows={txn ? [{ label: t(UI.depositDate, lang), value: formatDate(txn.date, lang) }] : []}
         state={stateFor(txnId)}
-        footer={footerFor(txnId)}
+        footer={bankFooter}
       />
     </div>
   );

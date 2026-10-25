@@ -68,25 +68,29 @@ export function matchDetailText(match: MatchState, lang: "en" | "zh"): string {
   return parts.join(" · ");
 }
 
-/** The From column's width cap, so a long party name ends in an ellipsis instead of wrapping. */
-export const PARTY_MAX = "8rem";
+/** The From column's width cap, so a long party name wraps onto a second line inside its column. */
+export const PARTY_MAX = "9rem";
 
-/** A details cell held to one line, ending in an ellipsis, with the full text in its title. */
-export function OneLine({ title, maxWidth = "13rem", children }: { title: string; maxWidth?: string; children?: ReactNode }) {
+/**
+ * A cell held to its column's width. Long text wraps onto more lines rather than being cut, so the
+ * whole of it shows on the desktop view (M-desktop: nothing ellipsized); the title keeps the full
+ * text with the match's detail.
+ */
+export function CellText({ title, maxWidth = "16rem", children }: { title: string; maxWidth?: string; children?: ReactNode }) {
   return (
-    <div title={title} style={{ maxWidth, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+    <div title={title} style={{ maxWidth, overflowWrap: "anywhere" }}>
       {children}
     </div>
   );
 }
 
-/** One match's details on one line: the matched mark and the record IDs. The rest is in the title. */
+/** One match's details: the matched mark and the record IDs. The rest is in the title. */
 export function MatchRow({ match, lang }: MatchRowProps) {
   return (
-    <OneLine title={matchDetailText(match, lang)}>
+    <CellText title={matchDetailText(match, lang)}>
       <MatchedMark lang={lang} />{" "}
       <span style={{ fontVariantNumeric: "tabular-nums", color: "var(--c-color-ink-soft)" }}>{match.recordIds.join(", ")}</span>
-    </OneLine>
+    </CellText>
   );
 }
 
@@ -96,9 +100,9 @@ export function matchCells(match: MatchState, lang: "en" | "zh"): Record<"date" 
     date: payout ? <span style={{ whiteSpace: "nowrap" }}>{formatDate(payout.date, lang)}</span> : "",
     type: match.kind === "one_to_one" ? t(GLOSSARY.match, lang) : matchKindLabel(match.kind, lang),
     party: payout ? (
-      <OneLine title={channelName(payout.channelId, lang)} maxWidth={PARTY_MAX}>
+      <CellText title={channelName(payout.channelId, lang)} maxWidth={PARTY_MAX}>
         {channelName(payout.channelId, lang)}
-      </OneLine>
+      </CellText>
     ) : (
       ""
     ),

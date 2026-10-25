@@ -15,21 +15,19 @@ import {
   profitAndLossLines,
 } from "../../src/features/close/buildWorkbook";
 import { galleryDeposit, ledger, makerStatements, orders } from "../../src/mock/index";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, openSell, seekToEvent, watchPage } from "./sell-views-lib";
 
-const WORKBOOK_AT = 44600;
-const PAST_WORKBOOK = 46000;
+// M-desktop: the close view on /sell/close at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
+
+/** Well past workbook.ready: its drop-in has finished. */
+const PAST_WORKBOOK_MS = 1400;
 
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 
 async function openPastWorkbook(page: Page): Promise<Payloads["workbook.ready"]> {
-  await page.goto("/studio/close");
-  await waitForHooks(page);
-  await expect(page.locator('[data-slot="studio.close.main"]')).toHaveAttribute("data-slot-state", "filled");
-  await page.evaluate((t) => {
-    window.__cindia!.player.pause();
-    window.__cindia!.player.seek(t);
-  }, PAST_WORKBOOK);
+  await openSell(page, "close");
+  await seekToEvent(page, "workbook.ready", {}, PAST_WORKBOOK_MS);
   await expect(page.getByTestId("close-download")).toBeEnabled();
   const payload = await page.evaluate(
     () =>
@@ -57,7 +55,6 @@ function num(ws: XLSX.WorkSheet, addr: string): number {
 test("the download is the payload's file, with its sheets in the payload's order", async ({ page }, testInfo) => {
   const watch = watchPage(page);
   const payload = await openPastWorkbook(page);
-  expect(WORKBOOK_AT).toBeLessThan(PAST_WORKBOOK);
   const { download, wb } = await downloadWorkbook(page, testInfo.outputPath(payload.fileName));
   expect(download.suggestedFilename()).toBe(payload.fileName);
   expect(payload.fileName).toBe("cindia-close-2026-09.xlsx");

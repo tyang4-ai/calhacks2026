@@ -1,7 +1,11 @@
-// F-reconcile T2: the month timeline. Acceptance 1 (records in date order, counters rising, newest
-// rows in view at 25 s), 3 (no flag and no statement before d07) and 8 (same rows after any seek).
+// F-reconcile T2, on M-desktop's /sell/month at 1440 by 900: the month timeline. Acceptance 1
+// (records in date order, counters rising, newest rows in view mid-month), 3 (no flag and no
+// statement before the catch) and 8 (same rows after any seek). Every moment comes from the
+// timeline's own events (monthAnchors), never a fixed time.
 import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, monthAnchors, openSell, seekTo, waitForHooks, watchPage, type MonthAnchors } from "./sell-views-lib";
+
+test.use({ viewport: SELL_VIEWPORT });
 
 interface MonthSnapshot {
   records: Record<string, { recordId: string; recordType: string; date: string }>;
@@ -10,18 +14,9 @@ interface MonthSnapshot {
   matchIds: string[];
 }
 
-async function open(page: Page) {
-  await page.goto("/studio/month");
-  await waitForHooks(page);
-}
-
-async function seek(page: Page, ms: number) {
-  await page.evaluate((t) => {
-    const c = window.__cindia!;
-    c.player.pause();
-    c.player.seek(t);
-  }, ms);
-}
+/** Early in the month (just after it starts) and mid-month (halfway to its last match). */
+const early = (a: MonthAnchors) => a.start + 800;
+const midMonth = (a: MonthAnchors) => Math.round(a.start + (a.lastMatch - a.start) / 2);
 
 async function monthState(page: Page): Promise<MonthSnapshot> {
   return page.evaluate(() => {
@@ -69,17 +64,18 @@ async function counter(page: Page, type: string): Promise<number> {
   return Number(n![1]);
 }
 
-test("at 25 s the timeline shows the month's records in date order, counters risen, newest rows in view", async ({ page }) => {
+test("mid-month the timeline shows the month's records in date order, counters risen, newest rows in view", async ({ page }) => {
   const watch = watchPage(page);
-  await open(page);
+  await openSell(page, "month");
+  const a = await monthAnchors(page);
 
-  await seek(page, 21000);
+  await seekTo(page, early(a));
   await expect(page.getByTestId("reconcile-timeline")).toBeVisible();
   const before = await monthState(page);
   const ordersBefore = before.recordIds.filter((id) => before.records[id]!.recordType === "order").length;
   await expect.poll(() => counter(page, "order")).toBe(ordersBefore);
 
-  await seek(page, 25000);
+  await seekTo(page, midMonth(a));
   const timeline = page.getByTestId("reconcile-timeline");
   await expect(timeline).toBeVisible();
   const m = await monthState(page);
@@ -106,10 +102,11 @@ test("at 25 s the timeline shows the month's records in date order, counters ris
   watch.expectClean();
 });
 
-test("at the end of d06-month there is no flag and no statement yet", async ({ page }) => {
+test("after the month's last match there is no flag and no statement yet", async ({ page }) => {
   const watch = watchPage(page);
-  await open(page);
-  await seek(page, 29900);
+  await openSell(page, "month");
+  const a = await monthAnchors(page);
+  await seekTo(page, Math.min(a.lastMatch + 300, a.flag - 1));
   await expect(page.getByTestId("reconcile-timeline")).toBeVisible();
   await expectRowsMatchStore(page);
   await expect(page.getByTestId("reconcile-flag")).toHaveCount(0);
@@ -119,22 +116,23 @@ test("at the end of d06-month there is no flag and no statement yet", async ({ p
   watch.expectClean();
 });
 
-test("the same rows render at 25 s after seeking away and back, and after a reload", async ({ page }) => {
+test("the same rows render mid-month after seeking away and back, and after a reload", async ({ page }) => {
   const watch = watchPage(page);
-  await open(page);
-  await seek(page, 25000);
+  await openSell(page, "month");
+  const a = await monthAnchors(page);
+  await seekTo(page, midMonth(a));
   await expectRowsMatchStore(page);
   const first = await rowTestIds(page);
   expect(first.length).toBeGreaterThan(0);
 
-  await seek(page, 37900);
+  await seekTo(page, a.explained + 300);
   await expectRowsMatchStore(page);
-  await seek(page, 25000);
+  await seekTo(page, midMonth(a));
   await expect.poll(() => rowTestIds(page)).toEqual(first);
 
   await page.reload();
   await waitForHooks(page);
-  await seek(page, 25000);
+  await seekTo(page, midMonth(a));
   await expect.poll(() => rowTestIds(page)).toEqual(first);
   watch.expectClean();
 });

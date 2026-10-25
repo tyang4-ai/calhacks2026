@@ -1,14 +1,14 @@
-// F-reconcile T1 (acceptance 2): at the end of d06-month every match.made has its row, and the
-// bundled, refund-netted and carried-over matches name their records, amount and date.
+// F-reconcile T1 (acceptance 2), on M-desktop's /sell/month at 1440 by 900: after the month's last
+// match.made every match has its row, and the bundled, refund-netted and carried-over matches name
+// their records, amount and date. Seeks by event.
 import { expect, test } from "@playwright/test";
 import type { ChannelPayout, Refund } from "../../src/core/types";
 import { getById } from "../../src/mock/index";
 import { formatCents } from "../../src/ui/formatCents";
 import { formatDate } from "../../src/ui/formatDate";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, monthAnchors, openSell, seekTo, watchPage } from "./sell-views-lib";
 
-// End of d06-month (20.0 to 30.0 in demo-script.md), after the last match.made at 29.6.
-const END_OF_MONTH_MS = 29900;
+test.use({ viewport: SELL_VIEWPORT });
 
 interface MatchLite {
   matchId: string;
@@ -18,19 +18,15 @@ interface MatchLite {
 
 test("every match.made has its reconcile-match row, and the special kinds name their records", async ({ page }) => {
   const watch = watchPage(page);
-  await page.goto("/studio/month");
-  await waitForHooks(page);
-  await page.evaluate((ms) => {
-    const c = window.__cindia!;
-    c.player.pause();
-    c.player.seek(ms);
-  }, END_OF_MONTH_MS);
+  await openSell(page, "month");
+  const a = await monthAnchors(page);
+  await seekTo(page, Math.min(a.lastMatch + 300, a.flag - 1));
 
   const matches = await page.evaluate(() => {
     const month = window.__cindia!.store.getState().month as { matchIds: string[]; matches: Record<string, MatchLite> };
     return month.matchIds.map((id) => month.matches[id]);
   });
-  expect(matches.length, "match.made events by the end of d06-month").toBeGreaterThan(0);
+  expect(matches.length, "match.made events by the end of the month").toBeGreaterThan(0);
 
   for (const m of matches) {
     await expect(page.getByTestId(`reconcile-match-${m.matchId}`)).toBeVisible();

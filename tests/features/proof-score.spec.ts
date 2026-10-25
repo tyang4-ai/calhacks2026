@@ -1,29 +1,27 @@
 // F-proof T1: the scoreboard. Acceptance 1 (Caught 4 of 4 after proof.scored), 3 (the score part:
-// Caught 3 of 4 when err_03 is missed), 4 (the score part: not scored yet before 59.0) and 7 (opened
-// at /studio/proof after proof.scored, the same result). Elements are found by test ID only, and
+// Caught 3 of 4 when err_03 is missed), 4 (the score part: not scored yet before proof.scored) and 7
+// (opened at /sell/proof after proof.scored, the same result), on M-desktop's /sell/proof. M-desktop's
+// acceptance 6: 300 ms after proof.scored the four test cases sit in the view's left two thirds. Elements are found by test ID only, and
 // expected copy comes from the feature's strings and the answer key, never typed in.
 import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, expectInsideFrame, expectReadableText, openSell, seekToEvent, watchPage } from "./sell-views-lib";
 import { answerKey } from "../../src/mock/index";
 import { UI, caughtOf } from "../../src/features/proof/strings";
 
-/** proof.scored lands at 59000 in the demo timeline. */
-const SCORED_AT = 59000;
-const AFTER = SCORED_AT + 500;
-const BEFORE = SCORED_AT - 1000;
+/** Moments around the timeline's proof.scored, as offsets from its own time. */
+const AFTER = 500;
+const BEFORE = -1000;
+
+// M-desktop: the proof view on /sell/proof at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 async function open(page: Page) {
-  await page.goto("/studio/proof");
-  await waitForSlots(page);
-  await waitForHooks(page);
+  await openSell(page, "proof");
 }
 
-async function seek(page: Page, ms: number) {
-  await page.evaluate((t) => {
-    const p = window.__cindia!.player;
-    p.pause();
-    p.seek(t);
-  }, ms);
+/** Seeks to proof.scored plus `offsetMs`. */
+async function seek(page: Page, offsetMs: number) {
+  await seekToEvent(page, "proof.scored", {}, offsetMs);
 }
 
 type ScoreState = { caught: number; total: number } | null;
@@ -93,7 +91,7 @@ test("Acceptance 4: before proof.scored the score says it isn't scored yet", asy
   watch.expectClean();
 });
 
-test("Acceptance 7: opened at /studio/proof after proof.scored, the same result as playing through", async ({ page }) => {
+test("Acceptance 7: opened at /sell/proof after proof.scored, the same result as playing through", async ({ page }) => {
   const watch = watchPage(page);
   const full = caughtOf(answerKey.length, answerKey.length).en;
 
@@ -115,5 +113,29 @@ test("Acceptance 7: opened at /studio/proof after proof.scored, the same result 
   await seek(page, AFTER);
   await expect(page.getByTestId("proof-score")).toHaveText(full);
   expect(await storeScore(page)).toEqual(played);
+  watch.expectClean();
+});
+
+test("M-desktop acceptance 6: 300 ms after proof.scored the score reads Caught 4 of 4 and the four test cases sit in the left two thirds", async ({ page }) => {
+  const watch = watchPage(page);
+  await open(page);
+  await seek(page, 300);
+  await expect(page.getByTestId("proof-score")).toHaveText(caughtOf(answerKey.length, answerKey.length).en);
+  await expect(page.getByTestId("proof-score")).toHaveText("Caught 4 of 4");
+  const items = answerKey.map((e) => `proof-item-${e.id}`);
+  expect(items).toEqual(["proof-item-err_01", "proof-item-err_02", "proof-item-err_03", "proof-item-err_04"]);
+  await expectInsideFrame(page, ["proof-score", ...items]);
+  // The G3 screen rule: no text under 14 px, none cut with an ellipsis or clipped, at 1440 by 900.
+  await expectReadableText(page, '[data-slot="studio.proof.main"]');
+  // The proof panel has the left two thirds; F-search's model score (or its placeholder) the right third.
+  const main = (await page.locator('[data-slot="studio.proof.main"]').boundingBox())!;
+  const side = (await page.locator('[data-slot="studio.proof.side"]').boundingBox())!;
+  expect(side.x).toBeGreaterThan(main.x + main.width - 1);
+  for (const id of items) {
+    const b = (await page.getByTestId(id).boundingBox())!;
+    expect(b.x, `${id} starts in the left two thirds`).toBeGreaterThanOrEqual(main.x - 1);
+    expect(b.x + b.width, `${id} ends in the left two thirds`).toBeLessThanOrEqual(main.x + main.width + 1);
+  }
+  await expect(page.locator('[data-slot="studio.proof.main"]').getByTestId("simulated-badge")).toBeVisible();
   watch.expectClean();
 });

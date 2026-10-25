@@ -1,11 +1,11 @@
-// F-reconcile G4 fix: after d06-month plays through, the three special matches (bundled, refund
-// netted, carried over) sit in the "Cindy handled" strip, inside the timeline's visible bounds and
-// the viewport, while the streaming list has scrolled to its newest rows.
+// F-reconcile G4 fix, on M-desktop's /sell/month at 1440 by 900: after the month plays through, the
+// three special matches (bundled, refund netted, carried over) sit in the "Cindy handled" strip, inside
+// the timeline's visible bounds and frame-studio, while the streaming list has scrolled to its newest
+// rows. Acceptance 3: 300 ms after the month's last match.made, the three rows are inside the frame.
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, expectInsideFrame, expectReadableText, monthAnchors, openSell, seekTo, watchPage } from "./sell-views-lib";
 
-// The demo's d06 screenshot is taken 300 ms before the beat ends at 30.0.
-const SHOT_MS = 29700;
+test.use({ viewport: SELL_VIEWPORT });
 
 interface MatchLite {
   matchId: string;
@@ -38,7 +38,7 @@ async function expectInside(inner: Locator, outer: Locator, label: string) {
 
 async function expectSpecialsInView(page: Page) {
   const ids = await specialMatchIds(page);
-  expect(Object.keys(ids).sort(), "the three special kinds in the store").toEqual(["bundled", "carried_over", "refund_netted"]);
+  expect(Object.keys(ids).toSorted(), "the three special kinds in the store").toEqual(["bundled", "carried_over", "refund_netted"]);
   const timeline = page.getByTestId("reconcile-timeline");
   await expect(page.getByTestId("reconcile-handled")).toBeVisible();
   for (const [kind, matchId] of Object.entries(ids)) {
@@ -51,6 +51,11 @@ async function expectSpecialsInView(page: Page) {
     await expect(row, `${kind} in the viewport`).toBeInViewport({ ratio: 1 });
     await expectInside(row, timeline, kind);
   }
+  // Acceptance 3: each row sits inside frame-studio and every clipping ancestor.
+  await expectInsideFrame(page, Object.values(ids).map((id) => `reconcile-match-${id}`));
+  // The G3 screen rule: no text under 14 px, none cut with an ellipsis or clipped (the records table
+  // wraps its cells rather than cutting them), at 1440 by 900.
+  await expectReadableText(page, '[data-slot="studio.month.main"]');
   const strip = page.getByTestId("reconcile-handled");
   await expect(strip).toContainText("ord_015");
   await expect(strip).toContainText("ord_017");
@@ -58,7 +63,7 @@ async function expectSpecialsInView(page: Page) {
   await expect(strip).toContainText("$95.00");
   await expect(strip).toContainText("ord_025");
   await expect(strip).toContainText("Oct 2");
-  // Each strip row holds the figure d06's Figures column names for it.
+  // Each strip row holds the figure the month beat's Figures column names for it.
   await expect(page.getByTestId(`reconcile-match-${ids.bundled}`)).toContainText("3 orders");
   await expect(page.getByTestId(`reconcile-match-${ids.refund_netted}`)).toContainText("$95.00");
   await expect(page.getByTestId(`reconcile-match-${ids.carried_over}`)).toContainText("Oct 2");
@@ -71,34 +76,28 @@ async function expectSpecialsInView(page: Page) {
   ).toBeInViewport();
 }
 
-test("after d06-month plays through, the bundled, refund-netted and carried-over matches stay in view", async ({ page }) => {
+test("after the month plays through, the bundled, refund-netted and carried-over matches stay in view inside the frame", async ({ page }) => {
   const watch = watchPage(page);
-  await page.goto("/studio/month");
-  await waitForHooks(page);
-  // Step through d06 in 300 ms seeks, so rows arrive and the list scrolls as in playback, without
-  // depending on requestAnimationFrame keeping pace under test load.
-  for (let ms = 20000; ms <= SHOT_MS; ms += 300) {
-    await page.evaluate((t) => {
-      const c = window.__cindia!;
-      c.player.pause();
-      c.player.seek(t);
-    }, ms);
+  await openSell(page, "month");
+  const a = await monthAnchors(page);
+  const end = Math.min(a.lastMatch + 300, a.flag - 1);
+  // Step through the month in 300 ms seeks, so rows arrive and the list scrolls as in playback,
+  // without depending on requestAnimationFrame keeping pace under test load.
+  for (let ms = a.start; ms < end; ms += 300) {
+    await seekTo(page, ms);
     await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => r(null))));
   }
+  await seekTo(page, end);
   await expect(page.getByTestId("reconcile-flag")).toHaveCount(0);
   await expectSpecialsInView(page);
   watch.expectClean();
 });
 
-test("the pinned strip renders the same after a seek straight to the d06 screenshot", async ({ page }) => {
+test("the pinned strip renders the same after a seek straight to 300 ms after the last match", async ({ page }) => {
   const watch = watchPage(page);
-  await page.goto("/studio/month");
-  await waitForHooks(page);
-  await page.evaluate((ms) => {
-    const c = window.__cindia!;
-    c.player.pause();
-    c.player.seek(ms);
-  }, SHOT_MS);
+  await openSell(page, "month");
+  const a = await monthAnchors(page);
+  await seekTo(page, Math.min(a.lastMatch + 300, a.flag - 1));
   await expectSpecialsInView(page);
   watch.expectClean();
 });

@@ -8,6 +8,10 @@
 import { expect, test, type Page } from "@playwright/test";
 import { scenarioId } from "../../src/mock/index";
 import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
+import { SELL_VIEWPORT, storeModuleUrl } from "./sell-views-lib";
+
+// M-desktop: the month view on /sell/month at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 interface LoggedEvent {
   type: string;
@@ -50,7 +54,7 @@ test.beforeEach(async ({ page }) => {
 
 /** Opens the month view paused at the end, switches to live mode and waits for b05's health. */
 async function openLive(page: Page) {
-  await page.goto("/studio/month");
+  await page.goto("/sell/month");
   await waitForHooks(page);
   await waitForSlots(page);
   await page.evaluate(() => {
@@ -64,13 +68,14 @@ async function openLive(page: Page) {
   await expect(page.locator('[data-testid="demo-mode-toggle"] [data-source-key="b05-scenario"][data-healthy="true"]')).toHaveCount(1, {
     timeout: ANSWER_TIMEOUT,
   });
-  await page.evaluate(async () => {
-    const path = "/src/core/store.ts";
+  // The page's own store module, even after the dev server hot-updated it (sell-views-lib).
+  const storeUrl = await storeModuleUrl(page);
+  await page.evaluate(async (path) => {
     const mod = (await import(/* @vite-ignore */ path)) as { onEvent(l: (e: LoggedEvent) => void): () => void; getState(): unknown };
     if (mod.getState() !== window.__cindia!.store.getState()) throw new Error("imported a second store instance");
     window.cindiaLiveLog = [];
     mod.onEvent((e) => window.cindiaLiveLog!.push({ type: e.type, source: e.source, key: e.key, payload: { ...e.payload } }));
-  });
+  }, storeUrl);
 }
 
 const b05Source = (page: Page) => page.evaluate(() => window.__cindia!.store.getState().sources["b05-scenario"]);

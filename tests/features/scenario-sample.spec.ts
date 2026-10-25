@@ -8,6 +8,10 @@ import { expect, test, type Page } from "@playwright/test";
 import { sampleFileName, sampleRecordIds, scenarioCsv, scenarioId, scenarioReplies } from "../../src/mock/index";
 import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
 import { hideB05 } from "./scenario-lib";
+import { SELL_VIEWPORT, boxOf, expectInsideFrame, expectReadableText, storeModuleUrl } from "./sell-views-lib";
+
+// M-desktop: the month view on /sell/month at the Sell frame's 1440 by 900.
+test.use({ viewport: SELL_VIEWPORT });
 
 interface LoggedEvent {
   type: string;
@@ -22,7 +26,8 @@ declare global {
   }
 }
 
-const ANSWER_TIMEOUT = 8000;
+/** Playwright's default expect timeout (B1-27): arrival is never held to a tighter window. */
+const ANSWER_TIMEOUT = 10000;
 const panel = (page: Page) => page.getByTestId("scenario-panel");
 const results = (page: Page) => panel(page).getByTestId("scenario-results");
 
@@ -38,7 +43,7 @@ function expectedState(recordId: string): "matched" | "flagged" | "pending" {
 
 /** Opens the month view with the player paused at the end of its timeline. */
 async function openAtEnd(page: Page) {
-  await page.goto("/studio/month");
+  await page.goto("/sell/month");
   await waitForHooks(page);
   await waitForSlots(page);
   await page.evaluate(() => {
@@ -51,8 +56,9 @@ async function openAtEnd(page: Page) {
 
 /** Logs every event the store takes in, through the same store module the app uses (dev server). */
 async function startEventLog(page: Page) {
-  await page.evaluate(async () => {
-    const path = "/src/core/store.ts";
+  // The page's own store module, even after the dev server hot-updated it (sell-views-lib).
+  const storeUrl = await storeModuleUrl(page);
+  await page.evaluate(async (path) => {
     const mod = (await import(/* @vite-ignore */ path)) as {
       onEvent(l: (e: LoggedEvent) => void): () => void;
       getState(): unknown;
@@ -67,7 +73,7 @@ async function startEventLog(page: Page) {
         payload: { scenarioId: e.payload.scenarioId, fileName: e.payload.fileName, recordIds: e.payload.recordIds, content: e.payload.content },
       }),
     );
-  });
+  }, storeUrl);
 }
 
 /** The parts of the state the sample must never change. */
@@ -131,6 +137,35 @@ test("using the sample emits a user scenario.loaded, then lists its records, mat
   await expect(results(page).locator("tbody tr .c-money")).toHaveCount(replyRecords.length);
   // Scripted mode with the sample: no fallback note from the results.
   await expect(panel(page).getByTestId("scenario-note")).toHaveCount(0);
+  watch.expectClean();
+});
+
+test("the drop zone, the sample's results and its flag fit the month view's right third, inside the frame", async ({ page }) => {
+  const watch = watchPage(page);
+  await openAtEnd(page);
+  await expectInsideFrame(page, ["scenario-dropzone", "scenario-use-sample"]);
+  await panel(page).getByTestId("scenario-use-sample").click();
+  await expectAllRows(page);
+  await expect(panel(page).getByTestId("scenario-flag")).toBeVisible({ timeout: ANSWER_TIMEOUT });
+  // The panel fills its third and no more; the results scroll inside it, the flag first.
+  await expectInsideFrame(page, ["scenario-panel", "scenario-dropzone", "scenario-use-sample"]);
+  // The G3 screen rule: no text under 14 px, none cut with an ellipsis or clipped, at 1440 by 900.
+  await expectReadableText(page, '[data-slot="studio.month.side"]');
+  const panelBox = (await boxOf(page, "scenario-panel"))!;
+  const flagBox = (await boxOf(page, "scenario-flag"))!;
+  expect(flagBox.y, "the flag starts inside the panel").toBeGreaterThanOrEqual(panelBox.y);
+  expect(flagBox.y + 48, "the flag's reason line shows without a scroll").toBeLessThanOrEqual(panelBox.y + panelBox.height);
+  // The panel and its results keep to the side slot: the right third, beside reconcile.
+  const side = (await page.locator('[data-slot="studio.month.side"]').boundingBox())!;
+  const main = (await page.locator('[data-slot="studio.month.main"]').boundingBox())!;
+  expect(side.x).toBeGreaterThan(main.x + main.width - 1);
+  for (const id of ["scenario-panel", "scenario-results", "scenario-flag"]) {
+    const b = (await boxOf(page, id))!;
+    expect(b.x, `${id} starts inside the right third`).toBeGreaterThanOrEqual(side.x - 1);
+    expect(b.x + b.width, `${id} ends inside the right third`).toBeLessThanOrEqual(side.x + side.width + 1);
+  }
+  // No sideways scroll inside the results.
+  expect(await results(page).evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
   watch.expectClean();
 });
 
