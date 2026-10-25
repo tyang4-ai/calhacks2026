@@ -1,9 +1,9 @@
 STAGE: V2
-NEXT: V2 (features, upgrades, D-deploy); G1b/G2b verifiers finishing
+NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 21:37 PT
+UPDATED: 2026-10-24 22:05 PT
 
 # Status board
 
@@ -40,6 +40,7 @@ v1 (desktop session, history):
 | core | PASS | Oct 24 7:58 PM | `artifacts/gates/core-1940.md` (first run `core-1935.md`: smoke source count and B09's 4 s budget, fixed), `artifacts/gates/core-verifier-code.md`, `-docs.md`, `-server.md` | v2-core |
 | G5 b09 | PASS | Oct 24 8:23 PM | `/home/user/cindia-g5/artifacts/gates/G5-2023.md` (worktree), `artifacts/gates/G5-b09-verifier.md` | demo-ok-b09 |
 | G2b | PASS | Oct 24 21:37 | `artifacts/gates/G2b-2112.md`, `artifacts/gates/G2b-verifier-data.md` | v2-data |
+| G1b | PASS | Oct 24 22:05 | `artifacts/gates/G1b-2113.md` (main tree), `artifacts/gates/G1b-wt-2152.md` (worktree rerun after the fix: check, build, smoke 123, demo 60.006 s, offline), `G1b-verifier-screens.md` PASS, `G1b-verifier-code.md` FAIL (14 px floor) then `G1b-verifier-recheck.md` PASS | v2-shell |
 | G6 | | | | |
 
 ## Features
@@ -82,15 +83,15 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 |---|---|---|---|---|---|
 | R0-reskin | V1 step 0 | green | data-smith, integrator, feature-lead, backend-builder | v2-reskin | gate 11/11 checks, 3 verifiers PASS (screens, numbers, words) |
 | I2-core | V1 | green (both spawns) | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
-| I2-kit | V1 | done, commit at G1b | integrator | | T1-T4 done: check 738, smoke 123/123; /dev/kit gallery |
-| I2-shell | V1 | done, commit at G1b | integrator | | check 755, smoke 123, build, demo 60.0 s (0 beat problems), offline; T7: buyer 30 specs to M-buyer, approvals-frame 2 and approvals-live 1 to M-approvals and B13 T7 |
+| I2-kit | V1 | green | integrator | v2-shell | T1-T4, the 14 px floor fix; /dev/kit gallery |
+| I2-shell | V1 | green | integrator | v2-shell | desktop shell, Phase A stage, public-build flags; T7's v1 spec moves routed to M-buyer and M-approvals |
 | S3-catalog | V1 | green | data-smith | v2-data | G2b 3/3, verifier PASS; minors M1-M5, M8 for a later data round; T9 after B11's training |
-| I2-art | V1 | T0 committed | integrator | | T0 54 placeholders (54288bd); T1-T3 after G2b |
+| I2-art | V1 | running | integrator | | T0 54 placeholders (54288bd); T1-T3 drawings running |
 | F-search | V2 P0 | running | feature-lead | | |
 | M-buyer | V2 P0 | running | feature-lead | | |
-| F-support | V2 P0 | running | feature-lead | | |
+| F-support | V2 P0 | built, G3 running | feature-lead | | |
 | F-process | V2 P0 | running | feature-lead | | |
-| F-communities | V2 P0 | todo | feature-lead | | |
+| F-communities | V2 P0 | running | feature-lead | | |
 | M-approvals | V2 P0 | todo | feature-lead | | G3 waits for B13 T7 |
 | M-desktop | V2 P0 | todo | feature-lead | | right after M-approvals |
 | F-seller-hub | V2 P0 | todo | feature-lead | | |
@@ -302,3 +303,6 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 21:29 PT · B11 T4 code and T6 committed (108 passed; /api/b11/model answers its no-model problem); training requirements installed · status.md
 - 2026-10-24 21:37 PT · G2b PASS: checks 3/3, verifier PASS (minors for a data round: an unmarked old-name term in a test, sq_007's grades, run_08's two Ojibwe picks, churro's Chinese order, 沙盒市集 vs L21's 沙盒市场, the Red Mesa name); tag v2-data · artifacts/gates/G2b-verifier-data.md
 - 2026-10-24 21:37 PT · G1b: screens verifier PASS; code verifier FAIL on the kit's 14 px floor (Seal date 11 px, MakerMark glyph 11 px, a test locking it in); integrator fix round 1 running · artifacts/gates/G1b-verifier-code.md
+- 2026-10-24 21:38 PT · after G2b: export:mock (100), B11 snapshot (50 eval queries); spawned B11 T3 (pairs) and I2-art T1-T3 (drawings); running: 4 leads, G1b kit fix, B11 T3, I2-art · status.md
+- 2026-10-24 21:45 PT · F-support built (19 passed, live spec skips until B14; lead wrote all tasks, no Agent tool); G3 support and its verifier running; commit waits for G1b; F-communities lead spawned · status.md
+- 2026-10-24 22:05 PT · G1b PASS after one fix round (kit 14 px floor): worktree rerun of exactly main plus the shell and kit (check, build, smoke 123, demo 60.006 s, offline), verifier recheck PASS; committed with tag v2-shell · artifacts/gates/G1b-verifier-recheck.md

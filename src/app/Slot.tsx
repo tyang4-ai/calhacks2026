@@ -1,19 +1,22 @@
 // One slot: the feature that fills it, inside its own error boundary and Suspense, or the empty
-// placeholder with its slot- test ID. The wrapper carries data-slot and data-slot-state for the
-// shell's own smoke test.
+// placeholder with its slot- test ID. The shell forwards the whole SlotProps object to the
+// feature, never a hand-picked list. The wrapper carries data-slot, data-slot-state and
+// data-slot-props (the JSON of the props it passed), filled or empty, for the smoke tests.
 import { Component, createElement, Suspense, type ComponentType, type ReactNode } from "react";
 import { SLOT_IDS, slotTestId, type SlotId, type SlotProps } from "../core/featureTypes";
 import { lazySlot, slotHasFeature } from "./featureLoader";
+import { slotProps, slotPropsJson, type SlotContext } from "./slotProps";
 import { PLACEHOLDER_NOTE, SLOT_FAILED, SLOT_LABELS } from "./strings";
 
 type SlotState = "empty" | "filled" | "error";
 
-function Wrapper({ slot, state, loading, children }: { slot: SlotId; state: SlotState; loading?: boolean; children: ReactNode }) {
+function Wrapper({ slot, state, props, loading, children }: { slot: SlotId; state: SlotState; props: SlotProps; loading?: boolean; children: ReactNode }) {
   return (
     <div
       className="cindia-slot"
       data-slot={slot}
       data-slot-state={state}
+      data-slot-props={slotPropsJson(props)}
       data-slot-loading={loading ? "true" : undefined}
       style={{ height: "100%", minHeight: 0, minWidth: 0, display: "flex", flexDirection: "column" }}
     >
@@ -22,28 +25,29 @@ function Wrapper({ slot, state, loading, children }: { slot: SlotId; state: Slot
   );
 }
 
-function Placeholder({ slot, lang, loading }: { slot: SlotId; lang: "en" | "zh"; loading?: boolean }) {
+function Placeholder({ slot, props, loading }: { slot: SlotId; props: SlotProps; loading?: boolean }) {
   const label = SLOT_LABELS[slot];
+  const lang = props.lang;
   return (
-    <Wrapper slot={slot} state="empty" loading={loading}>
+    <Wrapper slot={slot} state="empty" props={props} loading={loading}>
       <div
         data-testid={`slot-${slotTestId(slot)}`}
         lang={lang}
         style={{
           flex: 1,
-          minHeight: 120,
+          minHeight: 40,
           border: "1px dashed var(--c-color-line)",
           borderRadius: "var(--c-radius-panel)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: "var(--c-space-8)",
-          padding: "var(--c-space-24)",
+          gap: "var(--c-space-4)",
+          padding: "var(--c-space-12)",
           color: "var(--c-color-ink-soft)",
           textAlign: "center",
           fontSize: "var(--c-text-16)",
-          margin: "var(--c-space-8)",
+          boxSizing: "border-box",
         }}
       >
         <span>{label[lang]}</span>
@@ -53,12 +57,12 @@ function Placeholder({ slot, lang, loading }: { slot: SlotId; lang: "en" | "zh";
   );
 }
 
-function SlotError({ slot, lang }: { slot: SlotId; lang: "en" | "zh" }) {
+function SlotError({ slot, props }: { slot: SlotId; props: SlotProps }) {
   return (
-    <Wrapper slot={slot} state="error">
+    <Wrapper slot={slot} state="error" props={props}>
       <div
         data-testid={`slot-error-${slotTestId(slot)}`}
-        lang={lang}
+        lang={props.lang}
         role="alert"
         style={{
           margin: "var(--c-space-8)",
@@ -68,13 +72,13 @@ function SlotError({ slot, lang }: { slot: SlotId; lang: "en" | "zh" }) {
           fontSize: "var(--c-text-14)",
         }}
       >
-        {SLOT_FAILED[lang]}
+        {SLOT_FAILED[props.lang]}
       </div>
     </Wrapper>
   );
 }
 
-class SlotBoundary extends Component<{ slot: SlotId; lang: "en" | "zh"; children: ReactNode }, { failed: boolean }> {
+class SlotBoundary extends Component<{ slot: SlotId; props: SlotProps; children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
 
   static getDerivedStateFromError(): { failed: boolean } {
@@ -86,7 +90,7 @@ class SlotBoundary extends Component<{ slot: SlotId; lang: "en" | "zh"; children
   }
 
   render() {
-    if (this.state.failed) return <SlotError slot={this.props.slot} lang={this.props.lang} />;
+    if (this.state.failed) return <SlotError slot={this.props.slot} props={this.props.props} />;
     return this.props.children;
   }
 }
@@ -94,11 +98,11 @@ class SlotBoundary extends Component<{ slot: SlotId; lang: "en" | "zh"; children
 function renderersFor(slot: SlotId) {
   return {
     filled: (C: ComponentType<SlotProps>, props: SlotProps) => (
-      <Wrapper slot={slot} state="filled">
-        <C surface={props.surface} lang={props.lang} makerId={props.makerId} refId={props.refId} />
+      <Wrapper slot={slot} state="filled" props={props}>
+        <C {...props} />
       </Wrapper>
     ),
-    empty: (props: SlotProps) => <Placeholder slot={slot} lang={props.lang} />,
+    empty: (props: SlotProps) => <Placeholder slot={slot} props={props} />,
   };
 }
 
@@ -109,14 +113,18 @@ export interface SlotComponentProps extends SlotProps {
   slot: SlotId;
 }
 
-export function Slot({ slot, surface, lang, makerId, refId }: SlotComponentProps) {
+/** A slot with the props given, forwarded whole to its feature. */
+export function Slot({ slot, ...props }: SlotComponentProps) {
   const Lazy = LAZY_SLOTS.get(slot);
-  if (!Lazy) return <Placeholder slot={slot} lang={lang} />;
+  if (!Lazy) return <Placeholder slot={slot} props={props} />;
   return (
-    <SlotBoundary key={slot} slot={slot} lang={lang}>
-      <Suspense fallback={<Placeholder slot={slot} lang={lang} loading />}>
-        {createElement(Lazy, { surface, lang, makerId, refId })}
-      </Suspense>
+    <SlotBoundary key={slot} slot={slot} props={props}>
+      <Suspense fallback={<Placeholder slot={slot} props={props} loading />}>{createElement(Lazy, props)}</Suspense>
     </SlotBoundary>
   );
+}
+
+/** A slot whose props come from the page it sits on, through slotProps(). */
+export function SlotFor({ slot, ctx }: { slot: SlotId; ctx: SlotContext }) {
+  return <Slot slot={slot} {...slotProps(slot, ctx)} />;
 }

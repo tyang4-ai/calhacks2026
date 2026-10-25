@@ -1,5 +1,5 @@
-/* The /demo stage: a 1600 by 900 canvas scaled to fit the window, letterboxed on the paper ground.
-   Frames sit at the canvas's top left and the camera places them with a transform. */
+/* The /demo stage: the kit's 1440 by 900 page scaled to fit the window, letterboxed on the paper
+   ground. Frames sit at the stage's top left and the camera places them with a transform. */
 .ground {
   position: fixed;
   inset: 0;
@@ -11,7 +11,7 @@
 }
 
 .stage {
-  width: 1600px;
+  width: 1440px;
   height: 900px;
   flex-shrink: 0;
   position: relative;
@@ -32,9 +32,11 @@
   pointer-events: none;
 }
 
+/* The beat label sits at the bottom left, over the empty foot of the Sell nav and beside the
+   centered legacy columns, so it covers neither a top bar nor a beat's figures. */
 .beatLabel {
   position: absolute;
-  top: 12px;
+  bottom: 12px;
   left: 12px;
   z-index: 20;
   padding: 4px 10px;
@@ -48,9 +50,13 @@
   pointer-events: none;
 }
 
+/* sell-catch fills the stage with the zoomed Sell view; there the label sits at the top right,
+   above the side column. */
 .beatLabel[data-place="right"] {
   left: auto;
   right: 12px;
+  bottom: auto;
+  top: 12px;
 }
 
 .overlay {
@@ -82,12 +88,13 @@
 .coldOpen {
   composes: overlay;
   justify-content: flex-end;
-  padding: 0 40px 56px 0;
+  padding: 0 24px 48px 0;
 }
 
 .coldLine {
   composes: line;
-  max-width: 480px;
+  max-width: 300px;
+  font-size: var(--c-text-24);
   text-align: left;
   padding: 18px 24px;
 }

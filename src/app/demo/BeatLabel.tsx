@@ -1,4 +1,5 @@
-// demo-beat-label: a quiet caption at the top left of the stage with the current beat's short title.
+// demo-beat-label: a quiet caption on the stage with the current beat's short title, at the bottom
+// left, or the top right while sell-catch fills the stage.
 import styles from "./stage.module.css";
 
 /** Short titles for the beats in demo-script.md. */
@@ -10,7 +11,7 @@ const BEAT_TITLES: Record<string, string> = {
   "d05-money": "5 · Follow the money",
   "d06-month": "6 · The co-op's month",
   "d07-catch": "7 · The catch",
-  "d08-approve": "8 · Only the owner approves",
+  "d08-approve": "8 · Only the manager approves",
   "d09-close": "9 · Close the month",
   "d10-statement": "10 · The maker's statement",
   "d11-receipt": "11 · Paid to the maker",
@@ -22,11 +23,11 @@ function beatTitle(beatId: string | null): string {
 }
 
 /**
- * studio-catch fills the stage with the studio at 1.35, so the top left would cover the rail's
- * first nav item. There the label moves to the top right, above the empty top of the side panel.
+ * sell-catch fills the stage with the zoomed Sell view, so the bottom left would sit on the
+ * month's records. There the label moves to the top right, above the side column.
  */
 function labelPlace(camera: string | null): "left" | "right" {
-  return camera === "studio-catch" ? "right" : "left";
+  return camera === "sell-catch" ? "right" : "left";
 }
 
 export function BeatLabel({ beatId, camera = null }: { beatId: string | null; camera?: string | null }) {

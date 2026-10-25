@@ -91,3 +91,5 @@ Format: `- <plan id>: <the gotcha and the fix, in one sentence>`
 - V1: With every key set in the cloud, every live adapter plays in every live demo run, so one slow key fails other upgrades' G5s.
 - V2: Feature leads in this cloud session have no Agent tool, so they can't spawn builders or their verifier. A lead writes every task itself, and the orchestrator spawns the G3 verifier beside `npm run gate -- G3 <slug>`.
 - V2: A feature can't be committed before the shared code it imports: the G3 commit for a v2 feature waits for the G1b commit (shell and kit), or main stops type-checking.
+- V2: Gates run at raised CPU priority (`nice -n -10`, which the browsers inherit) while feature leads run their own Playwright suites, so the demo's timing checks get the CPU they need. A lone-spec rerun is the way to tell a load flake from a bug (G3 support's smoke: seekToEvent failed at load 25, passed twice alone).
+- V2: Stopping `npx vite preview` by its PID leaves the child `vite` process on 4173; stop the vite PID itself (`pgrep -af "vite preview"`), or the next gate's preview finds the port in use.

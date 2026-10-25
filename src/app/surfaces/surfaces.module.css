@@ -1,0 +1,218 @@
+/* The pages inside each surface's page body (the 1440 by 780 area under the top bar and the
+   process bar band). Every size is in the frame's own pixels. */
+
+/* One slot filling the page. */
+.page {
+  flex: 1 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: var(--c-space-24) var(--c-space-48);
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+/* Shop home: shop.home.main above shop.home.communities. */
+.stack {
+  composes: page;
+  gap: var(--c-space-24);
+}
+
+.stackMain {
+  flex: 3 1 0;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stackSecond {
+  flex: 2 1 0;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* main two thirds, side one third: the piece page and the maker page. */
+.split {
+  flex: 1 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: var(--c-space-24) var(--c-space-48);
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--c-space-24);
+}
+
+.cell {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollCell {
+  composes: cell;
+  overflow: auto;
+}
+
+/* The Sell site: the header, then the left nav and the view area. */
+.sellHeader {
+  flex: 0 0 56px;
+  height: 56px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-24);
+  padding: 0 var(--c-space-24);
+  border-bottom: 1px solid var(--c-color-line);
+  background: var(--c-color-paper);
+}
+
+.coopName {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.15;
+}
+
+.coopZh {
+  font-family: var(--c-font-heading-zh);
+  font-weight: 700;
+  font-size: var(--c-text-16);
+}
+
+.coopEn {
+  font-family: var(--c-font-heading-en);
+  font-weight: 600;
+  font-size: var(--c-text-16);
+}
+
+/* L2, beside the co-op's name. */
+.l2 {
+  flex: 0 1 460px;
+  min-width: 300px;
+  margin: 0;
+  font-size: var(--c-text-14);
+  line-height: 1.3;
+  color: var(--c-color-ink-soft);
+}
+
+.cindy {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: var(--c-text-14);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.cindyIdle {
+  composes: cindy;
+  color: var(--c-color-ink-soft);
+}
+
+.sellRow {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.sellNav {
+  flex: 0 0 184px;
+  width: 184px;
+  box-sizing: border-box;
+  border-right: 1px solid var(--c-color-line);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--c-space-8) 0;
+  overflow: auto;
+  background: var(--c-color-paper);
+}
+
+.navItem {
+  display: block;
+  box-sizing: border-box;
+  font-size: var(--c-text-16);
+  font-weight: 500;
+  color: var(--c-color-ink);
+  padding: var(--c-space-8) var(--c-space-16);
+  border-left: 3px solid transparent;
+}
+
+.navItem:hover {
+  background: var(--c-color-mat);
+}
+
+.navItemOn {
+  composes: navItem;
+  font-weight: 600;
+  border-left-color: var(--c-color-ink);
+  background: var(--c-color-mat);
+}
+
+/* The view area: main and side, or one slot. */
+.view {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  display: grid;
+  gap: var(--c-space-16);
+  padding: var(--c-space-16) var(--c-space-24);
+  overflow: auto;
+}
+
+/* The view area while a legacy box fills it. */
+.viewLegacy {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+}
+
+/* The legacy boxes: the space the page gives, the box centered in it. */
+.legacySpace {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* v1's console view area: its 16 px padding and 2fr 1fr grid. */
+.legacyConsole {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  transform-origin: 0 0;
+  display: grid;
+  gap: var(--c-space-16);
+  padding: var(--c-space-16);
+  overflow: auto;
+  background: var(--c-color-paper);
+}
+
+/* v1's phone screen: a scrolling column. */
+.legacyPhone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  transform-origin: 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background: var(--c-color-paper);
+  outline: 1px solid var(--c-color-line);
+}
+
+.legacyCell {
+  min-width: 0;
+  min-height: 0;
+}

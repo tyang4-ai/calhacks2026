@@ -1,8 +1,9 @@
-// The stage's other modes, at 8x where the player clock allows it so the file finishes well
-// inside the 60-second run beside it: video mode (?video=1), start at the catch, and reset.
-// The cold open, the rewind card and the end card are real-time holds, so they keep their length.
+// The stage's other modes on the desktop frames, at 8x where the player clock allows it so the file
+// finishes well inside the run beside it: video mode (?video=1), start at the catch, and reset. The
+// cold open, the rewind card and the end card are real-time holds, so they keep their length. The
+// stage shows v1's cameras through the Phase A mapping, so data-camera holds the tour camera.
 import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { seekToEvent, shownFrameId, waitForHooks, watchPage } from "../smoke/lib";
 import { openStage, screenshot } from "./harness";
 
 const now = (page: Page) => page.evaluate(() => window.__cindia!.player.now());
@@ -15,14 +16,15 @@ test("video mode: 5-second cold open on the catch, the run from d01-ask with no 
   await page.goto("/demo?video=1");
   await waitForHooks(page);
   const t0 = Date.now();
-  // Cold open: paused at 38.0 on the studio-catch camera, the flag and its line on screen.
+  // Cold open: paused at 38.0 on studio-catch, shown as sell-catch, the flag and its line on screen.
   const coldOpen = page.locator('[data-video-phase="cold-open"]');
   await expect(coldOpen).toBeVisible();
   await expect(coldOpen).toContainText("The gallery paid $340 less than the contract says");
   expect(await now(page)).toBe(38000);
   expect(await playing(page)).toBe(false);
-  expect(await stageCamera(page)).toBe("studio-catch");
-  await expect(page.getByTestId("reconcile-flag")).toBeVisible();
+  expect(await stageCamera(page)).toBe("sell-catch");
+  expect(await shownFrameId(page)).toBe("frame-studio");
+  await expect(page.getByTestId("frame-studio").getByTestId("reconcile-flag")).toBeVisible();
   await expect(page.getByTestId("demo-controls")).toHaveCount(0);
   await expect(page.getByTestId("demo-beat-label")).toHaveCount(0);
   await page.evaluate(() => document.fonts.ready.then(() => true));
@@ -75,10 +77,12 @@ test("start at the catch: 30.0 to 60.0, the rewind card, then 0.0 to the end of 
   expect(await now(page)).toBe(60000);
   await expect(rewind).toHaveCount(0, { timeout: 4000 });
   await expect.poll(() => playing(page), { timeout: 15000 }).toBe(false);
-  // Paused on the last millisecond of d05-money, so its buyer-studio camera stays up.
+  // Paused on the last millisecond of d05-money, so its buyer-studio camera (sell-map) stays up.
   await expect.poll(() => now(page), { timeout: 15000 }).toBe(19999);
   expect(await page.evaluate(() => window.__cindia!.store.getState().demo)).toMatchObject({ beatId: "d05-money", camera: "buyer-studio" });
-  await expect(page.getByTestId("money-map-balance")).toBeVisible();
+  expect(await stageCamera(page)).toBe("sell-map");
+  await expect.poll(() => shownFrameId(page)).toBe("frame-studio");
+  await expect(page.getByTestId("frame-studio").getByTestId("money-map-balance")).toBeVisible();
   await screenshot(page, "start-at-catch-pause");
   const clocks = await page.evaluate(() => (window as unknown as { cindiaClocks: number[] }).cindiaClocks);
   const firstLow = clocks.findIndex((c) => c < 30000);
@@ -91,11 +95,12 @@ test("start at the catch: 30.0 to 60.0, the rewind card, then 0.0 to the end of 
   watch.expectClean();
 });
 
-test("reset at any point: clock 0, the store empty, the camera buyer", async ({ page }) => {
+test("reset at any point: clock 0, the store empty, the camera buyer shown as shop-legacy", async ({ page }) => {
   const watch = watchPage(page);
   await openStage(page);
-  await page.evaluate(() => window.__cindia!.player.seek(41000));
-  await expect.poll(() => stageCamera(page)).toBe("studio-owner");
+  await seekToEvent(page, "approval.granted", { approvalId: "apr_02" });
+  await expect.poll(() => stageCamera(page)).toBe("sell-approvals");
+  await expect.poll(() => shownFrameId(page)).toBe("frame-studio");
   await page.getByTestId("demo-play").click();
   await page.getByTestId("demo-reset").click();
   expect(await now(page)).toBe(0);
@@ -111,7 +116,8 @@ test("reset at any point: clock 0, the store empty, the camera buyer", async ({ 
   });
   expect(s.counts).toEqual([0, 0, 0, 0, 0]);
   expect(s.demo.beatId).toBeNull();
-  expect(await stageCamera(page)).toBe("buyer");
+  expect(await stageCamera(page)).toBe("shop-legacy");
+  await expect.poll(() => shownFrameId(page)).toBe("frame-buyer");
   await expect(page.getByTestId("demo-play")).toBeVisible();
   watch.expectClean();
 });

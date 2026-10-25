@@ -1,0 +1,82 @@
+/* The page chrome on every surface: the top bar (56 px), the process bar band (64 px), and the
+   page body under them, which holds the page, the process overlay and the drawers. */
+
+.wordmark {
+  font-family: var(--c-font-heading-en);
+  font-weight: 700;
+  font-size: var(--c-text-21);
+  line-height: 1;
+  color: var(--c-color-ink);
+}
+
+/* L1: small, never hidden. It may wrap to two lines inside the 56 px bar. */
+.notice {
+  font-size: var(--c-text-14);
+  line-height: 1.3;
+  color: var(--c-color-ink-soft);
+  max-width: 600px;
+  min-width: 320px;
+  text-align: right;
+}
+
+.band {
+  flex: 0 0 64px;
+  height: 64px;
+  box-sizing: border-box;
+  padding: 1px var(--c-space-24) 2px;
+  border-bottom: 1px solid var(--c-color-line);
+  display: flex;
+  align-items: stretch;
+  background: var(--c-color-paper);
+}
+
+.band > * {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* The process overlay: a scrim over the page body and a centered 1200 by 720 panel. It stays
+   under the drawers (the kit's Drawer sits at z-index 40). */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--c-color-scrim);
+}
+
+.panel {
+  position: relative;
+  box-sizing: border-box;
+  width: 1200px;
+  height: 720px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+}
+
+.drawerSlot {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}

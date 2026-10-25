@@ -1,14 +1,34 @@
-// The demo harness: opens /demo, plays the 60 seconds at 1x on the production build and checks
-// every beat against tests/demo/beats.ts. A recorder inside the page notes when each beat.started
-// lands (player clock and wall time) and which On screen test IDs showed during each beat. 300 ms
-// before each beat ends the harness reads the screen in one go and saves artifacts/demo/<beat>.png.
-// A beat fails when one of its On screen IDs or figures is rendered but scrolled, clipped or
-// covered out of its frame's visible area at that moment. demo.spec.ts and offline.spec.ts both run it.
+// The demo harness: opens /demo, plays the timeline at 1x on the production build and checks every
+// beat against tests/demo/beats.ts. Each beat's camera goes through the Phase A mapping to the one
+// frame the stage shows at full size, and every test ID is looked up inside that frame, never the
+// first match in the document (all four frames stay mounted). A recorder inside the page notes when
+// each beat.started lands (player clock and wall time) and which On screen test IDs showed during
+// each beat. 300 ms before each beat ends the harness reads the screen in one go and saves
+// artifacts/demo/<beat>.png. A beat fails when one of its On screen IDs or figures is rendered but
+// scrolled, clipped or covered out of its frame's visible area at that moment. demo.spec.ts and
+// offline.spec.ts both run it.
 import fs from "node:fs";
 import path from "node:path";
 import { expect, test, type ConsoleMessage, type Page } from "@playwright/test";
 import { waitForHooks, waitForSlots } from "../smoke/lib";
-import { ALLOWED_EMPTY_FALLBACKS, BEATS, CAMERA_FRAMES, CAMERA_VIEW, FRAME_IDS, NATIVE_WIDTH, REQUIRED_KEYS, SHOWN_MATCH_KINDS, cutFeatures, type Beat, type FrameId } from "./beats";
+import {
+  ALLOWED_EMPTY_FALLBACKS,
+  BEATS,
+  FRAME_IDS,
+  NATIVE_WIDTH,
+  REQUIRED_KEYS,
+  REQUIRED_SERVICES,
+  SHOWN_MATCH_KINDS,
+  STAGE_HEIGHT,
+  STAGE_WIDTH,
+  cameraFrames,
+  cameraView,
+  cutFeatures,
+  shownFrame,
+  stageCamera,
+  type Beat,
+  type FrameId,
+} from "./beats";
 
 export const ARTIFACTS_DEMO = path.join(process.env.CINDIA_ROOT ?? process.cwd(), "artifacts", "demo");
 
@@ -18,8 +38,17 @@ export const DEMO_MODE: "scripted" | "live" = process.env.CINDIA_DEMO_MODE === "
 /** The upgrade under test in G5 (a source key like b01-match), set by the gate through CINDIA_DEMO_UPGRADE. */
 export const DEMO_UPGRADE: string | null = process.env.CINDIA_DEMO_UPGRADE?.trim() || null;
 
-/** How far a beat.started may land from its time in demo-script.md, in ms. */
+/** How far a beat.started may land from its time in demo-script.md on the player clock, in ms. */
 export const BEAT_TOLERANCE_MS = 100;
+
+/**
+ * How far a beat.started may land from its time in real time, in ms. Wider than the player clock's,
+ * because the cloud VM runs other agents' checks at the same time (B1-27, logged in decisions.md).
+ */
+export const BEAT_WALL_TOLERANCE_MS = 250;
+
+/** The run must end within the played timeline's own durationMs plus this, in real time (fix-plan 1.9). */
+export const END_ALLOWANCE_MS = 500;
 
 /**
  * The longest openStage waits in live mode for the adapters that can turn healthy (router loaded
@@ -35,9 +64,13 @@ export interface SourceHealthAtStart {
   adapters: string[];
   /** /api/health's `keys`: which server keys are set. Null when the server didn't say. */
   keys: Record<string, boolean> | null;
+  /** /api/health's `services`: whether SpacetimeDB answers and the trained model is on disk. Null when the server didn't say. */
+  services: Record<string, boolean> | null;
   /** Adapters whose router is loaded but whose key (REQUIRED_KEYS in beats.ts) is missing: not waited for. */
   noKey: string[];
-  /** Adapters whose router is loaded and whose key, if any, is set: these should turn healthy. */
+  /** Adapters whose router is loaded but whose service (REQUIRED_SERVICES in beats.ts) is down: not waited for. */
+  noService: string[];
+  /** Adapters whose router is loaded and whose key and service, if any, are there: these should turn healthy. */
   expected: string[];
   /** Keys whose demo-mode-toggle dot showed healthy when the run started (the registry's own health()). */
   healthy: string[];
@@ -63,36 +96,44 @@ async function healthyDots(page: Page): Promise<string[]> {
 }
 
 /**
- * In live mode: asks /api/health which routers are loaded and which keys are set, waits until each
- * adapter with a loaded router and its key (REQUIRED_KEYS) reports healthy, and keeps what it found
- * for playDemo. Adapters missing their key are skipped. G5's upgrade must have its key and be healthy.
+ * In live mode: asks /api/health which routers are loaded, which keys are set and which services
+ * are up, waits until each adapter with a loaded router, its key (REQUIRED_KEYS) and its service
+ * (REQUIRED_SERVICES) reports healthy, and keeps what it found for playDemo. Adapters missing their
+ * key or service are skipped. G5's upgrade must have its key and service and be healthy.
  */
 async function captureSourceHealth(page: Page): Promise<SourceHealthAtStart> {
-  const { routers, keys } = await page.evaluate(async () => {
+  const { routers, keys, services } = await page.evaluate(async () => {
+    const flags = (v: unknown) =>
+      v && typeof v === "object" ? Object.fromEntries(Object.entries(v as Record<string, unknown>).map(([k, x]) => [k, x === true])) : null;
     try {
       const r = await fetch("/api/health");
-      if (!r.ok) return { routers: [] as string[], keys: null };
-      const body = (await r.json()) as { routers?: unknown; keys?: unknown };
+      if (!r.ok) return { routers: [] as string[], keys: null, services: null };
+      const body = (await r.json()) as { routers?: unknown; keys?: unknown; services?: unknown };
       const listed = Array.isArray(body.routers) ? body.routers.filter((x): x is string => typeof x === "string") : [];
-      const set =
-        body.keys && typeof body.keys === "object"
-          ? Object.fromEntries(Object.entries(body.keys as Record<string, unknown>).map(([k, v]) => [k, v === true]))
-          : null;
-      return { routers: listed, keys: set };
+      return { routers: listed, keys: flags(body.keys), services: flags(body.services) };
     } catch {
-      return { routers: [] as string[], keys: null };
+      return { routers: [] as string[], keys: null, services: null };
     }
   });
   const adapters = liveAdapterKeys();
   const loaded = adapters.filter((k) => routers.includes(k.slice(0, 3)));
-  // When /api/health doesn't report keys, assume they're set and wait as before.
-  const hasKey = (k: string) => !REQUIRED_KEYS[k] || keys === null || keys[REQUIRED_KEYS[k]] === true;
+  // When /api/health doesn't report keys or services, assume they're there and wait as before.
+  const hasKey = (k: string) => {
+    const need = REQUIRED_KEYS[k];
+    return !need || keys === null || keys[need] === true;
+  };
+  const hasService = (k: string) => {
+    const need = REQUIRED_SERVICES[k];
+    return !need || services === null || services[need] === true;
+  };
   const noKey = loaded.filter((k) => !hasKey(k));
-  const expected = loaded.filter(hasKey);
+  const noService = loaded.filter((k) => hasKey(k) && !hasService(k));
+  const expected = loaded.filter((k) => hasKey(k) && hasService(k));
   if (DEMO_UPGRADE) {
     expect(adapters, `G5 upgrade ${DEMO_UPGRADE}: an adapter file src/sources/live/${DEMO_UPGRADE}.ts`).toContain(DEMO_UPGRADE);
     expect(routers, `G5 upgrade ${DEMO_UPGRADE}: /api/health lists its router`).toContain(DEMO_UPGRADE.slice(0, 3));
     expect(noKey, `G5 upgrade ${DEMO_UPGRADE}: /api/health reports the ${REQUIRED_KEYS[DEMO_UPGRADE] ?? ""} key it needs`).not.toContain(DEMO_UPGRADE);
+    expect(noService, `G5 upgrade ${DEMO_UPGRADE}: /api/health reports the ${REQUIRED_SERVICES[DEMO_UPGRADE] ?? ""} service it needs is down`).not.toContain(DEMO_UPGRADE);
   }
   // Ends as soon as every adapter that can turn healthy has.
   await expect
@@ -103,7 +144,7 @@ async function captureSourceHealth(page: Page): Promise<SourceHealthAtStart> {
     .toBe(true)
     .catch(() => undefined);
   const healthy = await healthyDots(page);
-  const found: SourceHealthAtStart = { routers, adapters, keys, noKey, expected, healthy };
+  const found: SourceHealthAtStart = { routers, adapters, keys, services, noKey, noService, expected, healthy };
   healthAtStart.set(page, found);
   if (DEMO_UPGRADE) {
     expect(healthy, `G5 upgrade ${DEMO_UPGRADE}: its adapter's health() is true at the start of the run`).toContain(DEMO_UPGRADE);
@@ -122,6 +163,15 @@ export async function openStage(page: Page, url = "/demo") {
   await waitForHooks(page);
   await expect(page.getByTestId("demo-stage")).toBeVisible();
   for (const f of FRAME_IDS) await expect(page.getByTestId(f)).toBeAttached();
+  // The stage and the four frames are the 1440 by 900 desktop page, in their own (unscaled) pixels.
+  const sizes = await page.evaluate((ids) => {
+    const size = (sel: string) => {
+      const el = document.querySelector(sel) as HTMLElement | null;
+      return el ? [el.offsetWidth, el.offsetHeight] : null;
+    };
+    return Object.fromEntries(["demo-stage", ...ids].map((id) => [id, size(`[data-testid="${id}"]`)]));
+  }, FRAME_IDS);
+  for (const [id, wh] of Object.entries(sizes)) expect(wh, `${id} is ${STAGE_WIDTH} by ${STAGE_HEIGHT}`).toEqual([STAGE_WIDTH, STAGE_HEIGHT]);
   await waitForSlots(page);
   if (!url.includes("video=1")) {
     await expect(page.getByTestId("demo-controls")).toBeVisible();
@@ -171,16 +221,20 @@ interface ScreenShot {
 
 /**
  * Reads the screen in one evaluate: each frame's opacity, scale and place, each test ID's state and
- * where each figure's text sits. An element is on its frame when part of it survives every clipping
- * ancestor (scroll areas, the phone and console frames, the stage and the window). It is covered
- * when most sample points of that visible part hit another element, or the beat label sits on it.
+ * where each figure's text sits. Test IDs and figures are looked up inside the shown frame (`frameId`),
+ * never the first match in the document, since all four frames stay mounted. An element is on its
+ * frame when part of it survives every clipping ancestor (scroll areas, the legacy boxes, the frame,
+ * the stage and the window). It is covered when most sample points of that visible part hit another
+ * element, or the beat label sits on it.
  */
-async function readScreen(page: Page, testIds: string[], figures: { testId: string; text: string }[]): Promise<ScreenShot> {
+async function readScreen(page: Page, frameId: FrameId | null, testIds: string[], figures: { testId: string; text: string }[]): Promise<ScreenShot> {
   return page.evaluate(
-    ({ ids, figs, frameIds, nativeWidth }) => {
+    ({ ids, figs, frameIds, nativeWidth, shownId, stageWidth }) => {
       const stage = document.querySelector('[data-testid="demo-stage"]') as HTMLElement;
       const sr = stage.getBoundingClientRect();
-      const k = sr.width / 1600;
+      const k = sr.width / stageWidth;
+      // Look test IDs up inside the frame on screen. With no frame (pitch), the stage itself.
+      const scope: ParentNode = (shownId ? stage.querySelector(`[data-testid="${shownId}"]`) : null) ?? stage;
       const opacityOf = (el: Element) => {
         let o = 1;
         for (let e: Element | null = el; e && e !== document.body; e = e.parentElement) {
@@ -243,7 +297,7 @@ async function readScreen(page: Page, testIds: string[], figures: { testId: stri
       }
       const out: Record<string, { present: boolean; visible: boolean; onFrame: boolean; covered: string | null; text: string }> = {};
       for (const id of ids) {
-        const el = document.querySelector(`[data-testid="${id}"]`);
+        const el = scope.querySelector(`[data-testid="${id}"]`);
         if (!el) {
           out[id] = { present: false, visible: false, onFrame: false, covered: null, text: "" };
           continue;
@@ -256,7 +310,7 @@ async function readScreen(page: Page, testIds: string[], figures: { testId: stri
       }
       const norm = (t: string | null) => (t ?? "").replace(/\s+/g, " ");
       const figShots = figs.map(({ testId, text }) => {
-        const root = document.querySelector(`[data-testid="${testId}"]`);
+        const root = scope.querySelector(`[data-testid="${testId}"]`);
         if (!root || !norm(root.textContent).includes(text)) return { found: false, inView: false };
         // The smallest elements holding the text: none of their children holds it alone.
         const holders: Element[] = [];
@@ -291,13 +345,16 @@ async function readScreen(page: Page, testIds: string[], figures: { testId: stri
         balanceCents: acct ? acct.balanceCents : null,
       };
     },
-    { ids: testIds, figs: figures, frameIds: FRAME_IDS, nativeWidth: NATIVE_WIDTH },
+    { ids: testIds, figs: figures, frameIds: FRAME_IDS, nativeWidth: NATIVE_WIDTH, shownId: frameId, stageWidth: STAGE_WIDTH },
   );
 }
 
-/** Starts the in-page recorder: beat arrivals with clock and wall time, and IDs seen on the stage during each beat. */
-async function startRecorder(page: Page, idsByBeat: Record<string, string[]>) {
-  await page.evaluate((expected) => {
+/**
+ * Starts the in-page recorder: beat arrivals with clock and wall time, and IDs seen on the stage
+ * during each beat, each looked up inside the frame that beat shows.
+ */
+async function startRecorder(page: Page, idsByBeat: Record<string, string[]>, frameByBeat: Record<string, FrameId | null>) {
+  await page.evaluate(({ expected, frames }) => {
     const w = window as unknown as { cindiaDemoRun?: unknown };
     const run = {
       startWall: null as number | null,
@@ -361,16 +418,18 @@ async function startRecorder(page: Page, idsByBeat: Record<string, string[]>) {
       const beat = run.lastBeat;
       if (beat && expected[beat]) {
         const seen = (run.seen[beat] ??= {});
+        const frameId = frames[beat];
+        const scope: ParentNode = (frameId ? stage.querySelector(`[data-testid="${frameId}"]`) : null) ?? stage;
         for (const id of expected[beat]) {
           if (seen[id]) continue;
-          const el = document.querySelector(`[data-testid="${id}"]`);
+          const el = scope.querySelector(`[data-testid="${id}"]`);
           if (el && visible(el)) seen[id] = true;
         }
       }
       requestAnimationFrame(sample);
     };
     requestAnimationFrame(sample);
-  }, idsByBeat);
+  }, { expected: idsByBeat, frames: frameByBeat });
 }
 
 export interface BeatResult {
@@ -378,7 +437,11 @@ export interface BeatResult {
   cut: string[];
   firedAtClock: number | null;
   firedAtWall: number | null;
+  /** The store's camera: the v1 camera the beat carries. */
   camera: string | null;
+  /** The tour camera the stage shows it as (demo-stage's data-camera), and that camera's frame. */
+  stageCamera: string | null;
+  frame: string | null;
   missing: string[];
   /** On screen IDs rendered but scrolled, clipped or off the stage at the screenshot. Fails the beat. */
   offFrame: string[];
@@ -471,7 +534,11 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
   const expected: Record<string, ExpectedIds> = {};
   for (const b of BEATS) expected[b.id] = expectedIds(b, cut, matches);
   const recorded: Record<string, string[]> = {};
-  for (const b of BEATS) recorded[b.id] = expected[b.id].all;
+  const frameByBeat: Record<string, FrameId | null> = {};
+  for (const b of BEATS) {
+    recorded[b.id] = expected[b.id].all;
+    frameByBeat[b.id] = shownFrame(b.camera);
+  }
 
   // The registry warns each time a live adapter fails or returns nothing and the scripted event plays.
   const fallbacks: Record<string, string[]> = {};
@@ -485,7 +552,7 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
   await page.getByTestId("demo-reset").click();
   expect(await page.evaluate(() => window.__cindia!.player.now())).toBe(0);
   expect(await page.evaluate(() => window.__cindia!.player.getSpeed())).toBe(1);
-  await startRecorder(page, recorded);
+  await startRecorder(page, recorded, frameByBeat);
   await page.getByTestId("demo-play").click();
   // Move the pointer off the controls and drop their focus, so they collapse and stay out of the screenshots.
   await page.mouse.move(800, 2);
@@ -505,7 +572,9 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
       const feature = Object.entries(beat.onScreen).find(([, list]) => list.includes(fig.testId))?.[0];
       return !(feature && cut.has(feature));
     });
-    const screen = await readScreen(page, [...want.all, ...extra, ...slotIds], figures);
+    const tour = stageCamera(beat.camera);
+    const frame = frameByBeat[beat.id];
+    const screen = await readScreen(page, frame, [...want.all, ...extra, ...slotIds], figures);
     await screenshot(page, beat.id, dir);
 
     const r: BeatResult = {
@@ -514,6 +583,8 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
       firedAtClock: null,
       firedAtWall: null,
       camera: screen.camera,
+      stageCamera: screen.stageCamera,
+      frame,
       missing: [],
       offFrame: [],
       covered: [],
@@ -525,22 +596,23 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
     // Still in this beat when the screen was read.
     expect(screen.beatId, `${beat.id}: the beat on screen 300 ms before its end`).toBe(beat.id);
     expect(screen.camera, `${beat.id}: camera`).toBe(beat.camera);
-    expect(screen.stageCamera, `${beat.id}: the stage follows the camera`).toBe(beat.camera);
-    const view = CAMERA_VIEW[beat.camera];
-    if (view) expect(screen.studioView, `${beat.id}: studio view`).toBe(view);
+    // The stage shows the beat's camera through the Phase A mapping.
+    expect(screen.stageCamera, `${beat.id}: the stage follows the camera`).toBe(tour);
+    const view = cameraView(beat.camera);
+    if (view) expect(screen.studioView, `${beat.id}: Sell view`).toBe(view);
 
-    // Frames: the camera's frames shown at their scale and inside the stage; the rest hidden.
-    const frameScales = CAMERA_FRAMES[beat.camera];
+    // Frames: the camera's one frame shown at full size (sell-catch at 1.35) and inside the stage; the rest hidden.
+    const frameScales = cameraFrames(beat.camera);
     for (const f of FRAME_IDS) {
       const got = screen.frames[f];
-      const scale = frameScales[f as FrameId];
+      const scale = frameScales[f];
       if (scale === undefined) {
         if (got.opacity > 0.01) r.frameProblems.push(`${f} should be hidden, opacity ${got.opacity.toFixed(2)}`);
         continue;
       }
-      if (got.opacity < 0.2) r.frameProblems.push(`${f} should show, opacity ${got.opacity.toFixed(2)}`);
+      if (got.opacity < 0.99) r.frameProblems.push(`${f} should show at full opacity, opacity ${got.opacity.toFixed(2)}`);
       if (Math.abs(got.scale - scale) > 0.01) r.frameProblems.push(`${f} scale ${got.scale.toFixed(3)}, want ${scale}`);
-      if (beat.camera !== "studio-catch" && !got.inStage) r.frameProblems.push(`${f} runs off the stage`);
+      if (tour !== "sell-catch" && !got.inStage) r.frameProblems.push(`${f} runs off the stage`);
     }
 
     // Test IDs: in frame and uncovered now. A listed transient ID may instead have shown earlier in
@@ -601,7 +673,7 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
     }
     expect(hit, `${r.beat}: beat.started fired`).toBeTruthy();
     expect(Math.abs(hit!.clock - b.start), `${r.beat}: beat.started on the player clock`).toBeLessThanOrEqual(BEAT_TOLERANCE_MS);
-    expect(Math.abs(hit!.wall - run.startWall! - b.start), `${r.beat}: beat.started in real time`).toBeLessThanOrEqual(BEAT_TOLERANCE_MS);
+    expect(Math.abs(hit!.wall - run.startWall! - b.start), `${r.beat}: beat.started in real time`).toBeLessThanOrEqual(BEAT_WALL_TOLERANCE_MS);
   }
   // In order, each beat once.
   expect(run.beats.map((x) => x.beatId)).toEqual(BEATS.map((b) => b.id));
@@ -663,6 +735,8 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
   }
 
   fs.mkdirSync(dir, { recursive: true });
+  // The player's own length for the timeline that played, so neither this check nor the gate's time rule guesses it.
+  const durationMs = await page.evaluate(() => window.__cindia!.player.durationMs());
   const report = {
     mode: DEMO_MODE,
     storeMode: end.mode,
@@ -672,8 +746,7 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
     sources,
     cut: [...cut],
     endedAtWallMs: Math.round(run.endWall - run.startWall!),
-    // The player's own length for the timeline that played, so the gate's time rule never guesses it.
-    durationMs: await page.evaluate(() => window.__cindia!.player.durationMs()),
+    durationMs,
     beats: results,
   };
   fs.writeFileSync(path.join(dir, "report.json"), JSON.stringify(report, null, 2));
@@ -684,8 +757,10 @@ export async function playDemo(page: Page, dir = ARTIFACTS_DEMO): Promise<BeatRe
   ]);
   for (const n of notes) test.info().annotations.push({ type: "note", description: n });
 
-  // The run ended by 60.5 s of real time.
-  expect(run.endWall - run.startWall!, "the run ends by 60.5 s").toBeLessThanOrEqual(60500);
+  // The run ended within the timeline's own durationMs plus END_ALLOWANCE_MS of real time, so the
+  // same check serves v1's 60-second demo and the tour (fix-plan 1.9).
+  expect(durationMs, "the player knows the timeline's length").toBeGreaterThan(0);
+  expect(run.endWall - run.startWall!, `the run ends within durationMs (${durationMs} ms) plus ${END_ALLOWANCE_MS} ms`).toBeLessThanOrEqual(durationMs + END_ALLOWANCE_MS);
 
   // Live mode: every key with a healthy adapter and keyed events in the timeline played live, with
   // no scripted fallback, except "returned nothing" for the types ALLOWED_EMPTY_FALLBACKS lists for

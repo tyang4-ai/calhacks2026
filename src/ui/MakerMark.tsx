@@ -6,6 +6,14 @@ export interface MakerMarkProps {
   label?: string;
 }
 
+/** The smallest text the kit draws (design-system.md). A small mark's glyph stays at 14 px. */
+const MIN_TEXT_PX = 14;
+
+/** The glyph's size for a mark: 55% of the mark, never under 14 px. */
+function makerMarkGlyphPx(size: number): number {
+  return Math.max(MIN_TEXT_PX, Math.round(size * 0.55));
+}
+
 /** A small square ink seal with the maker's surname character, used instead of photo avatars. */
 export function MakerMark({ testId, char, size = 36, label }: MakerMarkProps) {
   return (
@@ -14,7 +22,7 @@ export function MakerMark({ testId, char, size = 36, label }: MakerMarkProps) {
       data-testid={testId}
       role="img"
       aria-label={label ?? char}
-      style={{ width: size, height: size, fontSize: Math.round(size * 0.55) }}
+      style={{ width: size, height: size, fontSize: makerMarkGlyphPx(size) }}
     >
       {char}
     </span>

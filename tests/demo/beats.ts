@@ -1,11 +1,23 @@
 // The beats of the 60-second demo, from docs/common/demo-script.md: when each starts and ends, its
-// camera, the test IDs its On screen column lists (grouped by the feature that renders them) and
-// the figures that must show. The demo and offline tests check each beat against this table.
+// v1 camera, the test IDs its On screen column lists (grouped by the feature that renders them) and
+// the figures that must show. The demo and offline tests check each beat against this table. On the
+// desktop stage each v1 camera shows through the Phase A mapping (toTourCamera() in
+// src/core/featureTypes.ts, imported, never copied), one frame at full size.
 import fs from "node:fs";
 import path from "node:path";
+import { toTourCamera, type CameraId as AnyCameraId, type LegacyCameraId, type TourCameraId } from "../../src/core/featureTypes";
 
-export type CameraId = "buyer" | "buyer-studio" | "studio-month" | "studio-catch" | "studio-owner" | "studio-close" | "maker" | "receipt";
-export type FrameId = "frame-buyer" | "frame-studio" | "frame-owner" | "frame-maker";
+/**
+ * The desktop page every frame and the stage are: 1440 by 900 (ui-contract.md, design-system.md).
+ * The kit exports it as PAGE_WIDTH and PAGE_HEIGHT from src/ui/PageFrame.tsx, which the tests'
+ * tsconfig (no jsx) can't import, so the harness checks the frames against this on the page itself.
+ */
+export const PAGE_WIDTH = 1440;
+export const PAGE_HEIGHT = 900;
+
+/** v1's camera IDs, which the v1 timeline keeps until I2-tour. */
+export type CameraId = LegacyCameraId;
+export type FrameId = "frame-buyer" | "frame-studio" | "frame-maker" | "frame-store";
 
 export interface Figure {
   testId: string;
@@ -185,29 +197,64 @@ export const BEATS: Beat[] = [
  */
 export const SHOWN_MATCH_KINDS: readonly string[] = ["bundled", "refund_netted", "carried_over"];
 
-/** The frames each camera shows and their scale (ui-contract.md, Camera states). Every other frame is hidden. */
-export const CAMERA_FRAMES: Record<CameraId, Partial<Record<FrameId, number>>> = {
-  buyer: { "frame-buyer": 1 },
-  "buyer-studio": { "frame-buyer": 0.9, "frame-studio": 0.85 },
-  "studio-month": { "frame-studio": 1 },
-  "studio-catch": { "frame-studio": 1.35 },
-  "studio-owner": { "frame-studio": 0.9, "frame-owner": 0.8 },
-  "studio-close": { "frame-studio": 1 },
-  maker: { "frame-maker": 1, "frame-studio": 0.85 },
-  receipt: { "frame-buyer": 1 },
+/** The frame each tour camera shows (ui-contract.md, Camera states). pitch shows none until I2-tour. */
+export const TOUR_CAMERA_FRAME: Record<TourCameraId, FrameId | null> = {
+  pitch: null,
+  "shop-home": "frame-buyer",
+  "shop-search": "frame-buyer",
+  "shop-piece": "frame-buyer",
+  "shop-receipt": "frame-buyer",
+  "shop-legacy": "frame-buyer",
+  "sell-map": "frame-studio",
+  "sell-month": "frame-studio",
+  "sell-catch": "frame-studio",
+  "sell-approvals": "frame-studio",
+  "sell-close": "frame-studio",
+  "sell-proof": "frame-studio",
+  "sell-watch": "frame-studio",
+  "sell-listings": "frame-studio",
+  "sell-storefront": "frame-studio",
+  maker: "frame-maker",
+  store: "frame-store",
 };
 
-/** The studio view each camera puts up (ui-contract.md), or null when the studio isn't shown. */
-export const CAMERA_VIEW: Record<CameraId, string | null> = {
-  buyer: null,
-  "buyer-studio": "map",
-  "studio-month": "month",
-  "studio-catch": "month",
-  "studio-owner": "month",
-  "studio-close": "close",
-  maker: "close",
-  receipt: null,
+/** sell-catch zooms frame-studio 1.35 (ui-contract.md). Every other camera shows its frame at scale 1. */
+export const CATCH_SCALE = 1.35;
+
+/** The tour camera a beat's camera shows as, through the Phase A mapping. */
+export function stageCamera(camera: AnyCameraId): TourCameraId {
+  return toTourCamera(camera);
+}
+
+/** The frame a camera shows, with its scale. Every other frame is hidden. */
+export function cameraFrames(camera: AnyCameraId): Partial<Record<FrameId, number>> {
+  const tour = toTourCamera(camera);
+  const frame = TOUR_CAMERA_FRAME[tour];
+  return frame ? { [frame]: tour === "sell-catch" ? CATCH_SCALE : 1 } : {};
+}
+
+/** The frame a camera shows, or null. */
+export function shownFrame(camera: AnyCameraId): FrameId | null {
+  return TOUR_CAMERA_FRAME[toTourCamera(camera)];
+}
+
+/** The Sell view each tour camera puts up (ui-contract.md, Camera states). */
+export const TOUR_CAMERA_VIEW: Partial<Record<TourCameraId, string>> = {
+  "sell-map": "map",
+  "sell-month": "month",
+  "sell-catch": "month",
+  "sell-approvals": "approvals",
+  "sell-close": "close",
+  "sell-proof": "proof",
+  "sell-watch": "watch",
+  "sell-listings": "listings",
+  "sell-storefront": "storefront",
 };
+
+/** The Sell view a camera puts up, or null when frame-studio isn't shown. */
+export function cameraView(camera: AnyCameraId): string | null {
+  return TOUR_CAMERA_VIEW[toTourCamera(camera)] ?? null;
+}
 
 /**
  * Event types a live source may return nothing for during the demo, so the scripted event plays,
@@ -228,21 +275,44 @@ export const ALLOWED_EMPTY_FALLBACKS: Record<string, { types: readonly string[];
   },
 };
 
+/** The five keys /api/health reports (docs/common/api-contract.md, Health). */
+export type HealthKey = "anthropic" | "nessie" | "elastic" | "apify" | "hf";
+/** The two services /api/health reports. */
+export type HealthService = "spacetime" | "model";
+
 /**
  * The server key each live source needs before its adapter can turn healthy, named as in
- * /api/health's `keys` (docs/plans/B02-explain.md, B04-bank.md, B07-ask.md, B09-concierge.md).
- * Sources not listed need no key. In live mode the harness doesn't wait for an adapter whose key
- * /api/health reports missing, since it can never turn healthy.
+ * /api/health's `keys` (docs/plans/B02-explain.md, B04-bank.md, B07-ask.md, B09-concierge.md,
+ * B14-swarm.md, B15-watch.md). Sources not listed need no key. In live mode the harness doesn't
+ * wait for an adapter whose key /api/health reports missing, since it can never turn healthy.
  */
-export const REQUIRED_KEYS: Record<string, "anthropic" | "nessie"> = {
+export const REQUIRED_KEYS: Partial<Record<string, HealthKey>> = {
   "b02-explain": "anthropic",
   "b04-bank": "nessie",
   "b07-ask": "anthropic",
   "b09-concierge": "anthropic",
+  "b14-swarm": "anthropic",
+  "b15-watch": "apify",
 };
 
-export const FRAME_IDS: FrameId[] =["frame-buyer", "frame-studio", "frame-owner", "frame-maker"];
-export const NATIVE_WIDTH: Record<FrameId, number> = { "frame-buyer": 390, "frame-studio": 1280, "frame-owner": 390, "frame-maker": 390 };
+/**
+ * The service each live source needs, named as in /api/health's `services`: the trained model for
+ * B11 and B12, SpacetimeDB for B13. B15 has no entry, because it doesn't wait on the model. The
+ * harness doesn't wait for an adapter whose service is down, and G5 for that upgrade fails naming it.
+ */
+export const REQUIRED_SERVICES: Partial<Record<string, HealthService>> = {
+  "b11-embed": "model",
+  "b12-search": "model",
+  "b13-live": "spacetime",
+};
+
+/** The four desktop frames, all mounted on the stage. */
+export const FRAME_IDS: FrameId[] = ["frame-buyer", "frame-studio", "frame-maker", "frame-store"];
+/** Every frame is a kit PageFrame, PAGE_WIDTH wide. */
+export const NATIVE_WIDTH: Record<FrameId, number> = { "frame-buyer": PAGE_WIDTH, "frame-studio": PAGE_WIDTH, "frame-maker": PAGE_WIDTH, "frame-store": PAGE_WIDTH };
+/** The stage is the kit's page, PAGE_WIDTH by PAGE_HEIGHT. */
+export const STAGE_WIDTH = PAGE_WIDTH;
+export const STAGE_HEIGHT = PAGE_HEIGHT;
 
 /** Feature slugs whose state is CUT in the Features table of docs/harness/status.md. */
 export function cutFeatures(root = process.env.CINDIA_ROOT ?? process.cwd()): Set<string> {

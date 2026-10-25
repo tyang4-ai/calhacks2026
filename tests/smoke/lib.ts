@@ -1,8 +1,15 @@
-// Shared Playwright helpers: console and request watchers, and waits on window.__cindia.
-// Feature tests may import these too.
-import { expect, type Frame, type Page, type Request } from "@playwright/test";
+// Shared Playwright helpers: console and request watchers, waits on window.__cindia, the slot
+// checks, and seekToEvent. Feature tests import these too, and a feature's own <slug>-lib.ts may
+// re-export seekToEvent but never copies it.
+import { expect, type Frame, type Locator, type Page, type Request } from "@playwright/test";
+import { PROCESS_IDS as CORE_PROCESS_IDS } from "../../src/core/events";
+import { SLOT_IDS as CORE_SLOT_IDS } from "../../src/core/featureTypes";
 
-export const SLOT_IDS = [
+/** Every slot ID in ui-contract.md (Slots), v1's and v2's. */
+export const SLOT_IDS: readonly string[] = CORE_SLOT_IDS;
+
+/** v1's twelve slots. */
+export const V1_SLOT_IDS = [
   "buyer.main",
   "studio.map.main",
   "studio.month.main",
@@ -16,6 +23,17 @@ export const SLOT_IDS = [
   "owner.main",
   "maker.main",
 ] as const;
+
+/** The slots v2 adds. */
+export const V2_SLOT_IDS: readonly string[] = SLOT_IDS.filter((s) => !(V1_SLOT_IDS as readonly string[]).includes(s));
+
+/** The eleven process IDs, in the process bar's order (ui-contract.md, The process bar and views). */
+export const PROCESS_IDS: readonly string[] = CORE_PROCESS_IDS;
+
+/** L1 and L2, word for word from glossary.md's label table. */
+export const L1_EN = "Demo. Every maker, community and story here is fictional. Nothing is for sale.";
+export const L1_ZH = "演示版。这里的每位匠人、每个社区和每个故事都是虚构的。所有物品均不出售。";
+export const L2_EN = "Demo: the Sell side is open so you can look around. In a real launch, only the co-op sees or approves anything here.";
 
 export type SlotIdString = (typeof SLOT_IDS)[number];
 
@@ -99,10 +117,11 @@ export function watchPage(page: Page) {
   };
 }
 
-/** Waits until every slot on the page has finished loading its feature. */
-export async function waitForSlots(page: Page) {
-  await expect(page.locator("[data-slot]").first()).toBeAttached();
-  await expect(page.locator("[data-slot-loading]")).toHaveCount(0);
+/** Waits until every slot on the page (or inside `scope`) has finished loading its feature. */
+export async function waitForSlots(page: Page, scope?: Locator) {
+  const root = scope ?? page.locator("body");
+  await expect(root.locator("[data-slot]").first()).toBeAttached();
+  await expect(root.locator("[data-slot-loading]")).toHaveCount(0);
 }
 
 /** Every slot wrapper is empty or filled, never error, and no slot-error- test ID is on screen. */
@@ -113,20 +132,78 @@ export async function expectNoSlotErrors(page: Page) {
   for (const s of states) expect(["empty", "filled"]).toContain(s);
 }
 
-/** For each slot: its wrapper exists, and while it's empty its placeholder test ID is visible. */
-export async function expectSlots(page: Page, slots: readonly string[]) {
+/**
+ * For each slot: its wrapper is there once, and while it's empty its placeholder test ID is visible.
+ * `scope` is a frame locator, so a /demo check counts each slot once in the shown frame (all four
+ * frames stay mounted there).
+ */
+export async function expectSlots(page: Page, slots: readonly string[], scope?: Locator) {
+  const root = scope ?? page.locator("body");
   for (const slot of slots) {
-    const wrapper = page.locator(`[data-slot="${slot}"]`);
+    const wrapper = root.locator(`[data-slot="${slot}"]`);
     await expect(wrapper, `slot ${slot} is on the page`).toHaveCount(1);
     const state = await wrapper.getAttribute("data-slot-state");
-    if (state === "empty") await expect(page.getByTestId(slotTestId(slot))).toBeVisible();
-    else expect(state).toBe("filled");
+    if (state === "empty") await expect(root.getByTestId(slotTestId(slot)), `${slot} placeholder`).toBeVisible();
+    else expect(state, `${slot} state`).toBe("filled");
   }
+}
+
+/** The props the shell passed to a slot, read from its wrapper's data-slot-props. */
+export async function readSlotProps(page: Page, slot: string, scope?: Locator): Promise<Record<string, unknown>> {
+  const root = scope ?? page.locator("body");
+  const wrapper = root.locator(`[data-slot="${slot}"]`);
+  await expect(wrapper, `slot ${slot} is on the page`).toHaveCount(1);
+  const raw = await wrapper.getAttribute("data-slot-props");
+  expect(raw, `${slot} has data-slot-props`).not.toBeNull();
+  return JSON.parse(raw!) as Record<string, unknown>;
 }
 
 /** Waits for the test hooks. */
 export async function waitForHooks(page: Page) {
   await page.waitForFunction(() => Boolean(window.__cindia?.player && window.__cindia?.store && window.__cindia?.emit));
+}
+
+/**
+ * Seeks to an event by what it is, never by a fixed time: finds the first event of `type` in the
+ * loaded timeline whose payload holds every field in `match`, pauses, seeks to its `at` plus
+ * `offsetMs` and returns that time. Throws an error naming the type and the match when the
+ * timeline has no such event.
+ */
+export async function seekToEvent(page: Page, type: string, match: Record<string, unknown> = {}, offsetMs = 0): Promise<number> {
+  const at = await page.evaluate(
+    ({ wantType, wantFields }) => {
+      const events = window.__cindia?.player.getTimeline()?.events ?? [];
+      const hit = events.find(
+        (e) =>
+          e.type === wantType &&
+          Object.entries(wantFields).every(([k, v]) => JSON.stringify(((e.payload ?? {}) as Record<string, unknown>)[k]) === JSON.stringify(v)),
+      );
+      return hit ? hit.at : null;
+    },
+    { wantType: type, wantFields: match },
+  );
+  if (at === null) throw new Error(`seekToEvent: the loaded timeline has no ${type} event matching ${JSON.stringify(match)}`);
+  const t = at + offsetMs;
+  await page.evaluate((ms) => {
+    const p = window.__cindia!.player;
+    p.pause();
+    p.seek(ms);
+  }, t);
+  return t;
+}
+
+/** On /demo: the frame test ID the stage shows now (the one at full opacity), or null. */
+export async function shownFrameId(page: Page): Promise<string | null> {
+  return page.evaluate(() => {
+    const opacityOf = (el: Element) => {
+      let o = 1;
+      for (let e: Element | null = el; e && e !== document.body; e = e.parentElement) o *= Number(getComputedStyle(e).opacity);
+      return o;
+    };
+    const frames = [...document.querySelectorAll('[data-testid="demo-stage"] [data-testid^="frame-"]')];
+    const shown = frames.filter((f) => opacityOf(f) > 0.99);
+    return shown.length === 1 ? shown[0].getAttribute("data-testid") : null;
+  });
 }
 
 declare global {

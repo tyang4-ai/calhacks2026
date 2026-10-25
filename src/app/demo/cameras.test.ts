@@ -1,65 +1,114 @@
 import { describe, expect, it } from "vitest";
-import { LEGACY_CAMERA_IDS } from "../../core/featureTypes";
-import { CATCH_SCALE, cameraPose, catchPose, createCameraMotion, FRAME_SIZE, MOVE_MS, SURFACES, visibleSurfaces } from "./cameras";
+import { LEGACY_CAMERA_IDS, TOUR_CAMERA_IDS, toTourCamera } from "../../core/featureTypes";
+import {
+  CATCH_SCALE,
+  INITIAL_PAGES,
+  MOVE_MS,
+  cameraFrame,
+  cameraPose,
+  cameraSellView,
+  cameraShopPage,
+  catchPose,
+  createCameraMotion,
+  isLegacyCamera,
+  nextPages,
+  stageSearchParams,
+  visibleFrames,
+} from "./cameras";
 
-const fits = (cx: number, cy: number, w: number, h: number) => cx - w / 2 >= -0.5 && cx + w / 2 <= 1600.5 && cy - h / 2 >= -0.5 && cy + h / 2 <= 900.5;
+const W = 1440;
+const H = 900;
 
 describe("camera poses", () => {
-  it("shows the frames ui-contract.md lists for each camera", () => {
-    expect(visibleSurfaces("buyer")).toEqual(["buyer"]);
-    expect(visibleSurfaces("buyer-studio").toSorted()).toEqual(["buyer", "studio"]);
-    expect(visibleSurfaces("studio-month")).toEqual(["studio"]);
-    expect(visibleSurfaces("studio-catch")).toEqual(["studio"]);
-    expect(visibleSurfaces("studio-owner").toSorted()).toEqual(["owner", "studio"]);
-    expect(visibleSurfaces("studio-close")).toEqual(["studio"]);
-    expect(visibleSurfaces("maker").toSorted()).toEqual(["maker", "studio"]);
-    expect(visibleSurfaces("receipt")).toEqual(["buyer"]);
-  });
-
-  it("uses the contract's scales", () => {
-    expect(cameraPose("buyer-studio").buyer.scale).toBe(0.9);
-    expect(cameraPose("buyer-studio").studio.scale).toBe(0.85);
-    expect(cameraPose("studio-owner").studio.scale).toBe(0.9);
-    expect(cameraPose("studio-owner").owner.scale).toBe(0.8);
-    expect(cameraPose("studio-catch").studio.scale).toBe(CATCH_SCALE);
-    expect(cameraPose("maker").studio.scale).toBe(0.85);
-    expect(cameraPose("maker").studio.opacity).toBeLessThan(1);
-  });
-
-  it("keeps every visible frame inside the stage, except the zoomed studio", () => {
-    for (const cam of LEGACY_CAMERA_IDS) {
-      if (cam === "studio-catch") continue;
-      const pose = cameraPose(cam);
-      for (const s of SURFACES) {
-        if (pose[s].opacity === 0) continue;
-        const { w, h } = FRAME_SIZE[s];
-        expect(fits(pose[s].cx, pose[s].cy, w * pose[s].scale, h * pose[s].scale), `${cam} ${s}`).toBe(true);
+  it("shows exactly one frame at scale 1 for every tour camera but pitch", () => {
+    for (const cam of TOUR_CAMERA_IDS) {
+      const frames = visibleFrames(cam);
+      if (cam === "pitch") {
+        expect(frames, cam).toEqual([]);
+        continue;
       }
+      expect(frames, cam).toHaveLength(1);
+      const p = cameraPose(cam)[frames[0]];
+      if (cam !== "sell-catch") expect(p, cam).toEqual({ x: 0, y: 0, scale: 1, opacity: 1 });
     }
   });
 
-  it("zooms studio-catch to the focus, keeping the zoomed studio over the whole stage", () => {
-    expect(catchPose(null)).toMatchObject({ cx: 800, cy: 450 });
-    const p = catchPose({ x: 640, y: 380 });
-    const w = 1280 * CATCH_SCALE;
-    const h = 800 * CATCH_SCALE;
-    const left = p.cx - w / 2;
-    const top = p.cy - h / 2;
-    expect(left).toBeLessThanOrEqual(0);
-    expect(left + w).toBeGreaterThanOrEqual(1600);
-    expect(top).toBeLessThanOrEqual(0);
-    expect(top + h).toBeGreaterThanOrEqual(900);
-    // The focus point lands at the center when it can.
-    expect(left + 640 * CATCH_SCALE).toBeCloseTo(800, 0);
+  it("puts each camera on the frame ui-contract.md names", () => {
+    expect(cameraFrame("shop-legacy")).toBe("buyer");
+    expect(cameraFrame("shop-home")).toBe("buyer");
+    expect(cameraFrame("shop-search")).toBe("buyer");
+    expect(cameraFrame("shop-piece")).toBe("buyer");
+    expect(cameraFrame("shop-receipt")).toBe("buyer");
+    for (const cam of ["sell-map", "sell-month", "sell-catch", "sell-approvals", "sell-close", "sell-proof", "sell-watch", "sell-listings", "sell-storefront"] as const)
+      expect(cameraFrame(cam), cam).toBe("studio");
+    expect(cameraFrame("maker")).toBe("maker");
+    expect(cameraFrame("store")).toBe("store");
+    expect(cameraFrame("pitch")).toBeNull();
   });
 
-  it("aligns studio-catch to the view area's corner when the focus box fits, and centers otherwise", () => {
-    const corner = { x: 89, y: 57 };
-    const p = catchPose({ x: 484, y: 384, box: { top: 147, left: 135, bottom: 620, right: 833 }, corner });
-    expect(p.cx - (1280 * CATCH_SCALE) / 2).toBeCloseTo(-corner.x * CATCH_SCALE, 5);
-    expect(p.cy - (800 * CATCH_SCALE) / 2).toBeCloseTo(-corner.y * CATCH_SCALE, 5);
-    const tall = catchPose({ x: 484, y: 500, box: { top: 147, left: 135, bottom: 760, right: 833 }, corner });
-    expect(tall.cy - (800 * CATCH_SCALE) / 2).not.toBeCloseTo(-corner.y * CATCH_SCALE, 0);
+  it("shows v1's cameras through the Phase A mapping", () => {
+    const shown = Object.fromEntries(LEGACY_CAMERA_IDS.map((c) => [c, visibleFrames(toTourCamera(c))]));
+    expect(shown).toEqual({
+      buyer: ["buyer"],
+      receipt: ["buyer"],
+      "buyer-studio": ["studio"],
+      "studio-month": ["studio"],
+      "studio-catch": ["studio"],
+      "studio-owner": ["studio"],
+      "studio-close": ["studio"],
+      maker: ["maker"],
+    });
+    for (const c of LEGACY_CAMERA_IDS) expect(isLegacyCamera(c), c).toBe(true);
+    expect(isLegacyCamera(null)).toBe(true);
+    expect(isLegacyCamera("sell-month")).toBe(false);
+    expect(isLegacyCamera("shop-home")).toBe(false);
+  });
+
+  it("zooms sell-catch 1.35, keeping the zoomed frame over the whole stage", () => {
+    expect(cameraPose("sell-catch").studio.scale).toBe(CATCH_SCALE);
+    const centered = catchPose(null);
+    expect(centered.x).toBeCloseTo((W - W * CATCH_SCALE) / 2, 5);
+    const p = catchPose({ x: 600, y: 420 });
+    expect(p.x).toBeLessThanOrEqual(0);
+    expect(p.x + W * CATCH_SCALE).toBeGreaterThanOrEqual(W);
+    expect(p.y).toBeLessThanOrEqual(0);
+    expect(p.y + H * CATCH_SCALE).toBeGreaterThanOrEqual(H);
+    // The focus point lands at the center when it can.
+    expect(p.x + 600 * CATCH_SCALE).toBeCloseTo(W / 2, 0);
+  });
+
+  it("aligns sell-catch to the content corner when the focus box fits, and centers otherwise", () => {
+    const corner = { x: 246, y: 184 };
+    const p = catchPose({ x: 620, y: 495, box: { top: 270, left: 290, bottom: 719, right: 953 }, corner });
+    expect(p.x).toBeCloseTo(-corner.x * CATCH_SCALE, 5);
+    expect(p.y).toBeCloseTo(-corner.y * CATCH_SCALE, 5);
+    const tall = catchPose({ x: 620, y: 600, box: { top: 270, left: 290, bottom: 880, right: 953 }, corner });
+    expect(tall.y).not.toBeCloseTo(-corner.y * CATCH_SCALE, 0);
+  });
+});
+
+describe("stage pages", () => {
+  it("gives each camera its page, and keeps a hidden frame's page", () => {
+    expect(INITIAL_PAGES).toEqual({ shop: "legacy", sell: "map" });
+    expect(cameraShopPage("shop-legacy")).toBe("legacy");
+    expect(cameraShopPage("shop-receipt")).toBe("receipt");
+    expect(cameraShopPage("sell-map")).toBeNull();
+    expect(cameraSellView("sell-catch")).toBe("month");
+    expect(cameraSellView("sell-approvals")).toBe("approvals");
+    expect(cameraSellView("shop-home")).toBeNull();
+    let pages = nextPages(INITIAL_PAGES, "sell-close");
+    expect(pages).toEqual({ shop: "legacy", sell: "close" });
+    pages = nextPages(pages, "maker");
+    expect(pages).toEqual({ shop: "legacy", sell: "close" });
+    pages = nextPages(pages, "shop-search");
+    expect(pages).toEqual({ shop: "search", sell: "close" });
+    // An unchanged page keeps its object.
+    expect(nextPages(pages, "store")).toBe(pages);
+  });
+
+  it("gives the search page no q, or the latest query's own text and keywords", () => {
+    expect(stageSearchParams(null)).toEqual({ k: [] });
+    expect(stageSearchParams({ text: "warm red wool for mom", keywords: ["red", "wool"] })).toEqual({ q: "warm red wool for mom", k: ["red", "wool"] });
   });
 });
 
@@ -68,21 +117,22 @@ const opts = (epoch: number, playing = true, reduced = false) => ({ epoch, playi
 describe("camera motion", () => {
   it("moves over 600 ms on the player clock while playing", () => {
     const m = createCameraMotion();
-    m.update(cameraPose("buyer"), 0, opts(1));
-    const mid = m.update(cameraPose("buyer-studio"), 15000, opts(1));
-    expect(mid.buyer.scale).toBe(1);
-    const half = m.update(cameraPose("buyer-studio"), 15000 + MOVE_MS / 2, opts(1));
-    expect(half.buyer.scale).toBeGreaterThan(0.9);
-    expect(half.buyer.scale).toBeLessThan(1);
-    const done = m.update(cameraPose("buyer-studio"), 15000 + MOVE_MS, opts(1));
-    expect(done.buyer.scale).toBeCloseTo(0.9, 5);
+    m.update(cameraPose("shop-legacy"), 0, opts(1));
+    const start = m.update(cameraPose("sell-map"), 15000, opts(1));
+    expect(start.buyer.opacity).toBe(1);
+    const half = m.update(cameraPose("sell-map"), 15000 + MOVE_MS / 2, opts(1));
+    expect(half.buyer.opacity).toBeGreaterThan(0);
+    expect(half.buyer.opacity).toBeLessThan(1);
+    const done = m.update(cameraPose("sell-map"), 15000 + MOVE_MS, opts(1));
+    expect(done.buyer.opacity).toBeCloseTo(0, 5);
+    expect(done.studio.opacity).toBeCloseTo(1, 5);
   });
 
   it("jumps after a seek, while paused and under reduced motion", () => {
     const m = createCameraMotion();
-    m.update(cameraPose("buyer"), 0, opts(1));
-    expect(m.update(cameraPose("studio-close"), 43000, opts(2)).studio.opacity).toBe(1);
+    m.update(cameraPose("shop-legacy"), 0, opts(1));
+    expect(m.update(cameraPose("sell-close"), 43000, opts(2)).studio.opacity).toBe(1);
     expect(m.update(cameraPose("maker"), 47000, opts(2, false)).maker.opacity).toBe(1);
-    expect(m.update(cameraPose("receipt"), 50000, opts(2, true, true)).buyer.opacity).toBe(1);
+    expect(m.update(cameraPose("shop-legacy"), 50000, opts(2, true, true)).buyer.opacity).toBe(1);
   });
 });

@@ -309,11 +309,19 @@
   line-height: 1;
   transform-origin: center;
 }
+/* Its own class, so the global :lang(zh) body font and 1.7 line height can't stretch it past the seal. */
+.c-seal__char {
+  font-family: var(--c-font-heading-zh);
+  line-height: 1;
+}
+/* The month and day on one line, always at 14 px. Seal.tsx leaves it out of a seal too small to hold it. */
 .c-seal__date {
   font-family: var(--c-font-body);
   font-weight: 500;
-  font-size: 11px;
+  font-size: var(--c-text-14);
+  line-height: 1;
   margin-top: 4px;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 
@@ -402,4 +410,1401 @@
   font-size: 14px;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+}
+
+/* ---- v2 frames (I2-kit T1) ---- */
+
+/* Text only for screen readers */
+.c-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Page frame: the 1440 by 900 desktop page on the paper ground */
+.c-page {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--c-color-paper);
+  color: var(--c-color-ink);
+}
+
+/* Top bar: 56 px with a hairline bottom */
+.c-topnav {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-16);
+  padding: 0 var(--c-space-24);
+  border-bottom: 1px solid var(--c-color-line);
+  background: var(--c-color-paper);
+}
+.c-topnav__left {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-16);
+  min-width: 0;
+}
+.c-topnav__center {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+.c-topnav__right {
+  flex: 0 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--c-space-12);
+  min-width: 0;
+}
+
+/* Shop and Sell switch: the selected side by fill and weight */
+.c-sideswitch {
+  display: inline-flex;
+  border: 1px solid var(--c-color-ink-soft);
+  border-radius: var(--c-radius-control);
+  overflow: hidden;
+  background: var(--c-color-paper);
+}
+.c-sideswitch__opt {
+  font: inherit;
+  font-size: var(--c-text-16);
+  font-weight: 400;
+  color: var(--c-color-ink);
+  background: var(--c-color-paper);
+  border: 0;
+  min-height: 36px;
+  padding: var(--c-space-4) var(--c-space-16);
+  cursor: pointer;
+}
+.c-sideswitch__opt + .c-sideswitch__opt {
+  border-left: 1px solid var(--c-color-ink-soft);
+}
+.c-sideswitch__opt:hover {
+  background: var(--c-color-mat);
+}
+.c-sideswitch .c-sideswitch__opt--on {
+  background: var(--c-color-ink);
+  color: var(--c-color-paper);
+  font-weight: 600;
+}
+
+/* Process block: at most 120 px, 60 px high, so eleven fit one row of the 64 px band */
+.c-pblock {
+  position: relative;
+  box-sizing: border-box;
+  flex: 1 1 0;
+  max-width: 120px;
+  min-width: 0;
+  height: 60px;
+  padding: 3px 4px 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-align: left;
+  font: inherit;
+  color: var(--c-color-ink);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  cursor: pointer;
+  overflow: hidden;
+}
+.c-pblock:hover {
+  background: var(--c-color-mat);
+}
+.c-pblock--attention {
+  background: var(--c-color-seal-wash);
+}
+.c-pblock--selected,
+.c-pblock--selected:hover {
+  background: var(--c-color-mat);
+  box-shadow: inset 0 2px 0 var(--c-color-ink);
+}
+.c-pblock .c-pblock__label {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  font-size: var(--c-text-14);
+  line-height: 16px;
+  font-weight: 600;
+  overflow-wrap: break-word;
+}
+.c-pblock--selected .c-pblock__label {
+  font-weight: 700;
+}
+.c-pblock .c-pblock__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-4);
+  font-size: var(--c-text-14);
+  line-height: 16px;
+  white-space: nowrap;
+  min-width: 0;
+}
+/* The meta line keeps its 16 px in Chinese too: the global :lang(zh) 1.7 line height would squeeze the label to one line. */
+.c-pblock .c-pblock__meta * {
+  line-height: inherit;
+}
+.c-pblock__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+.c-pblock__icon {
+  flex: 0 0 auto;
+}
+.c-pblock__word {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.c-pblock__count {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.c-pblock__live {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: inline-flex;
+}
+.c-pblock__live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--c-radius-chip);
+  background: var(--c-color-jade);
+}
+.c-pblock__thread {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  overflow: visible;
+}
+.c-pblock__thread line {
+  stroke: currentColor;
+}
+.c-pblock--tone-soft .c-pblock__status,
+.c-pblock--tone-soft .c-pblock__thread {
+  color: var(--c-color-ink-soft);
+}
+.c-pblock--tone-ink .c-pblock__status,
+.c-pblock--tone-ink .c-pblock__thread {
+  color: var(--c-color-ink);
+}
+.c-pblock--tone-jade .c-pblock__status,
+.c-pblock--tone-jade .c-pblock__thread {
+  color: var(--c-color-jade);
+}
+.c-pblock--tone-seal .c-pblock__status,
+.c-pblock--tone-seal .c-pblock__thread {
+  color: var(--c-color-seal);
+}
+
+/* Drawer: from the right edge of its frame, 440 px, above the process overlay */
+.c-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  max-width: 100%;
+  overflow: hidden;
+}
+.c-drawer:focus,
+.c-drawer:focus-visible {
+  outline: none;
+}
+.c-drawer__face {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-color-paper);
+  border-left: 1px solid var(--c-color-line);
+}
+.c-drawer__head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--c-space-12);
+  padding: var(--c-space-16) var(--c-space-24);
+  border-bottom: 1px solid var(--c-color-line);
+}
+.c-drawer__title {
+  font-size: var(--c-text-21);
+  min-width: 0;
+}
+.c-drawer__close {
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: var(--c-text-14);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--c-space-4);
+  min-height: 32px;
+  padding: var(--c-space-4) var(--c-space-12);
+  color: var(--c-color-ink);
+  background: transparent;
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  cursor: pointer;
+}
+.c-drawer__close:hover {
+  background: var(--c-color-mat);
+}
+.c-drawer__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--c-space-24);
+}
+
+/* Tabs: the selected tab by its underline and weight */
+.c-tabs {
+  display: flex;
+  gap: var(--c-space-4);
+  border-bottom: 1px solid var(--c-color-line);
+}
+.c-tabs__tab {
+  font: inherit;
+  font-size: var(--c-text-16);
+  color: var(--c-color-ink-soft);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  min-height: 40px;
+  padding: var(--c-space-8) var(--c-space-12);
+  cursor: pointer;
+}
+.c-tabs__tab:hover {
+  color: var(--c-color-ink);
+}
+.c-tabs .c-tabs__tab--on {
+  color: var(--c-color-ink);
+  font-weight: 600;
+  border-bottom-color: var(--c-color-ink);
+}
+
+/* Link: a real anchor */
+.c-link {
+  color: inherit;
+}
+.c-link--text {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--c-color-ink-soft);
+}
+.c-link--text:hover {
+  text-decoration-color: var(--c-color-ink);
+}
+.c-link--block {
+  display: block;
+  text-decoration: none;
+}
+
+/* ---- v2 search and cards (I2-kit T2) ---- */
+
+/* Tag: a small woven label, such as the Illustration tag on every picture */
+.c-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  line-height: 20px;
+  padding: 0 var(--c-space-8);
+  color: var(--c-color-ink-soft);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  white-space: nowrap;
+}
+.c-tag--sample {
+  color: var(--c-color-ink);
+  background: var(--c-color-mat);
+  border-style: dashed;
+  border-color: var(--c-color-ink-soft);
+}
+
+/* Chip: a keyword or a facet. Selected by border and weight as well as color */
+.c-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--c-space-4);
+  min-height: 30px;
+  box-sizing: border-box;
+  padding: 0 var(--c-space-12);
+  font-size: var(--c-text-14);
+  line-height: 20px;
+  color: var(--c-color-ink);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-chip);
+  white-space: nowrap;
+}
+.c-chip--removable {
+  padding-right: var(--c-space-4);
+}
+.c-chip--selected {
+  background: var(--c-color-mat);
+  border-color: var(--c-color-ink);
+  font-weight: 600;
+}
+.c-chip__label--button {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.c-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  color: var(--c-color-ink-soft);
+  background: transparent;
+  border: 0;
+  border-radius: var(--c-radius-chip);
+  cursor: pointer;
+}
+.c-chip__remove:hover {
+  color: var(--c-color-ink);
+  background: var(--c-color-mat);
+}
+
+/* Search bar: the text, the button, then the keyword chips under it */
+.c-searchbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+  min-width: 0;
+}
+.c-searchbar__form {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-8);
+  min-height: 56px;
+  box-sizing: border-box;
+  padding: 0 var(--c-space-8) 0 var(--c-space-16);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-ink-soft);
+  border-radius: var(--c-radius-control);
+}
+.c-searchbar__icon {
+  flex: 0 0 auto;
+  color: var(--c-color-ink-soft);
+}
+.c-searchbar__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: inherit;
+  font-size: var(--c-text-18);
+  color: var(--c-color-ink);
+  background: transparent;
+  border: 0;
+  outline: none;
+  padding: var(--c-space-8) 0;
+}
+.c-searchbar__input::placeholder,
+.c-searchbar__add::placeholder {
+  color: var(--c-color-ink-soft);
+}
+.c-searchbar__form:focus-within {
+  outline: 2px solid var(--c-color-ink);
+  outline-offset: 2px;
+}
+.c-searchbar__submit {
+  flex: 0 0 auto;
+}
+.c-searchbar__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--c-space-8);
+}
+.c-searchbar__chiplist {
+  display: contents;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.c-searchbar__add {
+  font: inherit;
+  font-size: var(--c-text-14);
+  min-height: 30px;
+  width: 160px;
+  box-sizing: border-box;
+  padding: 0 var(--c-space-12);
+  color: var(--c-color-ink);
+  background: var(--c-color-paper);
+  border: 1px dashed var(--c-color-ink-soft);
+  border-radius: var(--c-radius-chip);
+}
+
+/* A card's main action: its title button, stretched over the whole card */
+.c-card__action {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.c-card__action::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.c-card__action:focus-visible {
+  outline: none;
+}
+.c-card__action:focus-visible::after {
+  outline: 2px solid var(--c-color-ink);
+  outline-offset: 2px;
+}
+
+/* Verification line: the method written out, who would attest, the note, and L4 with demo */
+.c-verif {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-4);
+  font-size: var(--c-text-14);
+  line-height: 20px;
+  min-width: 0;
+}
+.c-verif__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--c-space-8);
+  font-weight: 600;
+  color: var(--c-color-jade);
+}
+.c-verif__dot {
+  flex: 0 0 auto;
+  align-self: center;
+  color: var(--c-color-jade);
+}
+.c-verif__by {
+  color: var(--c-color-ink);
+}
+.c-verif__note,
+.c-verif__demo {
+  color: var(--c-color-ink-soft);
+}
+
+/* Piece card: picture with its Illustration tag, title, maker, price, verification */
+.c-piececard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  overflow: hidden;
+}
+.c-piececard--action:hover {
+  border-color: var(--c-color-ink-soft);
+}
+.c-piececard__pic {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--c-color-mat);
+  border-bottom: 1px solid var(--c-color-line);
+}
+.c-piececard--compact .c-piececard__pic {
+  aspect-ratio: auto;
+  height: 142px;
+  background: var(--c-color-paper);
+}
+.c-piececard__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.c-piececard--compact .c-piececard__img {
+  object-fit: contain;
+}
+.c-piececard__tags {
+  position: absolute;
+  top: var(--c-space-8);
+  left: var(--c-space-8);
+  display: inline-flex;
+  gap: var(--c-space-4);
+}
+.c-piececard__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+  padding: var(--c-space-16);
+  min-width: 0;
+}
+.c-piececard--compact .c-piececard__body {
+  gap: var(--c-space-4);
+  padding: var(--c-space-12) var(--c-space-16);
+}
+.c-piececard__title {
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-18);
+  font-weight: 600;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.c-piececard--compact .c-piececard__title {
+  font-size: var(--c-text-16);
+}
+.c-piececard__maker {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-8);
+  min-width: 0;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+.c-piececard__makername {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.c-piececard__price {
+  font-size: var(--c-text-18);
+  font-weight: 600;
+}
+.c-piececard__verif {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-8);
+  font-size: var(--c-text-14);
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--c-color-jade);
+}
+.c-piececard__footer,
+.c-commcard__footer {
+  position: relative;
+  z-index: 2;
+}
+
+/* Community card */
+.c-commcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 0;
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  overflow: hidden;
+}
+.c-commcard--action:hover {
+  border-color: var(--c-color-ink-soft);
+}
+.c-commcard__pic {
+  position: relative;
+  height: 160px;
+  background: var(--c-color-mat);
+  border-bottom: 1px solid var(--c-color-line);
+}
+.c-commcard__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.c-commcard__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--c-space-8);
+  padding: var(--c-space-16);
+  min-width: 0;
+}
+.c-commcard__name {
+  font-size: var(--c-text-21);
+}
+.c-commcard__people {
+  font-size: var(--c-text-16);
+  font-weight: 500;
+}
+.c-commcard__craft {
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+/* Project card and its progress */
+.c-projcard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--c-space-24);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+}
+.c-projcard__title {
+  font-size: var(--c-text-21);
+}
+.c-projcard__summary {
+  color: var(--c-color-ink-soft);
+}
+.c-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+}
+.c-progress__track {
+  position: relative;
+  height: 12px;
+  background: var(--c-color-mat);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  overflow: hidden;
+}
+.c-progress__fill {
+  height: 100%;
+  background: var(--c-color-jade);
+}
+.c-progress__words {
+  font-size: var(--c-text-16);
+  font-variant-numeric: tabular-nums;
+}
+.c-progress__pct {
+  color: var(--c-color-ink-soft);
+}
+
+/* Milestone timeline: a thread by share, then one row per milestone */
+.c-milestones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+}
+.c-milestones__thread {
+  position: relative;
+  height: 6px;
+  background: var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+}
+.c-milestones__seg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  border-right: 2px solid var(--c-color-paper);
+}
+.c-milestones__seg--reached {
+  background: var(--c-color-amber);
+}
+.c-milestones__seg--paid {
+  background: var(--c-color-jade);
+}
+.c-milestones__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.c-milestone {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--c-space-12);
+  padding: var(--c-space-12) 0;
+  border-bottom: 1px solid var(--c-color-line);
+}
+.c-milestone__knot {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--c-color-ink-soft);
+}
+.c-milestone--reached .c-milestone__knot {
+  color: var(--c-color-amber);
+}
+.c-milestone--paid .c-milestone__knot {
+  color: var(--c-color-jade);
+}
+.c-milestone__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-4);
+}
+.c-milestone__label {
+  font-weight: 600;
+}
+.c-milestone__meta {
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.c-milestone__note {
+  font-size: var(--c-text-14);
+}
+.c-milestone__status {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: var(--c-text-14);
+  font-weight: 600;
+}
+.c-milestone--reached .c-milestone__status {
+  color: var(--c-color-amber);
+}
+.c-milestone--paid .c-milestone__status {
+  color: var(--c-color-jade);
+}
+.c-milestone__date {
+  font-weight: 400;
+  color: var(--c-color-ink-soft);
+}
+.c-milestone__action {
+  flex: 0 0 auto;
+}
+
+/* Score bar: the track, the fill in its tone, the figure beside it */
+.c-score {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--c-space-8);
+  font-size: var(--c-text-14);
+  vertical-align: middle;
+}
+.c-score__label {
+  color: var(--c-color-ink-soft);
+}
+.c-score__track {
+  position: relative;
+  display: inline-block;
+  height: 8px;
+  max-width: 100%;
+  background: var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  overflow: hidden;
+}
+.c-score__fill {
+  display: block;
+  height: 100%;
+  background: var(--c-color-ink);
+}
+.c-score--jade .c-score__fill {
+  background: var(--c-color-jade);
+}
+.c-score--amber .c-score__fill {
+  background: var(--c-color-amber);
+}
+.c-score--seal .c-score__fill {
+  background: var(--c-color-seal);
+}
+.c-score__value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* Stat tile: a title, one big figure, lines under it, and an attention rule */
+.c-stattile {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--c-space-16) var(--c-space-16) var(--c-space-16) var(--c-space-24);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  color: var(--c-color-ink);
+}
+.c-stattile__rule {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  width: 4px;
+  background: var(--c-color-seal);
+}
+.c-stattile__title {
+  font-size: var(--c-text-16);
+}
+.c-stattile__value {
+  margin-top: var(--c-space-8);
+  font-size: var(--c-text-36);
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.c-stattile__detail {
+  margin-top: var(--c-space-8);
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+/* ---- v2 agents and data views (I2-kit T3) ---- */
+
+/* Chat: the person on the right, Cindia's side on the left, notes in the middle */
+.c-chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.c-chat__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+}
+.c-chat__item {
+  display: flex;
+}
+.c-chat__item--person {
+  justify-content: flex-end;
+}
+.c-chat__item--note {
+  justify-content: center;
+}
+.c-chat__empty,
+.c-chat__after {
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+.c-chat__after {
+  margin-top: var(--c-space-12);
+}
+.c-chat__footer {
+  margin-top: var(--c-space-16);
+  padding-top: var(--c-space-12);
+  border-top: 1px solid var(--c-color-line);
+}
+.c-bubble {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-4);
+  max-width: 384px;
+  padding: var(--c-space-12) var(--c-space-16);
+  border-radius: var(--c-radius-panel);
+}
+.c-bubble--agent {
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+}
+.c-bubble--person {
+  max-width: 320px;
+  background: var(--c-color-mat);
+  border: 1px solid var(--c-color-mat);
+}
+.c-bubble--note {
+  max-width: 100%;
+  padding: var(--c-space-4) var(--c-space-12);
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+  text-align: center;
+}
+.c-bubble__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--c-space-8);
+  font-size: var(--c-text-14);
+}
+.c-bubble__name {
+  font-weight: 600;
+}
+.c-bubble__detail {
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+/* Agent graph: circles for agents, squares for tools, the latest node ringed */
+.c-agentgraph {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.c-agentgraph__edge {
+  stroke: var(--c-color-line);
+  stroke-width: 1.5;
+}
+.c-agentgraph__edge--used {
+  stroke: var(--c-color-jade);
+  stroke-width: 2;
+}
+.c-agentgraph__edge--latest {
+  stroke: var(--c-color-ink);
+  stroke-width: 3;
+}
+.c-agentgraph__shape {
+  fill: var(--c-color-paper);
+  stroke: var(--c-color-line);
+  stroke-width: 1.5;
+}
+.c-agentgraph__node--tool .c-agentgraph__shape {
+  stroke-dasharray: 3 2;
+}
+.c-agentgraph__node--used .c-agentgraph__shape {
+  stroke: var(--c-color-jade);
+  stroke-width: 2;
+}
+.c-agentgraph__node--active .c-agentgraph__shape {
+  fill: var(--c-color-mat);
+  stroke: var(--c-color-ink);
+  stroke-width: 3;
+}
+.c-agentgraph__steps {
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  fill: var(--c-color-ink);
+}
+.c-agentgraph__label {
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-14);
+  fill: var(--c-color-ink-soft);
+  paint-order: stroke;
+  stroke: var(--c-color-paper);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.c-agentgraph__name {
+  font-weight: 600;
+}
+.c-agentgraph__node--used .c-agentgraph__label,
+.c-agentgraph__node--active .c-agentgraph__label {
+  fill: var(--c-color-ink);
+}
+.c-agentgraph__node--active .c-agentgraph__name {
+  font-weight: 700;
+}
+.c-agentgraph__kind {
+  font-weight: 400;
+}
+
+/* Embedding map: dots by group (shape and color), the query star, links to the results */
+.c-embmap {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+  max-width: 100%;
+}
+.c-embmap__svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+}
+.c-embmap__point {
+  fill: currentColor;
+}
+.c-embmap__point--on {
+  stroke: var(--c-color-ink);
+  stroke-width: 2;
+}
+.c-embmap__link {
+  stroke: var(--c-color-ink-soft);
+  stroke-width: 1.5;
+}
+.c-embmap__star {
+  fill: var(--c-color-seal);
+  stroke: var(--c-color-seal);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.c-embmap__query--approx .c-embmap__star {
+  fill: var(--c-color-paper);
+}
+.c-embmap__qlabel {
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  fill: var(--c-color-ink);
+  paint-order: stroke;
+  stroke: var(--c-color-paper);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.c-embmap__key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--c-space-16);
+  font-size: var(--c-text-14);
+}
+.c-embmap__keyitem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--c-space-4);
+}
+
+/* Event log: dense rows, times on the player clock */
+.c-eventlog {
+  font-size: var(--c-text-14);
+  min-width: 0;
+}
+.c-eventlog__title {
+  font-weight: 600;
+  margin-bottom: var(--c-space-4);
+}
+.c-eventlog__empty {
+  color: var(--c-color-ink-soft);
+}
+.c-eventlog__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.c-eventlog__table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--c-color-ink-soft);
+  padding: 2px var(--c-space-12) 2px 0;
+  border-bottom: 1px solid var(--c-color-line);
+}
+.c-eventlog__table td {
+  padding: 2px var(--c-space-12) 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 360px;
+}
+.c-eventlog__time {
+  text-align: right;
+  width: 72px;
+}
+.c-eventlog__source--live {
+  color: var(--c-color-jade);
+  font-weight: 600;
+}
+.c-eventlog__source--user {
+  font-weight: 600;
+}
+
+/* Process view: title row with its badge and close, the body, the log under a hairline */
+.c-pview {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+}
+.c-pview__head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--c-space-16);
+  padding: var(--c-space-16) var(--c-space-24);
+  border-bottom: 1px solid var(--c-color-line);
+}
+.c-pview__titles {
+  min-width: 0;
+}
+.c-pview__title {
+  font-size: var(--c-text-24);
+}
+.c-pview__subtitle {
+  margin-top: var(--c-space-4);
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+.c-pview__actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-12);
+}
+.c-pview__close {
+  font: inherit;
+  font-size: var(--c-text-14);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--c-space-4);
+  min-height: 36px;
+  padding: var(--c-space-4) var(--c-space-12);
+  color: var(--c-color-ink);
+  background: transparent;
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  cursor: pointer;
+}
+.c-pview__close:hover {
+  background: var(--c-color-mat);
+}
+.c-pview__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--c-space-16) var(--c-space-24);
+}
+.c-pview__log {
+  flex: 0 0 auto;
+  max-height: 160px;
+  overflow: auto;
+  padding: var(--c-space-12) var(--c-space-24);
+  border-top: 1px solid var(--c-color-line);
+}
+
+/* Side by side: two cards and the similarity bar between them */
+.c-sbs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 184px minmax(0, 1fr);
+  gap: var(--c-space-16);
+  align-items: center;
+}
+.c-sbs__sim {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--c-space-8);
+  text-align: center;
+}
+.c-sbs__label {
+  font-weight: 600;
+}
+.c-sbs__hint {
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+/* Block editor: numbered rows with move up, move down and edit */
+.c-blocks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+}
+.c-block {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--c-space-12);
+  padding: var(--c-space-12) var(--c-space-16);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+}
+.c-block--selected {
+  background: var(--c-color-mat);
+  box-shadow: inset 3px 0 0 var(--c-color-ink);
+}
+.c-block__n {
+  flex: 0 0 auto;
+  min-width: 20px;
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  color: var(--c-color-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.c-block__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-4);
+}
+.c-block__title {
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  color: var(--c-color-ink);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.c-block--selected .c-block__title {
+  font-weight: 700;
+}
+.c-block__summary {
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+.c-block__controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-4);
+}
+.c-block__ctl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--c-color-ink);
+  background: transparent;
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  cursor: pointer;
+}
+.c-block__ctl:hover:not(:disabled) {
+  background: var(--c-color-mat);
+}
+.c-block__ctl:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* ---- v2 badges (I2-kit T4): each has its own border or mark, not only a color ---- */
+.c-badge--live {
+  border-color: var(--c-color-jade);
+  color: var(--c-color-jade);
+  font-weight: 600;
+}
+.c-badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--c-radius-chip);
+  background: var(--c-color-jade);
+}
+.c-badge--demo {
+  border-color: var(--c-color-ink);
+  color: var(--c-color-ink);
+}
+.c-badge--rule {
+  border-style: dotted;
+  border-color: var(--c-color-ink);
+  color: var(--c-color-ink);
+}
+.c-badge--estimate {
+  border-color: var(--c-color-amber);
+  color: var(--c-color-amber);
+  border-width: 1px 1px 3px;
+}
+
+/* ---- Kit gallery at /dev/kit (I2-kit T4) ---- */
+.c-gallery {
+  box-sizing: border-box;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--c-space-32) var(--c-space-48) var(--c-space-64);
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-32);
+  background: var(--c-color-paper);
+  color: var(--c-color-ink);
+}
+.c-gallery__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--c-space-24);
+  padding-bottom: var(--c-space-16);
+  border-bottom: 1px solid var(--c-color-line);
+}
+.c-gallery__title {
+  font-size: var(--c-text-36);
+}
+.c-gallery__intro {
+  margin-top: var(--c-space-8);
+  color: var(--c-color-ink-soft);
+}
+.c-gallery__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+}
+.c-gallery__name {
+  font-family: var(--c-font-body);
+  font-size: var(--c-text-18);
+  font-weight: 600;
+}
+.c-gallery__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--c-space-24);
+}
+.c-gallery__item {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+  min-width: 0;
+  max-width: 100%;
+}
+.c-gallery__caption {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-8);
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+.c-gallery__stage {
+  min-width: 0;
+}
+.c-gallery__box {
+  position: relative;
+  overflow: hidden;
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+}
+.c-gallery__scaled {
+  overflow: hidden;
+  border: 1px solid var(--c-color-line);
+}
+.c-gallery__band {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  height: 64px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  padding: 0 var(--c-space-48);
+  border-bottom: 1px solid var(--c-color-line);
+  background: var(--c-color-paper);
 }

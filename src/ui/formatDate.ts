@@ -13,6 +13,16 @@ export function formatDate(iso: string, lang: "en" | "zh"): string {
   return lang === "zh" ? `${year}年${month}月${day}日` : `${MONTHS[month - 1]} ${day}, ${year}`;
 }
 
+/** "2026-10-01" to "Oct 1" or "10月1日": the month and day only, for tight places such as the seal. */
+export function formatMonthDay(iso: string, lang: "en" | "zh"): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  if (!m) return iso;
+  const month = Number(m[2]);
+  const day = Number(m[3]);
+  if (month < 1 || month > 12) return iso;
+  return lang === "zh" ? `${month}月${day}日` : `${MONTHS[month - 1]} ${day}`;
+}
+
 /** "2026-09" to "September 2026" or "2026年9月". */
 export function formatMonth(monthId: string, lang: "en" | "zh"): string {
   const m = /^(\d{4})-(\d{2})$/.exec(monthId);

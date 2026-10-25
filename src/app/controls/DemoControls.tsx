@@ -1,6 +1,7 @@
 // The demo controls (F18): a small bar fixed to the bottom right of every route. It collapses to
 // one button and expands on hover or focus. Video mode (?video=1) hides it. The keys work on every
-// route except while a text input has focus.
+// route except while a text input has focus. The public build (PUBLIC_SITE) hides the Live switch
+// and ignores its key, so the public site stays scripted.
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "react-router";
 import { SOURCE_KEYS } from "../../core/events";
@@ -9,6 +10,7 @@ import { cycleSpeed, isTextInput, resetDemo, togglePlay } from "./playback";
 import { startAtCatch } from "../demo/startAtCatch";
 import { cycleLang, useCindia } from "../../core/store";
 import { toggleMode, useSourceHealth } from "../../sources/mode";
+import { PUBLIC_SITE } from "../site";
 import "./controls.css";
 
 function usePlayerStatus(): { playing: boolean; speed: Speed } {
@@ -67,7 +69,7 @@ export function DemoControls() {
       togglePlay();
     } else if (k === "r") resetDemo();
     else if (k === "s") cycleSpeed();
-    else if (k === "m") toggleMode();
+    else if (k === "m" && !PUBLIC_SITE) toggleMode();
     else if (k === "l") cycleLang();
     else if (k === "c") startAtCatch();
   }, []);
@@ -108,6 +110,7 @@ export function DemoControls() {
         <button type="button" data-testid="demo-speed" onClick={cycleSpeed} title="Speed (S)">
           {speed}x
         </button>
+        {!PUBLIC_SITE && (
         <button type="button" data-testid="demo-mode-toggle" data-mode={mode} onClick={() => toggleMode()} title="Scripted or live (M)">
           {mode === "live" ? "Live" : "Scripted"}
           {mode === "live" && (
@@ -124,6 +127,7 @@ export function DemoControls() {
             </span>
           )}
         </button>
+        )}
         <button type="button" data-testid="demo-lang-toggle" data-lang={lang} onClick={() => cycleLang()} title="Language (L)">
           {LANG_LABEL[lang]}
         </button>

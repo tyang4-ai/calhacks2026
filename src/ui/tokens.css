@@ -11,6 +11,8 @@
   --c-color-amber: #8a5a0b;
   --c-color-seal-wash: #f3dfda;
   --c-color-jade-wash: #dfeae2;
+  /* The scrim behind an overlay: ink at 32%. */
+  --c-color-scrim: rgb(28 26 23 / 0.32);
 
   /* Type families */
   --c-font-body: "Inter Variable", "Noto Sans SC", system-ui, sans-serif;

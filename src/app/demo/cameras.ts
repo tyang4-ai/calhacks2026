@@ -1,20 +1,35 @@
-// The camera states from ui-contract.md as poses: where each frame sits on the 1600 by 900 stage,
-// at what scale and opacity. Pure functions, so the stage and the unit test share them.
-import { LEGACY_CAMERA_IDS, type CameraId, type LegacyCameraId, type StudioView, type SurfaceId, type TourCameraId } from "../../core/featureTypes";
-import { CONSOLE_HEIGHT, CONSOLE_WIDTH } from "../../ui/ConsoleFrame";
-import { PHONE_HEIGHT, PHONE_WIDTH } from "../../ui/PhoneFrame";
+// The camera states from ui-contract.md as poses on the 1440 by 900 stage, and the page each
+// frame shows. Pure functions, so the stage and the unit test share them. The stage reads the
+// camera from beat.started and maps it through toTourCamera() (the Phase A mapping in
+// src/core/featureTypes.ts); it keeps no mapping of its own. Each tour camera but pitch shows
+// exactly one frame at scale 1, the others at opacity 0. sell-catch zooms frame-studio 1.35 to the
+// flag and its evidence.
+import { LEGACY_CAMERA_IDS, type CameraId, type SellView, type TourCameraId } from "../../core/featureTypes";
+import type { ShopPage } from "../slotProps";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stageScale";
-import { CAMERA_VIEW } from "../surfaces/views";
 
-/** One frame's pose: its center on the stage, its scale and its opacity. */
+/** The four frames the stage keeps mounted. */
+export type StageFrame = "buyer" | "studio" | "maker" | "store";
+
+/** In stacking order, bottom first. */
+export const STAGE_FRAMES: readonly StageFrame[] = ["studio", "buyer", "maker", "store"];
+
+export const FRAME_TEST_IDS: Record<StageFrame, string> = {
+  buyer: "frame-buyer",
+  studio: "frame-studio",
+  maker: "frame-maker",
+  store: "frame-store",
+};
+
+/** One frame's pose: its top left on the stage, its scale (from its top left) and its opacity. */
 export interface Pose {
-  cx: number;
-  cy: number;
+  x: number;
+  y: number;
   scale: number;
   opacity: number;
 }
 
-export type CameraPose = Record<SurfaceId, Pose>;
+export type CameraPose = Record<StageFrame, Pose>;
 
 /** A box inside the studio frame, in its own unscaled pixels. */
 export interface Box {
@@ -25,9 +40,9 @@ export interface Box {
 }
 
 /**
- * A point inside the studio frame, in its own unscaled pixels, for studio-catch to zoom to. With
- * `box` (the flag, evidence and explanation) and `corner` (the view area's top left, past the top
- * bar and the rail), the zoom aligns that corner to the stage's corner when the box fits.
+ * A point inside the studio frame, in its own unscaled pixels, for sell-catch to zoom to. With
+ * `box` (the flag, evidence and explanation) and `corner` (the top left of the view's content: the
+ * legacy box in Phase A), the zoom aligns that corner to the stage's corner when the box fits.
  */
 export interface Focus {
   x: number;
@@ -37,49 +52,51 @@ export interface Focus {
 }
 
 export const MOVE_MS = 600;
-export const SURFACES: readonly SurfaceId[] = ["studio", "buyer", "owner", "maker", "store"];
-export const FRAME_SIZE: Record<SurfaceId, { w: number; h: number }> = {
-  buyer: { w: PHONE_WIDTH, h: PHONE_HEIGHT },
-  studio: { w: CONSOLE_WIDTH, h: CONSOLE_HEIGHT },
-  owner: { w: PHONE_WIDTH, h: PHONE_HEIGHT },
-  maker: { w: PHONE_WIDTH, h: PHONE_HEIGHT },
-  // Placeholder until I2-shell T4 gives the store its page frame.
-  store: { w: CONSOLE_WIDTH, h: CONSOLE_HEIGHT },
-};
-
-/** How strongly the studio is dimmed behind the maker phone. */
-export const DIMMED = 0.35;
 export const CATCH_SCALE = 1.35;
-const GAP = 48;
-const MID_X = STAGE_WIDTH / 2;
-const MID_Y = STAGE_HEIGHT / 2;
+/** Room kept between the focus box and the stage edge when the zoom aligns to the corner. */
+const CATCH_MARGIN = 16;
 
-const at = (cx: number, scale: number, opacity = 1, cy = MID_Y): Pose => ({ cx, cy, scale, opacity });
-const hidden = (p: Pose): Pose => ({ ...p, opacity: 0 });
-
-/** Two frames side by side, centered as a pair. Returns the two centers. */
-function pair(leftW: number, rightW: number): [number, number] {
-  const total = leftW + GAP + rightW;
-  const left = (STAGE_WIDTH - total) / 2;
-  return [left + leftW / 2, left + leftW + GAP + rightW / 2];
+/** The frame a tour camera shows, or null for pitch (I2-tour's pitch cards). */
+export function cameraFrame(camera: TourCameraId): StageFrame | null {
+  switch (camera) {
+    case "pitch":
+      return null;
+    case "shop-home":
+    case "shop-search":
+    case "shop-piece":
+    case "shop-receipt":
+    case "shop-legacy":
+      return "buyer";
+    case "maker":
+      return "maker";
+    case "store":
+      return "store";
+    default:
+      return "studio";
+  }
 }
+
+/** True while the camera is one of v1's (the v1 timeline), or before the first beat. Then the stage uses the legacy boxes. */
+export function isLegacyCamera(camera: CameraId | null): boolean {
+  return camera === null || (LEGACY_CAMERA_IDS as readonly string[]).includes(camera);
+}
+
+const hidden: Pose = { x: 0, y: 0, scale: 1, opacity: 0 };
+const shown: Pose = { x: 0, y: 0, scale: 1, opacity: 1 };
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, v));
 }
 
-/** Room kept between the focus box and the stage edge when the zoom aligns to the view area's corner. */
-const CATCH_MARGIN = 16;
-
 /**
- * studio-catch: the studio at 1.35. When the focus box fits, the view area's top left corner sits at
- * the stage's top left, so the crop falls on the top bar's and rail's edges instead of through them.
- * Otherwise the focus point goes to the stage center, with the zoomed studio still filling the stage.
+ * sell-catch: frame-studio at 1.35. When the focus box fits, the content corner sits at the stage's
+ * top left, so the crop falls on the box's edge instead of through it. Otherwise the focus point
+ * goes to the stage center, with the zoomed frame still covering the whole stage.
  */
 export function catchPose(focus: Focus | null): Pose {
-  const w = CONSOLE_WIDTH * CATCH_SCALE;
-  const h = CONSOLE_HEIGHT * CATCH_SCALE;
-  if (!focus) return at(MID_X, CATCH_SCALE);
+  const w = STAGE_WIDTH * CATCH_SCALE;
+  const h = STAGE_HEIGHT * CATCH_SCALE;
+  if (!focus) return { x: (STAGE_WIDTH - w) / 2, y: (STAGE_HEIGHT - h) / 2, scale: CATCH_SCALE, opacity: 1 };
   if (focus.box && focus.corner) {
     const left = -focus.corner.x * CATCH_SCALE;
     const top = -focus.corner.y * CATCH_SCALE;
@@ -91,82 +108,90 @@ export function catchPose(focus: Focus | null): Pose {
       top + b.top * CATCH_SCALE >= CATCH_MARGIN &&
       left + b.right * CATCH_SCALE <= STAGE_WIDTH - CATCH_MARGIN &&
       top + b.bottom * CATCH_SCALE <= STAGE_HEIGHT - CATCH_MARGIN;
-    if (fits) return { cx: left + w / 2, cy: top + h / 2, scale: CATCH_SCALE, opacity: 1 };
+    if (fits) return { x: left, y: top, scale: CATCH_SCALE, opacity: 1 };
   }
-  const left = clamp(MID_X - focus.x * CATCH_SCALE, STAGE_WIDTH - w, 0);
-  const top = clamp(MID_Y - focus.y * CATCH_SCALE, STAGE_HEIGHT - h, 0);
-  return { cx: left + w / 2, cy: top + h / 2, scale: CATCH_SCALE, opacity: 1 };
+  const left = clamp(STAGE_WIDTH / 2 - focus.x * CATCH_SCALE, STAGE_WIDTH - w, 0);
+  const top = clamp(STAGE_HEIGHT / 2 - focus.y * CATCH_SCALE, STAGE_HEIGHT - h, 0);
+  return { x: left, y: top, scale: CATCH_SCALE, opacity: 1 };
 }
 
-/** Every frame's pose for a camera. Hidden frames keep a nearby place at opacity 0, so moves read well. */
-export function cameraPose(camera: CameraId, focus: Focus | null = null): CameraPose {
-  const studioCenter = at(MID_X, 1);
-  const buyerCenter = at(MID_X, 1);
-  const [bsBuyer, bsStudio] = pair(PHONE_WIDTH * 0.9, CONSOLE_WIDTH * 0.85);
-  const [soStudio, soOwner] = pair(CONSOLE_WIDTH * 0.9, PHONE_WIDTH * 0.8);
-  const ownerOff = hidden(at(soOwner, 0.8));
-  const makerOff = hidden(at(MID_X, 0.9));
-  const storeOff = hidden(at(MID_X, 1));
-  switch (camera) {
-    case "buyer":
-    case "receipt":
-      return { buyer: buyerCenter, studio: hidden(at(bsStudio, 0.85)), owner: ownerOff, maker: makerOff, store: storeOff };
-    case "buyer-studio":
-      return { buyer: at(bsBuyer, 0.9), studio: at(bsStudio, 0.85), owner: ownerOff, maker: makerOff, store: storeOff };
-    case "studio-month":
-    case "studio-close":
-      return { buyer: hidden(at(bsBuyer, 0.9)), studio: studioCenter, owner: ownerOff, maker: makerOff, store: storeOff };
-    case "studio-catch":
-      return { buyer: hidden(at(bsBuyer, 0.9)), studio: catchPose(focus), owner: ownerOff, maker: makerOff, store: storeOff };
-    case "studio-owner":
-      return { buyer: hidden(at(bsBuyer, 0.9)), studio: at(soStudio, 0.9), owner: at(soOwner, 0.8), maker: makerOff, store: storeOff };
-    case "maker":
-      return { buyer: hidden(buyerCenter), studio: at(MID_X, 0.85, DIMMED), owner: ownerOff, maker: at(MID_X, 1), store: storeOff };
-    // The tour's cameras: placeholder poses on v1's frames until I2-shell T4 writes the real ones.
-    case "shop-home":
-    case "shop-search":
-    case "shop-piece":
-    case "shop-receipt":
-    case "shop-legacy":
-      return cameraPose("buyer", focus);
-    case "sell-map":
-    case "sell-month":
-    case "sell-approvals":
-    case "sell-close":
-    case "sell-proof":
-    case "sell-watch":
-    case "sell-listings":
-    case "sell-storefront":
-      return cameraPose("studio-month", focus);
-    case "sell-catch":
-      return cameraPose("studio-catch", focus);
-    case "store":
-      return { buyer: hidden(buyerCenter), studio: hidden(studioCenter), owner: ownerOff, maker: makerOff, store: at(MID_X, 1) };
-    case "pitch":
-      return { buyer: hidden(buyerCenter), studio: hidden(studioCenter), owner: ownerOff, maker: makerOff, store: storeOff };
-  }
+/** Every frame's pose for a tour camera: its one frame shown at scale 1 (sell-catch zoomed), the rest hidden. */
+export function cameraPose(camera: TourCameraId, focus: Focus | null = null): CameraPose {
+  const out: CameraPose = { buyer: hidden, studio: hidden, maker: hidden, store: hidden };
+  const frame = cameraFrame(camera);
+  if (frame) out[frame] = camera === "sell-catch" ? catchPose(focus) : shown;
+  return out;
 }
 
 /** The frames a camera shows (opacity above 0). */
-export function visibleSurfaces(camera: CameraId): SurfaceId[] {
+export function visibleFrames(camera: TourCameraId): StageFrame[] {
   const pose = cameraPose(camera);
-  return SURFACES.filter((s) => pose[s].opacity > 0);
+  return STAGE_FRAMES.filter((f) => pose[f].opacity > 0);
 }
 
-/** Placeholder studio views for the tour's Sell cameras, until I2-shell T4. A view outside v1's five keeps the last one. */
-const TOUR_CAMERA_VIEW: Partial<Record<TourCameraId, StudioView>> = {
+/** The Shop page a camera puts up, or null when it doesn't show frame-buyer. */
+export function cameraShopPage(camera: TourCameraId): ShopPage | null {
+  switch (camera) {
+    case "shop-home":
+      return "home";
+    case "shop-search":
+      return "search";
+    case "shop-piece":
+      return "piece";
+    case "shop-receipt":
+      return "receipt";
+    case "shop-legacy":
+      return "legacy";
+    default:
+      return null;
+  }
+}
+
+const CAMERA_SELL_VIEW: Partial<Record<TourCameraId, SellView>> = {
   "sell-map": "map",
   "sell-month": "month",
   "sell-catch": "month",
-  "sell-approvals": "month",
+  "sell-approvals": "approvals",
   "sell-close": "close",
   "sell-proof": "proof",
+  "sell-watch": "watch",
+  "sell-listings": "listings",
+  "sell-storefront": "storefront",
 };
 
-/** The studio view a camera puts up, or null when the studio isn't shown. */
-export function cameraView(camera: CameraId): StudioView | null {
-  if ((LEGACY_CAMERA_IDS as readonly string[]).includes(camera)) return CAMERA_VIEW[camera as LegacyCameraId];
-  return TOUR_CAMERA_VIEW[camera as TourCameraId] ?? null;
+/** The Sell view a camera puts up, or null when it doesn't show frame-studio. */
+export function cameraSellView(camera: TourCameraId): SellView | null {
+  return CAMERA_SELL_VIEW[camera] ?? null;
+}
+
+/** The page each frame shows. A camera that hides a frame leaves its page as it was. */
+export interface StagePages {
+  shop: ShopPage;
+  sell: SellView;
+}
+
+/** Before the first beat the camera is buyer, shown as shop-legacy, and the Sell frame waits on the map. */
+export const INITIAL_PAGES: StagePages = { shop: "legacy", sell: "map" };
+
+/** The pages after a camera change. */
+export function nextPages(prev: StagePages, camera: TourCameraId): StagePages {
+  const shop = cameraShopPage(camera) ?? prev.shop;
+  const sell = cameraSellView(camera) ?? prev.sell;
+  return shop === prev.shop && sell === prev.sell ? prev : { shop, sell };
+}
+
+/** The maker and store pages the stage shows (ui-contract.md, Camera states). */
+export const STAGE_MAKER_ID = "mkr_01";
+export const STAGE_STORE_SLUG = "dine-weavers";
+export const STAGE_ORDER_ID = "ord_001";
+
+/**
+ * shop.search.main's searchParams on the stage: no q, or only the latest query's own text with its
+ * keywords, never any other text. F-search emits search.queried only for a q that differs from the
+ * latest query's text, so it never emits one here.
+ */
+export function stageSearchParams(latest: { text: string; keywords: readonly string[] } | null): { q?: string; k: string[] } {
+  return latest && latest.text ? { q: latest.text, k: [...latest.keywords] } : { k: [] };
 }
 
 /** Ease-in-out cubic, for camera moves. */
@@ -182,30 +207,27 @@ function lerp(a: number, b: number, t: number): number {
 /** The pose a fraction t (already eased) of the way from one camera pose to another. */
 export function mixPose(from: CameraPose, to: CameraPose, t: number): CameraPose {
   const out = {} as CameraPose;
-  for (const s of SURFACES) {
-    const a = from[s];
-    const b = to[s];
-    out[s] = { cx: lerp(a.cx, b.cx, t), cy: lerp(a.cy, b.cy, t), scale: lerp(a.scale, b.scale, t), opacity: lerp(a.opacity, b.opacity, t) };
+  for (const f of STAGE_FRAMES) {
+    const a = from[f];
+    const b = to[f];
+    out[f] = { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), scale: lerp(a.scale, b.scale, t), opacity: lerp(a.opacity, b.opacity, t) };
   }
   return out;
 }
 
 export function samePose(a: CameraPose, b: CameraPose): boolean {
-  return SURFACES.every(
-    (s) =>
-      Math.abs(a[s].cx - b[s].cx) < 0.5 &&
-      Math.abs(a[s].cy - b[s].cy) < 0.5 &&
-      Math.abs(a[s].scale - b[s].scale) < 0.001 &&
-      Math.abs(a[s].opacity - b[s].opacity) < 0.001,
+  return STAGE_FRAMES.every(
+    (f) =>
+      Math.abs(a[f].x - b[f].x) < 0.5 &&
+      Math.abs(a[f].y - b[f].y) < 0.5 &&
+      Math.abs(a[f].scale - b[f].scale) < 0.001 &&
+      Math.abs(a[f].opacity - b[f].opacity) < 0.001,
   );
 }
 
 /** A pose as the CSS transform for a frame placed at the stage's top left with transform-origin 0 0. */
-export function poseTransform(surface: SurfaceId, p: Pose): string {
-  const { w, h } = FRAME_SIZE[surface];
-  const x = p.cx - (w * p.scale) / 2;
-  const y = p.cy - (h * p.scale) / 2;
-  return `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) scale(${p.scale.toFixed(4)})`;
+export function poseTransform(p: Pose): string {
+  return `translate(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px) scale(${p.scale.toFixed(4)})`;
 }
 
 /**
