@@ -149,6 +149,7 @@ All four files sit in Gordon's drafts on his Figma team, which moved from the St
 | Oct 25, 04:44 | The what card's frame set to the 3:25 AM tagline and its new last line. The Why and How frames already matched `pitch.ts` | use_figma |
 | Oct 25, about 04:45 to 04:52 | Video storyboard page: 18 scene cards from the voiceover script, 15 screen copies at 480 by 300, a Hold, Trim and Optional tag set, checked by screenshot | use_figma, get_screenshot |
 | Oct 25, 04:53 | Deck slide 2 set to the new tagline. Slide "The video, planned in Figma" added after the How slide, linking the storyboard | use_figma |
+| Oct 25, 05:07 to 05:11 | The Why card's approved last line set on its frame, the storyboard's p02 thumbnail and the deck's Why slide, each checked by screenshot | use_figma, get_screenshot |
 
 ### Figma MCP calls
 
