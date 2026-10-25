@@ -3,7 +3,7 @@ NEXT: V1 steps 2 and 3 (S3 T1 stubs, I2-kit, I2-art T0; keyed v1 G5s in a worktr
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 19:59 PT
+UPDATED: 2026-10-24 20:16 PT
 
 # Status board
 
@@ -79,11 +79,11 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | Plan | Wave | State | Lead | Last green tag | Notes |
 |---|---|---|---|---|---|
 | R0-reskin | V1 step 0 | green | data-smith, integrator, feature-lead, backend-builder | v2-reskin | gate 11/11 checks, 3 verifiers PASS (screens, numbers, words) |
-| I2-core | V1 | first spawn green | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
-| I2-kit | V1 | running | integrator | | T1 frames running; T2-T4 next spawn |
-| I2-shell | V1 | todo | integrator | | |
-| S3-catalog | V1 | running | data-smith | | T1 stubs running |
-| I2-art | V1 | running | integrator | | T0 placeholders running |
+| I2-core | V1 | first spawn green, second spawn running | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
+| I2-kit | V1 | running | integrator | | T1 frames done (in tree); T2-T4 running |
+| I2-shell | V1 | running | integrator | | T1-T7 |
+| S3-catalog | V1 | running | data-smith | | T1 stubs committed (e51c66e); spawn 2 (T2-T5, T7) running |
+| I2-art | V1 | T0 committed | integrator | | T0 54 placeholders (54288bd); T1-T3 after G2b |
 | F-search | V2 P0 | todo | feature-lead | | |
 | M-buyer | V2 P0 | todo | feature-lead | | |
 | F-support | V2 P0 | todo | feature-lead | | |
@@ -164,6 +164,7 @@ Each item names the default already in use, so the build never waits.
 
 | Since | Question | Default in use |
 |---|---|---|
+| Oct 24 8:20 PM | Scribe's Devpost skeleton (`docs/devpost/devpost.md`, 14 `[GORDON: ...]` items listed in `sponsors/README.md`): write your sections; check the Figma prize names on Devpost; set the three Figma files to "Anyone with the link" | Drafts and placeholders |
 | Oct 24 6:16 PM | R0: check the Chinese of the co-op's place (美国亚利桑那州纳瓦霍保留区) and the twelve Chinese piece stories in `src/mock/catalog.ts`, plus the Chinese of L1, L2, L4 and L15 (fix-plan section 7) | The data-smith's Chinese, as written |
 | Oct 24 2:01 AM | ~~`.env` is missing~~ Resolved in the cloud at 7:30 PM: `/api/health` reads anthropic, nessie, elastic, apify and hf all true from the cloud environment. On the Windows laptop, `.env` is still needed for live mode (D-deploy's laptop script) | Live keys in the cloud |
 
@@ -174,6 +175,20 @@ Each item names the default already in use, so the build never waits.
 ## Cut and simulated
 
 Everything that ends up cut or still on scripted events, for the README and Devpost.
+
+**Cut:** nothing (as of 8:00 PM, Oct 24).
+
+**Simulated today, with the Simulated badge:**
+- Every v2 screen that doesn't exist yet. It will play scripted events, and its live source stays planned.
+- The v1 keyed upgrades B02 (the catch's explanation and follow-up), B04 (the money map's balance, the sale and payout postings), B07 (Ask Cindy) and B09 (the gift finder) have live keys in the cloud, but play scripted in the demo until each passes its G5.
+
+**Simulated by design, even when everything is green:**
+- The checkout ("Demo checkout, no real charge"; the card number becomes a token).
+- Sending: the follow-up to the gallery and any counterfeit report never leave Cindia.
+- The bank: Nessie is a sandbox bank, so no real money moves.
+- The verification line on every piece: no real check was done.
+- The community pages: placeholder text by the Cindia team; in a real launch each community writes its own.
+- The guided tour: it plays scripted events in both modes.
 
 ## Log
 
@@ -261,3 +276,9 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 19:41 PT · core gate: check, smoke 22/22, demo (endedAtWallMs 60013 vs 60000 + 15000), server 237 + 1 skipped with B09 live timing out once; B09's Claude timeout raised to 5 s (contract change), server 238 passed + 1 skipped · artifacts/gates/core-1940.md
 - 2026-10-24 19:58 PT · core verifiers PASS (code, docs, server; workflow of 3); minors queued for I2-core's second spawn (log order with two status events, surprise weight tolerance before T5, timeoutFor location, durationMs in the Player interface, apr kinds in data-model, B14 key wording, G0 port 3000) · artifacts/gates/core-verifier-*.md
 - 2026-10-24 19:59 PT · v2-core recorded; export:mock 63 exports; spawned scribe (8 PM pass), S3 T1 stubs, I2-kit T1, I2-art T0; keyed v1 G5s (B04 rerun, B02, B07, B09) running in a worktree at c54ff6c · decisions.md
+- 2026-10-24 20:05 PT · I2-art T0 committed (54 placeholders, art script; smoke 76/76) and S3 T1 stubs committed (check PASS, export:mock 97 keys); spawned I2-core second spawn (T5, T8 and the core verifiers' minors) and S3 spawn 2 (T2-T5, T7) · status.md
+- 2026-10-24 20:08 PT · heartbeat: dev server stopped at its 2-hour background limit, restarted (5173 answers 200) · status.md
+- 2026-10-24 20:08 PT · heartbeat: SpacetimeDB stopped at its 2-hour background limit, restarted on 127.0.0.1:3000 (ping 200); no module published yet, so nothing to republish · status.md
+- 2026-10-24 20:13 PT · I2-kit T1 done (7 frame components, smoke 76/76); spawned I2-shell (T1-T7) and I2-kit T2-T4; code agents: I2-core T5/T8, S3 spawn 2, I2-shell, I2-kit; plus the scribe and the worktree G5s · status.md
+- 2026-10-24 20:15 PT · B04 G5 rerun 11/13 (live d01: B09's live answer late); G5 chain stopped; backend-builder adding B09's prefetch; worktree API on 8001 isolates the gate · decisions.md
+- 2026-10-24 20:16 PT · scribe 8 PM pass done: README, whats-real, Devpost skeleton, 11 sponsor folders; Cut and simulated filled from its list; the older v1 tags (g1-scaffold, g2-data, w1-*, w2-*, demo-ok-1, demo-ok-b01, demo-ok-b03) aren't in this clone, so they have no SHA row · README.md, docs/devpost/, sponsors/
