@@ -1,6 +1,6 @@
 # Cindia · stage log
 
-Figma track, Cal Hacks 13.0. Four stages, 200 words at most per stage. Times are Pacific, Saturday Oct 24, 2026, read from `TZ=America/Los_Angeles date`. The design lead is a Claude Code agent working for Gordon Yang through the Figma MCP server.
+Figma track, Cal Hacks 13.0. The track's four stages, then the pitch and the video, at most 200 words each. Times are Pacific, Saturday Oct 24, 2026 unless marked Sunday, read from `TZ=America/Los_Angeles date`. The design lead is a Claude Code agent working for Gordon Yang through the Figma MCP server.
 
 ## 1 · Ideation
 
@@ -36,7 +36,29 @@ Figma track, Cal Hacks 13.0. Four stages, 200 words at most per stage. Times are
 
 ## 4 · Code generation
 
-Not started. The integrator restyles the kit from the drops in `I3-redesign`, and features follow without edits.
+Sunday 2:58 to 4:25 AM, about 90 minutes · rating 4 of 5 · drop 3 live on every page
+
+**Tools.** No Figma call at this stage, by design: the build read the handoff files, so it never waited on Figma. Two integrator agents in the build session split the work, one on the shell and one on the kit. Every Figma variable carries `var(--c-…)` code syntax, so each became a CSS custom property with the same name, and `scripts/check-contrast.mjs` checked all 79 text pairs again in code. The shell half landed at 3:22 AM (113 tokens, 14 font files, the top bar, the pitch and end cards), and the kit half at 3:38 AM.
+
+**Friction.** The screens were drawn at full frame, but most tour beats show the product at two thirds of its size beside a process panel, a layout the drops never drew. The review found small text there and a score table 24 px past its card. The piece drawings came from the build's own art script, so the illustration import was skipped.
+
+**Into the build.** The tour passed its gate 5 of 5 on drop 3 at 4:07 AM, with three tour runs and one offline, tagged `demo-ok-v2-d3`.
+
+## 5 · Pitch and video
+
+Sunday from 12:26 AM, then 4:44 to 4:53 AM, about 25 minutes · rating 4 of 5 · deck and storyboard done, video in the edit
+
+**Tools.** Figma Slides through `use_figma` for the deck the track asks for: the catch as the cold open, the three pitch cards read from `pitch.ts`, and links to the site, the code and the files. Then Figma Design for the video's storyboard, on its own page in Cindia · Design. It has 18 cards in scene order, each with:
+- a copy of the matching screen
+- its start time and length
+- the voiceover line
+- the edit note
+
+A tag component names every hold, trim and optional scene in words, so color never carries the meaning alone. The cards follow `docs/v2/voiceover.md`, and the video conversation cuts from both.
+
+**Friction.** `rescale()` dropped the text styles inside the 15 shrunk screen copies. A duplicated slide kept its old links until they were removed by hand. The sandbox can't download Figma's screenshots, so checks came back inline.
+
+**Into the build.** The storyboard is the plan for the 2:59 cut, and the deck's slide "The video, planned in Figma" links to it.
 
 ---
 
@@ -50,8 +72,8 @@ This section backs up the entries above and is not part of their word count.
 |---|---|---|
 | Cindia · 01 Research (FigJam) | https://www.figma.com/board/T3lxV76Wc6petCKoRE0TNu | Written before the scope change. What Cindia is, why it matters (World Bank, FDIC, ICT News), the buyer, the earlier studio's maker and owner, the judge at a table, the community as a stakeholder, the Visa, Hyphenate and Figma criteria, the judge's one-minute story, 15 references (described and linked, never copied), 8 principles, the screen rules, 4 open questions with defaults |
 | Cindia · 02 Moodboards (FigJam) | https://www.figma.com/board/KAOXGbhwnS0A0tJ8j5ABj7 | How the directions were checked, A · Museum label, B · Warp and weft, C · Daylight market (idea, palette, type, texture and imagery, the product vignette), a side-by-side table and the recommendation, with a sticky for Gordon's pick |
-| Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 18 text styles, the overlay shadow, and four pages: Style tiles (`design/style-tiles.png`), Wireframes, Components and Screens (the 24 frames in `design/screens/`) |
-| Cindia · Pitch (Figma Slides) | https://www.figma.com/slides/edmnscKXlUVzaIAIti6Eqh | Created Oct 25 at 00:30. Five slides that mirror `/demo`'s pitch: the catch as the cold open, the three approved pitch cards with the tagline "Made by hand. Paid in full.", and links to the site, the code and the three files above |
+| Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 18 text styles, the overlay shadow, and four pages: Style tiles (`design/style-tiles.png`), Wireframes, Components, Screens (the 24 frames in `design/screens/`) and Video storyboard, added Oct 25 at 04:44 (https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb?node-id=89-129) |
+| Cindia · Pitch (Figma Slides) | https://www.figma.com/slides/edmnscKXlUVzaIAIti6Eqh | Created Oct 25 at 00:30. Slides that mirror `/demo`'s pitch: the catch as the cold open, the three pitch cards with the tagline "Describe the vibe. Gift the piece. Pay the person.", a slide linking the video storyboard, and links to the site, the code and the three files above |
 
 All four files sit in Gordon's drafts on his Figma team, which moved from the Starter tier to the student tier after his Edu verification. All four are shared as "Anyone with the link can view", checked in Figma on Oct 25 at 12:25 AM. The MCP server has no sharing tool, so that check was done in the browser.
 
@@ -124,6 +146,9 @@ All four files sit in Gordon's drafts on his Figma team, which moved from the St
 | Oct 25, 00:26 | Banners at the top of 01 Research and 02 Moodboards: written and drawn before the scope change, with a pointer to Cindia · Design | use_figma |
 | Oct 25, 00:29 | Pitch-card frames on Screens updated to Gordon's approved text, with the tagline as the what card's first line | use_figma |
 | Oct 25, 00:30 | Cindia · Pitch created in Figma Slides: the catch, the three cards and a links slide, built from the pitch-card frames' type and colors, then checked for overlaps and screenshotted | create_new_file, use_figma |
+| Oct 25, 04:44 | The what card's frame set to the 3:25 AM tagline and its new last line. The Why and How frames already matched `pitch.ts` | use_figma |
+| Oct 25, about 04:45 to 04:52 | Video storyboard page: 18 scene cards from the voiceover script, 15 screen copies at 480 by 300, a Hold, Trim and Optional tag set, checked by screenshot | use_figma, get_screenshot |
+| Oct 25, 04:53 | Deck slide 2 set to the new tagline. Slide "The video, planned in Figma" added after the How slide, linking the storyboard | use_figma |
 
 ### Figma MCP calls
 

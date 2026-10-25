@@ -74,7 +74,7 @@ Figures come from `docs/plans/R0-reskin.md` and `docs/plans/S3-catalog.md`. Text
 | Cindia · 02 Moodboards (FigJam) | https://www.figma.com/board/KAOXGbhwnS0A0tJ8j5ABj7 | Done. B is the pick |
 | Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Style tiles, wireframes, components and the drop 3 screens |
 
-**Pages in Cindia · Design:** Style tiles, Wireframes, Components, Screens (the 24 frames in the table). Every color is bound to a variable and every text uses a text style. Add `?node-id=` and the node, with the colon as a dash, to the Design link.
+**Pages in Cindia · Design:** Style tiles, Wireframes, Components, Screens (the 24 frames in the table), and Video storyboard (node 89:129), the video's plan, which the build doesn't need. Every color is bound to a variable and every text uses a text style. Add `?node-id=` and the node, with the colon as a dash, to the Design link.
 
 All three files sit in Gordon's drafts on his Figma team, shared as "Anyone with the link can view" (checked Oct 25, 12:25 AM). 01 Research and 02 Moodboards each carry a banner saying they come from before the scope change.
 

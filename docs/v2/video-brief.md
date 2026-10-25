@@ -23,6 +23,8 @@ The cut follows the tour's video mode (`/demo?video=1`). If Gordon gives you a v
 
 **The voiceover script, `docs/v2/voiceover.md`, now sets each scene's length in the edit.** It adds holds, trims `d04` and `d05`, and adds an optional `d17-ask-maker` scene, for 2:59 in all. Where it and the table below differ, the script wins. If the cut runs over 3:00, drop `d17` first.
 
+**The storyboard is in Figma:** the Video storyboard page of Cindia · Design, https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb?node-id=89-129. It has one card per scene, matching the voiceover script. If you change the order or a length, tell Gordon, so the storyboard and the cut agree.
+
 | Part | Seconds | Beat | What's on screen |
 |---|---|---|---|
 | Cold open | 5 | `d08-catch` | The flag on the co-op's month: "The gallery paid $340 less than the contract says." |
@@ -185,7 +187,7 @@ This is Gordon's workflow, and the order matters.
 
 | By (PT) | What |
 |---|---|
-| 5:30 AM | Pipeline, storyboard OK, pitch scenes, review page up |
+| 5:30 AM | Pipeline, storyboard checked against the Figma page, pitch scenes, review page up |
 | 6:30 AM | Product footage filmed, first review cut published |
 | 7:45 AM | Approved, final render delivered |
 | 8:30 AM | Gordon adds the voiceover in Premiere and uploads, for the 9:00 AM Devpost close |
