@@ -147,6 +147,7 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | v2-buyer | a87ab88eed9fd6276ddfbd5b27fc8dc43d92bb57 | G3 buyer | Oct 24 10:59 PM |
 | v2-deploy | 4dd9243b439e8a7007444fbd0b754edde86d59c8 | D-deploy | Oct 24 11:26 PM |
 | v2-seller-hub | f97a7ab66e3ec439ebe38a039b2a6f5871ea8ed0 | G3 seller-hub | Oct 24 11:34 PM |
+| v2-watch | fd0ce474bb352e8243615d62b5860ef3e7e10e90 | G3 watch | Oct 24 11:44 PM |
 
 ## Environment
 
