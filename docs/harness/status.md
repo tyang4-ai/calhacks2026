@@ -1,9 +1,9 @@
 STAGE: V2
-NEXT: V1 steps 2 and 3 (S3 T1 stubs, I2-kit, I2-art T0; keyed v1 G5s in a worktree), then I2-core T5/T8 and S3 spawn 2
+NEXT: V2 (features, upgrades, D-deploy); G1b/G2b verifiers finishing
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 21:19 PT
+UPDATED: 2026-10-24 21:29 PT
 
 # Status board
 
@@ -85,10 +85,10 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | I2-shell | V1 | done, commit at G1b | integrator | | check 755, smoke 123, build, demo 60.0 s (0 beat problems), offline; T7: buyer 30 specs to M-buyer, approvals-frame 2 and approvals-live 1 to M-approvals and B13 T7 |
 | S3-catalog | V1 | done, G2b checks PASS | data-smith | | T1-T8 done (check:data 232); commit at G2b after the verifier |
 | I2-art | V1 | T0 committed | integrator | | T0 54 placeholders (54288bd); T1-T3 after G2b |
-| F-search | V2 P0 | todo | feature-lead | | |
-| M-buyer | V2 P0 | todo | feature-lead | | |
-| F-support | V2 P0 | todo | feature-lead | | |
-| F-process | V2 P0 | todo | feature-lead | | |
+| F-search | V2 P0 | running | feature-lead | | |
+| M-buyer | V2 P0 | running | feature-lead | | |
+| F-support | V2 P0 | running | feature-lead | | |
+| F-process | V2 P0 | running | feature-lead | | |
 | F-communities | V2 P0 | todo | feature-lead | | |
 | M-approvals | V2 P0 | todo | feature-lead | | G3 waits for B13 T7 |
 | M-desktop | V2 P0 | todo | feature-lead | | right after M-approvals |
@@ -104,7 +104,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
-| B11-embed | running | | | T1-T2 committed (825666a); T4 code and T6 running; T3 and T5 after G2b |
+| B11-embed | running | | | T1, T2, T4 code, T6 committed; training requirements installed; T3 (pairs) and T5 (training run) after G2b |
 | B12-search | todo | | | |
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
 | B14-swarm | todo | | | |
@@ -296,3 +296,5 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 21:03 PT · I2-shell done (desktop shell, Phase A stage, public-build flags); dev server restarted; G1b waits for S3 spawn 3 to report · status.md
 - 2026-10-24 21:19 PT · G2b checks PASS 3/3 (check:data 232, check:scope, art --check 54); G1b checks PASS 5/5 (check, smoke 123, build, demo 60.0 s, offline); verifier workflow running (G1b screens and code, G2b data) · artifacts/gates/G2b-2112.md, G1b-2113.md
 - 2026-10-24 21:19 PT · B13: save_token.py wrote SPACETIME_TOKEN to .env; API restarted (routers b11, b13 loaded); /api/b13/status spacetime true; seeded 54 catalog, 30 orders, 5 approvals; test_b13_live 62 passed incl. the live round trip; T2-T6 committed · status.md
+- 2026-10-24 21:20 PT · V2 started: leads for F-search, M-buyer (T0-T6), F-support, F-process; B11 T4/T6 running; next: I2-art T1-T3, D-deploy, B11 T3 after G2b's verifier · status.md
+- 2026-10-24 21:29 PT · B11 T4 code and T6 committed (108 passed; /api/b11/model answers its no-model problem); training requirements installed · status.md
