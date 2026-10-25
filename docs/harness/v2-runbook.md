@@ -147,7 +147,7 @@ Your own steps around the upgrades (builders can't install, publish or run serve
   - Write `scripts/train-akbari.sh` yourself, one line that runs `server/b11_embed/train_akbari.sh "$@"`, because a backend-builder can't write `scripts/`. It's for Gordon's optional run at the lab.
 - **B11, after any VM rebuild:** run `python server/b11_embed/fetch_model.py`, which pulls the newest published model back.
 - **If Gordon trains on the Akbari machine instead** (`scripts/train-akbari.sh`, his own `HF_TOKEN`), run `python server/b11_embed/fetch_model.py` once he says his run is published, then S3's T9 as above. The model, `vectors.json` and the index must share one fingerprint, or B11 refuses them.
-- **B13, after T1:** install the module's packages, then publish it to the local server with `spacetime publish -s local cindia`, run from `server/b13_spacetime/module/` the way `server/b13_spacetime/README.md` says. Never the CLI's Maincloud default.
+- **B13, after T1:** install the module's packages, then rerun T1's module build test (it skips while `module/node_modules` is missing), then publish it to the local server with `spacetime publish -s local cindia`, run from `server/b13_spacetime/module/` the way `server/b13_spacetime/README.md` says. Never the CLI's Maincloud default.
 - **B13, once `save_token.py` exists (its T4):** run `python server/b13_spacetime/save_token.py`. It writes the publisher's token to `.env` as `SPACETIME_TOKEN` without printing it. Restart `npm run server` and confirm `GET /api/b13/status` reports `spacetime: true`.
 - **B13, after T5:** `POST /api/b13/seed` once, or let the adapter do it in live mode.
 - **B13, before every recorded demo:** `spacetime call -s local cindia clear_runs`, so no old run shows in the swarm view.

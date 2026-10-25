@@ -165,7 +165,7 @@ Every spec opens the route named, reaches tour events with `seekToEvent` or `tou
 - Deploying the public site and checking it (D-deploy).
 
 ## Contract additions needed
-Settled in contracts section 11, I2-core and I2-shell, listed so a builder knows where each lives:
+Settled in contracts sections 4 and 11, I2-core and I2-shell, listed so a builder knows where each lives. Nothing is still open:
 1. **Navigation for features:** `navigate(path)` in `src/core/nav.ts` and the kit `Link` (prop `to`), which renders a real anchor and calls `navigate` on a plain click, so moving between pages never reloads the store.
 2. **Request row:** `piece.opened` from a person is answered on key `b10-derived` with a `split.shown` for that piece from `src/mock/splits.ts`, one split per piece under the `ch_cindia` money rules, with `pc_01`'s equal to figure 1. A `piece.opened` from the timeline isn't answered.
 3. **Request row:** `checkout.started` from a person, for a piece the timeline doesn't check out, has no key and is answered by a scripted `card.tokenized` (with the `pieceId`, a `tok_` token made from the piece ID with no randomness, brand `visa`, last four 4242), then `order.placed` (`orderId: "ord_user_<n>"`, `channelId: "ch_cindia"`, the piece's price) and `receipt.updated` (`received`). A person's orders stay out of the month, the ledger and the money map.

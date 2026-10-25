@@ -225,8 +225,7 @@ S3-catalog writes them. S3's T1 stubs cover every file in this table.
 
 - `npm run export:mock` runs `node scripts/export-mock.mjs`, which:
   - loads `src/mock/index.ts` through Vite's `createServer` with `appType: "custom"`, `server.middlewareMode: true`, `server.hmr: false` and `server.ws: false` where the installed Vite accepts it, so it opens no port (D2-30), then `ssrLoadModule`,
-  - writes `artifacts/mock/mock.json` in UTF-8: one top-level key per export of `src/mock/index.ts` whose value isn't a function, plus `_generatedAt`,
-  - so it carries `allApprovals` (`apr_01` to `apr_05`) and `allFollowUps` (`fup_01`, `fup_02`) once S3-catalog exports them from `src/mock/index.ts`. `getById()` is a function and never reaches the JSON, so the server's readers find every approval and follow-up only through these two lists,
+  - writes `artifacts/mock/mock.json` in UTF-8: one top-level key per export of `src/mock/index.ts` whose value isn't a function, plus `_generatedAt`. So it carries `allApprovals` (`apr_01` to `apr_05`) and `allFollowUps` (`fup_01`, `fup_02`) once S3-catalog exports them. `getById()` is a function and never reaches the JSON, so these two lists are how the server's readers find every approval and follow-up,
   - prints one line per key with its item count,
   - closes the server and exits 0. It's `cmd.exe`-safe.
 - `vite.config.ts`: `server.watch.ignored` adds `.venv`, `models`, `server` and `artifacts`, so torch's files never load the watcher (B2-31).
