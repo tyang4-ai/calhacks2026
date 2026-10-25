@@ -1,0 +1,335 @@
+{
+ "pairSource": "claude",
+ "notes": [
+  "Training pairs: 1045 query-piece lines for 54 fictional pieces. Claude (claude-haiku-5-5, claude-sonnet-5-5) wrote the queries for 54 pieces from their records alone.",
+  "The content filter dropped 0 queries holding a contentRules banned, stereotype or meaning word, a People's name used as a product word, or a URL.",
+  "The eval-leak guard dropped 40 queries that equaled or nearly matched one of the 50 held-out eval queries or the tour query; no eval query was used for training.",
+  "Hard negatives: 316 looks, material and craft_term lines carry one. The filter dropped 397 candidates that shared a motif, mood or recipient word with the query, or matched every facet it names; every other line relies on in-batch negatives."
+ ],
+ "generatedAt": "2026-10-25T05:04:05Z",
+ "dataGeneratedAt": "2026-10-25T04:38:11.213Z",
+ "dataFile": "artifacts/mock/mock.json",
+ "seconds": 58.9,
+ "models": {
+  "first": "claude-haiku-5-5",
+  "retry": "claude-sonnet-5-5"
+ },
+ "counts": {
+  "pieces": 54,
+  "lines": 1045,
+  "claudePieces": 54,
+  "templatePieces": 0,
+  "retriedPieces": 1,
+  "calls": 55,
+  "callsByModel": {
+   "claude-haiku-5-5": 54,
+   "claude-sonnet-5-5": 1
+  },
+  "withNegative": 316,
+  "langs": {
+   "en": 831,
+   "zh": 214
+  },
+  "voices": {
+   "craft_term": 138,
+   "long": 62,
+   "looks": 140,
+   "material": 100,
+   "misspelled": 82,
+   "mood": 124,
+   "occasion": 143,
+   "recipient": 149,
+   "short": 107
+  },
+  "dropped": {
+   "content": {},
+   "contentTotal": 0,
+   "leak": {
+    "contains": 30,
+    "equal": 1,
+    "tokens": 9
+   },
+   "leakTotal": 40,
+   "repeats": 0,
+   "negatives": 397
+  }
+ },
+ "usage": {
+  "inputTokens": 187107,
+  "outputTokens": 43383
+ },
+ "templateReason": null,
+ "rebuilt": null,
+ "pieces": {
+  "pc_01": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_02": {
+   "source": "claude",
+   "attempts": 2,
+   "model": "claude-sonnet-5-5"
+  },
+  "pc_03": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_04": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_05": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_06": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_07": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_08": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_09": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_10": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_11": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_12": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_13": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_14": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_15": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_16": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_17": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_18": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_19": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_20": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_21": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_22": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_23": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_24": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_25": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_26": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_27": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_28": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_29": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_30": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_31": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_32": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_33": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_34": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_35": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_36": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_37": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_38": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_39": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_40": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_41": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_42": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_43": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_44": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_45": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_46": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_47": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_48": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_49": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_50": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_51": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_52": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_53": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  },
+  "pc_54": {
+   "source": "claude",
+   "attempts": 1,
+   "model": "claude-haiku-5-5"
+  }
+ }
+}

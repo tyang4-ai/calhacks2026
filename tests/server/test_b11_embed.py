@@ -1,5 +1,6 @@
-"""B11 · the embedding model. Tests for T1 (data.py, compose.py), T2 (bm25.py, metrics.py), T4
-(train.py, evaluate.py, pca.py) and T6 (model.py and the three endpoints in server/routers/b11_embed.py).
+"""B11 · the embedding model. Tests for T1 (data.py, compose.py), T2 (bm25.py, metrics.py), T3
+(pairs.py, with a fake Claude and the real SDK over a mock transport), T4 (train.py, evaluate.py,
+pca.py) and T6 (model.py and the three endpoints in server/routers/b11_embed.py).
 
 The fixture b11_fixture.json holds three pieces (pc_01, pc_10, pc_14), their two communities and
 their index entries, copied from artifacts/mock/mock.json. The "real data" tests read whichever
@@ -12,7 +13,8 @@ model or calls the network. Two tests use a tiny randomly initialized sentence-t
 built in a temporary folder (no download) to exercise the real encode, save and load path, and two
 more run the real SentenceTransformerTrainer on it when `datasets` and `accelerate` are installed
 (server/b11_embed/requirements-train.txt), skipping with that reason otherwise. The one live test
-needs the trained model on disk (needs_service("model")).
+needs the trained model on disk (needs_service("model")), and T3's makes one real Claude call
+(needs_key("ANTHROPIC_API_KEY")) and writes nothing.
 """
 
 from __future__ import annotations
@@ -29,13 +31,16 @@ import sys
 import threading
 import time
 from pathlib import Path
+from types import SimpleNamespace
 
+import anthropic
+import httpx2
 import numpy as np
 import pytest
-from conftest import needs_service
+from conftest import needs_key, needs_service
 
 from server import config
-from server.b11_embed import bm25, compose, evaluate, metrics, pca, train
+from server.b11_embed import bm25, compose, evaluate, metrics, pairs, pca, train
 from server.b11_embed import data as b11data
 from server.b11_embed import model as b11model
 
@@ -1797,3 +1802,591 @@ def test_live_map_and_report_from_the_trained_model(client):
         assert scored["systems"] == [{"system": s["system"], "recallAtK": s["recallAtK"], "mrr": s["mrr"]} for s in report["eval"]["systems"]]
     finally:
         b11model.reset()
+
+
+# ---------------------------------------------------------------------------------------------
+# T3 · pairs.py: Claude's training queries, the filters and the fallback. A fake Claude answers
+# here; one test runs the real SDK over a mock transport; the live test makes one real call.
+
+T3_EVAL = [
+    {"id": "sq_t01", "text": "grey zigzags on a wool weaving", "lang": "en", "grades": {"pc_01": 2}, "author": "data_agent"},
+    {"id": "sq_t02", "text": "turquoise drop earrings for my sister", "lang": "en", "grades": {"pc_10": 2}, "author": "data_agent"},
+    {"id": "sq_t03", "text": "带花的串珠耳环", "lang": "zh", "grades": {"pc_14": 2}, "author": "data_agent"},
+]
+TOUR_VARIANT = "A warm, bold gift for my MOM! She loves red wool."
+PLANTED_BAD = "spiritual Navajo blanket"
+HAIKU, SONNET = config.MODEL_FAST, config.MODEL_DEFAULT
+PAIRS_FILE = Path(pairs.__file__).with_name("pairs.jsonl")
+META_FILE = Path(pairs.__file__).with_name("pairs_meta.json")
+
+
+@pytest.fixture(autouse=True)
+def _t3_raw_answers_in_tmp(tmp_path, monkeypatch):
+    """No test writes artifacts/b11/pairs_raw.json: every run's raw answers default into tmp_path."""
+    monkeypatch.setattr(pairs, "RAW_PATH", tmp_path / "b11_raw" / "pairs_raw.json")
+
+
+def t3_data(tmp_path: Path, eval_queries: list[dict] | None = None) -> b11data.Data:
+    """The fixture with three planted eval queries, and pc_10 given a leaf motif so a pc_14 looks
+    query has a hard negative that shares its motif."""
+    raw = fixture_raw()
+    raw["searchEval"] = T3_EVAL if eval_queries is None else eval_queries
+    for p in raw["pieces"]:
+        if p["id"] == "pc_10":
+            p["facets"]["motifs"] = ["leaf"]
+    return b11data.load(write_json(tmp_path / "t3_data.json", raw), expected=3)
+
+
+def wq(voice: str, text: str, lang: str | None = None) -> dict:
+    return {"text": text, "lang": lang or ("zh" if re.search(r"[一-鿿]", text) else "en"), "voice": voice}
+
+
+def filler_queries(pid: str, n_en: int = 16, n_zh: int = 4) -> list[dict]:
+    """Plain queries that pass every filter: numbered, one of each voice in turn."""
+    en = [wq(pairs.VOICES[i % len(pairs.VOICES)], f"{pairs.VOICES[i % len(pairs.VOICES)].replace('_', ' ')} pick {i} for {pid}") for i in range(n_en)]
+    zh = [wq("short", f"第{i}款{pid}") for i in range(n_zh)]
+    return en + zh
+
+
+def answer(pid: str, queries: list[dict] | None = None, negatives: list[str] | None = None) -> pairs.WrittenQueries:
+    others = [p for p in ("pc_01", "pc_10", "pc_14") if p != pid]
+    return pairs.WrittenQueries.model_validate(
+        {"queries": filler_queries(pid) if queries is None else queries, "hard_negative_ids": others if negatives is None else negatives}
+    )
+
+
+def pc_01_answer() -> pairs.WrittenQueries:
+    """pc_01's answer, carrying an eval query, a variant of the tour query and a banned query."""
+    planted = [wq("looks", "Grey zigzags on a wool weaving!"), wq("mood", TOUR_VARIANT), wq("looks", PLANTED_BAD)]
+    return answer("pc_01", filler_queries("pc_01", 14, 3) + planted)
+
+
+def pc_14_answer() -> pairs.WrittenQueries:
+    special = [
+        wq("looks", "earrings with green leaves"),
+        wq("looks", "red and green beaded earrings"),
+        wq("mood", "something bold, a pair of red earrings"),
+    ]
+    return answer("pc_14", filler_queries("pc_14", 13, 4) + special, negatives=["pc_10", "pc_01"])
+
+
+class FakeClaude:
+    """Stands in for the Anthropic client: `messages.parse(**kw)` pops the next answer for the
+    piece named in the prompt. An exception in the list is raised; a missing piece is an error."""
+
+    def __init__(self, answers: dict[str, list]) -> None:
+        self.answers = {k: list(v) for k, v in answers.items()}
+        self.calls: list[dict] = []
+        self.messages = self
+        self.lock = threading.Lock()
+
+    def parse(self, **kw):
+        pid = re.search(r"The piece, (pc_\d+):", kw["messages"][0]["content"]).group(1)
+        with self.lock:
+            self.calls.append({**kw, "piece": pid})
+            queue = self.answers.get(pid) or []
+            item = queue.pop(0) if queue else RuntimeError("no answer left")
+        if isinstance(item, BaseException):
+            raise item
+        if isinstance(item, SimpleNamespace):
+            return item
+        return SimpleNamespace(parsed_output=item, stop_reason="end_turn", usage=SimpleNamespace(input_tokens=100, output_tokens=40))
+
+
+def t3_run(data, answers, tmp_path, **opts):
+    fake = FakeClaude(answers)
+    o = pairs.Options(out=tmp_path / "pairs.jsonl", meta=tmp_path / "pairs_meta.json", workers=opts.pop("workers", 1), **opts)
+    result = pairs.run(data, o, client_factory=lambda: fake, pause=lambda s: None)
+    return result, fake, o
+
+
+def read_lines(path: Path) -> list[dict]:
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
+SDK_REQ = httpx2.Request("POST", "https://api.anthropic.com/v1/messages")
+
+
+def status_error(cls, code: int):
+    return cls(f"status {code}", response=httpx2.Response(code, request=SDK_REQ), body=None)
+
+
+def test_t3_models_are_the_platforms_and_opus_is_refused(tmp_path):
+    assert {pairs.MODEL_FIRST, pairs.MODEL_RETRY} <= config.ALLOWED_MODELS
+    assert pairs.MODEL_FIRST == "claude-haiku-5-5" and pairs.MODEL_RETRY == "claude-sonnet-5-5"
+    assert set(pairs.THINKING) <= config.ALLOWED_MODELS
+    assert all(t["type"] != "enabled" for t in pairs.THINKING.values())
+    for bad in ("claude-opus-5-5", "claude-fable-5-1", "gpt-4"):
+        with pytest.raises(pairs.PairsError):
+            pairs.require_model(bad)
+    with pytest.raises(pairs.PairsError):
+        pairs.run(t3_data(tmp_path), pairs.Options(models=("claude-opus-5-5", SONNET), write=False), client_factory=lambda: pytest.fail("no call"))
+
+
+def test_t3_normalized_is_trains():
+    for s in ["Red  WOOL!", "a warm, bold gift for my mom. she loves red wool. under $200", "送给朋友的小耳环，颜色要亮", "Diné — hand-spun", ""]:
+        assert pairs.normalized(s) == train.normalized(s)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        PLANTED_BAD,
+        "Navajo rug",
+        "navajo rug in red",
+        "Ojibwe-style earrings",
+        "ojibwe style beaded earrings",
+        "Acoma Pueblo pottery",
+        "Seminole patchwork skirt",
+        "Native American jewelry",
+        "Dine weaving",
+        "turquoise ring navajo",
+        "Navajo",
+        "纳瓦霍地毯",
+        "奥吉布瓦风格的耳环",
+        "a bowl that symbolizes rain",
+        "red shell earrings",
+        "beaded earrings with a feather",
+        "authentic handwoven rug",
+        "dreamcatcher earrings",
+        "sand painting wall weaving",
+        "Indian silver ring",
+        "earrings from a tribe",
+        "jar with a kachina",
+        "神圣的陶罐",
+        "寓意吉祥的耳环",
+        "see www.example.net for earrings",
+        "earrings at https://shop.example.com",
+    ],
+)
+def test_t3_content_filter_drops(tmp_path, text):
+    f = pairs.ContentFilter(t3_data(tmp_path).content_rules)
+    assert f.hits(text), text
+    assert not f.ok(text)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "weaving by a Diné weaver",
+        "wall weaving by Diné (Navajo) weavers",
+        "earrings made by Ojibwe artists",
+        "rug from the Navajo Nation",
+        "patchwork skirt sewn by Seminole women",
+        "pottery by Acoma potters",
+        "earrings by Ojibwe",
+        "纳瓦霍族织工的地毯",
+        "纳瓦霍（Diné）织工做的壁挂",
+        "an eggshell white bowl",
+        "spirited red skirt",
+        "furry",
+        "a stepped diamond in grey, red and black",
+        "红色花朵串珠耳环",
+    ],
+)
+def test_t3_content_filter_keeps(tmp_path, text):
+    f = pairs.ContentFilter(t3_data(tmp_path).content_rules)
+    assert f.hits(text) == [], text
+
+
+def test_t3_leak_guard_drops_eval_queries_the_tour_query_and_near_copies(tmp_path):
+    d = t3_data(tmp_path)
+    g = pairs.LeakGuard.from_data(d)
+    assert g.match("grey zigzags on a wool weaving") == ("sq_t01", "equal")
+    assert g.match("Grey zigzags, on a WOOL weaving!!") == ("sq_t01", "equal")
+    assert g.match("query: grey zigzags on a wool weaving")  # a prefix doesn't hide it
+    assert g.match(d.demo_query["text"]) == ("the tour query", "equal")
+    assert g.match(TOUR_VARIANT)[0] == "the tour query"  # every token is in the tour query
+    assert g.match("warm red wool gift for my mom")[0] == "the tour query"
+    assert g.match("zigzags on a grey wool weaving")[0] == "sq_t01"  # all tokens shared, reordered
+    assert g.match("grey zigzag on wool weavings")[1] in ("terms", "tokens")  # plurals and stopwords
+    assert g.match("turquoise drop earrings for my sister, silver")[0] == "sq_t02"  # contains it
+    assert g.match("带花的串珠耳环")[0] == "sq_t03"
+    assert g.match("带花的串珠耳环，红色")[0] == "sq_t03"  # holds it whole
+    for clean in ("a stepped diamond wall weaving", "silver hoop earrings", "红色叶子耳环", "beaded earrings with flowers"):
+        assert g.match(clean) is None, clean
+
+
+def test_t3_near_copy_rules_compare_chinese_by_bigrams():
+    assert pairs.leak_terms("蓝白拼布裙") == {"蓝白", "白拼", "拼布", "布裙"}
+    assert pairs.leak_terms("Red  earrings, 红") == {"red", "earring", "红"}
+    g = pairs.LeakGuard([("sq_x", "蓝白拼布裙"), ("sq_y", "pink beadwork earrings")])
+    # Character by character this shares 4 of the held query's 5 characters; by bigrams 1 of 4.
+    assert g.match("蓝黄色的拼布长裙") is None
+    assert g.match("蓝白拼布裙子")[0] == "sq_x"
+    assert g.match("蓝白拼布裙，很适合夏天")[0] == "sq_x"  # holds it whole
+    # English: holding all three terms is a near copy, two of three isn't.
+    assert g.match("pink beadwork earrings with little flowers") == ("sq_y", "contains")
+    assert g.match("pink beaded earrings with little flowers") is None
+
+
+def test_t3_hard_negatives_drop_shared_motif_mood_and_recipient(tmp_path):
+    d = t3_data(tmp_path)
+    nf = pairs.NegativeFilter(pairs.Vocab(d))
+    # pc_10 has a leaf motif (planted), pc_01 shares nothing with this query.
+    assert nf.keep("earrings with green leaves", "looks", "pc_14", ["pc_10", "pc_01"]) == (["pc_01"], 1)
+    # A mood, occasion, recipient, short, long or misspelled line gets no negative at all.
+    for voice in ("mood", "occasion", "recipient", "short", "long", "misspelled"):
+        assert nf.keep("something bold with leaves", voice, "pc_14", ["pc_10", "pc_01"]) == ([], 0)
+    # A mood word in a looks query: pc_01's vibe holds "bold" too.
+    assert nf.keep("bold earrings with dots", "looks", "pc_14", ["pc_01", "pc_10"]) == (["pc_10"], 1)
+    # A recipient word: pc_01 is a gift for mom.
+    assert nf.keep("red earrings for my mother", "looks", "pc_14", ["pc_01", "pc_10"]) == (["pc_10"], 1)
+    # Chinese motif words count too.
+    assert nf.keep("绿色叶子耳环", "looks", "pc_14", ["pc_10", "pc_01"]) == (["pc_01"], 1)
+    # Every word known and the negative has them all: it answers the query as well, so it goes.
+    assert nf.keep("silver earrings", "material", "pc_10", ["pc_14"]) == (["pc_14"], 0)  # pc_14 isn't silver
+    assert nf.keep("turquoise earrings", "material", "pc_10", ["pc_14"]) == (["pc_14"], 0)
+    assert nf.keep("red earrings", "looks", "pc_01", ["pc_14"]) == ([], 1)  # pc_14 answers it at least as well
+    assert nf.keep("red earrings", "looks", "pc_14", ["pc_01"]) == (["pc_01"], 0)  # pc_01 isn't earrings
+    assert nf.keep("earrings", "looks", "pc_14", ["pc_10"]) == ([], 1)
+    # An unknown word ("beaded") keeps the negative: the query isn't fully known.
+    assert nf.keep("beaded earrings", "looks", "pc_14", ["pc_10"]) == (["pc_10"], 0)
+
+
+def test_t3_a_fake_claude_run_keeps_the_eval_query_the_tour_query_and_banned_words_out(tmp_path):
+    d = t3_data(tmp_path)
+    result, fake, o = t3_run(d, {"pc_01": [pc_01_answer()], "pc_10": [answer("pc_10")], "pc_14": [pc_14_answer()]}, tmp_path)
+    lines = read_lines(o.out)
+    assert lines == result.lines and len(lines) > 50
+    texts = [pairs.normalized(line["query"]) for line in lines]
+    for leaked in ("grey zigzags on a wool weaving", TOUR_VARIANT, d.demo_query["text"], PLANTED_BAD):
+        assert pairs.normalized(leaked) not in texts, leaked
+    assert not any("navajo" in t or "spiritual" in t for t in texts)
+    # The file is what train.py reads: every line valid, no eval or tour query.
+    loaded = train.load_pairs(o.out, d)
+    train.guard_eval_leak(loaded, d)
+    assert len(loaded) == len(lines)
+    for line in lines:
+        assert set(line) == {"query", "lang", "voice", "pieceId", "negativeId"}
+        assert line["voice"] in pairs.VOICES and line["lang"] in ("en", "zh")
+        assert compose.has_one_prefix(compose.query_text(line["query"], []), "query")
+        assert line["negativeId"] is None or line["voice"] in pairs.NEGATIVE_VOICES
+        assert line["negativeId"] != line["pieceId"]
+    # Each anchor once per positive.
+    assert len({(pairs.normalized(x["query"]), x["pieceId"]) for x in lines}) == len(lines)
+    by_text = {x["query"]: x for x in lines}
+    assert by_text["earrings with green leaves"]["negativeId"] == "pc_01"  # pc_10 shares the leaf motif
+    assert by_text["red and green beaded earrings"]["negativeId"] in ("pc_10", "pc_01")
+    assert by_text["something bold, a pair of red earrings"]["negativeId"] is None  # a mood line
+    meta = json.loads(o.meta.read_text(encoding="utf-8"))
+    assert meta["pairSource"] == "claude"
+    c = meta["counts"]
+    assert (c["pieces"], c["claudePieces"], c["templatePieces"], c["calls"], c["lines"]) == (3, 3, 0, 3, len(lines))
+    assert c["dropped"]["contentTotal"] == 1 and c["dropped"]["content"] == {"stereotype": 1}
+    assert c["dropped"]["leakTotal"] == 2
+    assert c["dropped"]["negatives"] >= 1
+    assert meta["usage"] == {"inputTokens": 300, "outputTokens": 120}
+    assert train.pairs_source(o.meta, o.out) == ("claude", meta["notes"])
+    assert any("eval-leak guard dropped 2 queries" in n for n in meta["notes"])
+    # The calls: Haiku first, 60 s timeout, structured output, no sampling or thinking parameters.
+    assert len(fake.calls) == 3
+    for call in fake.calls:
+        assert call["model"] == HAIKU and call["thinking"] == {"type": "disabled"}
+        assert call["output_format"] is pairs.WrittenQueries and call["timeout"] == 60.0
+        assert [m["role"] for m in call["messages"]] == ["user"]
+        for banned in ("temperature", "top_p", "top_k"):
+            assert banned not in call
+    # The meta and the log never hold a query.
+    assert PLANTED_BAD not in o.meta.read_text(encoding="utf-8")
+    assert "grey zigzags" not in o.meta.read_text(encoding="utf-8")
+
+
+def test_t3_the_prompt_gives_the_record_and_the_other_pieces_but_no_eval_query(tmp_path):
+    d = t3_data(tmp_path)
+    prompt = pairs.build_prompt(d, "pc_14")
+    assert "The piece, pc_14:" in prompt and "earrings" in prompt and "glass beads, leather" in prompt
+    assert "flower, leaf" in prompt and "Floral beadwork" in prompt
+    assert "pc_01: Small grey, red and black wool weaving, wall weaving" in prompt
+    assert "pc_14:" not in prompt.split("The other pieces")[1]
+    assert all(q["text"] not in prompt for q in T3_EVAL)
+    assert d.demo_query["text"] not in prompt
+    system = pairs.system_prompt(d.content_rules)
+    assert "{avoid}" not in system and "spiritual" in system and "dreamcatcher" in system
+    assert "fictional" in system and "Never quote the piece's title whole" in system
+    for word in ("symbol", "meaning"):
+        assert word not in prompt.lower()
+
+
+def test_t3_a_failed_check_retries_once_on_sonnet(tmp_path):
+    d = t3_data(tmp_path)
+    short = answer("pc_10", filler_queries("pc_10", 8, 2))  # 10 queries: fails the 18 to 22 check
+    result, fake, o = t3_run(d, {"pc_01": [answer("pc_01")], "pc_10": [short, answer("pc_10")], "pc_14": [answer("pc_14")]}, tmp_path)
+    assert [c["model"] for c in fake.calls if c["piece"] == "pc_10"] == [HAIKU, SONNET]
+    sonnet = next(c for c in fake.calls if c["model"] == SONNET)
+    assert sonnet["thinking"] == {"type": "between_tools"}
+    assert result.meta["pairSource"] == "claude" and result.meta["counts"]["retriedPieces"] == 1
+    assert result.meta["pieces"]["pc_10"] == {"source": "claude", "attempts": 2, "model": SONNET}
+
+
+@pytest.mark.parametrize(
+    "bad",
+    [
+        pytest.param(lambda pid: answer(pid, filler_queries(pid, 18, 0) + [wq("short", "第一款")]), id="too few chinese"),
+        pytest.param(lambda pid: answer(pid, [wq("short", f"short {i} {pid}") for i in range(16)] + [wq("short", f"第{i}款") for i in range(4)]), id="one voice"),
+        pytest.param(lambda pid: answer(pid, filler_queries(pid, 15, 4) + [wq("long", "x" * 201)]), id="too long"),
+        pytest.param(lambda pid: answer(pid, negatives=["pc_99"]), id="unknown negative"),
+        pytest.param(lambda pid: answer(pid, negatives=[pid]), id="self negative"),
+        pytest.param(lambda pid: answer(pid, filler_queries(pid, 12, 3) + [wq("looks", w) for w in ("sacred jar", "tribal earrings", "Navajo rug", "mystical rug", "exotic pouch")]), id="five content drops"),
+        pytest.param(lambda pid: SimpleNamespace(parsed_output=None, stop_reason="refusal", usage=None), id="refusal"),
+        pytest.param(lambda pid: SimpleNamespace(parsed_output=None, stop_reason="max_tokens", usage=None), id="cut off"),
+        pytest.param(lambda pid: ValueError("bad json"), id="malformed"),
+    ],
+)
+def test_t3_two_failures_fall_back_to_templates_for_that_piece(tmp_path, bad):
+    d = t3_data(tmp_path)
+    result, fake, o = t3_run(d, {"pc_01": [answer("pc_01")], "pc_10": [bad("pc_10"), bad("pc_10")], "pc_14": [answer("pc_14")]}, tmp_path)
+    assert len([c for c in fake.calls if c["piece"] == "pc_10"]) == 2
+    assert result.meta["pairSource"] == "mixed"
+    p10 = result.meta["pieces"]["pc_10"]
+    assert p10["source"] == "template" and p10["attempts"] == 2 and p10["reason"]
+    assert {x["pieceId"] for x in result.lines} == {"pc_01", "pc_10", "pc_14"}
+    assert train.pairs_source(o.meta, o.out)[0] == "mixed"
+
+
+def test_t3_four_content_drops_still_pass_and_are_counted(tmp_path):
+    d = t3_data(tmp_path)
+    four = answer("pc_10", filler_queries("pc_10", 12, 4) + [wq("looks", w) for w in ("sacred jar", "tribal earrings", "Navajo earrings", "mystical earrings")])
+    result, fake, o = t3_run(d, {"pc_01": [answer("pc_01")], "pc_10": [four], "pc_14": [answer("pc_14")]}, tmp_path)
+    assert result.meta["pieces"]["pc_10"]["attempts"] == 1
+    assert result.meta["counts"]["dropped"]["contentTotal"] == 4
+
+
+def test_t3_a_host_that_refuses_stops_every_call_and_templates_carry_the_run(tmp_path):
+    d = t3_data(tmp_path)
+    refused = status_error(anthropic.PermissionDeniedError, 403)
+    result, fake, o = t3_run(d, {pid: [refused, refused] for pid in ("pc_01", "pc_10", "pc_14")}, tmp_path)
+    assert len(fake.calls) == 1
+    assert result.meta["pairSource"] == "template"
+    assert "refused" in result.meta["templateReason"]
+    assert all(p["source"] == "template" for p in result.meta["pieces"].values())
+    lines = read_lines(o.out)
+    assert lines and {x["pieceId"] for x in lines} == {"pc_01", "pc_10", "pc_14"}
+    train.guard_eval_leak(train.load_pairs(o.out, d), d)
+
+
+def test_t3_failing_connections_stop_after_a_few_calls(tmp_path, monkeypatch):
+    monkeypatch.setattr(pairs, "STOP_AFTER_ERRORS", 2)
+    d = t3_data(tmp_path)
+    down = anthropic.APIConnectionError(request=SDK_REQ)
+    result, fake, o = t3_run(d, {pid: [down, down] for pid in ("pc_01", "pc_10", "pc_14")}, tmp_path)
+    assert len(fake.calls) == 2
+    assert result.meta["pairSource"] == "template" and "in a row failed" in result.meta["templateReason"]
+
+
+def test_t3_busy_answers_pause_and_retry(tmp_path):
+    d = t3_data(tmp_path)
+    paused: list[float] = []
+    fake = FakeClaude({"pc_01": [status_error(anthropic.RateLimitError, 429), answer("pc_01")], "pc_10": [answer("pc_10")], "pc_14": [answer("pc_14")]})
+    o = pairs.Options(out=tmp_path / "p.jsonl", meta=tmp_path / "m.json", workers=1)
+    result = pairs.run(d, o, client_factory=lambda: fake, pause=paused.append)
+    assert paused == [pairs.BUSY_PAUSE_S]
+    assert result.meta["pairSource"] == "claude" and result.meta["pieces"]["pc_01"]["attempts"] == 2
+
+
+def test_t3_a_model_that_answers_400_is_not_called_again(tmp_path):
+    d = t3_data(tmp_path)
+    bad = status_error(anthropic.BadRequestError, 400)
+    result, fake, o = t3_run(d, {"pc_01": [bad, answer("pc_01")], "pc_10": [answer("pc_10")], "pc_14": [answer("pc_14")]}, tmp_path)
+    assert [c["model"] for c in fake.calls] == [HAIKU, SONNET, SONNET, SONNET]
+    assert result.meta["pairSource"] == "claude"
+
+
+def test_t3_the_call_cap_and_the_deadline_send_the_rest_to_templates(tmp_path):
+    d = t3_data(tmp_path)
+    good = {pid: [answer(pid)] for pid in ("pc_01", "pc_10", "pc_14")}
+    result, fake, o = t3_run(d, good, tmp_path, max_calls=1)
+    assert len(fake.calls) == 1 and result.meta["pairSource"] == "mixed"
+    assert "cap" in result.meta["pieces"]["pc_10"]["reason"]
+    clock = iter([0.0, 0.0, 0.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0])
+    fake2 = FakeClaude(good)
+    o2 = pairs.Options(out=tmp_path / "p2.jsonl", meta=tmp_path / "m2.json", workers=1, deadline_s=10.0)
+    r2 = pairs.run(d, o2, client_factory=lambda: fake2, now=lambda: next(clock, 1000.0), pause=lambda s: None)
+    assert len(fake2.calls) == 1
+    assert "ran out of time" in r2.meta["pieces"]["pc_14"]["reason"]
+
+
+def test_t3_without_a_key_it_uses_templates_and_never_builds_a_client(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "ANTHROPIC_API_KEY", None)
+    d = t3_data(tmp_path)
+    o = pairs.Options(out=tmp_path / "p.jsonl", meta=tmp_path / "m.json")
+    result = pairs.run(d, o, client_factory=lambda: pytest.fail("no client without a key"))
+    assert result.meta["pairSource"] == "template" and result.meta["templateReason"] == "no Anthropic key is set"
+    assert result.meta["counts"]["calls"] == 0
+    o2 = pairs.Options(source="template", out=tmp_path / "p2.jsonl", meta=tmp_path / "m2.json")
+    monkeypatch.setattr(config, "ANTHROPIC_API_KEY", "fake-anthropic-api-key-for-tests")
+    r2 = pairs.run(d, o2, client_factory=lambda: pytest.fail("--source template makes no call"))
+    assert r2.meta["templateReason"] == "--source template" and r2.lines == result.lines
+
+
+def test_t3_templates_follow_the_rules(tmp_path):
+    d = t3_data(tmp_path)
+    f = pairs.ContentFilter(d.content_rules)
+    for pid in d.piece_ids():
+        cands = pairs.template_queries(d, pid)
+        assert 12 <= len(cands) <= 22, (pid, len(cands))
+        assert sum(c.lang == "zh" for c in cands) >= 3
+        assert len({c.voice for c in cands}) >= 4
+        assert all(c.voice in pairs.VOICES and f.ok(c.text) and len(c.text) <= pairs.MAX_QUERY_CHARS for c in cands)
+        assert len({pairs.normalized(c.text) for c in cands}) == len(cands)
+        assert pairs.template_queries(d, pid) == cands  # deterministic
+    assert pairs.template_negatives(d, "pc_10") == ["pc_14"] and pairs.template_negatives(d, "pc_14") == ["pc_10"]
+    assert pairs.template_negatives(d, "pc_01") == []
+    assert pairs.misspell("red earrings", 0) == "red earings"
+    assert pairs.misspell("grey wall weaving", 1) != "grey wall weaving"
+
+
+def test_t3_templates_cover_every_word_in_the_real_catalog():
+    try:
+        d = b11data.load()
+    except b11data.DataError as exc:
+        pytest.skip(str(exc))
+    f = pairs.ContentFilter(d.content_rules)
+    tables = {"colors": pairs.ZH_COLORS, "materials": pairs.ZH_MATERIALS, "techniques": pairs.ZH_TECHNIQUES, "motifs": pairs.ZH_MOTIFS}
+    for pid, p in d.pieces.items():
+        for key, table in tables.items():
+            missing = [w for w in p["facets"].get(key) or [] if w not in table]
+            assert not missing, (pid, key, missing)
+        for w in p["vibe"]["moods"]:
+            assert w in pairs.ZH_MOODS
+        for w in p["vibe"]["recipients"]:
+            assert w in pairs.ZH_RECIPIENTS and w in pairs.RECIPIENT_EN
+        for w in p["vibe"]["occasions"]:
+            assert w in pairs.ZH_OCCASIONS and w in pairs.OCCASION_EN
+        cands = pairs.template_queries(d, pid)
+        assert len(cands) >= 15 and sum(c.lang == "zh" for c in cands) >= 3, pid
+        assert all(f.ok(c.text) for c in cands)
+
+
+def test_t3_the_real_sdk_on_the_wire(tmp_path):
+    d = t3_data(tmp_path)
+    sent: list[dict] = []
+    body = {pid: answer(pid).model_dump_json() for pid in ("pc_01", "pc_10", "pc_14")}
+
+    def handler(request):
+        payload = json.loads(request.content)
+        sent.append(payload)
+        pid = re.search(r"The piece, (pc_\d+):", payload["messages"][0]["content"]).group(1)
+        return httpx2.Response(200, json={
+            "id": "msg_test", "type": "message", "role": "assistant", "model": payload["model"],
+            "content": [{"type": "text", "text": body[pid]}], "stop_reason": "end_turn", "stop_sequence": None,
+            "usage": {"input_tokens": 1000, "output_tokens": 500},
+        })
+
+    def factory():
+        return anthropic.Anthropic(
+            api_key="fake-key-for-tests", base_url=config.CLAUDE_BASE_URL,
+            http_client=httpx2.Client(transport=httpx2.MockTransport(handler)), max_retries=0,
+        )
+
+    o = pairs.Options(out=tmp_path / "p.jsonl", meta=tmp_path / "m.json", workers=2)
+    result = pairs.run(d, o, client_factory=factory)
+    assert result.meta["pairSource"] == "claude" and len(sent) == 3
+    for wire in sent:
+        assert wire["model"] == HAIKU and wire["thinking"] == {"type": "disabled"}
+        for banned in ("temperature", "top_p", "top_k"):
+            assert banned not in wire
+        assert wire["output_config"]["format"]["type"] == "json_schema"
+        schema = wire["output_config"]["format"]["schema"]
+        assert "queries" in json.dumps(schema) and "hard_negative_ids" in json.dumps(schema)
+        assert [m["role"] for m in wire["messages"]] == ["user"]
+        assert 0 < wire["max_tokens"] <= 4000
+        assert "fictional" in json.dumps(wire["system"])
+    assert result.meta["usage"] == {"inputTokens": 3000, "outputTokens": 1500}
+
+
+def test_t3_make_client_takes_the_key_base_url_timeout_and_no_retries():
+    c = pairs.make_client()  # the autouse fixture's fake key: building the client calls nothing
+    assert str(c.base_url).rstrip("/") == config.CLAUDE_BASE_URL
+    assert c.max_retries == 0 and c.timeout == pairs.CALL_TIMEOUT_S == 60.0
+
+
+def test_t3_nothing_is_written_until_the_run_finishes_and_partial_runs_need_out(tmp_path, capsys):
+    d = t3_data(tmp_path)
+    r = pairs.run(d, pairs.Options(source="template", write=False, out=tmp_path / "p.jsonl", meta=tmp_path / "m.json"))
+    assert r.lines and not (tmp_path / "p.jsonl").exists() and not (tmp_path / "m.json").exists()
+    assert pairs.main(["--pieces", "pc_01"]) == 1
+    assert "--out" in capsys.readouterr().err
+    with pytest.raises(pairs.PairsError, match="searchEval is empty"):
+        pairs.run(t3_data(tmp_path, eval_queries=[]), pairs.Options(source="template", write=False))
+
+
+def test_t3_raw_answers_rerun_the_filters_with_no_call(tmp_path):
+    d = t3_data(tmp_path)
+    first, fake, o = t3_run(d, {"pc_01": [pc_01_answer()], "pc_10": [answer("pc_10")], "pc_14": [pc_14_answer()]}, tmp_path)
+    raw = json.loads(pairs.RAW_PATH.read_text(encoding="utf-8"))
+    assert sorted(raw["pieces"]) == ["pc_01", "pc_10", "pc_14"] and raw["pieces"]["pc_14"]["model"] == HAIKU
+    # The raw file keeps the answer before the filters, so the planted queries are in it.
+    assert PLANTED_BAD in json.dumps(raw["pieces"]["pc_01"], ensure_ascii=False)
+    o2 = pairs.Options(source="raw", out=tmp_path / "again.jsonl", meta=tmp_path / "again_meta.json")
+    again = pairs.run(d, o2, client_factory=lambda: pytest.fail("--source raw makes no call"))
+    assert again.lines == first.lines
+    assert again.meta["pairSource"] == "claude" and again.meta["counts"]["calls"] == 0
+    assert again.meta["counts"]["dropped"] == first.meta["counts"]["dropped"]
+    assert "with no new call" in again.meta["rebuilt"]
+    # A template run writes no raw file, and a missing raw file stops with one line.
+    pairs.RAW_PATH.unlink()
+    pairs.run(d, pairs.Options(source="template", out=tmp_path / "t.jsonl", meta=tmp_path / "t.json"))
+    assert not pairs.RAW_PATH.exists()
+    with pytest.raises(pairs.PairsError, match="doesn't exist yet"):
+        pairs.run(d, pairs.Options(source="raw", write=False))
+
+
+def test_t3_cli_dry_run_on_the_real_data_writes_nothing(tmp_path, capsys):
+    before = PAIRS_FILE.stat().st_mtime if PAIRS_FILE.exists() else None
+    try:
+        code = pairs.main(["--source", "template", "--dry-run"])
+    except b11data.DataError as exc:  # pragma: no cover - the snapshot is committed
+        pytest.skip(str(exc))
+    out = capsys.readouterr().out
+    assert code == 0 and "pairSource template" in out and "eval-leak guard" in out
+    assert "wrote" not in out
+    assert (PAIRS_FILE.stat().st_mtime if PAIRS_FILE.exists() else None) == before
+
+
+def test_t3_pairs_py_imports_no_sdk_or_torch():
+    code = "import sys\nimport server.b11_embed.pairs\nprint('torch' in sys.modules, 'anthropic' in sys.modules)\n"
+    env = {**os.environ, "PYTHONDONTWRITEBYTECODE": "1"}
+    res = subprocess.run([sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env)
+    assert res.returncode == 0, res.stderr[-500:]
+    assert res.stdout.strip() == "False False"
+
+
+def test_t3_the_committed_pairs_file_is_clean():
+    if not PAIRS_FILE.exists():
+        pytest.skip("pairs.jsonl isn't written yet (run python server/b11_embed/pairs.py)")
+    try:
+        d = b11data.load()
+    except b11data.DataError as exc:
+        pytest.skip(str(exc))
+    loaded = train.load_pairs(PAIRS_FILE, d)
+    train.guard_eval_leak(loaded, d)
+    lines = read_lines(PAIRS_FILE)
+    assert len(loaded) == len(lines)
+    f = pairs.ContentFilter(d.content_rules)
+    g = pairs.LeakGuard.from_data(d)
+    assert [x["query"] for x in lines if not f.ok(x["query"])] == []
+    assert [x["query"] for x in lines if g.match(x["query"])] == []
+    assert all(len(x["query"]) <= pairs.MAX_QUERY_CHARS for x in lines)
+    assert all(x["negativeId"] is None or x["voice"] in pairs.NEGATIVE_VOICES for x in lines)
+    assert {x["pieceId"] for x in lines} == set(d.piece_ids())
+    assert len({(pairs.normalized(x["query"]), x["pieceId"]) for x in lines}) == len(lines)
+    meta = json.loads(META_FILE.read_text(encoding="utf-8"))
+    assert meta["pairSource"] in ("claude", "template", "mixed") and meta["counts"]["lines"] == len(lines)
+    assert all(isinstance(n, str) for n in meta["notes"]) and meta["notes"]
+    text = PAIRS_FILE.read_text(encoding="utf-8") + META_FILE.read_text(encoding="utf-8")
+    assert not re.search(r"https?://|www\.", text)
+    assert "sk-ant" not in text and "fake-" not in text
+
+
+@pytest.mark.live
+@needs_key("ANTHROPIC_API_KEY")
+def test_t3_live_claude_writes_one_pieces_queries():
+    d = b11data.load()
+    budget = pairs.Budget(max_calls=1, deadline_s=120.0)
+    writer = pairs.ClaudeWriter(d, pairs.make_client(), budget, pairs.ContentFilter(d.content_rules))
+    att, kind = writer.attempt("pc_01", pairs.MODEL_FIRST)
+    assert kind is None, att.reason
+    assert len(att.candidates) >= 10 and budget.usage["outputTokens"] > 0
+    assert att.reason is None or att.reason.startswith(("checks", "the content filter")), att.reason
+    assert all(pairs.ContentFilter(d.content_rules).ok(c.text) for c in att.kept)
