@@ -5,7 +5,8 @@
 //   nothing to scroll: seller-listing-notes, seller-listing-draft, seller-listing-check-<checkId>,
 //   seller-listing-indexed (process-data-tables is F-process's).
 // - Acceptance 10: the listings panel shows simulated-badge in scripted mode.
-// - The whole view fits the Sell frame at 1440 by 900, in English and in Chinese.
+// - The whole view fits the Sell frame at 1440 by 900, and at the beat's final state every step of
+//   the run shows with nothing to scroll (Cindy's route and the Lister included), in English only.
 // Selects by test ID only. Expected values come from src/mock/.
 import { expect, test } from "@playwright/test";
 import { LISTING } from "../../src/features/seller-hub/strings";
@@ -17,10 +18,10 @@ import {
   RUN_02_APPROVAL,
   RUN_02_DRAFT,
   RUN_02_INDEXED,
+  expectEnglishOnly,
   expectInside,
   expectUnclipped,
   openSell,
-  setLang,
   slotOf,
   storeState,
   studio,
@@ -80,16 +81,25 @@ test("d15-listing: notes, steps, draft, checks, the index line and apr_04, insid
   watch.expectClean();
 });
 
-test("the whole listing view fits the Sell frame in Chinese too", async ({ page }) => {
+test("at the beat's final state every step shows with nothing to scroll, in English only", async ({ page }) => {
   await openSell(page, "listings");
-  await tourListing(page, "approval.requested", { approvalId: RUN_02_APPROVAL.approvalId });
-  await setLang(page, "zh");
+  await tourListing(page, "approval.requested", { approvalId: RUN_02_APPROVAL.approvalId }, 1500);
   const frame = studio(page);
-  await expect(frame.getByTestId("seller-listing-approve")).toHaveText(LISTING.review.zh);
+  await expect(frame.getByTestId("seller-listing-approve")).toHaveText(LISTING.review.en);
+  const steps = frame.getByTestId("seller-listing-steps");
+  await expect(steps.locator('[data-testid^="seller-listing-step-"]')).toHaveCount(RUN_02.steps.length);
+  // Cindy's route and the Lister first, the newest step last: all in view, inside the frame.
+  for (const s of RUN_02.steps) {
+    const bubble = frame.getByTestId(`seller-listing-step-${s.stepId}`);
+    await expectUnclipped(bubble);
+    await expectInside(bubble, frame);
+  }
   for (const id of D15_IDS) {
     const el = frame.getByTestId(id);
     await expectUnclipped(el);
     await expectInside(el, frame);
   }
+  await expect(page.locator('[data-testid^="seller-listing-translated-"]')).toHaveCount(0);
+  await expectEnglishOnly(slotOf(page, "studio.listings.main"));
   await expect(slotOf(page, "studio.listings.main").getByTestId("simulated-badge")).toBeVisible();
 });

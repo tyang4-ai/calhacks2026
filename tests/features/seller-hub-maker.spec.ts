@@ -4,7 +4,7 @@
 // - Her work in progress shows its milestones, each with its status from the store's wip key,
 //   falling back to the mock's.
 // - A maker with no pieces, works or questions shows a short empty line for each.
-// - Acceptance 11: in Chinese the labels change and the amounts don't.
+// - English only (decisions.md, Oct 24 11:35 PM): no toggle, no Chinese on the panel.
 // Selects by test ID only (and the panel's data attributes inside a test ID). Expected values come
 // from src/mock/.
 import { expect, test } from "@playwright/test";
@@ -12,7 +12,7 @@ import { allMakers, pieces, worksInProgress } from "../../src/mock/index";
 import { formatCents } from "../../src/ui/formatCents";
 import { MAKER } from "../../src/features/seller-hub/strings";
 import { watchPage } from "../smoke/lib";
-import { FRAME_VIEWPORT, openMaker, seed, setLang } from "./seller-hub-lib";
+import { FRAME_VIEWPORT, expectEnglishOnly, openMaker, seed } from "./seller-hub-lib";
 
 test.use({ viewport: FRAME_VIEWPORT });
 
@@ -73,15 +73,9 @@ test("a maker with pieces but no work in progress or questions shows empty lines
   await expect(page.getByTestId("seller-maker-questions")).toContainText(MAKER.noQuestions.en);
 });
 
-test("in Chinese the labels change and the prices don't", async ({ page }) => {
+test("the side panel reads in English only", async ({ page }) => {
   await openMaker(page, "mkr_01");
-  await setLang(page, "zh");
-  const list = page.getByTestId("seller-maker-pieces");
-  await expect(page.getByTestId("seller-maker-side")).toContainText(MAKER.pieces.zh);
-  await expect(page.getByTestId("seller-maker-wip")).toContainText(MAKER.wip.zh);
-  for (const p of MINE) {
-    const row = list.locator(`[data-piece-id="${p.id}"]`);
-    await expect(row).toContainText(p.title.zh);
-    await expect(row).toContainText(formatCents(p.priceCents));
-  }
+  await expect(page.getByTestId("seller-maker-side")).toContainText(MAKER.pieces.en);
+  await expect(page.getByTestId("seller-maker-wip")).toContainText(MAKER.wip.en);
+  await expectEnglishOnly(page.getByTestId("seller-maker-side"));
 });

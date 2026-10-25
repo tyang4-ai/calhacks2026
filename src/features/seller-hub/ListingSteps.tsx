@@ -28,13 +28,19 @@ export function ListingSteps({ listingId, lang }: { listingId: string | null; la
   const reduced = useReducedMotion();
   const playing = player.isPlaying();
   const listRef = useRef<HTMLOListElement>(null);
+  const pinned = useRef<{ stepId: string | null; height: number }>({ stepId: null, height: 0 });
   const newestStepId = steps.length > 0 ? steps[steps.length - 1].stepId : null;
 
-  // Keep the newest step in view as the run streams.
+  // Keep the newest step in view: whenever a new step lands or the list's content changes height
+  // (a wrap, a font load), scroll it to the end. A whole run fits without scrolling at 1440 by 900,
+  // so this only matters for a longer run.
   useLayoutEffect(() => {
     const el = listRef.current;
-    if (el && newestStepId) el.scrollTop = el.scrollHeight;
-  }, [newestStepId]);
+    if (!el || !newestStepId) return;
+    if (pinned.current.stepId === newestStepId && pinned.current.height === el.scrollHeight) return;
+    el.scrollTop = el.scrollHeight;
+    pinned.current = { stepId: newestStepId, height: el.scrollHeight };
+  });
 
   return (
     <div className={styles.steps} data-testid="seller-listing-steps" data-run-id={runId ?? undefined} lang={lang}>
@@ -70,7 +76,7 @@ export function ListingSteps({ listingId, lang }: { listingId: string | null; la
                   text={step.summary}
                   at={step.at}
                   lang={lang}
-                  detail={<span className={styles.stepDetail}>{detail}</span>}
+                  badge={<span className={styles.stepDetail}>{detail}</span>}
                 />
               </li>
             );

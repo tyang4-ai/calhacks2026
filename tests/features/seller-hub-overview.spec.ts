@@ -12,7 +12,7 @@ import { counterfeitCandidates, flags, orders, refunds } from "../../src/mock/in
 import { formatCents } from "../../src/ui/formatCents";
 import { OVERVIEW } from "../../src/features/seller-hub/strings";
 import { watchPage } from "../smoke/lib";
-import { FRAME_VIEWPORT, openSell, seed, seekToEvent, storeState } from "./seller-hub-lib";
+import { FRAME_VIEWPORT, expectEnglishOnly, openSell, seed, seekToEvent, storeState } from "./seller-hub-lib";
 
 test.use({ viewport: FRAME_VIEWPORT });
 
@@ -108,7 +108,7 @@ test("a seeded counterfeit.flagged makes possible copies read 1, and the tile op
   await expect(tile(page, "flags")).toHaveAttribute("href", "/sell/month");
 });
 
-test("the overview panel shows the Simulated badge, its tiles in the frame, and Chinese labels with the same amounts", async ({ page }) => {
+test("the overview panel shows the Simulated badge and its tiles in the frame, in English only", async ({ page }) => {
   await openSell(page, "overview");
   await seekToEvent(page, "flag.raised", { flagId: FLG_01.id }, 300);
   const overview = page.getByTestId("frame-studio").getByTestId("seller-overview");
@@ -117,18 +117,6 @@ test("the overview panel shows the Simulated badge, its tiles in the frame, and 
     await expect(overview.getByTestId(`seller-overview-tile-${id}`)).toBeInViewport();
     await expect(tile(page, id)).toContainText(OVERVIEW.tiles[id].en);
   }
-  const waitingEn = await value(page, "waiting").textContent();
-  const salesEn = await value(page, "sales").textContent();
-
-  // Acceptance 11: Chinese labels, the same amounts.
-  for (let i = 0; i < 3; i++) {
-    if ((await page.evaluate(() => window.__cindia!.store.getState().lang)) === "zh") break;
-    await page.getByTestId("demo-lang-toggle").click();
-  }
-  for (const id of ["sales", "waiting", "approvals", "flags", "hits"] as const) {
-    await expect(tile(page, id)).toContainText(OVERVIEW.tiles[id].zh);
-    await expect(tile(page, id)).not.toContainText(OVERVIEW.tiles[id].en);
-  }
-  await expect(value(page, "waiting")).toHaveText(waitingEn!);
-  await expect(value(page, "sales")).toHaveText(salesEn!);
+  // English only (decisions.md, Oct 24 11:35 PM): no toggle, no Chinese on screen.
+  await expectEnglishOnly(overview);
 });

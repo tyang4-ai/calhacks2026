@@ -7,14 +7,15 @@
 // - The tour's scripted answer shows the same way, and the box goes.
 // - Questions show newest first, and only on their own maker's page.
 // - Acceptance 10: the questions panel shows simulated-badge in scripted mode.
-// - Acceptance 11: in Chinese the labels change; the buyer's question and her answer stay as written.
+// - English only (decisions.md, Oct 24 11:35 PM): no toggle, no Chinese on the panel; the buyer's
+//   question and her answer stay as written.
 // Selects by test ID only. Expected values come from src/mock/.
 import { expect, test } from "@playwright/test";
 import type { Payloads } from "../../src/core/events";
 import { pieces } from "../../src/mock/index";
 import { MAKER } from "../../src/features/seller-hub/strings";
 import { watchPage } from "../smoke/lib";
-import { ANSWER_TIMEOUT, FRAME_VIEWPORT, QUESTION, SCRIPTED_ANSWER, logged, openMaker, questionSeed, seed, setLang, storeState } from "./seller-hub-lib";
+import { ANSWER_TIMEOUT, FRAME_VIEWPORT, QUESTION, SCRIPTED_ANSWER, expectEnglishOnly, logged, openMaker, questionSeed, seed, storeState } from "./seller-hub-lib";
 
 test.use({ viewport: FRAME_VIEWPORT });
 
@@ -98,14 +99,14 @@ test("questions show newest first, and only on their maker's page", async ({ pag
   await expect(page.getByTestId("seller-maker-questions")).toContainText(MAKER.noQuestions.en);
 });
 
-test("in Chinese the labels change, and the buyer's question and her answer stay as written", async ({ page }) => {
+test("the questions panel reads in English only, the buyer's question and her answer as written", async ({ page }) => {
   await openMaker(page, QUESTION.makerId);
   await seed(page, [questionSeed(), { type: "question.answered", payload: SCRIPTED_ANSWER }]);
-  await setLang(page, "zh");
   const card = page.getByTestId(`seller-maker-question-${QUESTION.id}`);
-  await expect(page.getByTestId("seller-maker-questions")).toContainText(MAKER.questions.zh);
-  await expect(card).toContainText(MAKER.forwarded.zh);
-  await expect(card).toContainText(PC.title.zh);
+  await expect(page.getByTestId("seller-maker-questions")).toContainText(MAKER.questions.en);
+  await expect(card).toContainText(MAKER.forwarded.en);
+  await expect(card).toContainText(PC.title.en);
   await expect(card).toContainText(QUESTION.text);
   await expect(page.getByTestId(`seller-maker-answer-${QUESTION.id}`)).toContainText(SCRIPTED_ANSWER.text);
+  await expectEnglishOnly(page.getByTestId("seller-maker-questions"));
 });

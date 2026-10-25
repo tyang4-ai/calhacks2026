@@ -101,7 +101,7 @@ export function ListingComposer({ lang }: { lang: Lang }) {
         value={notes}
         lang={textLang(notes)}
         onChange={(e) => setNotes(e.target.value)}
-        rows={10}
+        rows={12}
       />
       <Button testId="seller-listing-ask" variant="primary" onClick={ask} disabled={!canAsk} className={styles.askButton}>
         {running ? t(LISTING.running, lang) : t(LISTING.ask, lang)}

@@ -200,7 +200,7 @@ export const LISTING = {
 // The maker page's side panel (T6).
 
 export const MAKER = {
-  pieces: { en: "Pieces for sale", zh: "在售作品" },
+  pieces: { en: "Pieces", zh: "Pieces" },
   count: { en: "{n} in all", zh: "共 {n} 件" },
   oneOfAKind: { en: "One of a kind", zh: "独一无二" },
   series: { en: "Can be made again", zh: "可以再做" },

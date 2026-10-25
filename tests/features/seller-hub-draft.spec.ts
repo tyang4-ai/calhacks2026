@@ -1,7 +1,8 @@
 // F-seller-hub T5: the draft, its checks, the index line and the approve link.
-// - Acceptance 4 (draft): 300 ms after the run's listing.drafted, seller-listing-draft shows the title
-//   in both languages, the facet and vibe chips, L27 in seller-listing-translated-<lang> beside the
-//   version not in lst_01.lang only, and each check as passed or needs review with its note.
+// - Acceptance 4 (draft): 300 ms after the run's listing.drafted, seller-listing-draft shows the
+//   maker's own English title and summary, the facet and vibe chips, and each check as passed or
+//   needs review with its note. English only (decisions.md, Oct 24 11:35 PM): the Lister's translated
+//   version and L27 (seller-listing-translated-<lang>) are not rendered, and nothing shows in Chinese.
 // - Acceptance 5: 300 ms after its listing.indexed, seller-listing-indexed shows the payload's modelId
 //   and names cindia-drafts.
 // - Acceptance 6: before apr_04's approval.requested the approve link is disabled; after it, a click
@@ -9,11 +10,12 @@
 // Seeks by event (or seeds the run before the tour carries it), selects by test ID only. Expected
 // values come from src/mock/.
 import { expect, test } from "@playwright/test";
-import { GLOSSARY, L27, LISTING } from "../../src/features/seller-hub/strings";
+import { GLOSSARY, LISTING } from "../../src/features/seller-hub/strings";
 import { watchPage } from "../smoke/lib";
 import {
   FRAME_VIEWPORT,
   LST_01,
+  expectEnglishOnly,
   RUN_02_APPROVAL,
   RUN_02_DRAFT,
   RUN_02_INDEXED,
@@ -26,23 +28,19 @@ import {
 
 test.use({ viewport: FRAME_VIEWPORT });
 
-const OTHER = LST_01.lang === "en" ? "zh" : "en";
-
-test("300 ms after the draft: both languages, L27 on the translated one only, chips and every check", async ({ page }) => {
+test("300 ms after the draft: the maker's own English, no translated version, chips and every check", async ({ page }) => {
   const watch = watchPage(page);
   await openSell(page, "listings");
   await tourListing(page, "listing.drafted", { listingId: LST_01.id }, 300);
   const draft = studio(page).getByTestId("seller-listing-draft");
   await expect(draft).toBeVisible();
 
+  expect(LST_01.lang).toBe("en");
   await expect(draft).toContainText(RUN_02_DRAFT.title.en);
-  await expect(draft).toContainText(RUN_02_DRAFT.title.zh);
   await expect(draft).toContainText(RUN_02_DRAFT.summary.en);
-
-  const translated = draft.getByTestId(`seller-listing-translated-${OTHER}`);
-  await expect(translated).toBeVisible();
-  await expect(translated).toHaveText(L27.en);
-  await expect(draft.getByTestId(`seller-listing-translated-${LST_01.lang}`)).toHaveCount(0);
+  await expect(draft).not.toContainText(RUN_02_DRAFT.title.zh);
+  await expect(page.locator('[data-testid^="seller-listing-translated-"]')).toHaveCount(0);
+  await expectEnglishOnly(draft);
 
   const words = [
     RUN_02_DRAFT.facets.object.en,
@@ -118,18 +116,13 @@ test("after a grant the link reads approved, after a decline declined", async ({
   await expect(approve).toHaveAttribute("data-status", "declined");
 });
 
-test("in Chinese the labels change, L27 reads in Chinese and the draft's own words stay", async ({ page }) => {
+test("the listing view renders English only at the final d15 state", async ({ page }) => {
   await openSell(page, "listings");
   await tourListing(page, "approval.requested", { approvalId: RUN_02_APPROVAL.approvalId }, 0);
-  for (let i = 0; i < 3; i++) {
-    if ((await page.evaluate(() => window.__cindia!.store.getState().lang)) === "zh") break;
-    await page.getByTestId("demo-lang-toggle").click();
-  }
-  await expect(page.getByTestId(`seller-listing-translated-${OTHER}`)).toHaveText(L27.zh);
-  await expect(page.getByTestId("seller-listing-approve")).toHaveText(LISTING.review.zh);
+  await expect(page.getByTestId("seller-listing-approve")).toHaveText(LISTING.review.en);
   for (const c of RUN_02_DRAFT.checks) {
-    await expect(page.getByTestId(`seller-listing-check-${c.checkId}`)).toContainText(c.ok ? LISTING.passed.zh : LISTING.needsReview.zh);
+    await expect(page.getByTestId(`seller-listing-check-${c.checkId}`)).toContainText(c.ok ? LISTING.passed.en : LISTING.needsReview.en);
   }
-  await expect(page.getByTestId("seller-listing-draft")).toContainText(RUN_02_DRAFT.title.en);
-  await expect(page.getByTestId("seller-listing-draft")).toContainText(RUN_02_DRAFT.title.zh);
+  await expect(page.locator('[data-testid^="seller-listing-translated-"]')).toHaveCount(0);
+  await expectEnglishOnly(page.locator('[data-slot="studio.listings.main"]'));
 });

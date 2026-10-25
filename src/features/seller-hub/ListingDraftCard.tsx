@@ -1,8 +1,9 @@
 // The draft, its checks, the index line and the approve link (F-seller-hub T5), test ID
 // seller-listing-draft. It renders the newest listing.drafted for the followed listing, all from the
 // event's payload (events.md: listing.drafted carries its text and figures):
-// - the title and summary in English and Chinese. The version in the language the notes weren't
-//   written in (not the request's lang) carries seller-listing-translated-<lang> with L27,
+// - the title and summary in the maker's own language (English for every co-op maker). Under the
+//   English-only decision the Lister's translated version and L27 (seller-listing-translated-<lang>)
+//   are not rendered,
 // - the facets and the vibe words as kit Chips,
 // - one row per check (seller-listing-check-<checkId>): passed (jade, a check mark) or needs review
 //   (amber, "!", the payload's note), never color alone,
@@ -17,10 +18,8 @@ import { useCindia } from "../../core/store";
 import type { Lang as TextLang } from "../../core/types";
 import { Button, Chip } from "../../ui";
 import { publishApproval } from "./model";
-import { GLOSSARY, L27, LISTING, SEP, t, tf, type Lang } from "./strings";
+import { GLOSSARY, LISTING, SEP, t, tf, type Lang } from "./strings";
 import styles from "./seller-hub.module.css";
-
-const OTHER: Record<TextLang, TextLang> = { en: "zh", zh: "en" };
 
 function CheckMark({ ok }: { ok: boolean }) {
   return ok ? (
@@ -44,8 +43,9 @@ export function ListingDraftCard({ listingId, lang }: { listingId: string | null
     approval: publishApproval(s, listingId),
   }));
 
+  // English only (decisions.md, Oct 24 11:35 PM): the card shows the maker's own version, in the
+  // language she wrote her notes in, and never the Lister's translation or L27.
   const notesLang: TextLang = request?.lang ?? "en";
-  const translated = OTHER[notesLang];
 
   const approveLabel = !approval
     ? t(LISTING.waitingProposal, lang)
@@ -81,16 +81,6 @@ export function ListingDraftCard({ listingId, lang }: { listingId: string | null
           <div className={styles.version} lang={notesLang} data-version={notesLang}>
             <p className={styles.draftTitle}>{draft.title[notesLang]}</p>
             <p className={styles.draftSummary}>{draft.summary[notesLang]}</p>
-          </div>
-          <div className={styles.versionTranslated} lang={translated} data-version={translated}>
-            <p className={styles.draftTitleSmall}>{draft.title[translated]}</p>
-            <p className={styles.draftSummarySmall} title={draft.summary[translated]}>
-              {draft.summary[translated]}
-            </p>
-            <p className={styles.l27} data-testid={`seller-listing-translated-${translated}`} lang={lang}>
-              <span className={styles.l27Dot} aria-hidden="true" />
-              {t(L27, lang)}
-            </p>
           </div>
           <div className={styles.chipRows}>
             <div className={styles.chipRow} data-chips="facets">

@@ -3,14 +3,15 @@
 // - Acceptance 4 (steps): 300 ms after the run's listing.drafted, seller-listing-steps lists run_02's
 //   steps in order (Cindy routes, then the lister, tagger, checker and indexer), each with its agent's
 //   name from the roster, its summary and its ms, and only the indexer marked rule-based.
-// - The steps stream: after the run's first steps, only those show.
+// - The steps stream: after the run's first steps, only those show, and the newest is always in
+//   view. English only (decisions.md, Oct 24 11:35 PM): no toggle, no Chinese on screen.
 // Seeks by event (or seeds the run before the tour carries it), selects by test ID only. Expected
 // values come from src/mock/.
 import { expect, test } from "@playwright/test";
 import { getAgent } from "../../src/mock/index";
 import { LISTING } from "../../src/features/seller-hub/strings";
 import { watchPage } from "../smoke/lib";
-import { FRAME_VIEWPORT, LST_01, RUN_02, openSell, studio, tourListing } from "./seller-hub-lib";
+import { FRAME_VIEWPORT, LST_01, RUN_02, expectEnglishOnly, expectUnclipped, openSell, studio, tourListing } from "./seller-hub-lib";
 
 test.use({ viewport: FRAME_VIEWPORT });
 
@@ -63,17 +64,12 @@ test("300 ms after the draft: every step in order, named from the roster, the in
   watch.expectClean();
 });
 
-test("the steps read in Chinese with the toggle, the summaries from the payload", async ({ page }) => {
+test("the newest step is always in view as the run streams, and the steps read in English only", async ({ page }) => {
   await openSell(page, "listings");
-  await tourListing(page, "listing.drafted", { listingId: LST_01.id }, 300);
-  for (let i = 0; i < 3; i++) {
-    if ((await page.evaluate(() => window.__cindia!.store.getState().lang)) === "zh") break;
-    await page.getByTestId("demo-lang-toggle").click();
-  }
-  await expect(page.getByTestId("seller-listing-steps")).toContainText(LISTING.steps.zh);
   for (const s of RUN_02.steps) {
-    const bubble = page.getByTestId(`seller-listing-step-${s.stepId}`);
-    await expect(bubble).toContainText(getAgent(s.agentId)!.name.zh);
-    await expect(bubble).toContainText(s.summary.zh);
+    await tourListing(page, "swarm.step", { stepId: s.stepId });
+    await expectUnclipped(page.getByTestId(`seller-listing-step-${s.stepId}`));
   }
+  await expect(page.getByTestId("seller-listing-steps")).toContainText(LISTING.steps.en);
+  await expectEnglishOnly(page.getByTestId("seller-listing-steps"));
 });

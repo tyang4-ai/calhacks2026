@@ -191,14 +191,14 @@ export async function logged(page: Page, type: EventType): Promise<{ id: string;
   return s.log.entries.filter((e) => e.type === type).map((e) => ({ id: e.id, source: e.source }));
 }
 
-/** Switches the language toggle until the store's lang is `want`. */
-export async function setLang(page: Page, want: "auto" | "en" | "zh"): Promise<void> {
-  for (let i = 0; i < 4; i++) {
-    const lang = await page.evaluate(() => window.__cindia!.store.getState().lang);
-    if (lang === want) return;
-    await page.getByTestId("demo-lang-toggle").click();
-  }
-  throw new Error(`setLang: the toggle never reached ${want}`);
+/**
+ * English only (decisions.md, Oct 24 11:35 PM): the site has no language toggle, and nothing on the
+ * element renders in Chinese. Asserts its text holds no Han characters.
+ */
+export async function expectEnglishOnly(el: Locator): Promise<void> {
+  await expect(el.page().getByTestId("demo-lang-toggle")).toHaveCount(0);
+  const text = (await el.textContent()) ?? "";
+  expect(text.match(/[㐀-鿿]+/g) ?? [], "Chinese text on screen").toEqual([]);
 }
 
 /** A slot's wrapper, which holds the feature's panel and its Simulated badge. */
