@@ -404,7 +404,7 @@ In live mode B16 checks the books against Nessie: B01's matcher finds the $340 c
 | `steward` | claude | `claude-sonnet-5-5` | `community_page`, `verification_record` | Answers authenticity and meaning only from the community's page, the verification record and the piece's own story and heritage line, quoting its source, and says "I'll ask the maker" otherwise |
 | `clerk` | claude | `claude-haiku-5-5` | `order_lookup`, `policy` | Order status, shipping, returns. Read-only. Arrival dates come from `arrival_window`, which the run calls as code, so no model does date arithmetic. On the buyer side it looks up only the orders on screen (L17) |
 | `writer` | claude | `claude-sonnet-5-5` | none | Writes the reply in the person's language from the facts the others returned, and relays a maker's answer in her own words |
-| `lister` | claude | `claude-sonnet-5-5` | none | Drafts a listing in English and Chinese from the maker's notes, and marks the version the maker didn't write (L27) |
+| `lister` | claude | `claude-sonnet-5-5` | none | Drafts a listing's title and summary from the maker's notes |
 | `describer` | claude | `claude-sonnet-5-5` | `image` | Describes what's visible in a picture, in plain shape and color words |
 | `tagger` | claude | `claude-haiku-5-5` | `community_page` | Proposes vibe keywords for the maker to approve |
 | `checker` | claude | `claude-sonnet-5-5` | `community_page` | Checks a draft against the community's protocols and the maker's facts. `content_check()` backs it in code (L26) |
