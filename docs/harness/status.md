@@ -122,6 +122,7 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | demo-ok-b06 | ab7634d5f30ad74b62de909d7aaed30b6bf5fc91 | G5 B06 (v1) | Oct 24 5:58 AM |
 | demo-ok-b08 | 617ffb00c2b01a30685eb5b076c600d1f0a27970 | G5 B08 (v1) | Oct 24 5:58 AM |
 | demo-ok-b10 | fc2576af406e02a2c1d35033b3248e5a8fbb078d | G5 B10 (v1) | Oct 24 5:58 AM |
+| v2-reskin | 2b0823ede8b197784bb4e52a9deed9c956d9cd55 | R0 | Oct 24 6:56 PM |
 
 ## Environment
 
