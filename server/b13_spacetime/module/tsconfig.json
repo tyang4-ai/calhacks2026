@@ -1,0 +1,22 @@
+/*
+ * The tsconfig `spacetime init --lang typescript` writes for SpacetimeDB 2.13.0, limited to src/.
+ * `spacetime build` type-checks the module with node_modules/.bin/tsc before it bundles
+ * src/index.ts into dist/bundle.js. The options in the second group are required by SpacetimeDB.
+ */
+{
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    /* Required by SpacetimeDB, unchanged from its template */
+    "target": "ESNext",
+    "lib": ["ES2021", "dom"],
+    "module": "ESNext",
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["src"]
+}

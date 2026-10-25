@@ -1,0 +1,16 @@
+{
+  "name": "cindia-spacetime-module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cindia's SpacetimeDB module, the database cindia (docs/plans/B13-live.md). Built and published with the SpacetimeDB CLI 2.13.0, as server/b13_spacetime/README.md says.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "spacetime build"
+  },
+  "dependencies": {
+    "spacetimedb": "2.13.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
