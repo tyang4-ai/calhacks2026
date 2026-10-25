@@ -111,13 +111,13 @@ Gordon asked for proven, widely used skills, not home-made code. Read each skill
 
 `src/app/demo/pitch.ts` holds the same text once the tour lands. If the two ever differ, the file wins.
 
-**The tagline is "Made by hand. Paid in full."** It opens the pitch and the end card repeats it, so give it the strongest typographic moment in the video.
+**The tagline is "Describe the vibe. Gift the piece. Pay the person."** Gordon changed it at 3:25 AM, and it replaces "Made by hand. Paid in full." everywhere. It opens the pitch and the end card repeats it, so give it the strongest typographic moment in the video. If you already built a pitch scene or an end card with the old tagline, rebuild it from `src/app/demo/pitch.ts`.
 
 **Cindia**
-- Made by hand. Paid in full.
+- Describe the vibe. Gift the piece. Pay the person.
 - A platform for underrepresented makers, starting with Native American makers.
 - Yes, it's like Etsy. But we do the selling, the marketing and the books for them.
-- Buyers find a piece by describing a feeling, and watch the maker get paid.
+- Tell us who the gift is for, and we find handmade pieces that fit them.
 
 **Why**
 - Selling online takes time, broadband and marketing reach that many makers on tribal lands don't have.
@@ -153,6 +153,25 @@ This is Gordon's workflow, and the order matters.
 - **Cut list:** a CSV with file, start, end, beat and notes, so he can lay the files on the timeline in order.
 - **Audio:** no music or voice baked in. A copy with scratch audio, for reference only, is fine.
 - **Sending:** send the files with SendUserFile, split to stay under the size limit.
+
+## 9b. Notes for the edit, from the 4:30 AM review
+
+- **Beats with a process panel shrink the product.** In `d01-vibe` (from 66.5 s), `d04-support` (from 90 s), `d05-pay` (from 107 s), `d15-listing` (from 122 s), `d07-month` (from 142 s) and `d09-approve` (from 155 s), the product frame drops to 0.66 scale and its text to about 9 px at 1080p. Zoom into the product frame for the line that matters, or film those moments from a still at device scale 2.
+- **Cold open:** the 1.35 zoom on `d08-catch` hides the top bar, so add the "Demo. Every maker, community and story here is fictional. Nothing is for sale." notice as a caption. Don't repeat the flag's headline word for word. Use three callouts instead: "Contract: 40%", "Charged: 50%", "$340 short. Cindy caught it."
+- **Spend the spare seconds on holds.** The cut runs about 2:40. Use about 15 of the 20 spare seconds to hold zooms on:
+  - `d03-piece`: the gallery comparison, $86.00 against $134.48
+  - `d15-listing`: the check that strikes the claim
+  - `d07-month`: the matched count
+  - `d10-close`: two seconds of the real .xlsx open
+- **`d12-receipt`:** the eye goes to $180.00 first. Zoom to "Paid to the maker" and Grace N.'s note.
+- **`p03-how`** is the third text card in a row, and a first-time viewer drifts there. Give it motion from the product itself, such as a quick pass over the swarm view, the model map and the data view.
+- **End card:** hold it 8 seconds, showing:
+  - Cindia and the tagline
+  - "Caught 4 of 4 planted errors"
+  - L30
+  - cindia.design
+
+  The sixteen source names and four scores can't be read in 5 seconds, so leave them out of the hold.
 
 ## 10. Timeline
 
