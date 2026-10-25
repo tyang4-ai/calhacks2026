@@ -1,0 +1,349 @@
+/* The communities screens' layout. Colors, type and spacing come only from the kit's tokens. */
+
+/* A body that fills its slot and scrolls inside it, so the page chrome stays put. */
+.scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-32);
+}
+
+.h1 {
+  margin: 0;
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-36);
+  font-weight: 600;
+  line-height: var(--c-leading-heading);
+}
+
+.h2 {
+  margin: 0;
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-24);
+  font-weight: 600;
+  line-height: var(--c-leading-heading);
+}
+
+.h3 {
+  margin: 0;
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-21);
+  font-weight: 600;
+  line-height: var(--c-leading-heading);
+}
+
+.h1:lang(zh),
+.h2:lang(zh),
+.h3:lang(zh) {
+  font-family: var(--c-font-heading-zh);
+}
+
+.soft {
+  margin: 0;
+  color: var(--c-color-ink-soft);
+}
+
+.note {
+  margin: 0;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--c-space-12);
+}
+
+.rowBetween {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--c-space-16);
+}
+
+/* ---- The strip on Shop home ---- */
+
+.strip {
+  flex: 1 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.stripBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.stripGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--c-space-16);
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--c-space-8) var(--c-space-12);
+  font-size: var(--c-text-14);
+}
+
+/* ---- The community page ---- */
+
+.page {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--c-space-32);
+  align-content: start;
+  align-items: start;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-32);
+  min-width: 0;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-24);
+  min-width: 0;
+}
+
+.subline {
+  margin: 0;
+  font-size: var(--c-text-18);
+  color: var(--c-color-ink-soft);
+}
+
+/* The about text is a placeholder the Cindia team wrote, so it sits in a dashed box, never a quote. */
+.aboutBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+  padding: var(--c-space-24);
+  border: 1px dashed var(--c-color-ink-soft);
+  border-radius: var(--c-radius-panel);
+}
+
+.aboutText {
+  margin: 0;
+  font-size: var(--c-text-18);
+}
+
+.tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--c-space-8);
+}
+
+.tag {
+  font-size: var(--c-text-14);
+  font-weight: 500;
+  line-height: 1.4;
+  padding: var(--c-space-4) var(--c-space-8);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+}
+
+.people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--c-space-12) var(--c-space-24);
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-8);
+}
+
+.personName {
+  font-weight: 500;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--c-space-24);
+}
+
+.gridCell {
+  display: flex;
+  min-width: 0;
+}
+
+.others {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+}
+
+.otherName {
+  display: block;
+  font-weight: 600;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--c-space-12);
+  padding: var(--c-space-24);
+}
+
+/* ---- Projects and funding ---- */
+
+.amounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--c-space-8);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.amount {
+  font: inherit;
+  font-size: var(--c-text-16);
+  font-variant-numeric: tabular-nums;
+  padding: var(--c-space-8) var(--c-space-16);
+  color: var(--c-color-ink);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  cursor: pointer;
+}
+
+/* Picked: a heavier border and weight as well as the mat fill, so color never carries it alone. */
+.amountOn {
+  composes: amount;
+  font-weight: 600;
+  background: var(--c-color-mat);
+  border: 2px solid var(--c-color-ink);
+}
+
+.fundRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--c-space-12) var(--c-space-16);
+}
+
+.thanks {
+  margin: 0;
+  padding: var(--c-space-12) var(--c-space-16);
+  background: var(--c-color-jade-wash);
+  border-left: 3px solid var(--c-color-jade);
+}
+
+.updates {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+}
+
+.update {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: var(--c-space-12);
+  padding: var(--c-space-8) 0;
+  border-bottom: 1px solid var(--c-color-line);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--c-space-24);
+}
+
+.wip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+  min-width: 0;
+}
+
+.wipMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--c-space-8) var(--c-space-16);
+}
+
+.pending {
+  color: var(--c-color-amber);
+  font-weight: 600;
+  font-size: var(--c-text-14);
+}
+
+/* ---- Sell › Projects ---- */
+
+.sellGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--c-space-32);
+  align-items: start;
+}
+
+.cindy {
+  margin: 0;
+  padding: var(--c-space-12) var(--c-space-16);
+  background: var(--c-color-mat);
+  border-radius: var(--c-radius-panel);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--c-text-14);
+  font-variant-numeric: tabular-nums;
+}
+
+.table th {
+  text-align: left;
+  font-weight: 600;
+  padding: var(--c-space-8);
+  background: var(--c-color-mat);
+  border-bottom: 1px solid var(--c-color-line);
+}
+
+.table td {
+  padding: var(--c-space-8);
+  border-bottom: 1px solid var(--c-color-line);
+}
+
+.table .num {
+  text-align: right;
+}
