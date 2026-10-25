@@ -1,43 +1,45 @@
 # Cindia video · voiceover script
 
-Gordon reads this over the video. The video conversation films the tour's video mode, `/demo?video=1`, then holds some beats and trims others in the edit. So the times below are the edit's, not video mode's.
+Gordon reads this over the video. Every line uses the words on screen in its scene: the card lines word for word, and the product's own labels and headlines. A viewer who hears one sentence while reading another drops both.
 
-The cut runs 2:59 with the optional `d17` scene, or 2:50 without it. Both are under the 3-minute limit that Devpost and Figma's track set.
+The times are the edit's, for the video conversation's current cut of 2:56, with these changes:
+- the cold open goes to 6 s
+- the Why card goes to 12 s
+- d03 goes to 15 s, d04 to 15, d05 to 14, d15 to 12 and d07 to 11
+- the catch holds to 14 s
+- d11 goes to 7 s
 
-Each line is sized at about 2.5 words a second and starts when its scene starts. Updated Oct 25, 2026, 4:45 AM PT, from the 4:30 AM persona reviews.
+The optional `d17` scene is out, because it would take the cut past 3:00. Each line is sized at about 2.6 words a second, Gordon's pace in the first take. Updated Oct 25, 2026, 5:40 AM PT.
 
-| Time | Scene | Edit | Say |
+| Time | Scene | On screen | Say |
 |---|---|---|---|
-| 0:00 | Cold open on `d08-catch` | 5 s. Callouts: "Contract: 40%", "Charged: 50%", "$340 short" | "This gallery shorted a co-op $340. Cindy caught it." |
-| 0:05 | `p01-what`, the Cindia card | 10 s | "This is Cindia. Describe the vibe, gift the piece, pay the person. We're a platform for underrepresented makers, starting with Native American makers." |
-| 0:15 | `p02-why`, the Why card | 11 s | "Many makers on tribal lands lack the time, broadband and reach to sell online, and fakes sell as Native-made. Their craft, their prices, their say. We do the paperwork." |
-| 0:26 | `p03-how`, the How card | 10 s. Cut in quick shots of the swarm view, the model map and the data view | "Under the hood: small Claude agents, our own search model, SpacetimeDB for the records and Elastic to search them. A person approves anything that moves money." |
-| 0:36 | `d01-vibe`, vibe search | 14 s | "I'm shopping for my mom: warm, bold, red wool, under two hundred. I get keywords I can edit, and each result says why it matched. Our own model maps every piece by meaning." |
-| 0:50 | `d03-piece`, the weaving | 14 s. Hold 2 s on $134.48 against $86.00 | "This weaving took Grace N. 26 hours. Before I pay, I see that $134.48 of my $180 goes to her. Through the gallery, she'd get $86." |
-| 1:04 | `d04-support`, Help and the swarm | 12 s, trimmed from 18. Speed through the swarm's steps | "I ask if she wove it herself. Small agents answer only from the co-op's records, one checks every quote, and live, it takes about six seconds." |
-| 1:16 | `d05-pay`, Pay | 13 s, trimmed from 16 | "I pay, add five dollars to the co-op's community project, and my card becomes a token, so the number is never stored. The receipt will show when Grace N. is paid." |
-| 1:29 | `d15-listing`, a new listing | 13 s. Hold 3 s on the check | "On the maker's side, Lena T. types a few notes and agents draft her listing. We planted a false claim: hand-spun churro wool. Her notes say store-bought yarn, so a check stops it." |
-| 1:42 | `d06-money`, the money map | 6 s | "The money lands in the co-op's books. Live, its bank is Capital One's Nessie." |
-| 1:48 | `d07-month`, the month | 12 s. Hold 2 s on the matched count | "Cindy replays the whole month and matches all 23 payouts, bundled ones and refunds included. Each match links to the orders it pays for." |
-| 2:00 | `d08-catch`, the catch | 13 s. Hold 5 s | "Here's the catch. The bank deposit matches the gallery's statement, so a bank check passes it. Cindy reads the contract: 40%, not 50%. That's $340 missing." |
-| 2:13 | `d09-approve`, approvals | 7 s | "Cindy drafts the follow-up and the payouts. Only the manager can approve them." |
-| 2:20 | `d10-close`, the close | 8 s. Hold 3 s on Gordon's clip of the .xlsx opening in Excel | "The month closes into a real Excel file, and makers get paid two days after the close." |
-| 2:28 | `d11-maker`, Grace N.'s statement | 6 s | "Grace N.'s statement shows $95 held until the gallery pays, and tells her why." |
-| 2:34 | `d12-receipt`, the receipt | 8 s. Zoom to "Paid to the maker" and her note | "And my receipt now says paid to the maker, with a note from Grace N." |
-| 2:42 | `d17-ask-maker`, optional | 10 s, filmed with `?start=d17-ask-maker` | "And if I ask what the pattern means, Cindy won't guess. It asks Grace N. and shows her answer in her own words." |
-| 2:52 | End card | 7 s, or 8 s without `d17` | "Cindia. Describe the vibe. Gift the piece. Pay the person." |
+| 0:00 | Cold open on `d08-catch`, 6 s | The flag's headline, and the callouts "Contract: 40%", "Charged: 50%", "$340 short" | "The gallery paid $340 less than the contract says. Cindy caught it." |
+| 0:06 | `p01-what`, 10 s | The Cindia card | "Cindia. Describe the vibe. Gift the piece. Pay the person. A platform for underrepresented makers, starting with Native American makers." |
+| 0:16 | `p02-why`, 12 s | The Why card | "Selling online takes time, broadband and marketing reach that many makers on tribal lands don't have. Fakes sell as Native-made. Their craft, their prices, their say. We do the paperwork." |
+| 0:28 | `p03-how`, 10 s | The How card, with quick shots of the swarm view, the model map and the data view | "A swarm of small Claude agents, each with one job. SpacetimeDB holds every record, and Elastic searches them. A person approves anything that moves money." |
+| 0:38 | `d01-vibe`, 14 s | The typed request, its keyword chips and the model map | "I type what I want: a warm, bold gift for my mom. She loves red wool. Under $200. The words become keywords I can edit, and every piece is placed by meaning." |
+| 0:52 | `d03-piece`, 15 s | "26 hours of work", "Where your money goes", the maker share and the gallery line | "Grace N. put 26 hours of work into this weaving. Before I pay, I see where my money goes: the maker share is $134.48 of $180. Through the gallery, she'd get $86." |
+| 1:07 | `d04-support`, 15 s | The question, the Writer's answer and "Quote found word for word" | "I ask: did the maker weave this herself? The agents answer from the co-op's record: the co-op attests that Grace N. wove this herself, and Cindia hasn't checked it independently. Every quote is found word for word." |
+| 1:22 | `d05-pay`, 14 s | "Looms for two new weavers", the card token and "We'll show you when Grace N. is paid" | "I add $5 to Looms for two new weavers. My card number becomes a token, and the number itself is never stored. The receipt will show me when Grace N. is paid." |
+| 1:36 | `d15-listing`, 12 s | "A maker's notes become a listing", and the planted test | "A maker's notes become a listing. Cindy's agents draft it, check it and index it. Planted test: the draft says hand-spun churro wool, but Lena T.'s notes say store-bought yarn." |
+| 1:48 | `d06-money`, 6 s | The money map, with "Kept $156.48" and "Kept $18.00" | "On the money map, the co-op keeps $156.48, and Cindia keeps $18." |
+| 1:54 | `d07-month`, 11 s | "Records as they arrive", the three match labels and "23 of 23 payouts matched" | "Cindy replays the month's records as they arrive: a bundled payout, a refund taken out, a payout carried to next month. 23 of 23 payouts matched." |
+| 2:05 | `d08-catch`, 14 s | The contract, statement and bank cards, and Cindy's explanation | "Here's the catch. The bank shows $1,700, matching the statement, not the contract. The contract says 40%, not 50%. Cindy trusts the contract, so the gallery owes $340." |
+| 2:19 | `d09-approve`, 7 s | "Cindy proposes. Nothing here happens until you approve it.", and the seal | "Cindy proposes. Nothing happens until the co-op manager approves it with her seal." |
+| 2:26 | `d10-close`, 7 s | "Excel report" and "Every total is a live formula" | "The month closes into a real Excel report, where every total is a live formula." |
+| 2:33 | `d11-maker`, 7 s | "Your payout has been sent", and "$95.00 held until the gallery pays what it owes" | "Grace N.'s payout is sent, with $95 held until the gallery pays what it owes." |
+| 2:40 | `d12-receipt`, 8 s | "Paid to the maker", and her note | "My receipt now says: Paid to the maker. And a note from Grace N.: Thank you for choosing my weaving." |
+| 2:48 | End card, 8 s | Cindia, the tagline and cindia.design | "Cindia. Describe the vibe. Gift the piece. Pay the person. cindia.design." |
 
-## Notes
+## Reading it
 
-- **Recording:** record over the final render in Premiere, one take per scene. The times above are the render's.
+- **Names:** "Cindy" (SIN-dee) is the agent, in the cold open and the seller lines. "Cindia" (sin-DEE-uh) is the platform, on the first card and the end card.
+- **Numbers:** say $180 as "a hundred eighty", $134.48 as "a hundred thirty-four forty-eight", $1,700 as "seventeen hundred" and $340 as "three hundred forty". The first take's $180 transcribed as $108.
+- **Words to land:** "wove", not "wrote", "churro" (CHUR-oh), and "their say".
+- **The catch:** pause one beat after "Here's the catch."
+- **Recording:** read it as one take, with a breath between lines. Then run the transcription prompt again, so the video conversation can time each scene to the new .srt.
+- **The figures** all come from the mock data and show on screen in their scenes.
 - **The Why card's last line** is "Their craft, their prices, their say. We do the paperwork." `src/app/demo/pitch.ts` gets it in the freeze tweaks.
-- **`d15` is a planted test,** and the screen labels it that way, so the line says "we planted".
-- **The figures** all come from the mock data:
-  - the $180 weaving, $134.48 to Grace N. and $86 through the gallery
-  - the 23 matched payouts
-  - the $340 short payment and the $95 held
-  - payouts two days after the September 30 close
-- **Live claims:** "about six seconds" is B14's live median for this question, 5.87 s. Nessie is Capital One's sandbox bank, so no real money moves.
 
 ## At the judging table
 
