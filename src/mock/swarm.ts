@@ -267,9 +267,9 @@ const run01: ScriptedRun = {
 
 // The draft's words, drawn only from lst_01's notes: a small weaving, about 30 by 40 cm, wool in
 // red, grey and white, a zigzag band, about 20 hours on the loom, warm colors. oneOfAKind and
-// leadTimeDays are left out, because the notes don't say (D1-26). The Chinese title and summary are
-// the Lister's translation, which the screens mark with L27 beside the version the notes weren't
-// written in.
+// leadTimeDays are left out, because the notes don't say (D1-26). The site is English only (Gordon,
+// Oct 24 11:35 PM), so nothing renders the zh title and summary, and the Lister's step never
+// mentions a translation.
 const DRAFT_TITLE: Text = {
   en: "Small red, grey and white wool weaving with a zigzag band",
   zh: "带锯齿纹饰带的红灰白三色小幅羊毛编织",
@@ -365,8 +365,8 @@ const run02: ScriptedRun = {
   steps: [
     step("run_02", "cindy", "route", 500, { en: `Routing ${lst01.id}: draft, tag, check, then index.`, zh: `分派${lst01.id}：起草、标注、核查，然后索引。` }),
     step("run_02", "lister", "result", 1400, {
-      en: "Drafted the title and summary in English, and translated them into Chinese.",
-      zh: "用英文起草了标题和简介，并译成中文。",
+      en: "Drafted the title and summary from the maker's notes.",
+      zh: "Drafted the title and summary from the maker's notes.",
     }),
     step("run_02", "tagger", "result", 800, {
       en: `Proposed the vibe word ${DRAFT_VIBE.moods.join(", ")}, from the notes.`,

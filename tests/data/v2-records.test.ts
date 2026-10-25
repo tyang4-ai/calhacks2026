@@ -1,5 +1,6 @@
 // S3-catalog T7: the splits, projects, works in progress, storefronts, the listing, the policy, the
-// agent roster, the copy watch and the empty model, against data-model.md and the plan's rules.
+// agent roster, the copy watch and the model, against data-model.md and the plan's rules. T9 made
+// cft_01's text match and the model report the trained model's, read here from src/mock/ and the files.
 import { describe, expect, it } from "vitest";
 import type { Approval, CounterfeitCandidate, FollowUp, Piece, Project, Storefront, WorkInProgress } from "../../src/core/types";
 import {
@@ -27,6 +28,7 @@ import {
   studio,
   worksInProgress,
 } from "../../src/mock/index";
+import { counterfeitCandidates as watchCandidates } from "../../src/mock/watch";
 import { scan, strings, total, wordHits } from "./v2-helpers";
 
 const halfUp = (amount: number, rate: number) => Math.floor((amount * rate + 5000) / 10000);
@@ -37,8 +39,49 @@ const cft = (id: string) => getById<CounterfeitCandidate>(id) as CounterfeitCand
 const pc01 = () => piece("pc_01");
 const coop = () => communities[0];
 
-// B11's real report, once its first training run writes it. Empty until then.
-const REPORT_FILES = import.meta.glob<unknown>("../../server/b11_embed/report.json", { eager: true, import: "default" });
+// B11's real report and map points, once its first training run writes them. Empty until then.
+interface ReportFile {
+  modelId: string;
+  baseModel: string;
+  pairs: number;
+  epochs: number;
+  dims: number;
+  hubUrl: string | null;
+  eval: { k: number; queries: number; systems: { system: string; recallAtK: number; mrr: number }[] };
+}
+interface VectorsFile {
+  pieces: { pieceId: string; x: number; y: number }[];
+}
+const REPORT_FILES = import.meta.glob<ReportFile>("../../server/b11_embed/report.json", { eager: true, import: "default" });
+const VECTOR_FILES = import.meta.glob<VectorsFile>("../../server/b11_embed/vectors.json", { eager: true, import: "default" });
+const round4 = (n: number) => {
+  const r = Math.round(n * 10000) / 10000;
+  return r === 0 ? 0 : r;
+};
+/** report.json's hubUrl reaches model.ts only on a host contentRules allows (data-model.md: no URL in src/mock/ outside allowedHosts). */
+const onAllowedHost = (url: string | null): url is string => {
+  if (typeof url !== "string" || url === "") return false;
+  const host = new URL(url).hostname;
+  return contentRules.allowedHosts.some((a) => host === a || host.endsWith(`.${a}`));
+};
+/** ModelReport as S3-catalog T9 copies it from the two files, every number rounded to 4 decimals. */
+const fromFiles = (r: ReportFile, v: VectorsFile) => ({
+  trained: {
+    modelId: r.modelId,
+    baseModel: r.baseModel,
+    pairs: round4(r.pairs),
+    epochs: round4(r.epochs),
+    dims: round4(r.dims),
+    ...(onAllowedHost(r.hubUrl) ? { hubUrl: r.hubUrl } : {}),
+  },
+  scored: {
+    modelId: r.modelId,
+    k: round4(r.eval.k),
+    queries: round4(r.eval.queries),
+    systems: r.eval.systems.map((s) => ({ system: s.system, recallAtK: round4(s.recallAtK), mrr: round4(s.mrr) })),
+  },
+  points: v.pieces.map((p) => ({ pieceId: p.pieceId, x: round4(p.x), y: round4(p.y) })),
+});
 
 describe("splits", () => {
   it("give every piece a split.shown under the ch_cindia rules, computed here again", () => {
@@ -338,7 +381,8 @@ describe("the copy watch", () => {
       const host = c.url.startsWith("/market/") ? "market" : new URL(c.url).hostname;
       expect(host === "market" || contentRules.allowedHosts.includes(host), c.id).toBe(true);
       expect(c.similarity >= 0 && c.similarity <= 1, c.id).toBe(true);
-      expect(Number.isInteger(c.similarity * 100), c.id).toBe(true);
+      // At most two decimals (0.57 * 100 isn't an integer in floating point, so round and compare).
+      expect(Math.round(c.similarity * 100) / 100, c.id).toBe(c.similarity);
       expect(typeof c.seller === "string" && (c.seller ?? "").length > 0, c.id).toBe(true);
       expect(Number.isInteger(c.priceCents) && (c.priceCents ?? 0) > 0, c.id).toBe(true);
       expect(piece(c.pieceId).communityId, c.id).toBe("com_dine");
@@ -352,7 +396,9 @@ describe("the copy watch", () => {
     expect(c.title).toBe("Grace N. wool weaving, Diné Weaving and Silver Co-op, grey red black");
     expect(c.claim.en).toBe("Says it's woven by Grace N. of the Diné Weaving and Silver Co-op. She didn't list it there.");
     expect(c.pieceId).toBe("pc_01");
-    expect(c.similarity).toBe(0.91);
+    // The text match is read from watch.ts, never typed here: T9 computed it with the trained model.
+    expect(c.similarity).toBe(watchCandidates.find((w) => w.id === "cft_01")?.similarity);
+    expect(c.similarity).toBeGreaterThan(cft("cft_04").similarity);
     const story = pc01().story.en.split(/\s+/);
     const runs = story.slice(0, story.length - 7).map((_, i) => story.slice(i, i + 8).join(" "));
     expect(runs.some((r) => c.snippet.includes(r))).toBe(true);
@@ -371,9 +417,13 @@ describe("the copy watch", () => {
 
   it("cft_03 says plainly it's factory made, and cft_04 is an unrelated blanket", () => {
     expect(cft("cft_03").snippet).toMatch(/factory made, not Native made/i);
-    expect(cft("cft_03").similarity).toBe(0.8);
     expect(cft("cft_04").title.toLowerCase()).toContain("blanket");
-    expect(cft("cft_04").similarity).toBe(0.3);
+    // Every text match is read from watch.ts, never typed here: T9 computed each with the trained
+    // model. The verdicts come from the evidence rule, so only cft_01 is a possible copy.
+    for (const id of ["cft_02", "cft_03", "cft_04"]) {
+      expect(cft(id).similarity, id).toBe(watchCandidates.find((w) => w.id === id)?.similarity);
+      expect(cft(id).verdict, id).not.toBe("possible_copy");
+    }
   });
 
   it("scriptedScan's queries are F-watch's three strings, rebuilt from the records", () => {
@@ -411,12 +461,15 @@ describe("the copy watch", () => {
 });
 
 describe("the model", () => {
-  it("keeps report null until T9 copies in B11's real report", () => {
+  it("keeps report null until T9 copies in B11's real report, then equals report.json and vectors.json", () => {
     expect(modelId).toBe("cindia-embed-v1");
-    const files = Object.values(REPORT_FILES);
+    const reports = Object.values(REPORT_FILES);
+    const vectors = Object.values(VECTOR_FILES);
     if (report !== null) {
-      expect(files).toHaveLength(1);
-      expect(JSON.parse(JSON.stringify(report))).toEqual(files[0]);
+      expect(reports).toHaveLength(1);
+      expect(vectors).toHaveLength(1);
+      expect(report.trained.modelId).toBe(modelId);
+      expect(JSON.parse(JSON.stringify(report))).toEqual(fromFiles(reports[0], vectors[0]));
     } else {
       expect(report).toBeNull();
     }

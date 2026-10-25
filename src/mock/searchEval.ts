@@ -10,8 +10,8 @@
 // training-query generator's patterns.
 //
 // Grades: 2 is a perfect match and 1 a good one, two to six pieces per query, judged from each
-// piece's own facet and vibe words and its title. A piece a query doesn't grade counts as a miss
-// until the pooled grading pass (S3-catalog T9) grades what the systems actually returned.
+// piece's own facet and vibe words and its title. A piece a query doesn't grade counts as a miss.
+// The pooled grading pass (S3-catalog T9, below) graded what the systems actually returned, once.
 //
 // The mix: moods, occasions, who it's for, what it looks like, materials, techniques, craft words,
 // misspellings, very short and long, forty in English and ten in Chinese.
@@ -95,5 +95,51 @@ const QUERIES: Omit<SearchQuery, "id">[] = [
   zh("手工盘筑的种子罐，橙色的", { pc_29: 2, pc_30: 2, pc_34: 2, pc_36: 1 }),
 ];
 
-/** The 50 held-out queries, sq_001 to sq_050. */
-export const searchEval: SearchQuery[] = QUERIES.map((q, i) => ({ id: `sq_${String(i + 1).padStart(3, "0")}`, ...q }));
+// The pooled grading pass (S3-catalog T9, B2-8), done once on server/b11_embed/unjudged.json from
+// B11's first real run (cindia-embed-v1, fingerprint f7181c7ddb90af25). That file listed 259 pieces
+// that some system put in a query's top 5 without a grade. The pass added 38 grades, all 1s, over 22
+// queries, and left the other 221 ungraded, so they still count as misses. sq_007 was graded against
+// its current text, "birthday present for a young child", and no listed piece is for a child.
+// The rule, judged from each piece's own title, facets, vibe and story: a 1 carries the heart of the
+// query (the kind of thing, or the one detail that makes it specific) and most of the rest, as T6's
+// own 1s for that query do. A piece that shares only a color, a craft, a mood or an occasion stays
+// ungraded. No listed piece carries everything a query asks, so no pooled grade is a 2.
+// T6's two-to-six rule capped the pass: 12 more pieces would have earned a 1 in 9 queries that were
+// already full (sq_004 pc_07; sq_006 pc_15, pc_20, pc_26; sq_008 pc_25; sq_009 pc_40; sq_025 pc_39;
+// sq_031 pc_22; sq_035 pc_22; sq_043 pc_16; sq_050 pc_32, pc_38). Where the cap chose, pieces closer
+// to the query's kind of thing went first, then pieceId order, never any system's ranking.
+// The pooled grades are kept apart here so the pass can be audited, and merged into grades below.
+const POOLED: Record<string, Grades> = {
+  sq_002: { pc_07: 1 },
+  sq_004: { pc_01: 1 },
+  sq_014: { pc_03: 1 },
+  sq_015: { pc_11: 1 },
+  sq_016: { pc_30: 1, pc_31: 1, pc_37: 1 },
+  sq_018: { pc_14: 1, pc_16: 1 },
+  sq_019: { pc_44: 1, pc_50: 1 },
+  sq_023: { pc_52: 1 },
+  sq_024: { pc_11: 1 },
+  sq_025: { pc_27: 1, pc_35: 1, pc_38: 1 },
+  sq_027: { pc_44: 1, pc_46: 1, pc_50: 1 },
+  sq_031: { pc_14: 1, pc_16: 1, pc_18: 1 },
+  sq_032: { pc_01: 1 },
+  sq_035: { pc_13: 1, pc_14: 1, pc_16: 1 },
+  sq_037: { pc_24: 1 },
+  sq_038: { pc_41: 1, pc_44: 1 },
+  sq_041: { pc_40: 1 },
+  sq_044: { pc_50: 1, pc_53: 1 },
+  sq_045: { pc_39: 1 },
+  sq_046: { pc_12: 1, pc_32: 1 },
+  sq_047: { pc_24: 1 },
+  sq_050: { pc_31: 1, pc_40: 1 },
+};
+
+/** The 50 held-out queries, sq_001 to sq_050, each with T6's grades and the pooled pass's. */
+export const searchEval: SearchQuery[] = QUERIES.map((q, i) => {
+  const id = `sq_${String(i + 1).padStart(3, "0")}`;
+  const pooled = POOLED[id] ?? {};
+  // The pooled pass only adds: it never regrades a piece T6 graded.
+  const regraded = Object.keys(pooled).filter((pieceId) => pieceId in q.grades);
+  if (regraded.length > 0) throw new Error(`searchEval: the pooled pass regrades ${id} ${regraded.join(", ")}`);
+  return { id, ...q, grades: { ...q.grades, ...pooled } };
+});

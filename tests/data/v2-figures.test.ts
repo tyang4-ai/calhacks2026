@@ -21,10 +21,53 @@ import {
   report,
   splits,
 } from "../../src/mock/index";
+import { counterfeitCandidates as watchCandidates } from "../../src/mock/watch";
 
-const piece = (id: string) => getById<Piece>(id) as Piece;
+const piece =(id: string) => getById<Piece>(id) as Piece;
 const cft = (id: string) => getById<CounterfeitCandidate>(id) as CounterfeitCandidate;
-const REPORT_FILES = import.meta.glob<unknown>("../../server/b11_embed/report.json", { eager: true, import: "default" });
+
+// B11's real report and map points, which S3-catalog T9 copies into model.ts, rounded to 4 decimals.
+interface ReportFile {
+  modelId: string;
+  baseModel: string;
+  pairs: number;
+  epochs: number;
+  dims: number;
+  hubUrl: string | null;
+  eval: { k: number; queries: number; systems: { system: string; recallAtK: number; mrr: number }[] };
+}
+interface VectorsFile {
+  pieces: { pieceId: string; x: number; y: number }[];
+}
+const REPORT_FILES = import.meta.glob<ReportFile>("../../server/b11_embed/report.json", { eager: true, import: "default" });
+const VECTOR_FILES = import.meta.glob<VectorsFile>("../../server/b11_embed/vectors.json", { eager: true, import: "default" });
+const round4 = (n: number) => {
+  const r = Math.round(n * 10000) / 10000;
+  return r === 0 ? 0 : r;
+};
+/** report.json's hubUrl reaches model.ts only on a host contentRules allows (data-model.md: no URL in src/mock/ outside allowedHosts). */
+const onAllowedHost = (url: string | null): url is string => {
+  if (typeof url !== "string" || url === "") return false;
+  const host = new URL(url).hostname;
+  return contentRules.allowedHosts.some((a) => host === a || host.endsWith(`.${a}`));
+};
+const fromFiles =(r: ReportFile, v: VectorsFile) => ({
+  trained: {
+    modelId: r.modelId,
+    baseModel: r.baseModel,
+    pairs: round4(r.pairs),
+    epochs: round4(r.epochs),
+    dims: round4(r.dims),
+    ...(onAllowedHost(r.hubUrl) ? { hubUrl: r.hubUrl } : {}),
+  },
+  scored: {
+    modelId: r.modelId,
+    k: round4(r.eval.k),
+    queries: round4(r.eval.queries),
+    systems: r.eval.systems.map((s) => ({ system: s.system, recallAtK: round4(s.recallAtK), mrr: round4(s.mrr) })),
+  },
+  points: v.pieces.map((p) => ({ pieceId: p.pieceId, x: round4(p.x), y: round4(p.y) })),
+});
 const MOCK_FILES = import.meta.glob<string>("../../src/mock/**/*.ts", { query: "?raw", import: "default", eager: true });
 
 describe("figure 11, the vibe query", () => {
@@ -114,7 +157,8 @@ describe("figure 14, the counterfeit hit", () => {
     const coop = communities.find((c) => c.id === "com_dine");
     const story = piece("pc_01").story.en;
     const first = story.slice(0, story.indexOf(". ") + 1);
-    // The text match is read from watch.ts, never typed here: T9 writes the trained model's number.
+    // The text match is read from watch.ts, never typed here: T9 wrote the trained model's number.
+    expect(hit.similarity).toBe(watchCandidates.find((c) => c.id === "cft_01")?.similarity);
     expect(typeof hit.similarity).toBe("number");
     expect(hit.similarity).toBeGreaterThanOrEqual(0);
     expect(hit.similarity).toBeLessThanOrEqual(1);
@@ -142,14 +186,19 @@ describe("figure 14, the counterfeit hit", () => {
 
 describe("figure 15, the search proof", () => {
   it("holds no report until B11's first real run, then exactly the real one", () => {
-    const files = Object.values(REPORT_FILES);
+    const reports = Object.values(REPORT_FILES);
+    const vectors = Object.values(VECTOR_FILES);
     if (report === null) {
       expect(report).toBeNull();
       // Nothing in src/mock/ holds an eval number before the real run.
       expect(Object.entries(MOCK_FILES).filter(([, text]) => /recallAtK|\bmrr\b|systems\s*:/i.test(text)).map(([f]) => f)).toEqual([]);
     } else {
-      expect(files).toHaveLength(1);
-      expect(JSON.parse(JSON.stringify(report))).toEqual(files[0]);
+      expect(reports).toHaveLength(1);
+      expect(vectors).toHaveLength(1);
+      expect(JSON.parse(JSON.stringify(report))).toEqual(fromFiles(reports[0], vectors[0]));
+      // The proof shows the four systems, k 5, over the 50 held-out queries, as the file has them.
+      expect(report.scored.systems.map((s) => s.system)).toEqual(["keyword", "base", "custom", "hybrid"]);
+      expect([report.scored.k, report.scored.queries]).toEqual([reports[0].eval.k, reports[0].eval.queries]);
     }
   });
 });

@@ -7,8 +7,15 @@
 // made" appears. Every listing resembles a piece of the Diné co-op only, and every URL is a
 // /market/ path (listing-01 to listing-04, in cftId order).
 //
-// cft_01's similarity of 0.91 is illustrative: S3-catalog T9 replaces it with the trained model's
-// real normalized text match against pc_01 (B2-9). The others are illustrative too.
+// Every similarity is the listing's real normalized text match against its pieceId, pc_01
+// (S3-catalog T9, B2-9), computed with B15's formula and the trained model cindia-embed-v1
+// (fingerprint f7181c7ddb90af25), from B11's real run of 2026-10-24, Pacific time (trained
+// 2026-10-25T05:55:09Z): the listing's "title. snippet" embedded as a query, c its cosine to pc_01,
+// b its mean cosine to all 54 pieces, and (c - b) / (1 - b) clipped to 0 to 1, rounded to 2
+// decimals. pc_01 is the closest of the co-op's twelve for cft_01 only. For the other three B15's
+// live Comparer would match a closer piece (pc_03 for cft_02, pc_07 for cft_03 and cft_04), and
+// these records keep pc_01, the piece each listing resembles. Each verdict comes from the evidence
+// rule, not the number: cft_01 names the co-op and Grace N. and repeats her story.
 import type { Approval, CounterfeitCandidate, FollowUp, ScriptedScan } from "../core/types";
 import { pieces } from "./catalog";
 import { communities } from "./communities";
@@ -29,7 +36,7 @@ export const counterfeitCandidates: CounterfeitCandidate[] = [
     title: `${grace.name.en} wool weaving, ${coop.name.en}, grey red black`,
     snippet: `${firstSentence} Ready to hang.`,
     pieceId: firstPiece.id,
-    similarity: 0.91,
+    similarity: 0.74,
     claim: {
       en: `Says it's woven by ${grace.name.en} of the ${coop.name.en}. She didn't list it there.`,
       zh: `声称由${coop.name.zh}的 ${grace.name.zh} 织成。她没有在那里上架这件作品。`,
@@ -44,7 +51,7 @@ export const counterfeitCandidates: CounterfeitCandidate[] = [
     title: "Authentic Native American made wool rug, grey and red",
     snippet: "Authentic Native American made wool rug in grey and red, about 60 by 90 cm. Free shipping.",
     pieceId: firstPiece.id,
-    similarity: 0.64,
+    similarity: 0.34,
     claim: { en: "Claims to be Native American made. Names no maker.", zh: "声称是美洲原住民制作，但没有写明匠人。" },
     verdict: "claim_only",
     seller: "Canyon Rug Outlet",
@@ -56,7 +63,7 @@ export const counterfeitCandidates: CounterfeitCandidate[] = [
     title: "Machine-woven grey and red throw with diamonds",
     snippet: "A machine-woven acrylic throw in grey and red with a diamond pattern. Factory made, not Native made.",
     pieceId: firstPiece.id,
-    similarity: 0.8,
+    similarity: 0.4,
     claim: { en: "Says plainly it's factory made. Claims no maker or community.", zh: "明确写着是工厂制造，没有声称出自哪位匠人或哪个社区。" },
     verdict: "neither",
     seller: "Homestead Textile Supply",
@@ -68,7 +75,7 @@ export const counterfeitCandidates: CounterfeitCandidate[] = [
     title: "Plain grey wool blanket, queen size",
     snippet: "A plain grey wool blanket, queen size, machine washable.",
     pieceId: firstPiece.id,
-    similarity: 0.3,
+    similarity: 0.32,
     claim: { en: "Claims nothing about who made it.", zh: "没有声称是谁制作的。" },
     verdict: "neither",
     seller: "Northfield Bedding Co.",
