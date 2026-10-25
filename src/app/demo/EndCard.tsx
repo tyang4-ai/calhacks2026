@@ -106,7 +106,12 @@ export function EndCard() {
           <section>
             <h3 className={styles.endHeading}>Live</h3>
             <ul className={styles.endList} data-end="live">
-              {live.length === 0 ? <li>Nothing live in this run: every panel plays scripted events</li> : live.map((k) => <li key={k}>{SOURCE_NAMES[k]}</li>)}
+              {live.length === 0 ? (
+                // Gordon's approved line, Oct 25 4:58 AM (docs/v2/video-brief.md).
+                <li>The tour is scripted, so it always plays. In live mode, real services answer your own questions.</li>
+              ) : (
+                live.map((k) => <li key={k}>{SOURCE_NAMES[k]}</li>)
+              )}
             </ul>
           </section>
           <section>
