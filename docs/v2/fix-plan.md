@@ -215,7 +215,7 @@ About an hour from approval to push.
 ## 5. What Gordon does
 
 **Before he leaves (about 10 minutes):**
-1. In claude.ai/code, edit the cloud environment the build will use: network access **Full**, and add the variables `CINDIA_ANTHROPIC_API_KEY`, `NESSIE_KEY`, `ELASTIC_URL`, `KIBANA_URL`, `ELASTIC_API_KEY`, `APIFY_TOKEN` and `HF_TOKEN`. Leave `ANTHROPIC_API_KEY` unset there. As of 4:00 PM this session's environment had none of them, and every outside host it needs was blocked.
+1. In claude.ai/code, edit the cloud environment the build will use: network access **Full**, and add the variables `CINDIA_ANTHROPIC_API_KEY`, `NESSIE_KEY`, `ELASTIC_URL`, `KIBANA_URL`, `ELASTIC_API_KEY`, `APIFY_TOKEN`, `HF_TOKEN` and `CINDIA_HF_REPO` (`<your Hugging Face account>/cindia-embed`). Leave `ANTHROPIC_API_KEY` unset there. As of 4:00 PM this session's environment had none of them, and every outside host it needs was blocked.
 2. Stop the desktop orchestrator session.
 3. After the fixes are pushed, start the build session (section 6). A phone works for this.
 4. Say yes if he wants the three Figma files set to "Anyone with the link".
