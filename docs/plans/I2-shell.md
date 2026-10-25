@@ -20,7 +20,7 @@ Old links redirect. `/demo` keeps playing the v1 story, with R0's names, on full
 - `docs/common/demo-script.md`: the v1 beats with their Phase A desktop cameras, video mode, start at the catch.
 - `docs/common/events.md`: `beat.started` with `process` and `drawer`, the store keys `demo` and `log`.
 - `src/core/nav.ts` from I2-core: the route builders, `navigate`, `setProcess`, `openDrawer` and `registerNavigator`.
-- The on-screen labels L1, L2 and L6 (`docs/v2/contracts.md` section 12, merged into `docs/common/` by I2-core). The label table wins on wording in both languages.
+- The on-screen labels L1, L2 and L6 (`docs/v2/contracts.md` section 12, merged into `docs/common/glossary.md` by I2-core). The label table wins on wording in both languages.
 - `docs/v2/fix-plan.md` sections 1.1 (names) and 1.8 (the public site).
 - The current shell:
   - `src/app/routes.tsx`, `surfaces/`, `Slot.tsx`, `featureLoader.ts`, `lang.ts`, `strings.ts`, `useDrawer.ts`, `stageScale.ts`, `studioInfo.ts`,
