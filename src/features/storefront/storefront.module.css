@@ -1,0 +1,607 @@
+/* The storefront feature's layout. Colors, type, space and corners come only from the kit's tokens.
+   The accent is set inline as var(--c-color-<accent>) on the few elements that carry it. */
+
+/* ---- Shared ---- */
+
+.h3 {
+  margin: 0;
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-18);
+  font-weight: 600;
+  line-height: var(--c-leading-heading);
+}
+
+.h3:lang(zh) {
+  font-family: var(--c-font-heading-zh);
+}
+
+.h4 {
+  margin: 0;
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  color: var(--c-color-ink-soft);
+}
+
+.soft {
+  margin: 0;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+/* ---- The blocks (StoreBlocks), on the page and in the preview ---- */
+
+.blocks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-32);
+  min-width: 0;
+}
+
+.blocksPreview {
+  composes: blocks;
+  gap: var(--c-space-24);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+  min-width: 0;
+  padding-top: var(--c-space-24);
+  border-top: 1px solid var(--c-color-line);
+}
+
+.blocksPreview .block {
+  padding-top: var(--c-space-16);
+}
+
+.heroBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+  min-width: 0;
+  padding: var(--c-space-8) 0 var(--c-space-8) var(--c-space-24);
+  border-left: 6px solid var(--c-color-ink);
+}
+
+.blocksPreview .heroBlock {
+  padding-left: var(--c-space-16);
+}
+
+.heroName {
+  margin: 0;
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-36);
+  font-weight: 600;
+  line-height: var(--c-leading-heading);
+}
+
+.heroName:lang(zh) {
+  font-family: var(--c-font-heading-zh);
+  font-weight: 700;
+}
+
+.blocksPreview .heroName {
+  font-size: var(--c-text-24);
+}
+
+.heroPlace {
+  margin: 0;
+  font-size: var(--c-text-16);
+  color: var(--c-color-ink-soft);
+}
+
+.heroTagline {
+  margin: 0;
+  font-size: var(--c-text-21);
+  line-height: 1.4;
+}
+
+.blocksPreview .heroTagline {
+  font-size: var(--c-text-18);
+}
+
+.blockHeading {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-12);
+  margin: 0;
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-24);
+  font-weight: 600;
+  line-height: var(--c-leading-heading);
+}
+
+.blockHeading:lang(zh) {
+  font-family: var(--c-font-heading-zh);
+}
+
+.blocksPreview .blockHeading {
+  font-size: var(--c-text-18);
+}
+
+.rule {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 3px;
+}
+
+.placeholder {
+  margin: 0;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+.about {
+  margin: 0;
+  max-width: 760px;
+  font-size: var(--c-text-16);
+}
+
+.notes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--c-space-8) var(--c-space-12);
+}
+
+.note {
+  margin: 0;
+  flex: 1 1 280px;
+  min-width: 0;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+.caption {
+  margin: 0;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+/* Three cards across on the page, two in the preview, so the kit card's one-line maker name and
+   two-line title always fit. */
+.pieceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--c-space-16);
+}
+
+.blocksPreview .pieceGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* The preview's cards are narrower than the page's, so the kit card's maker line wraps there
+   instead of ending in an ellipsis. */
+.blocksPreview .pieceGrid :global(.c-piececard__makername) {
+  white-space: normal;
+}
+
+.projectGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--c-space-16);
+}
+
+.blocksPreview .projectGrid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.cardCell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardLink {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+}
+
+.cardLink > * {
+  flex: 1 1 auto;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+}
+
+.step {
+  display: flex;
+  align-items: baseline;
+  gap: var(--c-space-12);
+  padding: var(--c-space-8) 0;
+  border-bottom: 1px solid var(--c-color-line);
+}
+
+.stepN {
+  flex: 0 0 24px;
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  color: var(--c-color-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.stepText {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.stepHours {
+  flex: 0 0 auto;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.visit {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+}
+
+.visitRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--c-space-4) var(--c-space-16);
+}
+
+.visitLabel {
+  flex: 0 0 180px;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+.visitValue {
+  margin: 0;
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+/* ---- The public page ---- */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-24);
+  min-width: 0;
+  padding-bottom: var(--c-space-24);
+}
+
+.pageTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--c-space-8) var(--c-space-12);
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+.pageWord {
+  font-weight: 600;
+  color: var(--c-color-ink);
+}
+
+.pageSlug {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: var(--c-text-14);
+}
+
+.draftNote {
+  margin: 0;
+  padding: var(--c-space-12) var(--c-space-16);
+  font-size: var(--c-text-16);
+  font-weight: 600;
+  border: 1px solid var(--c-color-amber);
+  border-left-width: 4px;
+  border-radius: var(--c-radius-panel);
+  color: var(--c-color-amber);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--c-space-4) var(--c-space-16);
+  padding-top: var(--c-space-16);
+  border-top: 1px solid var(--c-color-line);
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+.missing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--c-space-16);
+  padding: var(--c-space-48) 0;
+}
+
+.missingTitle {
+  margin: 0;
+  font-family: var(--c-font-heading-en);
+  font-size: var(--c-text-24);
+  font-weight: 600;
+}
+
+.missingTitle:lang(zh) {
+  font-family: var(--c-font-heading-zh);
+}
+
+/* ---- The builder ---- */
+
+/* The kit Panel's face fills the slot as a flex column (lessons, F-reconcile). */
+.builderPanel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.builderPanel > div {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.builderGrid {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: var(--c-space-24);
+}
+
+.leftCol {
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-24);
+  padding-right: var(--c-space-8);
+}
+
+.rightCol {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+}
+
+/* The theme row above the preview: the accent and the layout side by side, the note under them. */
+.theme {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+}
+
+.themeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--c-space-8) var(--c-space-24);
+}
+
+.previewFrame {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: var(--c-space-16);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-panel);
+  background: var(--c-color-paper);
+}
+
+/* The Designer */
+
+.designer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--c-space-12);
+  padding-bottom: var(--c-space-16);
+  border-bottom: 1px solid var(--c-color-line);
+}
+
+.designerHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--c-space-4) var(--c-space-12);
+}
+
+.designerSteps {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+}
+
+.stepList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+}
+
+.stepItem {
+  min-width: 0;
+}
+
+.draftChoice {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--c-space-8);
+}
+
+/* The editor */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-24);
+}
+
+.editorSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-12);
+}
+
+.choiceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-8) var(--c-space-12);
+}
+
+.choiceLabel {
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  color: var(--c-color-ink-soft);
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--c-space-8);
+}
+
+.choice {
+  font: inherit;
+  font-size: var(--c-text-14);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--c-space-8);
+  min-height: 36px;
+  padding: var(--c-space-4) var(--c-space-12);
+  color: var(--c-color-ink);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  cursor: pointer;
+}
+
+.choice:hover {
+  background: var(--c-color-mat);
+}
+
+.choiceOn {
+  composes: choice;
+  font-weight: 600;
+  background: var(--c-color-mat);
+  border-color: var(--c-color-ink);
+  box-shadow: inset 0 0 0 1px var(--c-color-ink);
+}
+
+.swatch {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--c-radius-panel);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+  padding-top: var(--c-space-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-4);
+}
+
+.fieldLabel {
+  font-size: var(--c-text-14);
+  font-weight: 600;
+  color: var(--c-color-ink-soft);
+}
+
+.fieldInput {
+  box-sizing: border-box;
+  width: 100%;
+  font: inherit;
+  font-size: var(--c-text-16);
+  line-height: 1.4;
+  padding: var(--c-space-8);
+  color: var(--c-color-ink);
+  background: var(--c-color-paper);
+  border: 1px solid var(--c-color-line);
+  border-radius: var(--c-radius-control);
+  resize: none;
+  overflow: hidden;
+}
+
+.fieldInput:focus {
+  outline: 2px solid var(--c-color-ink);
+  outline-offset: 1px;
+}
+
+.fieldNote {
+  margin: 0;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
+
+/* Publishing */
+
+.publishBar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-8);
+}
+
+.publishRow {
+  display: flex;
+  align-items: center;
+  gap: var(--c-space-16);
+}
+
+.status {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--c-space-4) var(--c-space-12);
+  font-size: var(--c-text-16);
+  font-weight: 600;
+}
+
+.statusPublished {
+  composes: status;
+  color: var(--c-color-jade);
+}
+
+.statusDraft {
+  composes: status;
+  color: var(--c-color-amber);
+}
+
+.previewNote {
+  margin: 0;
+  font-size: var(--c-text-14);
+  color: var(--c-color-ink-soft);
+}
