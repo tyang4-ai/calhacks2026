@@ -13,10 +13,12 @@
 // Then, unless --no-browser is given, the rendered checks (the G1b verifier's note): headless
 // Chromium loads dist/ through Playwright's request routing, with Cloudflare's file and redirect
 // rules and no server or port, and every request beyond the site aborted. /demo must have no Live
-// switch (demo-mode-toggle), and the m key must leave the mode scripted while the l key still
-// works. /shop/piece/pc_01 must show L6 (buyer-pay-blocked) and no buyer-pay-button, with L1 in the
-// top bar. No console error, page error, request beyond the site or /api/ request. When Chromium
-// can't start, those checks print SKIP and Gordon's browser check (D-deploy step 4) covers them.
+// switch (demo-mode-toggle), and the m key must leave the mode scripted while the s key still
+// works (it moves the player's speed and demo-speed shows it; the site is English only, so there's
+// no l key to prove the handler with). /shop/piece/pc_01 must show L6 (buyer-pay-blocked) and no
+// buyer-pay-button, with L1 in the top bar. No console error, page error, request beyond the site
+// or /api/ request. When Chromium can't start, those checks print SKIP and Gordon's browser check
+// (D-deploy step 4) covers them.
 // Exits 1 when any check fails.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -372,6 +374,29 @@ export function resolveLikePages(dist, rules, requestPath) {
   return { status: 200, file: path.join(dist, 'index.html') };
 }
 
+/**
+ * The verdict of the rendered "m key" row on /demo. The demo controls' key handler must be live,
+ * shown by the s key: the player's speed moved and the demo-speed button shows the new speed
+ * (ui-contract.md, Demo controls). Only then does "m changed nothing" mean anything: the mode must
+ * stay scripted, no Live switch may appear and no /api/ request may go out. Returns { ok, detail }.
+ */
+export function mKeyVerdict({ speedBefore, speedAfter, speedText, modeBefore, modeAfter, togglesAfter, apiRequests }) {
+  const text = typeof speedText === 'string' ? speedText.trim() : speedText;
+  const keysWork = typeof speedAfter === 'number' && speedAfter !== speedBefore && text === `${speedAfter}x`;
+  if (!keysWork) {
+    return {
+      ok: false,
+      detail: `the s key didn't change the speed (${speedBefore}x → ${speedAfter}x, demo-speed shows ${JSON.stringify(text ?? null)}), so the key handler isn't live`,
+    };
+  }
+  const ok = modeBefore === 'scripted' && modeAfter === 'scripted' && togglesAfter === 0 && apiRequests === 0;
+  const extra = [togglesAfter !== 0 ? `${togglesAfter} demo-mode-toggle after m` : null, apiRequests !== 0 ? `${apiRequests} /api/ requests after m` : null].filter(Boolean);
+  return {
+    ok,
+    detail: `mode ${modeBefore} → ${modeAfter} after m (s switched the speed ${speedBefore}x → ${speedAfter}x)${extra.length ? `; ${extra.join(', ')}` : ''}`,
+  };
+}
+
 /** The rendered checks, through Playwright's request routing. Returns [{ name, ok, detail, skip? }]. */
 export async function checkRendered(dist) {
   const results = [];
@@ -415,7 +440,7 @@ export async function checkRendered(dist) {
     page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`));
     const T = 20000;
 
-    // /demo: no Live switch, and m does nothing while l still works.
+    // /demo: no Live switch, and m does nothing while s still works.
     try {
       await page.goto(`${ORIGIN}/demo`, { waitUntil: 'load' });
       await page.locator('[data-testid="demo-controls"]').waitFor({ state: 'attached', timeout: T });
@@ -426,25 +451,29 @@ export async function checkRendered(dist) {
       await page.evaluate(() => {
         if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
       });
-      const langToggle = page.locator('[data-testid="demo-lang-toggle"]');
-      const langBefore = await langToggle.getAttribute('data-lang');
-      await page.keyboard.press('l');
-      await page.waitForFunction((before) => document.querySelector('[data-testid="demo-lang-toggle"]')?.getAttribute('data-lang') !== before, langBefore, { timeout: 5000 }).catch(() => {});
-      const langAfter = await langToggle.getAttribute('data-lang');
+      // The s key proves the key handler is live: the player's speed moves and demo-speed shows it.
+      const speedBefore = await page.evaluate(() => window.__cindia.player.getSpeed());
+      await page.keyboard.press('s');
+      await page
+        .waitForFunction(
+          (before) => {
+            const now = window.__cindia?.player.getSpeed();
+            return now !== before && document.querySelector('[data-testid="demo-speed"]')?.textContent?.trim() === `${now}x`;
+          },
+          speedBefore,
+          { timeout: 5000 },
+        )
+        .catch(() => {});
+      const speedAfter = await page.evaluate(() => window.__cindia.player.getSpeed());
+      const speedText = await page.evaluate(() => document.querySelector('[data-testid="demo-speed"]')?.textContent ?? null);
       const modeBefore = await page.evaluate(() => window.__cindia.store.getState().mode);
       const apiBefore = api.length;
       await page.keyboard.press('m');
       await page.waitForTimeout(800);
       const modeAfter = await page.evaluate(() => window.__cindia.store.getState().mode);
       const togglesAfter = await page.locator('[data-testid="demo-mode-toggle"]').count();
-      const keysWork = langBefore !== langAfter;
-      add(
-        'the m key leaves the mode scripted',
-        keysWork && modeBefore === 'scripted' && modeAfter === 'scripted' && togglesAfter === 0 && api.length === apiBefore,
-        keysWork
-          ? `mode ${modeBefore} → ${modeAfter} after m (l switched the language ${langBefore} → ${langAfter})`
-          : `the l key didn't switch the language (${langBefore} → ${langAfter}), so the key handler isn't live`,
-      );
+      const verdict = mKeyVerdict({ speedBefore, speedAfter, speedText, modeBefore, modeAfter, togglesAfter, apiRequests: api.length - apiBefore });
+      add('the m key leaves the mode scripted', verdict.ok, verdict.detail);
     } catch (err) {
       add('/demo renders', false, String(err?.message ?? err).split('\n')[0]);
     }

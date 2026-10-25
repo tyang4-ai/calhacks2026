@@ -1,7 +1,9 @@
 // node --test scripts/check-public.test.mjs
 // The public check's parts (D-deploy T2): the _redirects parser and its matcher with Cloudflare's
-// splat rule, the robots.txt reader, Cloudflare's file resolution, and the file checks against a
-// made-up dist/ in a temporary folder, good and broken. No browser runs here (--no-browser).
+// splat rule, the robots.txt reader, Cloudflare's file resolution, the file checks against a
+// made-up dist/ in a temporary folder, good and broken, the verdict of the rendered m-key row, and
+// that the rendered checks only use test IDs and keys ui-contract.md still lists. No browser runs
+// here (--no-browser).
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -13,7 +15,9 @@ import {
   MUST_NOT_MATCH,
   MUST_PROXY,
   checkDist,
+  L6_TESTID,
   matchRedirect,
+  mKeyVerdict,
   parseRedirects,
   resolveLikePages,
   RENDERED_NOT_RUN,
@@ -275,6 +279,77 @@ describe('the file checks on a made-up dist/', () => {
     } finally {
       fs.rmSync(noBrowsers, { recursive: true, force: true });
     }
+  });
+});
+
+describe("the rendered m-key row's verdict", () => {
+  const good = { speedBefore: 1, speedAfter: 2, speedText: '2x', modeBefore: 'scripted', modeAfter: 'scripted', togglesAfter: 0, apiRequests: 0 };
+
+  test('s moved the speed, and m left the mode scripted with no switch and no /api/ request: pass', () => {
+    const v = mKeyVerdict(good);
+    assert.equal(v.ok, true);
+    assert.equal(v.detail, 'mode scripted → scripted after m (s switched the speed 1x → 2x)');
+    assert.equal(mKeyVerdict({ ...good, speedText: ' 2x\n' }).ok, true, 'whitespace around the button text is fine');
+    assert.equal(mKeyVerdict({ ...good, speedBefore: 8, speedAfter: 1, speedText: '1x' }).ok, true, 'the cycle wraps from 8x to 1x');
+  });
+
+  test("a dead key handler fails, because then m changing nothing proves nothing", () => {
+    for (const dead of [
+      { speedAfter: 1, speedText: '1x' },
+      { speedAfter: 2, speedText: '1x' },
+      { speedAfter: 2, speedText: null },
+      { speedAfter: undefined, speedText: '2x' },
+    ]) {
+      const v = mKeyVerdict({ ...good, ...dead });
+      assert.equal(v.ok, false, JSON.stringify(dead));
+      assert.match(v.detail, /^the s key didn't change the speed .*so the key handler isn't live$/);
+    }
+  });
+
+  test('m switching to live, a Live switch, a non-scripted start or an /api/ request each fail', () => {
+    assert.equal(mKeyVerdict({ ...good, modeAfter: 'live' }).ok, false);
+    assert.equal(mKeyVerdict({ ...good, modeBefore: 'live', modeAfter: 'live' }).ok, false);
+    const toggle = mKeyVerdict({ ...good, togglesAfter: 1 });
+    assert.equal(toggle.ok, false);
+    assert.match(toggle.detail, /1 demo-mode-toggle after m/);
+    const api = mKeyVerdict({ ...good, apiRequests: 2 });
+    assert.equal(api.ok, false);
+    assert.match(api.detail, /2 \/api\/ requests after m/);
+  });
+});
+
+describe('the rendered checks use only what ui-contract.md lists', () => {
+  const source = fs.readFileSync(path.join(ROOT, 'scripts', 'check-public.mjs'), 'utf8');
+  const contract = fs.readFileSync(path.join(ROOT, 'docs', 'common', 'ui-contract.md'), 'utf8');
+  /** The test IDs in the first cell of a table row of ui-contract.md. */
+  const listedIds = new Set(
+    contract
+      .split(/\r?\n/)
+      .filter((l) => l.startsWith('|'))
+      .flatMap((l) => [...(l.split('|')[1] ?? '').matchAll(/`([a-z0-9-]+)`/g)].map((m) => m[1])),
+  );
+  /** Each demo-controls row's Key cell, lowercased: the keys the demo controls still answer. */
+  const listedKeys = new Set(
+    contract
+      .split(/\r?\n/)
+      .filter((l) => /^\|[^|]*\|\s*`demo-[a-z-]+`/.test(l))
+      .map((l) => l.split('|').at(-2).trim().toLowerCase())
+      .filter((k) => /^[a-z]+$/.test(k) && k !== 'none'),
+  );
+
+  test('every test ID the rendered checks read is a row of a test ID table', () => {
+    const used = [...new Set([...source.matchAll(/data-testid="([a-z0-9-]+)"/g)].map((m) => m[1]).concat(L6_TESTID))];
+    assert.ok(used.includes('demo-mode-toggle') && used.includes('demo-speed') && used.includes('shell-topnav'), used.join());
+    const missing = used.filter((id) => !listedIds.has(id));
+    assert.deepEqual(missing, [], `test IDs not in ui-contract.md: ${missing.join(', ')}`);
+  });
+
+  test('every key the rendered checks press is a demo-controls key, and the English-only site has no L key', () => {
+    const pressed = [...source.matchAll(/keyboard\.press\(\s*['"]([^'"]+)['"]/g)].map((m) => m[1].toLowerCase());
+    assert.deepEqual([...new Set(pressed)].toSorted(), ['m', 's']);
+    for (const k of pressed) assert.ok(listedKeys.has(k), `${k} is not a key in ui-contract.md's demo controls table (${[...listedKeys].join(', ')})`);
+    assert.ok(!listedKeys.has('l'));
+    assert.doesNotMatch(source, /demo-lang-toggle|data-lang|lang="zh"/);
   });
 });
 
