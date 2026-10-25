@@ -31,7 +31,8 @@ test("@T2 the story card shows the grey, red and black weaving, its maker, 26 ho
   const card = page.getByTestId("buyer-story-card");
   await expect(card).toBeVisible();
   await expect(card).toContainText(weaving.title.en);
-  await expect(card).toContainText(weaving.title.zh);
+  // English only (decisions.md, Oct 24 11:35 PM and 11:55 PM): no Chinese title under the English one.
+  await expect(card).not.toContainText(weaving.title.zh);
   await expect(card).toContainText(maker.name.en);
   await expect(card.getByRole("img", { name: maker.surnameChar, exact: true })).toHaveText(maker.surnameChar);
   await expect(card).toContainText(`${weaving.hours} hours`);

@@ -171,6 +171,12 @@ export async function expectInsideFrame(page: Page, testId: string, frameTestId 
   expect(problems, `${testId} inside the frame`).toEqual([]);
 }
 
+/**
+ * Any Chinese character or full-width punctuation (CJK symbols, ideographs, full-width forms). The
+ * site is English only (decisions.md, Oct 24 11:35 PM and 11:55 PM), so no buyer page renders one.
+ */
+export const CJK = /[⺀-鿿豈-﫿︰-﹏＀-￯]/;
+
 /** Parses "$1,234.56" or "-$3.00" into cents. */
 export function toCents(text: string): number {
   const neg = text.includes("-");

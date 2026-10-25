@@ -1,15 +1,14 @@
 // The piece page (M-buyer T6, slot shop.piece.main, the left two thirds): the story column and the
 // price column side by side, each in one kit Panel with the source keys it renders, so both fit
 // 1440 by 900 beside the support feature's shop.piece.side. The piece is SlotProps.pieceId when the
-// route sets it, otherwise the store's openPieceId (the tour on /demo). An unknown piece shows a
-// short note and a link back to Shop.
+// route sets it, otherwise the store's openPieceId (the tour on /demo). An unknown piece, or another
+// entity's ID such as a maker's or an order's, shows a short note and a link back to Shop.
 import type { SourceKey } from "../../core/events";
 import type { SlotProps } from "../../core/featureTypes";
 import { shopRoute } from "../../core/nav";
 import type { CindiaState } from "../../core/state";
 import { useCindia } from "../../core/store";
-import type { Piece } from "../../core/types";
-import { getById } from "../../mock";
+import { pieces } from "../../mock";
 import { Link } from "../../ui/Link";
 import { Panel } from "../../ui/Panel";
 import { Checkout } from "./Checkout";
@@ -33,9 +32,11 @@ const columnStyle = { minWidth: 0, minHeight: 0 } as const;
 export function PiecePage({ lang, pieceId, publicSite = false }: SlotProps) {
   const openPieceId = useCindia(selectOpenPiece);
   const id = pieceId ?? openPieceId;
-  const piece = id !== null && id !== undefined ? getById<Piece>(id) : undefined;
+  // Only a catalog piece counts: getById() also finds makers, orders and communities, which have no
+  // title or story, so any other ID reads as a missing piece rather than crashing the slot.
+  const piece = id ? pieces.find((p) => p.id === id) : undefined;
 
-  if (!piece || piece.id !== id) {
+  if (!piece) {
     return (
       <div data-testid="buyer-piece-page" data-piece-id={id ?? ""} className="flex flex-col items-start gap-2 text-base text-ink">
         <p className="m-0">{tr(page.pieceMissing, lang)}</p>

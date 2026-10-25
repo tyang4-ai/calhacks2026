@@ -1,4 +1,4 @@
-// The opened piece's maker story card. Title in both languages, the maker's name and MakerMark,
+// The opened piece's maker story card. The title, the maker's name and MakerMark,
 // hours of work, materials, the heritage line, a short story, and the process timeline inside it.
 // Everything comes from src/mock through getById().
 // - layout "phone" (the default) is v1's card in the buyer phone's panel: it draws no card of its
@@ -6,8 +6,8 @@
 // - layout "page" is the desktop piece page's left column (M-buyer T2): the illustration with its
 //   Illustration tag, the Demo data badge beside the maker, the community link, L5 under the story,
 //   and the process as a row of steps. It has to fit its column at 1440 by 900.
-// A second language's name or title shows only when it differs from the first, since makers' names
-// are the same romanized string in both.
+// English only (decisions.md, Oct 24 11:35 PM): every text renders once, in SlotProps.lang, never a
+// second language under it.
 import type { Community, Person, Piece } from "../../core/types";
 import { communityRoute } from "../../core/nav";
 import { getById } from "../../mock";
@@ -26,23 +26,12 @@ export interface StoryCardProps {
   layout?: "phone" | "page";
 }
 
-const other = (lang: Lang): Lang => (lang === "en" ? "zh" : "en");
-
-/** The text in the other language, or null when it reads the same. */
-function second(text: { en: string; zh: string }, lang: Lang): string | null {
-  const alt = tr(text, other(lang));
-  return alt !== tr(text, lang) ? alt : null;
-}
-
 export function StoryCard({ lang, pieceId, layout = "phone" }: StoryCardProps) {
   const piece = getById<Piece>(pieceId);
   if (!piece) return null;
   const maker = getById<Person>(piece.makerId);
   if (layout === "page") return <PageStory lang={lang} piece={piece} maker={maker} />;
 
-  const alt = other(lang);
-  const altTitle = second(piece.title, lang);
-  const altName = maker ? second(maker.name, lang) : null;
   const hoursText = lang === "zh" ? `${piece.hours}${tr(ui.hoursCount, lang)}` : `${piece.hours} ${tr(ui.hoursCount, lang)}`;
 
   return (
@@ -57,11 +46,6 @@ export function StoryCard({ lang, pieceId, layout = "phone" }: StoryCardProps) {
         />
         <div className="flex min-w-0 flex-col justify-center gap-1">
           <h3 className="text-2xl">{tr(piece.title, lang)}</h3>
-          {altTitle !== null && (
-            <span lang={alt} className="text-base text-ink-soft">
-              {altTitle}
-            </span>
-          )}
         </div>
       </div>
 
@@ -70,17 +54,7 @@ export function StoryCard({ lang, pieceId, layout = "phone" }: StoryCardProps) {
           <MakerMark char={maker.surnameChar} size={36} label={maker.surnameChar} />
           <div className="flex min-w-0 flex-col leading-tight">
             <span className="text-sm text-ink-soft">{tr(ui.madeBy, lang)}</span>
-            <span className="text-base font-semibold text-ink">
-              {tr(maker.name, lang)}
-              {altName !== null && (
-                <>
-                  {" "}
-                  <span lang={alt} className="font-normal text-ink-soft">
-                    {altName}
-                  </span>
-                </>
-              )}
-            </span>
+            <span className="text-base font-semibold text-ink">{tr(maker.name, lang)}</span>
           </div>
         </div>
       )}
@@ -118,9 +92,6 @@ interface PageStoryProps {
 
 /** The desktop piece page's story (M-buyer T2). */
 function PageStory({ lang, piece, maker }: PageStoryProps) {
-  const alt = other(lang);
-  const altTitle = second(piece.title, lang);
-  const altName = maker ? second(maker.name, lang) : null;
   const community = getById<Community>(piece.communityId);
 
   return (
@@ -134,25 +105,10 @@ function PageStory({ lang, piece, maker }: PageStoryProps) {
         </figure>
         <div className="flex min-w-0 flex-col gap-1">
           <h2 className="m-0 text-xl leading-tight font-semibold text-ink">{tr(piece.title, lang)}</h2>
-          {altTitle !== null && (
-            <span lang={alt} className="text-sm leading-snug text-ink-soft">
-              {altTitle}
-            </span>
-          )}
           {maker && (
             <div className="flex flex-wrap items-center gap-2">
               <MakerMark char={maker.surnameChar} size={24} label={maker.surnameChar} />
-              <span className="text-base font-semibold text-ink">
-                {tr(maker.name, lang)}
-                {altName !== null && (
-                  <>
-                    {" "}
-                    <span lang={alt} className="font-normal text-ink-soft">
-                      {altName}
-                    </span>
-                  </>
-                )}
-              </span>
+              <span className="text-base font-semibold text-ink">{tr(maker.name, lang)}</span>
               <Badge variant="demo" />
             </div>
           )}

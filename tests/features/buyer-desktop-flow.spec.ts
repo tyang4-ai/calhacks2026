@@ -1,6 +1,6 @@
 // M-buyer T6: the piece page and the receipt page walked through the tour's buyer events.
-// Acceptance 8 (each page shows the Simulated badge), 9 (Chinese labels with the amounts unchanged)
-// and 11: at the end of d03-piece, d05-pay and d12-receipt, every buyer test ID fix-plan 1.2 lists
+// Acceptance 8 (each page shows the Simulated badge), English only (Gordon's decision, which replaced
+// acceptance 9's Chinese labels: decisions.md, Oct 24 11:35 PM and 11:55 PM) and 11: at the end of d03-piece, d05-pay and d12-receipt, every buyer test ID fix-plan 1.2 lists
 // for that beat sits inside the frame. Once I2-tour's timeline holds the beats, each check seeks 300
 // ms before the next beat starts; until then (Phase A) it seeks to the same buyer events in v1's
 // timeline and emits the tour's project.funded ctb_01 from src/mock with tourEvent's seed.
@@ -9,7 +9,7 @@ import type { Person, Project } from "../../src/core/types";
 import { demoContribution, getById, gallerySplits, receiptNotes, splits } from "../../src/mock/index";
 import { formatCents } from "../../src/ui/formatCents";
 import { watchPage } from "../smoke/lib";
-import { expectInsideFrame, openPage, seed, seekToEvent, storeSlice, timelineHas, tourEvent, withTourEvent } from "./buyer-lib";
+import { CJK, expectInsideFrame, openPage, seed, seekToEvent, storeSlice, timelineHas, tourEvent, withTourEvent } from "./buyer-lib";
 
 const CTB_01 = [seed("project.funded", demoContribution)];
 
@@ -97,19 +97,25 @@ test("@T6 the buyer's walk: the split with the comparison, then pay with the con
   watch.expectClean();
 });
 
-test("@T6 in Chinese both pages read Chinese, L7 included, and the amounts are unchanged", async ({ page }) => {
+test("@T6 English only: at the end of each buyer beat the page reads English, L7 included, and shows no Chinese", async ({ page }) => {
   const watch = watchPage(page);
   await openAtBeatEnd(page, "d05-pay");
-  await page.getByTestId("demo-lang-toggle").click();
-  await page.getByTestId("demo-lang-toggle").click();
-  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("zh");
-
-  await expect(page.getByTestId("buyer-addon-note")).toHaveText("演示项目。不会收取任何款项。");
-  await expect(page.getByTestId("buyer-receipt-status")).toHaveText("已收款");
+  const piecePage = page.getByTestId("buyer-piece-page");
+  await expect(piecePage).toHaveAttribute("lang", "en");
+  await expect(page.getByTestId("buyer-addon-note")).toHaveText("Demo project. No money is collected.");
+  await expect(page.getByTestId("buyer-receipt-status")).toHaveText("Received");
   await expect(page.getByTestId("buyer-split-maker-share")).toHaveText(formatCents(splits.pc_01.makerShareCents));
   await expect(page.getByTestId("buyer-split-compare")).toContainText(formatCents(gallerySplits.pc_01.makerShareCents));
-  await expect(page.getByTestId("buyer-split-bar")).toContainText("匠人所得");
-  await expect(page.getByTestId("buyer-simulated-note")).toHaveText("这是模拟结账，不会扣款。");
+  await expect(page.getByTestId("buyer-split-bar")).toContainText("Maker share");
+  await expect(page.getByTestId("buyer-simulated-note")).toHaveText("This checkout is simulated. No card is charged.");
+  await expect(piecePage).not.toContainText(CJK);
   for (const id of BEATS["d05-pay"].ids) await expectInsideFrame(page, id);
+
+  for (const beat of ["d03-piece", "d12-receipt"] as const) {
+    await openAtBeatEnd(page, beat);
+    const root = page.getByTestId(beat === "d12-receipt" ? "buyer-receipt-page" : "buyer-piece-page");
+    await expect(root).toBeVisible();
+    await expect(root).not.toContainText(CJK);
+  }
   watch.expectClean();
 });
