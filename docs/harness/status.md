@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:42 PT
+UPDATED: 2026-10-24 22:43 PT
 
 # Status board
 
@@ -174,6 +174,7 @@ Filled in from `artifacts/preflight.md` at G0.
 
 Run once the V2 leads are done, so a shared-code edit can't reload the dev server under another lead's tests.
 
+- M-buyer: F1 a piece route with another entity's ID crashes the slot (`PiecePage.tsx:36-38`, treat a non-piece as missing, plus a spec); F2 the story column's verification block ends below y 876 on 20 of 54 pieces in English (pc_27 to pc_42, pc_45, pc_46, pc_49, pc_51; worst pc_38), move `PieceVerification` to the price column or shorten the story column, plus a multi-piece fit spec (`artifacts/gates/G3-buyer-verifier.md`). With T7 after G4v2.
 - Feature leads: F-search F1 (only the first row of the six tour results above the fold, `ResultsGrid.tsx`, `ResultCard.tsx`); F-communities F1 (Shop home strip clipped at 1440x900, `_stripBody` scroll) and F2 (`/shop/projects` inner scroll). If either can't be fixed in the feature, the integrator changes the Shop home stack ratio in `src/app/surfaces/surfaces.module.css`.
 - Integrator code: `src/ui/Seal.tsx:50-51` comment (the compact card's date); `src/app/chrome/AppChrome.tsx` Ask Cindy button test ID (add to ui-contract.md); `src/ui/gallery.tsx:458` 示例山丘工作室 (old-names grep, G2b M1); `tests/smoke/routes.spec.ts` checks the co-op's name in the Sell header and the eleven ProcessBlocks on one row on /dev/kit; `src/core/validate.test.ts` negative cases for the optional fields; `scripts/gate.mjs` copies `artifacts/demo/report.json` next to each live G5's logs; `node --test scripts/*.test.mjs` in `npm run check` or a gate (D-deploy note); `ALLOWED_EMPTY_FALLBACKS` b13-live data.synced; tsconfig jsx.
 - Integrator docs round 2: design-system.md "the 48 px compact seal" → "a 48 px seal", `formatMonthDay` in the kit table; ui-contract.md Test hooks rule wording (data-slot* sits on a wrapper with no test ID), add data-role, data-status, data-video-phase, data-catch-phase to the data-attributes table, the Test IDs intro now that Internal rows are many; events.md Player `setDispatch`, `subscribe` comment names reset and seek; glossary L1 Where cell "except /dev/kit"; api-contract 503/502 rows.
@@ -334,3 +335,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:31 PT · G3 buyer 2/3 in the shared tree (check:scope, feature 62 passed; smoke 122/123, the failure in F-seller-hub's unfinished MakerSide.tsx); rerun in the worktree with buyer plus I2-art's drawings (I2-art verifier PASS) · artifacts/gates/G3-2218.md
 - 2026-10-24 22:40 PT · F-process built (check:scope 71 unit, feature 35/35 on rerun); its verifier and F-watch's lead spawned; worktree G3 now uses its own dev server on 5174 (the preview can't serve the dev-only /src imports two v1 buyer specs use); buyer and process worktree G3s running; integrator fixing the offline-font flake in shell.spec.ts:447 · status.md
 - 2026-10-24 22:42 PT · contracts docs round 1 PASS (integrator; code-match and consistency verifiers PASS, minors only): api-contract, definition-of-done, demo-script, design-system, events, ui-contract (41 internal test IDs, a data-attributes table, the scrim token, the Seal date rule); code items queued for the polish round · status.md
+- 2026-10-24 22:43 PT · G3 buyer verifier PASS (F1, F2 to the polish queue); worktree dev server got fs.allow for the symlinked node_modules (fonts were refused); buyer, process and D-deploy gates running in the worktree, in that order; D-deploy built (17 public checks, laptop dry-run), its two-lens verifier running · status.md
