@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:22 PT
+UPDATED: 2026-10-25 00:24 PT
 
 # Status board
 
@@ -111,7 +111,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-storefront | V2 P1 | green | feature-lead | v2-storefront | theme field on storefront.published (integrator); N1-N4 in the polish queue |
 | M-maker-statement | V2 P1 | green | feature-lead | v2-maker-statement | compact layout under 600 px for Phase A's box; minors in the verifier report |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
-| I2-tour | V3 | T2 done (uncommitted, commits with T1), T1 running | integrator, data-smith | | 20 beats, 220 s; T3-T8 next, with English-only toggle hiding |
+| I2-tour | V3 | T2, T1 done (uncommitted, commit at G4v2); T3-T7 integrator running | integrator, data-smith | | 20 beats, 220 s, 234 events; English only step 1 and the final pitch text in T3-T7; T8 by the orchestrator |
 | I3-redesign | V4 | todo | integrator | | per design drop |
 
 ## v2 Upgrades
@@ -398,3 +398,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:14 PT · Gordon: Chinese goes entirely, in two steps (decisions.md); G3 process PASS after fix round 1 (worktree 3/3, verifier recheck PASS), committed, tag v2-process; M-desktop verifier FAIL on B1-B7 (all specs pass; text under 14 px and ellipsized labels), fix round 1 sent with English-only spec updates · status.md
 - 2026-10-25 00:22 PT · G3 desktop2 in the worktree: check:scope and every feature spec PASS, smoke 122/123 (a 502 from the main API mid-reload after the m key; environmental); desktop reruns after its fix round; keyed v1 G5s (b04, b02, b07) queued on a worktree API on 8001 · artifacts/gates/G3-desktop2-wt-0013.md
 - 2026-10-25 00:22 PT · merged the video brief's final pitch text (approved by Gordon; tagline "Made by hand. Paid in full.") for I2-tour T4 · docs/v2/video-brief.md
+- 2026-10-25 00:24 PT · I2-tour T1 done (the tour timeline: 234 events, 31 beat.started, durationMs 220000; check:data 300; demo-timeline.test 56); I2-tour T3-T7 integrator spawned (stage, modes, tests, contracts, with English only step 1, the final pitch text and the fallback entries); a backend-builder fixes b09-concierge.test.ts (it read v1's concierge events) and places b11-embed.test.ts · status.md
