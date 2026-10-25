@@ -158,6 +158,8 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | v2-maker-statement | cd13c2191ff5c2cd476a9de67b3d33164d5e9d0b | G3 maker-statement | Oct 25 12:20 AM |
 | v2-process | 123e1c6ccaa681223a26e66739d2b68fb7d7276f | G3 process | Oct 25 12:25 AM |
 | v2-approvals | 5c39089ec351815fbdd31344045007e9327dba72 | G3 approvals | Oct 25 1:00 AM |
+| demo-ok-v2 | c4c83526e6bb18825ea008e47984537f784b01aa | G4v2 (the tour) | Oct 25 2:52 AM |
+| v2-desktop | c4c83526e6bb18825ea008e47984537f784b01aa | G3 desktop (worktree) | Oct 25 2:55 AM |
 
 ## Environment
 
@@ -426,3 +428,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 02:26 PT · G4v2 review done: beats PASS, English FAIL (d15 sentence, fixed; stale shots, deleted), words FAIL on B1 (d11's "Pieces for sale" under L1's "Nothing is for sale."); fix round: seller-hub heading to "Pieces", F-search's engine line punctuation; then the G4v2 rerun and a recheck of d11 and d15 · artifacts/gates/G4v2-verifier-words.md
 - 2026-10-25 02:58 PT · G4v2 PASS 5/5 on the fixed tour (220.0 s x3, offline); committed in seven groups (I2-tour, S3 T9, F-process, F-seller-hub, M-buyer, F-search, M-desktop); recheck verifier running, then push and tag demo-ok-v2; V4 started: I3 drop 3 as two integrators (shell, kit), M-buyer T7, M-desktop's live spec fixes; G5 b12, b14, b11 in the worktree · artifacts/gates/G4v2-0233.md
 - 2026-10-25 02:55 PT · dev server and API restarted ahead of their 2-hour limits (5173, 8000; all 16 routers) · status.md
+- 2026-10-25 03:00 PT · G4v2 recheck PASS on all five items (d15, d11, d01/d02 lines, no CJK in 25 shots, stale shots gone); pushed; tags demo-ok-v2 and v2-desktop on c4c8352 (local); leftovers for before G6: market pages' Chinese, the /dev/kit toggle, agents.ts:101 roster line, Sell header ellipsis on d09/d10/d13/d14 · artifacts/gates/G4v2-verifier-recheck.md
