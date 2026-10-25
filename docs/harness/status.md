@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 23:03 PT
+UPDATED: 2026-10-24 23:10 PT
 
 # Status board
 
@@ -349,3 +349,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:58 PT · G3 process verifier FAIL on four clipping defects (F1-F4), fix round 1 sent to its lead; F-seller-hub built (30 specs), its verifier spawned and its worktree G3 queued after process (a lock now keeps worktree gates one at a time) · artifacts/gates/G3-process-verifier.md
 - 2026-10-24 22:59 PT · F-storefront and M-maker-statement leads spawned (all eleven V2 leads now spawned; target: features green or cut by about 1:30 AM so I2-tour can start) · status.md
 - 2026-10-24 23:03 PT · dev server stopped at its 2-hour limit, restarted on 5173 (leads' runs in that minute may fail on the reload) · status.md
+- 2026-10-24 23:10 PT · S3 data round 1 done (G2b M1-M5, M8: old-names term by code point, sq_007 "a young child" (leak-guard clean), run_08 one piece each from two other communities, churro（丘罗羊）, 沙盒市场, cft_01's seller Lantern Lane Home Goods); check:data 234, check:scope PASS, support+search specs pass (two reruns after the dev-server restart), server tests 396; committed · status.md

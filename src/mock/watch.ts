@@ -35,7 +35,7 @@ export const counterfeitCandidates: CounterfeitCandidate[] = [
       zh: `声称由${coop.name.zh}的 ${grace.name.zh} 织成。她没有在那里上架这件作品。`,
     },
     verdict: "possible_copy",
-    seller: "Red Mesa Home Goods",
+    seller: "Lantern Lane Home Goods",
     priceCents: 9500,
   },
   {
@@ -98,7 +98,7 @@ const hit = counterfeitCandidates[0];
 export const fup_02: FollowUp = {
   id: "fup_02",
   approvalId: "apr_03",
-  to: { en: "Sandbox market, trust team", zh: "沙盒市集信任团队" },
+  to: { en: "Sandbox market, trust team", zh: "沙盒市场信任团队" },
   subject: {
     en: `A listing that names ${grace.name.en} of the ${coop.name.en}`,
     zh: `一件写明${coop.name.zh}的 ${grace.name.zh} 的商品`,
@@ -110,8 +110,8 @@ export const fup_02: FollowUp = {
       `The listing's description also repeats a sentence from her own listing on Cindia word for word. ` +
       `Could you look into the listing and let us know what you find?\n\nThank you,\n${owner.name.en}, ${coop.name.en}`,
     zh:
-      `您好：\n\n贵市集的商品 ${hit.url}（“${hit.title}”）声称这件编织由${coop.name.zh}的 ${grace.name.zh} 织成。` +
-      `${grace.name.zh} 没有在贵市集上架这件作品，合作社也无法确认是她制作的。` +
+      `您好：\n\n贵市场的商品 ${hit.url}（“${hit.title}”）声称这件编织由${coop.name.zh}的 ${grace.name.zh} 织成。` +
+      `${grace.name.zh} 没有在贵市场上架这件作品，合作社也无法确认是她制作的。` +
       `这件商品的描述还逐字重复了她在Cindia上作品介绍中的一句话。` +
       `能否请您查看这件商品，并告诉我们结果？\n\n谢谢！\n${owner.name.zh}，${coop.name.zh}`,
   },

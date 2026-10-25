@@ -31,7 +31,7 @@ const QUERIES: Omit<SearchQuery, "id">[] = [
   en("housewarming present, something to hang on the wall", { pc_05: 2, pc_06: 2, pc_11: 2, pc_03: 1, pc_04: 1 }),
   en("a thank you gift under $50", { pc_07: 2, pc_18: 2, pc_40: 2 }),
   en("holiday gift for my sister", { pc_09: 2, pc_10: 2, pc_24: 2, pc_42: 2, pc_45: 2, pc_51: 2 }),
-  en("birthday present for a ten year old", { pc_50: 2, pc_54: 2 }),
+  en("birthday present for a young child", { pc_50: 2, pc_54: 2 }),
   // Who it's for.
   en("for my dad, he likes bold things", { pc_04: 2, pc_12: 2, pc_32: 2, pc_48: 2, pc_52: 2, pc_44: 1 }),
   en("treat myself to an elegant black and white pot", { pc_27: 2, pc_33: 2, pc_39: 2, pc_38: 1, pc_37: 1, pc_31: 1 }),

@@ -141,7 +141,7 @@ export const agents: AgentSpec[] = [
   claude("explainer", { en: "Explainer", zh: "解释" }, SONNET, ["b02"], { en: "Explains the catch", zh: "解释查出的问题" }, MOVE_MONEY),
   code("bookkeeper", { en: "Bookkeeper", zh: "记账" }, ["b06", "b10"], { en: "Derives the books and the workbook", zh: "推算账本并生成Excel报表" }, MOVE_MONEY),
   code("scorer", { en: "Scorer", zh: "评分" }, ["b03"], { en: "Scores the planted errors", zh: "为测试用例评分" }, MOVE_MONEY),
-  code("scout", { en: "Scout", zh: "巡查" }, ["apify_crawl"], { en: "Crawls the sandbox market through Apify", zh: "通过Apify抓取沙盒市集" }, SEND_REPORT),
+  code("scout", { en: "Scout", zh: "巡查" }, ["apify_crawl"], { en: "Crawls the sandbox market through Apify", zh: "通过Apify抓取沙盒市场" }, SEND_REPORT),
   code("comparer", { en: "Comparer", zh: "比对" }, ["embed"], { en: "Scores look-alikes", zh: "为相似商品打分" }, SEND_REPORT),
   claude("claims", { en: "Claims", zh: "声明核查" }, HAIKU, [], { en: "Checks what a found listing claims", zh: "核查找到的商品声称了什么" }, SEND_REPORT),
   claude(

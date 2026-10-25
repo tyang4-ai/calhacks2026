@@ -397,6 +397,11 @@ describe("the scripted runs", () => {
     ]);
     expect(draft.checks[1].note.en.startsWith("Planted test:")).toBe(true);
     expect(draft.summary.en).toContain("Woven from hand-spun churro wool, the old way.");
+    // R19: a craft term with no standard Chinese name stays in Latin script first, then its gloss.
+    expect(draft.summary.zh).toContain("churro（丘罗羊）");
+    expect(draft.checks[1].note.zh).toContain("churro（丘罗羊）");
+    expect(run("run_02").steps.filter((s) => s.summary.zh.includes("churro（丘罗羊）")).map((s) => s.agentId)).toEqual(["checker"]);
+    expect(JSON.stringify(swarmRuns)).not.toContain("丘罗羊（churro）");
     expect(listings[0].notes).toContain("Store-bought wool yarn");
     expect(draft.facets.oneOfAKind).toBeUndefined();
     expect(draft.facets.leadTimeDays).toBeUndefined();
@@ -497,9 +502,9 @@ describe("the scripted runs", () => {
     expect(relayed.reply.en).not.toContain(ans.text);
   });
 
-  it("run_08 names pc_07 and two pieces from other communities, all under $100 and sharing two of pc_01's words", () => {
+  it("run_08 names pc_07 and the closest piece from each of two other communities, all under $100 and sharing two of pc_01's words", () => {
     const r = reply("run_08");
-    expect(r.refIds).toEqual(["pc_07", "pc_14", "pc_26"]);
+    expect(r.refIds).toEqual(["pc_07", "pc_14", "pc_31"]);
     const base = wordsOf(piece("pc_01"));
     for (const id of r.refIds) {
       const p = piece(id);
@@ -507,7 +512,15 @@ describe("the scripted runs", () => {
       expect([...wordsOf(p)].filter((w) => base.has(w)).length, id).toBeGreaterThanOrEqual(2);
       expect(r.reply.en, id).toContain(mock.usd(p.priceCents));
     }
-    expect(r.refIds.map((id) => piece(id).communityId)).toEqual(["com_dine", "com_ojibwe", "com_ojibwe"]);
+    expect(r.refIds.map((id) => piece(id).communityId)).toEqual(["com_dine", "com_ojibwe", "com_acoma"]);
+    // Each other community's own closest piece: none of its pieces under $100 shares more of pc_01's words.
+    const sharedWith = (id: string) => [...wordsOf(piece(id))].filter((w) => base.has(w)).length;
+    for (const id of r.refIds.slice(1)) {
+      const rivals = pieces.filter((p) => p.communityId === piece(id).communityId && p.priceCents < 10000);
+      for (const p of rivals) expect(sharedWith(p.id), `${id} vs ${p.id}`).toBeLessThanOrEqual(sharedWith(id));
+    }
+    expect(r.reply.en).toContain("one piece each from two other communities");
+    expect(r.reply.zh).toContain("另外两个社区各一件作品");
     const tool = run("run_08").steps.find((s) => s.toolName === "elastic_agent");
     expect(tool?.summary).toEqual({
       en: "Elastic Agent Builder (cindia-finder): pieces like pc_01 under $100",
@@ -697,7 +710,8 @@ describe("the host scan", () => {
 describe("the old-names scan", () => {
   // R0-reskin's acceptance grep for v1's old names, and the dropped Peoples of the earlier plan,
   // term by term. Each term carries a "·" that unmark() strips, so a grep for these names over tests/
-  // finds nothing in this file while the regex still matches exactly what the grep does.
+  // finds nothing in this file while the regex still matches exactly what the grep does. The one-character
+  // term (U+7EE2, the grep's silk-gauze word) has no place for a "·", so it is written by code point.
   const OLD_TERMS = [
     "std·_gu", "Gu Em·broidery", "Gu em·broidery", "Gu stu·dio", "顾·绣", "顾·氏",
     "Shen Ruo·lan", "沈·若兰", "Lu Y·un", "陆·芸", "Han Ji·ng", "韩·静", "Zhou M·ei", "周·梅",
@@ -706,7 +720,7 @@ describe("the old-names scan", () => {
     "Orchid sc·roll", "兰花·轴", "Sparrow on bam·boo", "竹·雀", "[Ss]a·chet", "香·囊",
     "Silk coas·ters", "丝·绣", "Crane bro·och", "仙·鹤", "Cloud po·uch", "祥·云",
     "[Cc]hrysan·themum", "菊·花", "[Pp]hoe·nix", "凤·凰", "团·扇", "osman·thus", "桂·花",
-    "Ming dyn·asty", "明·代", "宋·画", "刺·绣", "绢", "非·遗", "主理·人", "工作·室",
+    "Ming dyn·asty", "明·代", "宋·画", "刺·绣", String.fromCodePoint(0x7ee2), "非·遗", "主理·人", "工作·室",
   ];
   const DROPPED = ["Mā·ori", "Ma·ori", "Sá·mi", "\\bSa·mi\\b", "In·uit", "Que·chua", "Maa·sai", "Mi·ao", "Hm·ong"];
   const OLD = new RegExp([...OLD_TERMS, ...DROPPED].map(unmark).join("|"));
@@ -732,5 +746,17 @@ describe("determinism", () => {
     for (const [f, text] of Object.entries(FILES)) {
       expect(text, f).not.toMatch(/Math\.random|Date\.now|performance\.now|new Date\(\s*\)/);
     }
+  });
+});
+
+describe("the sandbox market's names", () => {
+  it("the Chinese calls it 沙盒市场, L21's word, in every src/mock/ file", () => {
+    expect(Object.entries(FILES).filter(([, text]) => text.includes("市集")).map(([f]) => f)).toEqual([]);
+    expect(allFollowUps.find((f) => f.id === "fup_02")?.to.zh).toContain("沙盒市场");
+    expect(getAgent("scout")?.job.zh).toContain("沙盒市场");
+  });
+
+  it("cft_01's seller names no place and no nation", () => {
+    expect(counterfeitCandidates[0]).toMatchObject({ id: "cft_01", seller: "Lantern Lane Home Goods" });
   });
 });

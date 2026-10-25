@@ -277,7 +277,7 @@ const DRAFT_TITLE: Text = {
 // PLANTED TEST, like v1's planted errors: the summary's second sentence claims hand-spun churro wool
 // on purpose, though the notes say store-bought yarn. chk_02 catches it, and it is the only failing
 // check in any run.
-const PLANTED_CLAIM: Text = { en: "Woven from hand-spun churro wool, the old way.", zh: "用手纺的丘罗羊（churro）毛线，按老方法织成。" };
+const PLANTED_CLAIM: Text = { en: "Woven from hand-spun churro wool, the old way.", zh: "用手纺的churro（丘罗羊）毛线，按老方法织成。" };
 const DRAFT_SUMMARY: Text = {
   en: `A small weaving, about 30 by 40 cm, in red, grey and white wool, with a zigzag band across the middle. ${PLANTED_CLAIM.en} About 20 hours on the loom.`,
   zh: `一幅约30×40厘米的小幅编织，用红、灰、白三色羊毛织成，中间横贯一条锯齿纹饰带。${PLANTED_CLAIM.zh}在织机上织了约20小时。`,
@@ -313,7 +313,7 @@ const draft: Payloads["listing.drafted"] = {
       ok: false,
       note: {
         en: `Planted test: the draft says hand-spun churro wool, but ${lena.name.en}'s notes say store-bought yarn. A person must fix this before it publishes.`,
-        zh: `预设测试：草稿写的是手纺丘罗羊（churro）毛线，但 ${lena.name.zh} 的笔记写的是买来的毛线。发布前必须由人改正。`,
+        zh: `预设测试：草稿写的是手纺churro（丘罗羊）毛线，但 ${lena.name.zh} 的笔记写的是买来的毛线。发布前必须由人改正。`,
       },
     },
     {
@@ -375,7 +375,7 @@ const run02: ScriptedRun = {
     step("run_02", "checker", "check", 600, { en: "Protocol check passed.", zh: "规定核查通过。" }),
     step("run_02", "checker", "check", 700, {
       en: "Facts check failed: hand-spun churro wool isn't in the notes.",
-      zh: "事实核查未通过：笔记里没有手纺丘罗羊（churro）毛线。",
+      zh: "事实核查未通过：笔记里没有手纺churro（丘罗羊）毛线。",
     }),
     step("run_02", "checker", "check", 500, { en: "Price check passed: no price in the notes.", zh: "价格核查通过：笔记里没有价格。" }),
     step("run_02", "indexer", "result", 600, { en: "Embedded the draft into cindia-drafts as pc_55.", zh: "把草稿嵌入cindia-drafts，编号pc_55。" }),
@@ -587,8 +587,12 @@ const alike = pieces
   .filter((p) => p.id !== pc01.id && p.priceCents < BUDGET_CENTS && shared(p) >= 2)
   .toSorted((a, b) => shared(b) - shared(a) || (a.id < b.id ? -1 : 1));
 const sameCoop = need(alike.find((p) => p.communityId === coop.id), "a co-op piece like pc_01 under $100");
-const others = alike.filter((p) => p.communityId !== coop.id).slice(0, 2);
-if (others.length < 2) throw new Error("run_08 needs two pieces from other communities like pc_01 under $100");
+/** The closest piece from each other community, in the same order, then the first two of those. */
+const others = alike
+  .filter((p) => p.communityId !== coop.id)
+  .filter((p, i, list) => list.findIndex((q) => q.communityId === p.communityId) === i)
+  .slice(0, 2);
+if (others.length < 2) throw new Error("run_08 needs pieces from two other communities like pc_01 under $100");
 const found = [sameCoop, ...others];
 
 const otherLine = (p: Piece, lang: Lang) => {
@@ -640,10 +644,10 @@ const run08: ScriptedRun = {
         {
           en:
             `Under ${BUDGET.en}, the closest are ${maker(sameCoop.makerId).name.en}'s ${inSentence(sameCoop.title.en)} (${usd(sameCoop.priceCents)}), from the same co-op, ` +
-            `and two pieces from other communities: ${others.map((p) => otherLine(p, "en")).join(", and ")}.`,
+            `and one piece each from two other communities: ${others.map((p) => otherLine(p, "en")).join(", and ")}.`,
           zh:
             `${BUDGET.zh}以内最接近的是同一合作社 ${maker(sameCoop.makerId).name.zh} 的${sameCoop.title.zh}（${usd(sameCoop.priceCents)}），` +
-            `以及另外两个社区的作品：${others.map((p) => otherLine(p, "zh")).join("，以及")}。`,
+            `以及另外两个社区各一件作品：${others.map((p) => otherLine(p, "zh")).join("，以及")}。`,
         },
         found.map((p) => p.id),
       ),
