@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:11 PT
+UPDATED: 2026-10-25 00:12 PT
 
 # Status board
 
@@ -391,3 +391,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:09 PT · SpacetimeDB stopped at its 2-hour limit, restarted on 127.0.0.1:3000 · status.md
 - 2026-10-25 00:10 PT · B11's trained outputs committed (report.json with hubRepo and hubRevision, vectors.json, unjudged.json, the filled model card, the snapshot) and the card test now holds for the filled card (test:server 671); SpacetimeDB restarted after its 2-hour limit (B13 reseeded: catalog 54, orders 42, approvals 5) · status.md
 - 2026-10-25 00:11 PT · G3 maker-statement PASS in the worktree plus verifier PASS; committed, tag v2-maker-statement; G3 approvals rerun PASS in the worktree (41, smoke 123) and its confirm recheck PASS, adversarial lens pending; desktop's first worktree run broke on over-long log names (script bug, not the feature), rerun queued; desktop verifier FAIL, findings next · status.md
+- 2026-10-25 00:12 PT · merged the planning session's docs/v2/video-brief.md (a brief for the separate demo-video conversation; its section 7 holds the pitch card draft, which I2-tour T4 uses for src/app/demo/pitch.ts until Gordon pastes the final text) · docs/v2/video-brief.md
