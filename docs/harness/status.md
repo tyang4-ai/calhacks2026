@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 01:20 PT
+UPDATED: 2026-10-25 01:30 PT
 
 # Status board
 
@@ -113,7 +113,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-storefront | V2 P1 | green | feature-lead | v2-storefront | theme field on storefront.published (integrator); N1-N4 in the polish queue |
 | M-maker-statement | V2 P1 | green | feature-lead | v2-maker-statement | compact layout under 600 px for Phase A's box; minors in the verifier report |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
-| I2-tour | V3 | T2, T1 done (uncommitted, commit at G4v2); T3-T7 integrator running | integrator, data-smith | | 20 beats, 220 s, 234 events; English only step 1 and the final pitch text in T3-T7; T8 by the orchestrator |
+| I2-tour | V3 | T1-T7 built (uncommitted); test:demo 6/7 and offline red on one item (F-process's swarm steps); fixes running; G4v2 next | integrator, data-smith | | 20 beats, 220 s; English only step 1 done in the shell; pitch text final |
 | I3-redesign | V4 | todo | integrator | | per design drop |
 
 ## v2 Upgrades
@@ -415,3 +415,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 01:03 PT · dev server stopped at its 2-hour limit, restarted on 5173 (a fresh module cache also clears the ?t= store copies that broke store-importing specs) · status.md
 - 2026-10-25 01:19 PT · API stopped at its 2-hour limit, restarted (all 16 routers) · status.md
 - 2026-10-25 01:20 PT · B16 done (reconcile over Nessie's records finds flg_01 with v1's figures and its nessieId, seed, fund deposit and milestone withdrawal, adapter): test_b16 72 + 1 live, test:server 854, check PASS, smoke 124; committed; reconcile-live-bank passes, money-map-live-bank needs M-desktop's player fix · status.md
+- 2026-10-25 01:30 PT · I2-tour T3-T7 done: check PASS, check:data 300, smoke 124, build, modes 6/6, the tour 220.009 s; demo and offline fail on one item, run_01's check step (stp_0006) out of view in the 480x900 process panel at d04 (F-process); Chinese still renders from M-buyer's piece subtitle and F-seller-hub's d15 translated draft; fixes sent to F-process and F-seller-hub, M-buyer lead spawned; G4v2 after them · status.md
