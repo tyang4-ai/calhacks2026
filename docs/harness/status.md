@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:06 PT
+UPDATED: 2026-10-25 00:07 PT
 
 # Status board
 
@@ -119,7 +119,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B11-embed | T1-T8 built, trained and published; G5 after T9 pass 2 | pairs by Claude (Haiku, one Sonnet retry); Hub publish 11:57 PM | | trained 45.8 min at batch 16; recall@5 custom 0.789, keyword 0.784, hybrid 0.825; private repo Fireclaw2396/cindia-embed rev 5ad57138 |
 | B12-search | T1-T6 built and committed; G5 after G4v2 | Elastic hybrid live: seed ~30 s, query 0.61 s, Agent Builder 7.1 s | | Elastic eval recall@5 0.819, MRR 0.887; T7 not built |
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
-| B14-swarm | first spawn green (T1-T3, T5, T6) | Intake on Haiku 2.2 s | | T4, T7-T10 after B12 |
+| B14-swarm | first spawn committed; second spawn (T4, T7-T10) running | Intake on Haiku 2.2 s | | Finder budgets 9 s for Agent Builder |
 | B15-watch | todo | | | fixture until the public site is up |
 | B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
 
@@ -385,3 +385,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:02 PT · I2-tour T2 done (no I2-core gaps, 3 unit tests, the tour in demo-script.md under ## Beats, 20 beats with d17-ask-maker, 220 s; timelines.test red until T1, so T2 commits with T1); T1 data-smith spawned (drafts the timeline outside src/ and swaps it in at once) · status.md
 - 2026-10-25 00:03 PT · G3 storefront PASS in the worktree (feature 27, smoke 123) plus verifier PASS; committed, tag v2-storefront · artifacts/gates/G3-storefront-verifier.md
 - 2026-10-25 00:06 PT · B12 built (T1-T6): live test passed twice against Elastic (seed about 30 s, tour query 0.61 s, 50 eval queries in one _msearch 1.43 s, agentBuilder true), Elastic eval recall@5 0.819 / MRR@10 0.887; test_b12_search 52, check PASS, smoke 123; committed; G5 b11 and b12 after G4v2 (their demo runs need I2-tour's fallback list); B11's card test asked to accept the filled card · status.md
+- 2026-10-25 00:07 PT · B14 second spawn (T4 Finder and Curator on B12, T7 listing run, T8 storefront run, T9 endpoints, T10 adapter) and B15 (T1-T6, fixture until the public site is up) spawned · status.md
