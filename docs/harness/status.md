@@ -176,6 +176,7 @@ Each item names the default already in use, so the build never waits.
 
 | Since | Question | Default in use |
 |---|---|---|
+| Oct 24 10:28 PM | I2-art: the two-minute look at `artifacts/art/contact-sheet.png` (sent to you in the app) before G4v2. Worth a glance: pc_01 and pc_04 (stepped diamonds), pc_16 (leaf earrings, the most feather-like), the Acoma terrace jars pc_27, pc_32, pc_35, pc_38, pc_39. A flagged piece goes back with `npm run art -- --placeholders <pieceId>` | The 54 drawings as verified (`artifacts/gates/I2-art-verifier.md` PASS) |
 | Oct 24 8:55 PM | Chinese words for the kit: 部族认证 for "Nation attestation" (design drop 3's proposal), and 插图, 示例, 待完成, 已达成, 您的请求, 近似, 事件日志 in `src/ui/strings.ts` | As written by the kit integrator |
 | Oct 24 8:20 PM | Scribe's Devpost skeleton (`docs/devpost/devpost.md`, 14 `[GORDON: ...]` items listed in `sponsors/README.md`): write your sections; check the Figma prize names on Devpost; set the three Figma files to "Anyone with the link" | Drafts and placeholders |
 | Oct 24 6:16 PM | R0: check the Chinese of the co-op's place (美国亚利桑那州纳瓦霍保留区) and the twelve Chinese piece stories in `src/mock/catalog.ts`, plus the Chinese of L1, L2, L4 and L15 (fix-plan section 7) | The data-smith's Chinese, as written |
