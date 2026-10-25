@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:05 PT
+UPDATED: 2026-10-24 22:10 PT
 
 # Status board
 
@@ -42,6 +42,7 @@ v1 (desktop session, history):
 | G2b | PASS | Oct 24 21:37 | `artifacts/gates/G2b-2112.md`, `artifacts/gates/G2b-verifier-data.md` | v2-data |
 | G1b | PASS | Oct 24 22:05 | `artifacts/gates/G1b-2113.md` (main tree), `artifacts/gates/G1b-wt-2152.md` (worktree rerun after the fix: check, build, smoke 123, demo 60.006 s, offline), `G1b-verifier-screens.md` PASS, `G1b-verifier-code.md` FAIL (14 px floor) then `G1b-verifier-recheck.md` PASS | v2-shell |
 | G3 support | PASS | Oct 24 10:05 PM | `artifacts/gates/G3-2145.md` (check:scope, feature 19 + 1 skipped; smoke 122/123: the shell's seekToEvent test hit a Vite full reload from another lead's edit, passed twice alone), `artifacts/gates/G3-support-verifier.md` PASS | v2-support |
+| G3 search | PASS | Oct 24 10:10 PM | `artifacts/gates/G3-2200.md` 3/3 (feature 30 + 2 live skipped, smoke 123), `artifacts/gates/G3-search-verifier.md` PASS (F1: only the first row of six tour results above the fold, polish before G4v2) | v2-search |
 | G6 | | | | |
 
 ## Features
@@ -88,18 +89,18 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | I2-shell | V1 | green | integrator | v2-shell | desktop shell, Phase A stage, public-build flags; T7's v1 spec moves routed to M-buyer and M-approvals |
 | S3-catalog | V1 | green | data-smith | v2-data | G2b 3/3, verifier PASS; minors M1-M5, M8 for a later data round; T9 after B11's training |
 | I2-art | V1 | running | integrator | | T0 54 placeholders (54288bd); T1-T3 drawings running |
-| F-search | V2 P0 | running | feature-lead | | |
+| F-search | V2 P0 | green | feature-lead | v2-search | |
 | M-buyer | V2 P0 | running | feature-lead | | |
 | F-support | V2 P0 | green | feature-lead | v2-support | |
 | F-process | V2 P0 | running | feature-lead | | |
-| F-communities | V2 P0 | running | feature-lead | | |
+| F-communities | V2 P0 | built, G3 next | feature-lead | | |
 | M-approvals | V2 P0 | todo | feature-lead | | G3 waits for B13 T7 |
 | M-desktop | V2 P0 | todo | feature-lead | | right after M-approvals |
-| F-seller-hub | V2 P0 | todo | feature-lead | | |
+| F-seller-hub | V2 P0 | running | feature-lead | | |
 | F-watch | V2 P1 | todo | feature-lead | | |
 | F-storefront | V2 P1 | todo | feature-lead | | |
 | M-maker-statement | V2 P1 | todo | feature-lead | | |
-| D-deploy | V2 | todo | integrator | | then Gordon uploads |
+| D-deploy | V2 | running | integrator | | then Gordon uploads |
 | I2-tour | V3 | todo | integrator, data-smith | | |
 | I3-redesign | V4 | todo | integrator | | per design drop |
 
@@ -107,7 +108,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
-| B11-embed | running | | | T1, T2, T4 code, T6 committed; training requirements installed; T3 (pairs) and T5 (training run) after G2b |
+| B11-embed | running | | | T1-T4 code, T6 committed; T3 pairs 1,045 (Claude); probe 14.7 s a step at batch 32, peak 5.18 GB, so batch 16; training run started in the background |
 | B12-search | todo | | | |
 | B13-live | built, G5 waits for F-process T8's live spec | live: spacetime true, seeded 54/30/5, live round trip passes | | T1-T7 committed; SPACETIME_TOKEN saved to .env; API restarted |
 | B14-swarm | todo | | | |
@@ -310,3 +311,5 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 21:45 PT · F-support built (19 passed, live spec skips until B14; lead wrote all tasks, no Agent tool); G3 support and its verifier running; commit waits for G1b; F-communities lead spawned · status.md
 - 2026-10-24 22:05 PT · G1b PASS after one fix round (kit 14 px floor): worktree rerun of exactly main plus the shell and kit (check, build, smoke 123, demo 60.006 s, offline), verifier recheck PASS; committed with tag v2-shell · artifacts/gates/G1b-verifier-recheck.md
 - 2026-10-24 10:05 PM PT · G3 support PASS (verifier PASS; the one smoke failure was a Vite full reload from another lead's edit mid-test, rerun alone 2/2); committed, tag v2-support · artifacts/gates/G3-support-verifier.md
+- 2026-10-24 22:06 PT · D-deploy integrator spawned (public build, sandbox market, _redirects, laptop script) · status.md
+- 2026-10-24 22:10 PT · SpacetimeDB stopped at its 2-hour limit, restarted (data kept: catalog 54, orders 33, approvals 5); B11 probe 14.7 s a step, 5.18 GB peak at batch 32, training run started at batch 16 (926 train pairs, 3 epochs); G3 search PASS, tag v2-search; F-communities built (29 passed), G3 next; F-seller-hub lead spawned · status.md
