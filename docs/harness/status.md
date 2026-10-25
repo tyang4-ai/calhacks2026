@@ -1,9 +1,9 @@
-STAGE: W2+P2
-NEXT: R6
+STAGE: V2
+NEXT: V1 step 0 (R0)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 07:00 PT
+UPDATED: 2026-10-24 18:25 PT
 
 # Status board
 
@@ -11,6 +11,11 @@ The orchestrator owns this file. The six lines above are read by the hooks and b
 
 ## Now
 
+- v2 build in the cloud session (Linux, 4 vCPUs, 15 GB). V0 started 6:05 PM PT on Oct 24, once `docs/v2/fix-plan.md` said APPLIED. Network check passed (every host answered). Hand-off: Gordon's kickoff message says the desktop session is stopped.
+- v1 is green as `demo-ok-4` (`781207120f7614209b8bd5004784d2b8e4091065`), the fallback if v2 fails.
+- Public site: (empty until Gordon uploads, D-deploy)
+
+v1 (desktop session, history):
 - Kickoff passed (Oct 24, 2:01 AM): 25 plan files and 9 contracts present, hooks 292/292, preflight 0 blockers.
 - Heartbeat cron f57ce95e every 15 min (session-only).
 - G1 passed 2:35 AM (5/5, verifier PASS). Shared lock on.
@@ -66,6 +71,56 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | B08-approvals | green | live, scripted grant allowed | demo-ok-b08 | G5 13/13, verifier PASS |
 | B09-concierge | built and committed, awaiting key | | | server 36 mocked passed + 1 live skipped; G5 needs ANTHROPIC_API_KEY |
 | B10-derived | green | live at 8.3 s | demo-ok-b10 | G5 13/13, verifier PASS |
+
+## v2 Features
+
+| Plan | Wave | State | Lead | Last green tag | Notes |
+|---|---|---|---|---|---|
+| R0-reskin | V1 step 0 | running | data-smith, integrator, feature-lead, backend-builder | | one commit |
+| I2-core | V1 | todo | integrator | | with fallout FO1, FO2 |
+| I2-kit | V1 | todo | integrator | | |
+| I2-shell | V1 | todo | integrator | | |
+| S3-catalog | V1 | todo | data-smith | | |
+| I2-art | V1 | todo | integrator | | T0 placeholders before G1b |
+| F-search | V2 P0 | todo | feature-lead | | |
+| M-buyer | V2 P0 | todo | feature-lead | | |
+| F-support | V2 P0 | todo | feature-lead | | |
+| F-process | V2 P0 | todo | feature-lead | | |
+| F-communities | V2 P0 | todo | feature-lead | | |
+| M-approvals | V2 P0 | todo | feature-lead | | G3 waits for B13 T7 |
+| M-desktop | V2 P0 | todo | feature-lead | | right after M-approvals |
+| F-seller-hub | V2 P0 | todo | feature-lead | | |
+| F-watch | V2 P1 | todo | feature-lead | | |
+| F-storefront | V2 P1 | todo | feature-lead | | |
+| M-maker-statement | V2 P1 | todo | feature-lead | | |
+| D-deploy | V2 | todo | integrator | | then Gordon uploads |
+| I2-tour | V3 | todo | integrator, data-smith | | |
+| I3-redesign | V4 | todo | integrator | | per design drop |
+
+## v2 Upgrades
+
+| Plan | State | Live call checked | Last green tag | Notes |
+|---|---|---|---|---|
+| B11-embed | todo | | | |
+| B12-search | todo | | | |
+| B13-live | todo | | | T7 gates M-approvals' G3 |
+| B14-swarm | todo | | | |
+| B15-watch | todo | | | fixture until the public site is up |
+| B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
+
+## Tags
+
+Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Windows at the freeze.
+
+| Tag | SHA | Gate | When |
+|---|---|---|---|
+| demo-ok-2 | 934fff4f849b247ddc621fc559c32285f7c3433d | G4 (v1 polish) | Oct 24 6:12 AM |
+| demo-ok-3 | 43e7a4b21342fb616a6ebb42304a672f74b2e4f4 | G4 (v1 polish) | Oct 24 6:22 AM |
+| demo-ok-4 | 781207120f7614209b8bd5004784d2b8e4091065 | G5 b10 regression (v1) | Oct 24 7:00 AM |
+| demo-ok-b05 | 70a60ec384c76b66ae228a2cfbb0a71f87d823f9 | G5 B05 (v1) | Oct 24 5:58 AM |
+| demo-ok-b06 | ab7634d5f30ad74b62de909d7aaed30b6bf5fc91 | G5 B06 (v1) | Oct 24 5:58 AM |
+| demo-ok-b08 | 617ffb00c2b01a30685eb5b076c600d1f0a27970 | G5 B08 (v1) | Oct 24 5:58 AM |
+| demo-ok-b10 | fc2576af406e02a2c1d35033b3248e5a8fbb078d | G5 B10 (v1) | Oct 24 5:58 AM |
 
 ## Environment
 
@@ -189,3 +244,5 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 06:45 PT · G5 b10 regression with all ten routers FAIL 9/13: B06 save race (os.replace onto an open xlsx, flaky, 3 reruns pass) and live demo 78 s (harness waits 15 s for keyless adapters); backend-builder fixing B06, integrator fixing the wait; keyed upgrades stay uncommitted until green · artifacts/gates/G5-0638.md
 - 2026-10-24 06:58 PT · B06 save race fixed (unique file per build, the file route serves the newest under the contract name; server 230 passed x3) · status.md
 - 2026-10-24 07:00 PT · harness health wait fixed; regression G5 b10 PASS 13/13 with all ten routers (60 s runs; b01, b03, b06, b08, b10 live); keyed upgrades committed untagged; tag demo-ok-4 · artifacts/gates/G5-0653.md
+- 2026-10-24 18:10 PT · V0 started in the cloud session: fix plan APPLIED, on main, network check passed (cdn.sheetjs.com 200, huggingface.co 200, download.pytorch.org 403, install.spacetimedb.com 200, cdn.playwright.dev 400), hand-off from Gordon's message; stage V2; v2 tables and Tags table added · status.md
+- 2026-10-24 18:25 PT · V0 done: npm ci, .venv, Chromium 1228, SpacetimeDB CLI 2.13.0; hooks 338/338; servers 5173, 8000, 3000 answer; smoke 22/22; heartbeat send_later every 20 min; /api/health keys nessie true, anthropic false (config reads only ANTHROPIC_API_KEY until I2-core); NEXT V1. R0's four agents spawned (data-smith T1, integrator T2, feature-lead T3, backend-builder T4) · status.md
