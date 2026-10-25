@@ -5,17 +5,22 @@ import { lazy, Suspense, type ComponentType, type ReactNode } from "react";
 import { Navigate, Route, Routes, useLocation, useParams, useSearchParams } from "react-router";
 import { DemoStage } from "./demo/DemoStage";
 import type { ShopPage } from "./slotProps";
+import { useStageScale } from "./stageScale";
 import { SHELL } from "./strings";
 import { MakerSurface, SellSurface, ShopSurface, StoreSurface, isSellView } from "./surfaces";
 import { useDrawerParams } from "./useDrawer";
 import { useProcessParam } from "./useProcessParam";
 
-/** A surface on its own route: its 1440 by 900 frame at full size, centered on the paper ground. */
+/**
+ * A surface on its own route: its 1440 by 900 frame centered on the paper ground, zoomed to fill a
+ * bigger window like /demo's stage, and never below full size.
+ */
 function SurfacePage({ children }: { children: ReactNode }) {
+  const zoom = Math.max(1, useStageScale());
   return (
     <div style={{ minHeight: "100vh", background: "var(--c-color-paper)", display: "flex", boxSizing: "border-box" }}>
       {/* margin: auto centers the frame without cutting it off when the window is smaller. */}
-      <div style={{ margin: "auto", flexShrink: 0 }}>{children}</div>
+      <div style={{ margin: "auto", flexShrink: 0, zoom }}>{children}</div>
     </div>
   );
 }
