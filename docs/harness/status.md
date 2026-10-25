@@ -1,9 +1,9 @@
-STAGE: FREEZE
-NEXT: G6
+STAGE: FROZEN
+NEXT: none (frozen)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 05:00 PT
+UPDATED: 2026-10-25 05:31 PT
 
 # Status board
 
@@ -61,7 +61,7 @@ v1 (desktop session, history):
 | G5 b14 (worktree) | PASS | Oct 25 4:33 AM | `artifacts/gates/G5-b14-swarm-wt-0420.md` 7/7 (test:server 872, B14 pytest 134 + 2 live, support-live spec, build, live tour 220.0 s, offline) | demo-ok-b14 |
 | G5 b13 (main tree) | PASS | Oct 25 4:45 AM | `artifacts/gates/G5-b13-live-main-0433.md` 7/7 (test:server 874, B13 pytest 60 + 2 live, process-live-data spec, build, live tour 220.0 s, offline) | demo-ok-b13 |
 | G5 b15 (worktree, then main tree) | FAIL | Oct 25 5:02 AM | worktree `artifacts/gates/logs/G5-b15-watch-wt-0445*` (no Apify credential there) and main tree `artifacts/gates/logs/G5-b15-watch-main-0457.log`: test:server and the live pytest fail on `test_live_crawl_of_the_sandbox_market` with Apify status 403, watch-live stays scripted; stopped at the freeze | none |
-| G6 | | | | |
+| G6 | PASS | Oct 25 5:31 AM | `artifacts/gates/G6-0511.md` 7/7 (build, tour 220.0 s x3, offline, secrets scan 0 findings in 1,323 files, git status clean) | final |
 
 ## Features
 
@@ -169,6 +169,7 @@ Local tags only (the cloud proxy refuses tag pushes). Gordon pushes them from Wi
 | demo-ok-b12 | 988d0c160260920a457fd69142e1d76702a6b14d | G5 b12-search (worktree, on the tour) | Oct 25 4:26 AM |
 | demo-ok-b14 | 988d0c160260920a457fd69142e1d76702a6b14d | G5 b14-swarm (worktree, on the tour) | Oct 25 4:33 AM |
 | demo-ok-b13 | 988d0c160260920a457fd69142e1d76702a6b14d | G5 b13-live (main tree, on the tour; only docs commits after 988d0c1) | Oct 25 4:45 AM |
+| final | 15ad6554d41849e4e2069d195827752e8b67abdd | G6 | Oct 25 5:31 AM |
 
 ## Environment
 
@@ -226,6 +227,40 @@ Run once the V2 leads are done, so a shared-code edit can't reload the dev serve
 - I2-tour (from the G4v2 beats review, `artifacts/gates/G4v2-verifier-beats.md`): F2 the beat label covers the first card's verification line on the store beat (src/app/demo, integrator, with I3); F3 support's thread scroll half-cuts Grace N.'s first line at d17 (F-support); F4 the approvals list scrolled so apr_04's card is cut under the header at d09 (M-approvals, with its tour items); F7 the search engine line runs two sentences together (F-search, strings.ts:149 and ResultsGrid.tsx:122-127). L1 at the end card's foot: done.
 - Phase A regression before I2-tour: `npm run test:demo` and `npm run test:offline` on main (worktree, raised priority, the VM as quiet as possible) once the V2 migrations (M-buyer, M-approvals, M-desktop, M-maker-statement) are committed: they change demo beats, and G3 doesn't run the demo. M-approvals' lead saw the demo stop early on late-sampled beats at load 16 to 26, d08 clean on the dev server.
 - S3 data round 1 (M1-M5, M8) running now; then regenerate `public/market/` with `node scripts/make-market.mjs` (cft_01's seller is renamed to Lantern Lane Home Goods: Red Mesa is a real Navajo Nation place).
+
+## Tags to push from Windows
+
+The cloud proxy refuses tag pushes, so these 24 tags exist only in the cloud session. Every commit they point to is on `main`. In Git Bash in `C:\dev\calhacks2026`, after `git pull`:
+
+```bash
+while read t sha; do git tag -a "$t" "$sha" -m "$t (from the cloud build)"; done <<'TAGS'
+  demo-ok-b09 e8423db82e25182b94b4e128be7ea6cbe1a90495
+  demo-ok-b12 988d0c160260920a457fd69142e1d76702a6b14d
+  demo-ok-b13 988d0c160260920a457fd69142e1d76702a6b14d
+  demo-ok-b14 988d0c160260920a457fd69142e1d76702a6b14d
+  demo-ok-v2 c4c83526e6bb18825ea008e47984537f784b01aa
+  demo-ok-v2-d3 988d0c160260920a457fd69142e1d76702a6b14d
+  final 15ad6554d41849e4e2069d195827752e8b67abdd
+  v2-approvals 5c39089ec351815fbdd31344045007e9327dba72
+  v2-art 67be93b5d9325639081cbbbddaae99547dd3f12e
+  v2-buyer a87ab88eed9fd6276ddfbd5b27fc8dc43d92bb57
+  v2-communities 633cc5cfc3c5b68eb109e420f6175eafebab2308
+  v2-core b5f9b24f1c78ba38074680fea245e8911c23c485
+  v2-data 84f0e9fd94a5f5d9f21d29e29b1cdbb36d4671e5
+  v2-deploy 4dd9243b439e8a7007444fbd0b754edde86d59c8
+  v2-desktop c4c83526e6bb18825ea008e47984537f784b01aa
+  v2-maker-statement cd13c2191ff5c2cd476a9de67b3d33164d5e9d0b
+  v2-process 123e1c6ccaa681223a26e66739d2b68fb7d7276f
+  v2-reskin 2b0823ede8b197784bb4e52a9deed9c956d9cd55
+  v2-search 7891b23c5cbb43e429ed6f3aee65b3e95bd52880
+  v2-seller-hub f97a7ab66e3ec439ebe38a039b2a6f5871ea8ed0
+  v2-shell 310e917c09523cbae65449f39adde7098ce03f39
+  v2-storefront 13c87c41d88c7c878416ee33c7e86a4b8005becf
+  v2-support d7c780d6ddd8b793cc24b6c7fe03cf507d70d112
+  v2-watch fd0ce474bb352e8243615d62b5860ef3e7e10e90
+TAGS
+git push origin --tags
+```
 
 ## Needs Gordon
 
@@ -459,3 +494,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 05:00 PT · STAGE FREEZE. G5 b13 PASS 7/7 (demo-ok-b13); G5 b15 in the worktree failed (no Apify credential there: live pytest skipped, watch-live stayed scripted; a B09 live Claude test timed out once) and reruns in the main tree from 4:57 with PUBLIC_SITE_URL in its environment, per Gordon; B16 and B11 G5s don't fit; Cut and simulated final · status.md
 - 2026-10-25 05:03 PT · G5 b15 FAIL in the main tree too: Apify 403 on the live crawl (run-sync of apify~cheerio-scraper), the same in both trees, so an Apify account or token problem (Needs Gordon); stopped; B16 and B11 G5s not run; G6 next after the scribe's T6 · artifacts/gates/logs/G5-b15-watch-main-0457.log
 - 2026-10-25 05:12 PT · scribe T6 done (README, whats-real, devpost with the project image, every sponsor page with a met-or-not line; every planned line now reads as the B11 to B16 rows); stale rows fixed (B02, B07, M-buyer, M-desktop); G6 next · README.md, docs/devpost/, sponsors/
+- 2026-10-25 05:31 PT · G6 PASS 7/7 (tour 220.0 s x3, offline, secrets 0 findings, clean tree); tag final on 15ad655; STAGE FROZEN; SpacetimeDB reached its 2-hour limit at 5:19 and stays stopped (nothing needs it after the freeze); 24 tags for Gordon to push from Windows (the loop above Needs Gordon) · artifacts/gates/G6-0511.md
