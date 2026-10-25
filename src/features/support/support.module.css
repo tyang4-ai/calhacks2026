@@ -1,0 +1,53 @@
+/* The support drawer's panel fills the drawer: no mat or border of its own (the drawer is the
+   frame), and its face is a flex column so the conversation scrolls between L11 and the composer. */
+section.drawer {
+  height: 100%;
+  box-sizing: border-box;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.drawer > :global(.c-panel__face) {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: transparent;
+}
+
+.drawer :global(.c-panel__head) {
+  flex: 0 0 auto;
+  align-items: center;
+  margin-bottom: var(--c-space-12);
+}
+
+/* The conversation, the step strip and the suggestions scroll together. A block box, so nothing
+   inside shrinks below its content. */
+.scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-space-16);
+  padding: var(--c-space-4) 0;
+}
+
+.stack > * {
+  flex: 0 0 auto;
+}
+
+/* The composer sits a little above the drawer's foot, so the demo controls' collapsed button in the
+   window's bottom right corner never covers Send. */
+.composer {
+  flex: 0 0 auto;
+  margin-top: var(--c-space-12);
+  padding-top: var(--c-space-12);
+  padding-bottom: var(--c-space-32);
+  border-top: 1px solid var(--c-color-line);
+}
