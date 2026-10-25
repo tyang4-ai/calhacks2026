@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 22:56 PT
+UPDATED: 2026-10-24 22:58 PT
 
 # Status board
 
@@ -46,6 +46,7 @@ v1 (desktop session, history):
 | G3 communities | PASS | Oct 24 10:22 PM | `artifacts/gates/G3-2210.md` 3/3 (feature 29, smoke 123), `artifacts/gates/G3-communities-verifier.md` PASS (F1 Shop home strip clipped at 1440x900, polish before G4v2; F2 /shop/projects inner scroll; F3 data-attribute selectors) | v2-communities |
 | I2-art | PASS | Oct 24 10:58 PM | `artifacts/gates/I2-art-verifier.md` PASS (six bullets; art --check 54 valid; images.spec 54), smoke 123 in the buyer worktree run `artifacts/gates/G3-buyer-wt-2243.md` | v2-art |
 | G3 buyer | PASS | Oct 24 10:58 PM | shared tree `artifacts/gates/G3-2218.md` 2/3 (smoke failed on F-seller-hub's unfinished file), worktree `artifacts/gates/G3-buyer-wt-2243.md` 3/3 (check:scope, feature 62, smoke 123), `artifacts/gates/G3-buyer-verifier.md` PASS (F1 non-piece ID crash, F2 verification below the fold on 20 pieces: polish queue) | v2-buyer |
+| G3 process | FAIL, fix round 1 | Oct 24 11:05 PM | `artifacts/gates/G3-process-verifier.md` FAIL on screens only: F1 swarm tool node over the Finder's name, F2 data chips cut, F3 reconcile labels truncated, F4 model name truncated; contracts, labels and 20 Acceptance lines pass | |
 | G6 | | | | |
 
 ## Features
@@ -95,11 +96,11 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-search | V2 P0 | green | feature-lead | v2-search | |
 | M-buyer | V2 P0 | green (T0-T6) | feature-lead | v2-buyer | T7 after G4v2; F1, F2 in the polish queue |
 | F-support | V2 P0 | green | feature-lead | v2-support | |
-| F-process | V2 P0 | built, G3 running (worktree) and verifier | feature-lead | | lead wrote T0-T8 itself (no Agent tool) |
+| F-process | V2 P0 | G3 verifier FAIL (screens F1-F4), fix round 1 | feature-lead | | lead wrote T0-T8 itself (no Agent tool) |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
 | M-approvals | V2 P0 | todo | feature-lead | | G3 waits for B13 T7 |
 | M-desktop | V2 P0 | running | feature-lead | | T2, T3 first |
-| F-seller-hub | V2 P0 | running | feature-lead | | |
+| F-seller-hub | V2 P0 | built, G3 queued (worktree) and verifier | feature-lead | | lead wrote T0-T7 itself; specs mock the HMR socket |
 | F-watch | V2 P1 | running | feature-lead | | |
 | F-storefront | V2 P1 | todo | feature-lead | | |
 | M-maker-statement | V2 P1 | todo | feature-lead | | |
@@ -181,7 +182,8 @@ Run once the V2 leads are done, so a shared-code edit can't reload the dev serve
 - M-buyer: F1 a piece route with another entity's ID crashes the slot (`PiecePage.tsx:36-38`, treat a non-piece as missing, plus a spec); F2 the story column's verification block ends below y 876 on 20 of 54 pieces in English (pc_27 to pc_42, pc_45, pc_46, pc_49, pc_51; worst pc_38), move `PieceVerification` to the price column or shorten the story column, plus a multi-piece fit spec (`artifacts/gates/G3-buyer-verifier.md`). With T7 after G4v2.
 - Feature leads: F-search F1 (only the first row of the six tour results above the fold, `ResultsGrid.tsx`, `ResultCard.tsx`); F-communities F1 (Shop home strip clipped at 1440x900, `_stripBody` scroll) and F2 (`/shop/projects` inner scroll). If either can't be fixed in the feature, the integrator changes the Shop home stack ratio in `src/app/surfaces/surfaces.module.css`.
 - Integrator code: `src/ui/Seal.tsx:50-51` comment (the compact card's date); `src/app/chrome/AppChrome.tsx` Ask Cindy button test ID (add to ui-contract.md); `src/ui/gallery.tsx:458` 示例山丘工作室 (old-names grep, G2b M1); `tests/smoke/routes.spec.ts` checks the co-op's name in the Sell header and the eleven ProcessBlocks on one row on /dev/kit; `src/core/validate.test.ts` negative cases for the optional fields; `scripts/gate.mjs` copies `artifacts/demo/report.json` next to each live G5's logs; `node --test scripts/*.test.mjs` in `npm run check` or a gate (D-deploy note); `ALLOWED_EMPTY_FALLBACKS` b13-live data.synced; tsconfig jsx.
-- Integrator docs round 2: design-system.md "the 48 px compact seal" → "a 48 px seal", `formatMonthDay` in the kit table; ui-contract.md Test hooks rule wording (data-slot* sits on a wrapper with no test ID), add data-role, data-status, data-video-phase, data-catch-phase to the data-attributes table, the Test IDs intro now that Internal rows are many; events.md Player `setDispatch`, `subscribe` comment names reset and seek; glossary L1 Where cell "except /dev/kit"; api-contract 503/502 rows.
+- Integrator code (from G3 process): `src/ui/views.ts` graphLayout puts a tool node over an agent's name (F1, the lead works around it); the search map note renders at 13.95 px (N4); `swarm.steps` carry no event ID (N8). B13: the live data view's `processes` row reads 0 (N7).
+- Integrator docs round 2: F-process's 24 internal test IDs into ui-contract.md (N10); the v1 store sub-fields features read (`buyer.splits`, `orders`, `receipts` and the rest) in events.md (buyer N1, process N9); design-system.md "the 48 px compact seal" → "a 48 px seal", `formatMonthDay` in the kit table; ui-contract.md Test hooks rule wording (data-slot* sits on a wrapper with no test ID), add data-role, data-status, data-video-phase, data-catch-phase to the data-attributes table, the Test IDs intro now that Internal rows are many; events.md Player `setDispatch`, `subscribe` comment names reset and seek; glossary L1 Where cell "except /dev/kit"; api-contract 503/502 rows.
 - I2-tour: L1 at the end card's foot (decisions 22:5x).
 - S3 data round 1 (M1-M5, M8) running now; then regenerate `public/market/` with `node scripts/make-market.mjs` (cft_01's seller is renamed to Lantern Lane Home Goods: Red Mesa is a real Navajo Nation place).
 
@@ -344,3 +346,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:55 PT · smoke fix: shell.spec.ts:447's offline check pauses, waits for slots and fonts, and cuts the network through watch.setOffline(), which lets through only the ERR_INTERNET_DISCONNECTED failures the test causes (3 runs 5/5 at load 18-19, check:scope PASS); the other failure was a Vite full reload from another agent's edit · tests/smoke/lib.ts
 - 2026-10-24 22:55 PT · I2-art green (verifier PASS, smoke 123 in the buyer worktree run), tag v2-art; G3 buyer PASS in the worktree (feature 62, smoke 123) plus verifier PASS, tag v2-buyer; M-buyer T7 after G4v2 · artifacts/gates/G3-buyer-wt-2243.md
 - 2026-10-24 22:56 PT · B11 training done in 45.8 min (sha256 dee48137…, fingerprint f7181c7d…): recall@5 / MRR@10 keyword 0.790 / 0.875, base 0.711 / 0.763, Cindia's model 0.782 / 0.892, local hybrid 0.826 / 0.940; /api/health services.model true; next S3 T9 spawn 4 after data round 1 (both touch searchEval.ts and watch.ts), then --eval-only, T9 spawn 5, publish after T8 · artifacts/b11/train-run.out
+- 2026-10-24 22:58 PT · G3 process verifier FAIL on four clipping defects (F1-F4), fix round 1 sent to its lead; F-seller-hub built (30 specs), its verifier spawned and its worktree G3 queued after process (a lock now keeps worktree gates one at a time) · artifacts/gates/G3-process-verifier.md
