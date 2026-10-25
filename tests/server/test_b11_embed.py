@@ -2390,3 +2390,669 @@ def test_t3_live_claude_writes_one_pieces_queries():
     assert len(att.candidates) >= 10 and budget.usage["outputTokens"] > 0
     assert att.reason is None or att.reason.startswith(("checks", "the content filter")), att.reason
     assert all(pairs.ContentFilter(d.content_rules).ok(c.text) for c in att.kept)
+
+
+# ---------------------------------------------------------------------------------------------
+# T8 · the hand-off: hub.py, the model card (card.py and README.md), fetch_model.py and
+# train_akbari.sh. The Hub is faked: fetch_model.RESOLVE and DOWNLOAD (and publish.MAKE_API and
+# SCAN below) are swapped, so no test reaches huggingface.co, runs node or sees a real token.
+
+import shutil  # noqa: E402
+
+from huggingface_hub.utils import filter_repo_objects  # noqa: E402
+
+from server.b11_embed import card, fetch_model, hub  # noqa: E402
+
+CARD_FILE = Path(card.__file__).with_name("README.md")
+AKBARI = Path(hub.__file__).with_name("train_akbari.sh")
+FAKE_REPO = "someone/cindia-embed"
+CHECKPOINT_FILES = [
+    "checkpoint-59/model.safetensors",
+    "checkpoint-59/trainer_state.json",
+    "checkpoint-59/optimizer.pt",
+    "checkpoint-59/1_Pooling/config.json",
+    "checkpoints/cindia-embed-v1/checkpoint-177/config.json",
+    "checkpoints/cindia-embed-v1/checkpoint-177/model.safetensors",
+    "runs/Oct25_05-09-35/events.txt",
+    "training_args.json",
+    "trainer_state.json",
+    "train.log",
+    "pairs.jsonl",
+    ".cache/huggingface/download/model.safetensors.json",
+]
+MODEL_FILES = [
+    "1_Pooling/config.json",
+    "2_Normalize/config.json",
+    "config.json",
+    "config_sentence_transformers.json",
+    "model.safetensors",
+    "modules.json",
+    "sentence_bert_config.json",
+    "sentencepiece.bpe.model",
+    "special_tokens_map.json",
+    "tokenizer.json",
+    "tokenizer_config.json",
+]
+
+
+def touch(folder: Path, names, text: str = "x") -> None:
+    for name in names:
+        p = folder / name
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(text, encoding="utf-8")
+
+
+@pytest.fixture
+def hub_env(monkeypatch):
+    """A fake repo name and no offline flag. The fake HF_TOKEN comes from conftest."""
+    monkeypatch.setattr(config, "HF_REPO", FAKE_REPO)
+    monkeypatch.delenv("HF_HUB_OFFLINE", raising=False)
+    yield
+
+
+# --- hub.py: which files ------------------------------------------------------------------------
+
+
+def test_model_patterns_select_model_files_and_never_a_checkpoint(tmp_path):
+    folder = tmp_path / "model"
+    touch(folder, MODEL_FILES + CHECKPOINT_FILES + ["README.md", "report.json"])
+    names = hub.model_files(folder)
+    assert names == sorted(MODEL_FILES)
+    allow = hub.exact_patterns([*names, hub.CARD_NAME, hub.REPORT_NAME])
+    every = sorted(p.relative_to(folder).as_posix() for p in folder.rglob("*") if p.is_file())
+    # As huggingface_hub filters an upload_folder (fnmatch, where * crosses /).
+    sent = list(filter_repo_objects(every, allow_patterns=allow, ignore_patterns=list(hub.IGNORE_PATTERNS)))
+    assert sorted(sent) == sorted(MODEL_FILES + ["README.md", "report.json"])
+    from fnmatch import fnmatchcase
+
+    for ck in CHECKPOINT_FILES:
+        assert not any(fnmatchcase(ck, p) for p in allow), ck
+        assert hub.ignored(ck) or not hub.is_model_file(ck), ck
+    # Why the plan's patterns aren't handed to the Hub as they are: fnmatch's * crosses "/".
+    assert fnmatchcase("checkpoint-59/trainer_state.json", "*.json")
+    assert not hub.is_model_file("checkpoint-59/trainer_state.json")
+
+
+def test_every_module_folder_modules_json_names_must_be_carried(tmp_path):
+    folder = tmp_path / "model"
+    touch(folder, MODEL_FILES)
+    modules = [{"idx": 0, "name": "0", "path": "", "type": "Transformer"}, {"idx": 1, "name": "1", "path": "1_Pooling", "type": "Pooling"},
+               {"idx": 2, "name": "2", "path": "2_Normalize", "type": "Normalize"}]
+    (folder / "modules.json").write_text(json.dumps(modules), encoding="utf-8")
+    assert hub.uncovered_modules(folder, hub.model_files(folder)) == []
+    # A module folder the patterns don't carry would leave the published model unloadable.
+    modules.append({"idx": 3, "name": "3", "path": "3_Dense", "type": "Dense"})
+    (folder / "modules.json").write_text(json.dumps(modules), encoding="utf-8")
+    touch(folder, ["3_Dense/config.json", "3_Dense/model.safetensors"])
+    assert hub.uncovered_modules(folder, hub.model_files(folder)) == ["3_Dense"]
+    assert hub.uncovered_modules(folder, [*hub.model_files(folder), "3_Dense/config.json", "3_Dense/model.safetensors"]) == []
+
+
+def test_exact_patterns_refuse_a_glob_character_and_repo_ids_are_checked():
+    with pytest.raises(hub.HubError, match="glob character"):
+        hub.exact_patterns(["model[1].safetensors"])
+    assert hub.check_repo_id("someone/cindia-embed") == "someone/cindia-embed"
+    for bad, words in ((None, "isn't set"), ("", "isn't set"), ("cindia-embed", "<account>/<name>"), ("a/b/c", "<account>/<name>")):
+        with pytest.raises(hub.HubError, match=words):
+            hub.check_repo_id(bad)
+    assert hub.repo_url("someone/cindia-embed") == "https://huggingface.co/someone/cindia-embed"
+
+
+def test_offline_shell_is_refused_and_errors_read_as_one_plain_line(monkeypatch):
+    monkeypatch.setenv("HF_HUB_OFFLINE", "1")
+    with pytest.raises(hub.HubError, match="HF_HUB_OFFLINE"):
+        hub.check_online()
+    monkeypatch.delenv("HF_HUB_OFFLINE")
+    hub.check_online()
+    from huggingface_hub import errors
+
+    req = httpx2.Request("GET", "https://huggingface.co/api/models/someone/cindia-embed")
+    secret = "fake-hf-token-in-an-error"
+    missing = errors.RepositoryNotFoundError(f"404 {secret}", response=httpx2.Response(404, request=req))
+    denied = errors.HfHubHTTPError(f"401 {secret}", response=httpx2.Response(401, request=req))
+    lines = [
+        hub.describe(missing, FAKE_REPO, write=False),
+        hub.describe(denied, FAKE_REPO, write=True),
+        hub.describe(ConnectionError(secret), FAKE_REPO, write=False),
+    ]
+    assert "no repo someone/cindia-embed" in lines[0] and "read access" in lines[0]
+    assert "status 401" in lines[1] and "write access" in lines[1]
+    assert "couldn't reach huggingface.co (ConnectionError)" in lines[2] and "HF_HUB_DISABLE_XET=1" in lines[2]
+    assert all(secret not in line and "\n" not in line for line in lines)
+
+
+def test_bound_timeouts_gives_the_hub_client_a_timeout():
+    from huggingface_hub.utils import get_session
+
+    assert hub.bound_timeouts(read_s=77.0, connect_s=7.0)
+    t = get_session().timeout
+    assert (t.read, t.connect) == (77.0, 7.0)
+    hub.bound_timeouts()
+
+
+# --- card.py and the committed card -------------------------------------------------------------
+
+
+def fixture_rules() -> dict:
+    return fixture_data().content_rules
+
+
+def test_the_committed_card_passes_its_content_test():
+    text = CARD_FILE.read_text(encoding="utf-8")
+    assert card.check(text, fixture_rules()) == []
+    real = b11data.load().content_rules if b11data.SNAPSHOT.is_file() else fixture_rules()
+    assert card.check(text, real) == []
+    # Every host it links is allowed, and the base model is credited with its link and licence.
+    assert set(card.url_hosts(text)) == {"huggingface.co"}
+    assert "https://huggingface.co/intfloat/multilingual-e5-small" in text and "MIT" in text
+    # Until publish fills them in, the blocks hold their placeholders.
+    assert card.check(text, fixture_rules(), filled=True) == [
+        "the card's pairs block isn't filled in",
+        "the card's results block isn't filled in",
+    ]
+
+
+@pytest.mark.parametrize("what,words", card.REQUIRED)
+def test_the_card_test_fails_when_a_required_line_is_missing(what, words):
+    text = CARD_FILE.read_text(encoding="utf-8")
+    pattern = re.compile(r"\s+".join(re.escape(w) for w in words.replace("`", "").split()), re.IGNORECASE)
+    stripped = pattern.sub("", text.replace("`", ""))
+    assert stripped != text.replace("`", ""), f"the card should hold {words!r}"
+    problems = card.check(stripped, fixture_rules())
+    assert any(what in p for p in problems), problems
+
+
+@pytest.mark.parametrize(
+    "line,expected",
+    [
+        ("A Navajo rug for the hall.", "product word"),
+        ("Ojibwe-style earrings, made here.", "product word"),
+        ("纳瓦霍地毯", "product word"),
+        ("See https://github.com/someone/cindia for the code.", "links github.com"),
+        ("Mirror: www.cindia.shop/model", "links www.cindia.shop"),
+        ("Details at cindia-demo.org/model.", "links cindia-demo.org"),
+        ("The 50 test queries are hand-written.", "hand-written"),
+        ("A spiritual piece for the shelf.", "stereotype word"),
+        ("The pattern symbolizes the sky.", "meaning word"),
+        ("A headdress for a party.", "banned word"),
+        ("Made by Indian artists.", "always word"),
+    ],
+)
+def test_the_card_test_catches_product_words_hosts_and_banned_words(line, expected):
+    text = CARD_FILE.read_text(encoding="utf-8") + "\n" + line + "\n"
+    problems = card.check(text, fixture_rules())
+    assert any(expected in p for p in problems), problems
+
+
+def test_the_card_test_allows_people_hosts_and_the_words_it_needs():
+    base = CARD_FILE.read_text(encoding="utf-8")
+    ok = [
+        "Diné weavers and Ojibwe beadworkers are invented here.",
+        "Made by a fictional Seminole maker.",
+        "Examples live at https://example.com/a and https://www.example.org/b and https://hf.huggingface.co/x.",
+        "It is not for judging authenticity, and it was written by our data agent.",
+    ]
+    assert card.check(base + "\n" + "\n".join(ok) + "\n", fixture_rules()) == []
+
+
+def fake_report() -> dict:
+    systems = [
+        {"system": "keyword", "recallAtK": 0.41, "mrr": 0.38},
+        {"system": "base", "recallAtK": 0.5225, "mrr": 0.47},
+        {"system": "custom", "recallAtK": 0.6875, "mrr": 0.61234},
+        {"system": "hybrid", "recallAtK": 0.69, "mrr": 0.6},
+    ]
+    lang = lambda n, f: {"queries": n, "systems": [{**s, "recallAtK": round(s["recallAtK"] * f, 4), "mrr": round(s["mrr"] * f, 4)} for s in systems]}  # noqa: E731
+    return {
+        "modelId": "cindia-embed-v1",
+        "device": "cpu",
+        "fingerprint": "0123456789abcdef",
+        "eval": {
+            "k": 5,
+            "queries": 50,
+            "systems": systems,
+            "byLang": {"en": lang(40, 1.0), "zh": lang(10, 0.5)},
+            "comparisons": [
+                {"a": "custom", "b": "keyword", "metric": "recallAtK", "delta": 0.28, "ci95": [0.15, 0.4], "beats": True},
+                {"a": "custom", "b": "base", "metric": "mrr", "delta": 0.01, "ci95": [-0.05, 0.07], "beats": False},
+            ],
+        },
+        "training": {"scoredAt": "2026-10-25T06:00:00Z"},
+        "notes": ["Every number here comes from this run.", "One small catalog and one model family: a small test, not a benchmark."],
+    }
+
+
+def fake_meta(pieces=("pc_01", "pc_10", "pc_14"), source="claude") -> dict:
+    per = {pid: {"source": source, "attempts": 1, "model": "claude-haiku-5-5" if source == "claude" else None} for pid in pieces}
+    if source == "claude":
+        per[pieces[-1]] = {"source": "claude", "attempts": 2, "model": "claude-sonnet-5-5"}
+    return {
+        "pairSource": source,
+        "generatedAt": "2026-10-25T05:04:05Z",
+        "dataGeneratedAt": "2026-10-25T04:38:11Z",
+        "counts": {"pieces": len(pieces), "lines": 30, "withNegative": 9, "langs": {"en": 24, "zh": 6}, "dropped": {"contentTotal": 1, "leakTotal": 2}},
+        "pieces": per,
+    }
+
+
+def test_render_fills_both_blocks_with_the_reports_numbers():
+    report, meta = fake_report(), fake_meta()
+    # train.py's notes repeat each verdict; the card lists it once.
+    report["notes"].append(metrics.verdict(report["eval"]["comparisons"][0]))
+    text = card.render(CARD_FILE.read_text(encoding="utf-8"), report, meta)
+    assert text.count(metrics.verdict(report["eval"]["comparisons"][0])) == 1
+    assert card.check(text, fixture_rules(), filled=True) == []
+    results = text[text.index(card.RESULTS[0]) : text.index(card.RESULTS[1])]
+    for row in report["eval"]["systems"]:
+        label = metrics.LABELS[row["system"]]
+        en = next(s for s in report["eval"]["byLang"]["en"]["systems"] if s["system"] == row["system"])
+        zh = next(s for s in report["eval"]["byLang"]["zh"]["systems"] if s["system"] == row["system"])
+        cells = [f"{row['recallAtK']:.3f}", f"{row['mrr']:.3f}", f"{en['recallAtK']:.3f}", f"{zh['recallAtK']:.3f}", f"{en['mrr']:.3f}", f"{zh['mrr']:.3f}"]
+        assert f"| {label} | " + " | ".join(cells) + " |" in results
+    assert "Cindia's model beats keyword (BM25) on recall@5 (+0.280, 95% interval +0.150 to +0.400)." in results
+    assert "within noise" in results and "10,000 resamples" in results
+    assert "50 queries (40 English, 10 Chinese)" in results and "`0123456789abcdef`" in results
+    assert all(f"- {n}" in results for n in report["notes"])
+    pairs_block = text[text.index(card.PAIRS[0]) : text.index(card.PAIRS[1])]
+    assert "claude-haiku-5-5 for 2 pieces, claude-sonnet-5-5 for 1 piece on a retry after a failed check" in pairs_block
+    assert "30 query-piece lines for 3 fictional pieces: 24 in English and 6 in Chinese" in pairs_block
+    # Filling a filled card again gives the same card.
+    assert card.render(text, report, meta) == text
+    assert card.claude_pieces(meta) == 3 and card.claude_pieces(fake_meta(source="template")) == 0
+
+
+# --- fetch_model.py ---------------------------------------------------------------------------
+
+
+class FakeHubRepo:
+    """One commit of the private repo: the files in `folder`. RESOLVE and DOWNLOAD read it."""
+
+    def __init__(self, folder: Path, commit: str = "c" * 40):
+        self.folder = folder
+        self.commit = commit
+        self.resolved: list[tuple] = []
+        self.downloads: list[tuple] = []
+
+    def resolve(self, repo, revision, token):
+        self.resolved.append((repo, revision))
+        return self.commit
+
+    def download(self, repo, revision, dest, token):
+        self.downloads.append((repo, revision, Path(dest)))
+        for p in self.folder.rglob("*"):
+            if p.is_file():
+                out = Path(dest) / p.relative_to(self.folder)
+                out.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(p, out)
+        cache = Path(dest) / ".cache" / "huggingface"
+        cache.mkdir(parents=True, exist_ok=True)
+        (cache / "download.lock").write_text("", encoding="utf-8")
+
+
+def publish_like_hub(o, folder: Path) -> Path:
+    """What publish uploads for the fake pipeline's model: its files, a card and report.json."""
+    shutil.copytree(o.paths.model_dir, folder)
+    touch(folder, ["1_Pooling/config.json"], "{}")
+    (folder / "README.md").write_text("card", encoding="utf-8")
+    shutil.copy2(o.paths.report, folder / "report.json")
+    return folder
+
+
+@pytest.fixture
+def fake_hub(b11_files, tmp_path, monkeypatch, hub_env):
+    repo = FakeHubRepo(publish_like_hub(b11_files, tmp_path / "hub"))
+    monkeypatch.setattr(fetch_model, "RESOLVE", repo.resolve)
+    monkeypatch.setattr(fetch_model, "DOWNLOAD", repo.download)
+    yield repo
+
+
+def test_fetch_restores_a_model_on_a_clean_folder_that_is_trained_accepts(b11_files, fake_hub, capsys):
+    model_dir = b11_files.paths.model_dir
+    shutil.rmtree(model_dir)
+    b11model.reset()
+    assert not b11model.is_trained()
+    assert fetch_model.main([]) == 0
+    out = capsys.readouterr().out
+    assert fake_hub.resolved == [(FAKE_REPO, None)] and fake_hub.downloads[0][1] == "c" * 40
+    assert sorted(hub.model_files(model_dir, skip=())) == ["1_Pooling/config.json", "model.safetensors", "modules.json", "salt.txt"]
+    assert not (model_dir / "README.md").exists() and not (model_dir / "report.json").exists() and not (model_dir / ".cache").exists()
+    assert b11model.is_trained() and b11model.is_warm()
+    assert "matches report.json" in out and "is_trained() accepts it" in out and "warm" in out
+    assert not list(model_dir.parent.glob(".*fetch*")) and not list(model_dir.parent.glob("*.fetched"))
+    assert config.HF_TOKEN not in out
+
+
+def test_fetch_refuses_weights_whose_sha256_differs_and_keeps_the_old_model(b11_files, fake_hub, capsys):
+    model_dir = b11_files.paths.model_dir
+    before = (model_dir / "model.safetensors").read_bytes()
+    (fake_hub.folder / "model.safetensors").write_bytes(b"someone else's weights")
+    assert fetch_model.main(["--force", "--no-load"]) == 1
+    out = capsys.readouterr().out
+    assert "fetch: refused: the weights at someone/cindia-embed@cccccccccccc" in out and "is unchanged" in out
+    assert (model_dir / "model.safetensors").read_bytes() == before
+    assert len(out.strip().splitlines()) == 2  # the download line and the one refusal line
+    # On a clean folder too: nothing is left where the server looks.
+    shutil.rmtree(model_dir)
+    assert fetch_model.main(["--no-load"]) == 1
+    assert not model_dir.exists() and not list(model_dir.parent.glob(".*fetch*"))
+
+
+def test_fetch_skips_the_download_when_the_model_already_matches(b11_files, monkeypatch, hub_env, capsys):
+    monkeypatch.setattr(fetch_model, "RESOLVE", lambda *a: pytest.fail("no Hub call"))
+    monkeypatch.setattr(fetch_model, "DOWNLOAD", lambda *a: pytest.fail("no Hub call"))
+    monkeypatch.setenv("HF_HUB_OFFLINE", "1")  # nothing reaches the Hub, so offline is fine
+    assert fetch_model.main(["--no-load"]) == 0
+    assert "nothing to download" in capsys.readouterr().out
+
+
+def test_fetch_takes_the_revision_report_json_pins(b11_files, fake_hub, capsys):
+    report = read(b11_files.paths.report)
+    pinned = "d" * 40
+    write_json(b11_files.paths.report, {**report, "hubRepo": FAKE_REPO, "hubRevision": pinned, "hubUrl": "https://huggingface.co/" + FAKE_REPO})
+    b11model.reset()
+    for args, want in ((["--force"], pinned), (["--force", "--latest"], None), (["--force", "--revision", "abc123"], "abc123")):
+        fake_hub.resolved.clear()
+        assert fetch_model.main([*args, "--no-load"]) == 0
+        assert fake_hub.resolved == [(FAKE_REPO, want)]
+    # A report that names another repo pins nothing for this one.
+    write_json(b11_files.paths.report, {**report, "hubRepo": "other/repo", "hubRevision": pinned})
+    b11model.reset()
+    fake_hub.resolved.clear()
+    assert fetch_model.main(["--force", "--no-load"]) == 0
+    assert fake_hub.resolved == [(FAKE_REPO, None)]
+    o = fetch_model.parse_args(["--repo", "x/y", "--no-load"])
+    assert (o.repo, o.load, o.latest, o.revision) == ("x/y", False, False, None)
+    with pytest.raises(SystemExit):
+        fetch_model.parse_args(["--latest", "--revision", "abc"])
+
+
+def test_fetch_refuses_without_a_report_a_repo_or_the_network(b11_files, fake_hub, monkeypatch, capsys):
+    monkeypatch.setattr(config, "HF_REPO", None)
+    assert fetch_model.main(["--force", "--no-load"]) == 1
+    assert "CINDIA_HF_REPO isn't set" in capsys.readouterr().out
+    monkeypatch.setattr(config, "HF_REPO", FAKE_REPO)
+    monkeypatch.setenv("HF_HUB_OFFLINE", "1")
+    assert fetch_model.main(["--force", "--no-load"]) == 1
+    assert "HF_HUB_OFFLINE is set" in capsys.readouterr().out
+    monkeypatch.delenv("HF_HUB_OFFLINE")
+
+    def unreachable(repo, revision, token):
+        raise ConnectionError("proxy said no")
+
+    monkeypatch.setattr(fetch_model, "RESOLVE", unreachable)
+    assert fetch_model.main(["--force", "--no-load"]) == 1
+    out = capsys.readouterr().out
+    assert "couldn't reach huggingface.co (ConnectionError)" in out and "proxy said no" not in out
+    report = read(b11_files.paths.report)
+    write_json(b11_files.paths.report, {**report, "fingerprint": "ffffffffffffffff"})
+    b11model.reset()
+    assert fetch_model.main(["--no-load"]) == 1
+    assert "fingerprint doesn't match its own hashes" in capsys.readouterr().out
+    b11_files.paths.report.unlink()
+    b11model.reset()
+    assert fetch_model.main(["--no-load"]) == 1
+    assert "nothing to check a model against" in capsys.readouterr().out
+
+
+def test_fetch_never_writes_the_model_under_server(b11_files, fake_hub, monkeypatch, capsys):
+    monkeypatch.setattr(config, "MODEL_DIR", Path(fetch_model.__file__).parent / "models")
+    assert fetch_model.main(["--no-load"]) == 1
+    assert "under server/" in capsys.readouterr().out
+    assert not (Path(fetch_model.__file__).parent / "models").exists()
+
+
+# --- train_akbari.sh ------------------------------------------------------------------------------
+
+
+def test_train_akbari_is_valid_bash_and_never_echoes_a_variable_or_reads_a_key_file():
+    text = AKBARI.read_text(encoding="utf-8")
+    assert text.startswith("#!/usr/bin/env bash\n") and "\r" not in text
+    code = [ln for ln in text.splitlines() if not ln.lstrip().startswith("#")]
+    body = "\n".join(code)
+    assert "set -x" not in body and "set -o xtrace" not in body
+    assert not re.search(r"(?<![\w.])\.env\b", body), "the script must not read a key file"
+    for name in ("HF_TOKEN", "CINDIA_HF_REPO"):
+        uses = [ln for ln in code if f"${{{name}" in ln or f"${name}" in ln]
+        assert uses and all(f'[ -n "${{{name}:-}}" ]' in ln for ln in uses), uses
+    assert "--device \"$DEVICE\"" in body and "publish.py" in body and "--data \"$DATA\"" in body
+    if shutil.which("bash"):
+        assert subprocess.run(["bash", "-n", str(AKBARI)], capture_output=True).returncode == 0
+    assert os.access(AKBARI, os.X_OK) or os.name == "nt"
+
+
+@pytest.mark.skipif(shutil.which("bash") is None or os.name == "nt", reason="bash isn't available")
+def test_train_akbari_stops_before_any_work_without_the_token_or_the_repo(tmp_path):
+    target = tmp_path / "checkout"
+    base = {"PATH": os.environ.get("PATH", ""), "HOME": str(tmp_path), "PYTHON": sys.executable}
+    runs = []
+    for extra in ({}, {"HF_TOKEN": "fake-akbari-token-value"}):
+        done = subprocess.run(
+            ["bash", str(AKBARI), "--dir", str(target)], env={**base, **extra}, capture_output=True, text=True, timeout=60
+        )
+        runs.append(done)
+    assert runs[0].returncode == 1 and "HF_TOKEN isn't set in this shell" in runs[0].stderr
+    assert runs[1].returncode == 1 and "CINDIA_HF_REPO isn't set in this shell" in runs[1].stderr
+    assert all("fake-akbari-token-value" not in r.stdout + r.stderr for r in runs)
+    assert not target.exists()
+
+
+# --- publish.py ------------------------------------------------------------------------------------
+
+from server.b11_embed import publish  # noqa: E402
+
+
+class FakeHfApi:
+    """The two HfApi calls publish makes. upload_folder filters the folder as huggingface_hub does
+    (filter_repo_objects with the allow and ignore patterns) and keeps what it would send."""
+
+    def __init__(self, oid: str = "a" * 40, fail: Exception | None = None):
+        self.oid = oid
+        self.fail = fail
+        self.calls: list[tuple[str, dict]] = []
+        self.sent: dict[str, bytes] = {}
+
+    def create_repo(self, repo_id, **kw):
+        self.calls.append(("create_repo", {"repo_id": repo_id, **kw}))
+        if self.fail is not None:
+            raise self.fail
+
+    def upload_folder(self, **kw):
+        self.calls.append(("upload_folder", kw))
+        folder = Path(kw["folder_path"])
+        every = sorted(p.relative_to(folder).as_posix() for p in folder.rglob("*") if p.is_file())
+        for name in filter_repo_objects(every, allow_patterns=kw["allow_patterns"], ignore_patterns=kw["ignore_patterns"]):
+            self.sent[name] = (folder / name).read_bytes()
+        return SimpleNamespace(oid=self.oid, commit_url=f"https://huggingface.co/{kw['repo_id']}/commit/{self.oid}")
+
+
+@pytest.fixture
+def publishing(b11_files, tmp_path, monkeypatch, hub_env):
+    """The fake pipeline's model with checkpoint junk beside its files, a copy of the committed
+    card, a pairs_meta.json, a fake Hub and a scan that passes. Yields (Options, api, scans)."""
+    o = b11_files
+    touch(o.paths.model_dir, ["1_Pooling/config.json"], "{}")
+    touch(o.paths.model_dir, CHECKPOINT_FILES + ["README.md"], "junk")
+    card_path = tmp_path / "card" / "README.md"
+    card_path.parent.mkdir(parents=True)
+    shutil.copy2(CARD_FILE, card_path)
+    meta = write_json(tmp_path / "card" / "pairs_meta.json", fake_meta())
+    api = FakeHfApi()
+    scans: list[list[Path]] = []
+
+    def scan(paths):
+        scans.append(list(paths))
+        return 0, "secrets-scan: 9 files checked (9 from extra paths), 0 key values from .env, 1 from the environment, 0 findings"
+
+    monkeypatch.setattr(publish, "MAKE_API", lambda token: api)
+    monkeypatch.setattr(publish, "SCAN", scan)
+    opts = publish.Options(
+        model_dir=o.paths.model_dir,
+        report=o.paths.report,
+        vectors=o.paths.vectors,
+        card=card_path,
+        pairs_meta=meta,
+        data=o.paths.data,
+        expected_pieces=3,
+        rendered=tmp_path / "artifacts" / "README.rendered.md",
+    )
+    yield opts, api, scans
+
+
+def test_publish_uploads_only_the_model_files_the_card_and_the_report(publishing, capsys):
+    o, api, scans = publishing
+    before = read(o.report)
+    assert publish.run(o) == 0
+    out = capsys.readouterr().out
+    assert [c[0] for c in api.calls] == ["create_repo", "upload_folder"]
+    created = api.calls[0][1]
+    assert created["repo_id"] == FAKE_REPO and created["private"] is True and created["exist_ok"] is True
+    upload = api.calls[1][1]
+    expected = ["1_Pooling/config.json", "model.safetensors", "modules.json", "salt.txt", "README.md", "report.json"]
+    assert upload["allow_patterns"] == expected and upload["repo_id"] == FAKE_REPO
+    assert sorted(api.sent) == sorted(expected)
+    assert not any(n in api.sent for n in CHECKPOINT_FILES)
+    from fnmatch import fnmatchcase
+
+    assert not any(fnmatchcase(ck, p) for ck in CHECKPOINT_FILES for p in upload["allow_patterns"])
+    # The card on the Hub is the committed card with both blocks filled in from this run.
+    card_sent = api.sent["README.md"].decode("utf-8")
+    assert card.check(card_sent, fixture_rules(), filled=True) == []
+    for row in before["eval"]["systems"]:
+        assert f"| {metrics.LABELS[row['system']]} | {row['recallAtK']:.3f} | {row['mrr']:.3f} |" in card_sent
+    assert Path(o.card).read_text(encoding="utf-8") == card_sent
+    # report.json: the Hub's copy names the repo but no revision; the local one gets all three.
+    sent_report = json.loads(api.sent["report.json"])
+    assert (sent_report["hubRepo"], sent_report["hubRevision"], sent_report["hubUrl"]) == (FAKE_REPO, None, "https://huggingface.co/" + FAKE_REPO)
+    after = read(o.report)
+    assert (after["hubRepo"], after["hubRevision"], after["hubUrl"]) == (FAKE_REPO, "a" * 40, "https://huggingface.co/" + FAKE_REPO)
+    assert {k: v for k, v in after.items() if not k.startswith("hub")} == {k: v for k, v in before.items() if not k.startswith("hub")}
+    assert list(after) == list(before)
+    # The weights went up byte for byte, the scan covered the staged folder, and the stage is gone.
+    assert api.sent["model.safetensors"] == (o.model_dir / "model.safetensors").read_bytes()
+    assert scans and scans[0][0] == publish.HERE and scans[0][1] == o.model_dir and scans[0][2].name.endswith(".publish")
+    assert not scans[0][2].exists()
+    assert "revision " + "a" * 40 in out and "(private)" in out and config.HF_TOKEN not in out
+    # model.py still accepts the model: the hub fields don't change the fingerprint.
+    b11model.reset()
+    assert b11model.is_trained()
+
+
+def test_publish_refuses_without_the_token_or_the_repo(publishing, monkeypatch, capsys):
+    o, api, _ = publishing
+    monkeypatch.setattr(config, "HF_TOKEN", None)
+    assert publish.run(o) == 1
+    assert "refused: HF_TOKEN isn't set" in capsys.readouterr().out
+    monkeypatch.setattr(config, "HF_TOKEN", "fake-hf-token-for-tests")
+    for repo, words in ((None, "CINDIA_HF_REPO isn't set"), ("not-a-repo", "isn't <account>/<name>")):
+        monkeypatch.setattr(config, "HF_REPO", repo)
+        assert publish.run(o) == 1
+        assert words in capsys.readouterr().out
+    assert api.calls == [] and read(o.report).get("hubRevision") is None
+
+
+def test_publish_refuses_without_the_card_or_with_a_card_that_fails(publishing, capsys):
+    o, api, _ = publishing
+    text = Path(o.card).read_text(encoding="utf-8")
+    Path(o.card).unlink()
+    assert publish.run(o) == 1
+    assert "there's no model card" in capsys.readouterr().out
+    for bad, words in (
+        (text.replace("a small test, not a benchmark", "a benchmark"), "not a benchmark"),
+        (text + "\nA Navajo rug, see https://github.com/someone.\n", "product word"),
+        (text.replace("<!-- cindia:results:end -->", ""), "results:start"),
+    ):
+        Path(o.card).write_text(bad, encoding="utf-8")
+        assert publish.run(o) == 1
+        out = capsys.readouterr().out
+        assert "fails its content test" in out and words in out, out
+    assert api.calls == []
+
+
+def test_publish_refuses_a_model_vectors_or_scan_that_doesnt_check_out(publishing, capsys):
+    o, api, scans = publishing
+    weights = o.model_dir / "model.safetensors"
+    good = weights.read_bytes()
+    weights.write_bytes(b"other weights")
+    assert publish.run(o) == 1
+    assert "don't hash to report.json's modelSha256" in capsys.readouterr().out
+    weights.write_bytes(good)
+    vectors = read(o.vectors)
+    write_json(o.vectors, {**vectors, "fingerprint": "0000000000000000"})
+    assert publish.run(o) == 1
+    assert "vectors.json's fingerprint doesn't match" in capsys.readouterr().out
+    write_json(o.vectors, vectors)
+    publish_scan = publish.SCAN
+    try:
+        publish.SCAN = lambda paths: (1, "secrets-scan: 9 files checked, 1 findings\n  models/x/config.json: matches the Hugging Face token pattern")
+        assert publish.run(o) == 1
+        out = capsys.readouterr().out
+        assert "the secrets scan failed, so nothing is uploaded" in out and "matches the Hugging Face token pattern" in out
+    finally:
+        publish.SCAN = publish_scan
+    write_json(o.pairs_meta, fake_meta(source="template"))
+    assert publish.run(o) == 1
+    assert "templates wrote every training query" in capsys.readouterr().out
+    assert api.calls == [] and not list(o.model_dir.parent.glob(".*.publish"))
+
+
+def test_publish_dry_run_and_offline_upload_nothing(publishing, monkeypatch, capsys):
+    o, api, scans = publishing
+    report_before = o.report.read_text(encoding="utf-8")
+    card_before = Path(o.card).read_text(encoding="utf-8")
+    o.dry_run = True
+    monkeypatch.setenv("HF_HUB_OFFLINE", "1")  # a dry run never reaches the Hub
+    assert publish.run(o) == 0
+    out = capsys.readouterr().out
+    assert "dry run: nothing uploaded" in out and "6 files for someone/cindia-embed" in out
+    assert api.calls == [] and len(scans) == 1
+    assert o.report.read_text(encoding="utf-8") == report_before and Path(o.card).read_text(encoding="utf-8") == card_before
+    assert card.check(o.rendered.read_text(encoding="utf-8"), fixture_rules(), filled=True) == []
+    o.dry_run = False
+    assert publish.run(o) == 1
+    assert "HF_HUB_OFFLINE is set" in capsys.readouterr().out and api.calls == []
+
+
+def test_publish_reports_a_hub_failure_in_one_line_and_keeps_report_json(publishing, capsys):
+    o, api, _ = publishing
+    api.fail = ConnectionError("proxy said no to fake-hf-token-for-tests")
+    before = o.report.read_text(encoding="utf-8")
+    assert publish.run(o) == 1
+    out = capsys.readouterr().out
+    assert "refused: couldn't reach huggingface.co (ConnectionError)" in out and "proxy said no" not in out
+    assert o.report.read_text(encoding="utf-8") == before and not list(o.model_dir.parent.glob(".*.publish"))
+
+
+def test_publish_scan_command_names_the_card_folder_and_the_model(tmp_path):
+    cmd = publish.scan_command([publish.HERE, tmp_path / "models" / "m"])
+    assert cmd[:3] == ["node", "scripts/secrets-scan.mjs", "server/b11_embed"]
+    assert cmd[3] == str((tmp_path / "models" / "m").resolve())
+    o = publish.parse_args(["--dry-run", "--model-dir", "models/other"])
+    assert o.dry_run and o.model_dir == publish.REPO_ROOT / "models" / "other"
+    assert publish.parse_args([]).model_dir == Path(config.MODEL_DIR)
+
+
+def test_train_calls_publish_main_once_the_token_the_repo_and_publish_py_exist(tmp_path, monkeypatch, hub_env):
+    o = options(tmp_path)
+    o.publish = True
+    calls = []
+    monkeypatch.setattr(publish, "main", lambda argv: calls.append(argv) or 0)
+    lines: list[str] = []
+    monkeypatch.setattr(train.log, "info", lambda msg, *a: lines.append(msg % a if a else msg))
+    train.maybe_publish(o)
+    assert calls == [[]] and lines[-1] == "publish: publish.py exited 0"
+
+
+# --- live: one read-only call to the private repo ------------------------------------------------
+
+
+@pytest.mark.live
+@needs_key("HF_TOKEN")
+@pytest.mark.skipif(not config.HF_REPO, reason="CINDIA_HF_REPO is not set")
+def test_live_the_token_can_read_the_private_repo():
+    from huggingface_hub import errors
+
+    try:
+        commit = hub.resolve(config.HF_REPO, None, config.HF_TOKEN)
+    except errors.RepositoryNotFoundError:
+        pytest.skip("the repo isn't published yet (python server/b11_embed/publish.py creates it)")
+    assert re.fullmatch(r"[0-9a-f]{40}", commit)
