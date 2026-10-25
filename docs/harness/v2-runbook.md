@@ -112,7 +112,7 @@ The order below follows the architecture review (B1-1, B1-19, B1-20). Commit eac
 - Then P1: `F-watch`, `F-storefront`, `M-maker-statement`.
 
 Notes on the queue:
-- `M-desktop` is P0 and runs right after `M-approvals`, before the tour, because `d06` to `d10` are the moment for the finance tracks (C-11). Its lead starts with T2 and T3 (the money map, then the month and the catch at desktop size), before its other tasks.
+- `M-desktop` is P0 and runs right after `M-approvals`, before the tour, because `d06` to `d10` are the moment for the finance tracks (C-11). Its lead starts with T2 and T3 (the money map, then the month and the catch at desktop size), before its other tasks. It starts when M-approvals' lead reports and doesn't wait for M-approvals' G3, which waits on B13-live's T7 (the B08 owner route).
 - `F-seller-hub` is P0, because its `d15-listing` beat is in the tour's spine.
 - B13's T7, B08's owner route (`docs/plans/B13-live.md`), must land before `M-approvals`' G3. If M-approvals reports first, its G3 waits for that task, and the B13 backend-builder runs it next.
 - Each gets a feature-lead with `PLAN: docs/plans/<plan>.md`, `TASK: all`, and the SCOPE line its plan gives. A migration plan may own more than one feature folder.

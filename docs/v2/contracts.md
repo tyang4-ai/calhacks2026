@@ -779,7 +779,7 @@ The plan writers found these gaps. Each one is settled here, and where two plans
   - hero: `tagline` (a plain craft line),
   - story: `title`, `body` (it renders the community's `about` under L8),
   - pieces: `pieceIds`,
-  - process: `title`, `body`,
+  - process: `title`, `body` (the title renders, the body never does, and the steps come from the piece data's `process`),
   - projects: `projectIds`,
   - visit: `address` (the region only, never a street address) and `hours` ("Visits by arrangement"). No phone or email, for every storefront.
   

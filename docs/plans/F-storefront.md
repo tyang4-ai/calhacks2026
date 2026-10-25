@@ -90,7 +90,7 @@ Missing props render a quiet placeholder, never a crash.
 **T5.**
 - `DesignerDraft` holds the Designer button and its run:
   - `storefront-designer` emits `storefront.requested` for `sto_01`.
-  - `storefront-designer-steps` lists the Designer run's `swarm.step` events (`run_03`, whose `threadId` is `sto_01`, contracts section 11) as kit `ChatBubble`s with the agent's name.
+  - `storefront-designer-steps` lists the `swarm.step` events whose `threadId` is `sto_01`, from the newest run on that thread, as kit `ChatBubble`s with the agent's name. It selects them by `threadId`, never by `runId`: the tour's Designer run is `run_03`, but a person's scripted request re-keys it to `run_user_<n>` (and a live one to `run_user_<tag>_<n>`), while the thread stays `sto_01` (contracts section 11).
   - When `storefront.drafted` arrives, `storefront-use-draft` appears and replaces the working copy with the Designer's blocks when pressed. The owner decides, and the draft is never applied on its own.
 - `PublishBar` holds publishing:
   - `storefront-publish` emits `storefront.published` with `sto_01`, its slug and the working copy's blocks, whatever the preview shows at that moment. Publishing is the owner's own decision, so there's no approval.
@@ -113,7 +113,7 @@ Every spec checks by test ID only, at 1440 by 900. A spec that needs a timeline 
 4. **Given** `pageView.test.ts`, **then** a draft storefront with no publish gets its mock blocks and the draft note, and a storefront with a `storefront.published` gets that event's blocks and no note (D1-50).
 5. **Given** `/sell/storefront`, **when** the owner moves the second block up and edits the hero's tagline, **then** the `storefront-block-<blockId>` rows show the new order, `storefront-preview` shows the edit at once, and nothing new is emitted to the store.
 6. **When** the owner picks a different accent in `storefront-accent`, **then** the preview's accent uses that token's CSS variable.
-7. **When** the owner presses `storefront-designer`, **then** the store holds a `storefront.requested` for `sto_01` with `source: "user"`, and the Designer's steps arrive in `storefront-designer-steps`, followed by `storefront-use-draft`. The working copy doesn't change until `storefront-use-draft` is pressed, and then it holds the drafted blocks.
+7. **When** the owner presses `storefront-designer`, **then** the store holds a `storefront.requested` for `sto_01` with `source: "user"`, and the Designer's steps arrive in `storefront-designer-steps` (a `run_user_` run on thread `sto_01`, picked by its thread), followed by `storefront-use-draft`. The working copy doesn't change until `storefront-use-draft` is pressed, and then it holds the drafted blocks.
 8. **When** the owner edits the hero's tagline and presses `storefront-publish` without the Designer, **then** the store holds a `storefront.published` for `sto_01` carrying the edited blocks, `storefront-status` reads published, and `/store/dine-weavers` shows the edited tagline (B1-43).
 9. **When** the Designer's draft has arrived and the owner publishes without pressing `storefront-use-draft`, **then** `/store/dine-weavers` shows the working copy and not the draft. After `storefront-use-draft` and a second publish, it shows the drafted blocks.
 10. **Given** any moment on the builder, **then** `storefront-preview-note` shows the preview note. In scripted mode the builder panel shows `simulated-badge`, and the public page shows the `Demo data` badge.
@@ -128,7 +128,7 @@ Every spec checks by test ID only, at 1440 by 900. A spec that needs a timeline 
 ## Contract additions needed
 Settled in contracts sections 3 and 11 and I2-core, listed so a builder knows where each lives. Nothing is still open:
 1. **`storefront.requested`** (`storefrontId`): a person's request on key `b14-swarm`.
-   - Scripted answer: the Designer run `run_03`, thread `sto_01`, with its `swarm.step` events, then `storefront.drafted` for `sto_01`. Any other storefront gets no scripted draft, because the Designer drafts only the seller's own storefront (I2-core T8, A2-22).
+   - Scripted answer: the Designer run `run_03`, re-keyed to `run_user_<n>` for a person's request, on thread `sto_01`, with its `swarm.step` events, then `storefront.drafted` for `sto_01`. Any other storefront gets no scripted draft, because the Designer drafts only the seller's own storefront (I2-core T8, A2-22).
    - Live answer: `POST /api/b14/storefront`.
 2. **Navigation for features:** `navigate(path)` in `src/core/nav.ts` and the kit `Link` (prop `to`), which moves between routes without reloading the store.
 3. **`storefront-publish`** reads "Publish". It's the owner's own decision and emits `storefront.published` directly. The `storefront_publish` approval kind stays for a time when Cindy proposes a publish herself.
