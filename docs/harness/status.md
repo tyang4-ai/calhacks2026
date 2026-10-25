@@ -3,7 +3,7 @@ NEXT: V1 steps 2 and 3 (S3 T1 stubs, I2-kit, I2-art T0; keyed v1 G5s in a worktr
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-24 20:34 PT
+UPDATED: 2026-10-24 20:55 PT
 
 # Status board
 
@@ -80,9 +80,9 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 |---|---|---|---|---|---|
 | R0-reskin | V1 step 0 | green | data-smith, integrator, feature-lead, backend-builder | v2-reskin | gate 11/11 checks, 3 verifiers PASS (screens, numbers, words) |
 | I2-core | V1 | green (both spawns) | 3 integrators (T1; T2-T4; T6-T7), FO1, FO2 | v2-core | core gate 4/4, 3 verifiers PASS; second spawn (T5, T8) after S3 T1 |
-| I2-kit | V1 | running | integrator | | T1 frames done (in tree); T2-T4 running |
+| I2-kit | V1 | done, commit at G1b | integrator | | T1-T4 done: check 738, smoke 123/123; /dev/kit gallery |
 | I2-shell | V1 | running | integrator | | T1-T7 |
-| S3-catalog | V1 | running | data-smith | | T1 stubs committed (e51c66e); spawn 2 (T2-T5, T7) running |
+| S3-catalog | V1 | running | data-smith | | T1 stubs committed (e51c66e); spawn 2 (T2-T5, T7) done, check:data 180; spawn 3 (T6, T8) running; commit at G2b |
 | I2-art | V1 | T0 committed | integrator | | T0 54 placeholders (54288bd); T1-T3 after G2b |
 | F-search | V2 P0 | todo | feature-lead | | |
 | M-buyer | V2 P0 | todo | feature-lead | | |
@@ -103,9 +103,9 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
-| B11-embed | todo | | | |
+| B11-embed | running | | | T1-T2 committed (825666a); T4 code and T6 running; T3 and T5 after G2b |
 | B12-search | todo | | | |
-| B13-live | running | | | T1 module running; then publish, T2-T7 (T7 first) |
+| B13-live | running | | | T1 committed (17c3590), module published locally as cindia; T7 then T2-T6 running |
 | B14-swarm | todo | | | |
 | B15-watch | todo | | | fixture until the public site is up |
 | B16-bank-books | todo | | | after B04 is live, needs NESSIE_KEY |
@@ -164,6 +164,7 @@ Each item names the default already in use, so the build never waits.
 
 | Since | Question | Default in use |
 |---|---|---|
+| Oct 24 8:55 PM | Chinese words for the kit: 部族认证 for "Nation attestation" (design drop 3's proposal), and 插图, 示例, 待完成, 已达成, 您的请求, 近似, 事件日志 in `src/ui/strings.ts` | As written by the kit integrator |
 | Oct 24 8:20 PM | Scribe's Devpost skeleton (`docs/devpost/devpost.md`, 14 `[GORDON: ...]` items listed in `sponsors/README.md`): write your sections; check the Figma prize names on Devpost; set the three Figma files to "Anyone with the link" | Drafts and placeholders |
 | Oct 24 6:16 PM | R0: check the Chinese of the co-op's place (美国亚利桑那州纳瓦霍保留区) and the twelve Chinese piece stories in `src/mock/catalog.ts`, plus the Chinese of L1, L2, L4 and L15 (fix-plan section 7) | The data-smith's Chinese, as written |
 | Oct 24 2:01 AM | ~~`.env` is missing~~ Resolved in the cloud at 7:30 PM: `/api/health` reads anthropic, nessie, elastic, apify and hf all true from the cloud environment. On the Windows laptop, `.env` is still needed for live mode (D-deploy's laptop script) | Live keys in the cloud |
@@ -284,3 +285,8 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 20:16 PT · scribe 8 PM pass done: README, whats-real, Devpost skeleton, 11 sponsor folders; Cut and simulated filled from its list; the older v1 tags (g1-scaffold, g2-data, w1-*, w2-*, demo-ok-1, demo-ok-b01, demo-ok-b03) aren't in this clone, so they have no SHA row · README.md, docs/devpost/, sponsors/
 - 2026-10-24 20:23 PT · B09 prefetch in (12 unit tests; uncommitted until its G5); keyed G5s rerunning in the worktree with it (b09, b04, b02, b07); B13 T1 spawned; registry epoch check added to I2-core T5/T8's spawn · status.md
 - 2026-10-24 20:34 PT · I2-core second spawn committed on its check:scope -- src/sources/ pass (191 passed; core 682; vitest src/sources src/core 403): responders T5 and T8, the core verifiers' minors, the registry epoch check · status.md
+- 2026-10-24 20:34 PT · B11 T1-T2 spawned (code agents: S3 spawn 2, I2-shell, I2-kit T2-T4, B13 T1, B11 T1-T2) · status.md
+- 2026-10-24 20:46 PT · S3 spawn 2 done (54 pieces, 4 communities, records; check:data 180, check PASS; figures 11, 12, 13, 16 computed); export:mock 100 exports; v1 grid and B09 adapter limited to the co-op's 12; S3 spawn 3 (T6, T8) spawned · status.md
+- 2026-10-24 20:47 PT · B13 T1 done: module packages installed (spacetimedb 2.13.0, typescript 5.9.3), published to the local server as cindia (--yes=skip-login), test_b13_live 10 passed; committed; B13 second spawn (T7 first, then T2-T6) spawned · status.md
+- 2026-10-24 20:53 PT · B11 T1-T2 committed (54 passed, the passage rule rebuilds all 54 embedTexts); B11 T4 code and T6 spawned · status.md
+- 2026-10-24 20:55 PT · I2-kit T2-T4 done (components, Badge variants, KitGallery, seal date fits; check 738, smoke 123/123); worktree G5s: B09 PASS 13/13 (verifier running), B04 12/13 (modes.spec frame timing in a live run), B02 12/13 (live offline run), B07 stopped mid-run: load average 13.8 from parallel Playwright runs made the timing checks flaky, so B04, B02 and B07 rerun in a quiet window · artifacts/gates in /home/user/cindia-g5
