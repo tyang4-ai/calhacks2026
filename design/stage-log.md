@@ -51,8 +51,9 @@ This section backs up the entries above and is not part of their word count.
 | Cindia · 01 Research (FigJam) | https://www.figma.com/board/T3lxV76Wc6petCKoRE0TNu | Written before the scope change. What Cindia is, why it matters (World Bank, FDIC, ICT News), the buyer, the earlier studio's maker and owner, the judge at a table, the community as a stakeholder, the Visa, Hyphenate and Figma criteria, the judge's one-minute story, 15 references (described and linked, never copied), 8 principles, the screen rules, 4 open questions with defaults |
 | Cindia · 02 Moodboards (FigJam) | https://www.figma.com/board/KAOXGbhwnS0A0tJ8j5ABj7 | How the directions were checked, A · Museum label, B · Warp and weft, C · Daylight market (idea, palette, type, texture and imagery, the product vignette), a side-by-side table and the recommendation, with a sticky for Gordon's pick |
 | Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 18 text styles, the overlay shadow, and four pages: Style tiles (`design/style-tiles.png`), Wireframes, Components and Screens (the 24 frames in `design/screens/`) |
+| Cindia · Pitch (Figma Slides) | https://www.figma.com/slides/edmnscKXlUVzaIAIti6Eqh | Created Oct 25 at 00:30. Five slides that mirror `/demo`'s pitch: the catch as the cold open, the three approved pitch cards with the tagline "Made by hand. Paid in full.", and links to the site, the code and the three files above |
 
-All three files sit in Gordon's drafts on his Figma team, which moved from the Starter tier to the student tier after his Edu verification. All three are shared as "Anyone with the link can view", checked in Figma on Oct 25 at 12:25 AM. The MCP server has no sharing tool, so that check was done in the browser.
+All four files sit in Gordon's drafts on his Figma team, which moved from the Starter tier to the student tier after his Edu verification. All four are shared as "Anyone with the link can view", checked in Figma on Oct 25 at 12:25 AM. The MCP server has no sharing tool, so that check was done in the browser.
 
 ### Timeline
 
@@ -121,6 +122,8 @@ All three files sit in Gordon's drafts on his Figma team, which moved from the S
 | 18:02 | HANDOFF, components, changes, flows, layout and tokens updated for drop 3 | Write |
 | 18:09 | Style tiles: the earlier studio's type samples, seal, chip and drawing replaced with the co-op's, and the live beam component placed in the kit tile. Re-exported as `design/style-tiles.png` | use_figma, get_screenshot |
 | Oct 25, 00:26 | Banners at the top of 01 Research and 02 Moodboards: written and drawn before the scope change, with a pointer to Cindia · Design | use_figma |
+| Oct 25, 00:29 | Pitch-card frames on Screens updated to Gordon's approved text, with the tagline as the what card's first line | use_figma |
+| Oct 25, 00:30 | Cindia · Pitch created in Figma Slides: the catch, the three cards and a links slide, built from the pitch-card frames' type and colors, then checked for overlaps and screenshotted | create_new_file, use_figma |
 
 ### Figma MCP calls
 
@@ -166,4 +169,4 @@ The limit for a View or Collab seat is up to 20 calls a month. An Education plan
 
 - Gordon picked B at 14:28, and drop 1 is done.
 - Drop 3 is done at about 18:14: 24 PNGs, 15 drawings, the style tiles, and the updated `components.md`, `changes.md`, `flows.md`, `layout.md` and `tokens.md`.
-- Still to do in Figma: the prototype links, the Slides deck that mirrors the pitch cards, and the screens `HANDOFF.md` lists as not drawn.
+- Still to do in Figma: the prototype links and the screens `HANDOFF.md` lists as not drawn. The Slides deck that mirrors the pitch cards was made on Oct 25 at 00:30.
