@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:55 PT
+UPDATED: 2026-10-25 00:57 PT
 
 # Status board
 
@@ -107,7 +107,7 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | F-process | V2 P0 | green | feature-lead | v2-process | lead wrote T0-T8 itself (no Agent tool); fix round 1 for the screens |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
 | M-approvals | V2 P0 | green | feature-lead | v2-approvals | worktree G3 3/3 PASS; live two-screen spec runs; OwnerInbox deleted |
-| M-desktop | V2 P0 | G3 verifier FAIL (B1-B7: text under 14 px, ellipsized labels), fix round 1 | feature-lead | | needs FlagState.nessieId in src/core/state.ts (integrator) |
+| M-desktop | V2 P0 | fix round 1 done (99 + 1 reload rerun), worktree G3 and two-lens recheck running | feature-lead | | needs FlagState.nessieId in src/core/state.ts (integrator) |
 | F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | green | feature-lead | v2-watch | live spec skips until B15; F2 in the polish queue |
 | F-storefront | V2 P1 | green | feature-lead | v2-storefront | theme field on storefront.published (integrator); N1-N4 in the polish queue |
@@ -409,3 +409,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:53 PT · B15 done (Scout, Comparer, claims, Reporter, router, adapter): test_b15_watch 72 + 1 live skipped (no market), test:server 799, smoke 124; threshold 0.22; committed; its G5 waits for Gordon's upload and PUBLIC_SITE_URL · status.md
 - 2026-10-25 00:53 PT · G5 b04 in the worktree 11/13 (both failures v1 harness timing, B04's live calls pass; rerun on the tour after G4v2); B02 and B07 G5s running next; B16 spawned (its build doesn't wait on B04's G5, only its gate does) · artifacts/gates/G5-b04-bank-wt-0028.md
 - 2026-10-25 00:55 PT · G3 approvals PASS (worktree rerun 3/3, confirm recheck PASS; the adversarial lens's FAIL is the tour's new order, a T8 item); committed, tag v2-approvals; the keyed v1 G5s stopped (rerun on the tour after G4v2) · status.md
+- 2026-10-25 00:57 PT · M-desktop fix round 1 done (B1-B7, M1, M2, M4, English-only specs, per-screen readable-text checks; 99 passed + 1 reload-hit spec 3/3 alone); its worktree G3 (now with the worktree's own API on 8001) and a two-lens recheck running; B14 Writer English only committed (d04 endpoint 6.35 s) · status.md
