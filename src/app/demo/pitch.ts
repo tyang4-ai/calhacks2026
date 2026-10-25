@@ -30,7 +30,7 @@ export const PITCH_CARDS: readonly PitchCardText[] = [
       "Tell us who the gift is for, and we find handmade pieces that fit them.",
     ],
   },
-  // [GORDON] The Why card, approved by Gordon (video-brief.md section 7).
+  // [GORDON] The Why card, approved by Gordon (video-brief.md section 7; new last line, Oct 25 4:58 AM).
   {
     id: "why",
     beatId: "p02-why",
@@ -41,7 +41,7 @@ export const PITCH_CARDS: readonly PitchCardText[] = [
       // Source: the U.S. Attorney's case of Aug 5, 2026 (docs/v2/fix-plan.md section 1.3), where
       // one eBay seller admitted to selling more than $92,000 of fake Native-made goods.
       "Fakes sell as Native-made. In August, one eBay seller admitted to selling more than $92,000 of them.",
-      "If we don't help them, who will?",
+      "Their craft, their prices, their say. We do the paperwork.",
     ],
   },
   // [GORDON] The How card, approved by Gordon (video-brief.md section 7).
