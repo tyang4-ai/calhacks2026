@@ -42,6 +42,8 @@ test("Acceptance 4: 300 ms after the timeline grants apr_02 both cards carry the
     expect(granted?.status).toBe("granted");
     expect(granted?.date).toBeTruthy();
     await expect(seal).toContainText(/\d/);
+    // Design drop 3: the seal carries the owner's initials, Ruth B.'s "RB", ahead of its date.
+    await expect(seal).toHaveText(/^RB\D/);
     await expect(page.getByTestId(`approvals-approve-${id}`)).toHaveCount(0);
     await expect(page.getByTestId(`approvals-decline-${id}`)).toHaveCount(0);
   }

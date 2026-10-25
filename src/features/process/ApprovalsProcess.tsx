@@ -1,8 +1,9 @@
 // The approvals view (T5), process-pane-approvals: process-approvals-list shows each approval in the
 // order it was requested, with what Cindy proposed, its status, the kit Seal on granted ones (the
-// owner's mark, from the person who granted it), and what followed: followup.sent, payout.sent and
-// wip.milestone_paid. An approval getById() doesn't find (a live apr_user_<n>) uses the inline
-// approval object the store kept from its approval.requested. The tour opens it in d09-approve (C-12).
+// owner's initials, "RB" for Ruth B., from the person who granted it), and what followed:
+// followup.sent, payout.sent and wip.milestone_paid. An approval getById() doesn't find (a live
+// apr_user_<n>) uses the inline approval object the store kept from its approval.requested. The tour
+// opens it in d09-approve (C-12).
 import { useCallback } from "react";
 import type { CindiaState } from "../../core/state";
 import { useCindia } from "../../core/store";
@@ -12,6 +13,16 @@ import { Money, Seal } from "../../ui";
 import { approvalInfo, usePlaying, type ApprovalInfo } from "./processes";
 import { Empty, Quiet, Tag } from "./parts";
 import { APPROVAL_KIND_LABELS, APPROVAL_STATUS_LABELS, BOOKS, EMPTY, GLOSSARY, t } from "./strings";
+
+/**
+ * The initials the seal shows (design drop 3): the given name's first letter plus the record's family
+ * initial, so Ruth B. seals as "RB". A one-word name keeps its family initial alone.
+ */
+function sealInitials(person: Person): string {
+  const words = person.name.en.trim().split(/\s+/).filter(Boolean);
+  if (words.length < 2) return person.surnameChar;
+  return (Array.from(words[0] ?? "")[0] ?? "").toUpperCase() + person.surnameChar;
+}
 
 interface Followed {
   id: string;
@@ -51,7 +62,7 @@ function approvalsView(s: CindiaState): ApprovalRow[] {
       const row: ApprovalRow = { approvalId, info, status: item.status, followed };
       if (item.date) row.date = item.date;
       if (item.decidedAt !== undefined) row.decidedAt = item.decidedAt;
-      if (by && "surnameChar" in by) row.sealChar = by.surnameChar;
+      if (by && "surnameChar" in by) row.sealChar = sealInitials(by);
       return row;
     });
 }

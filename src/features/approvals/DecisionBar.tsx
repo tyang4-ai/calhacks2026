@@ -1,6 +1,7 @@
 // The owner's decision on one approval. While it's pending, DecisionBar offers approve (the kit
 // Button's seal variant) and decline with a one-line reason; a report on a live hit waits for the
-// owner's own check first. OwnerSeal is the owner's stamp, small on a card and large on the detail.
+// owner's own check first. OwnerSeal is the owner's stamp with her initials (design drop 3: "RB" for
+// Ruth B.), small on a card and large on the detail.
 // DecisionOutcome sits on the detail once decided: the large seal, who sealed it and when, and what
 // happens next. Everything renders from the store, and the reducer keeps the first decision, so a
 // second one changes nothing.
@@ -12,6 +13,7 @@ import type { ApprovalKind, Person, Studio } from "../../core/types";
 import { getById } from "../../mock";
 import { Button, Seal, formatDate } from "../../ui";
 import { recordFromState } from "./approvalSummary";
+import { sealInitials } from "./sealInitials";
 import { GLOSSARY, KIND_NEXT, UI, sealedByLine, t, type Lang } from "./strings";
 
 /** The payload type fixes the owner to "own_01". The value itself comes from the co-op's record. */
@@ -41,7 +43,7 @@ export function OwnerSeal({ testId, lang, size, date, decidedAt, byUser }: Owner
   const [startAt] = useState(() => (byUser && !player.isPlaying() ? undefined : decidedAt));
   return (
     <span style={{ flexShrink: 0, display: "inline-flex" }}>
-      <Seal testId={testId} char={owner()?.surnameChar ?? ""} date={date} lang={lang} startAt={startAt} size={size} />
+      <Seal testId={testId} char={sealInitials(owner())} date={date} lang={lang} startAt={startAt} size={size} />
     </span>
   );
 }
