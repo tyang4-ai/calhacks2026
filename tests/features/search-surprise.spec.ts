@@ -1,6 +1,6 @@
 // F-search T4: Surprise me. Acceptance 11 (the tour's fair draw of figure 12, its method and rule,
 // and no weight anywhere on the page), 12 (pure random pressed twice: seeds 1 and 2, no keyword),
-// keyword mode, and 15 (the rule line in Chinese).
+// keyword mode, and 15 (English only: the rule line in English, no Chinese).
 import { expect, test } from "@playwright/test";
 import { demoSurprise, pieces } from "../../src/mock/index";
 import { SURPRISE_METHOD_NAMES, SURPRISE_RULES } from "../../src/features/search/strings";
@@ -90,16 +90,17 @@ test("fair random is the default, with its rule before any draw", async ({ page 
   await expect(home.getByTestId("search-surprise-result")).toHaveCount(0);
 });
 
-test("15: in Chinese the rule line and the method show their Chinese text", async ({ page }) => {
+// English only (decisions.md, Oct 24 11:35 PM and 11:55 PM): the language toggle is gone, so the
+// rule line, the method and the title are checked in English, with none of their Chinese on screen.
+test("15: English only: the rule line and the method show their English text and none of their Chinese", async ({ page }) => {
   await openPage(page, "/shop/search");
-  const toggle = page.getByTestId("demo-lang-toggle");
-  await toggle.click();
-  await toggle.click();
-  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("zh");
+  await expect(page.getByTestId("demo-lang-toggle")).toHaveCount(0);
   await tourAnswered(page);
   await tourDrawn(page);
   const view = slot(page, "shop.search.main");
-  await expect(view.getByTestId("search-surprise-rule")).toHaveText(SURPRISE_RULES.fair_random.zh);
-  await expect(view.getByTestId("search-surprise-result")).toContainText(SURPRISE_METHOD_NAMES.fair_random.zh);
-  await expect(view.getByTestId("search-surprise-result")).toContainText(titleOf(demoSurprise.draw.pieceId).zh);
+  await expect(view.getByTestId("search-surprise-rule")).toHaveText(SURPRISE_RULES.fair_random.en);
+  await expect(view.getByTestId("search-surprise-result")).toContainText(SURPRISE_METHOD_NAMES.fair_random.en);
+  await expect(view.getByTestId("search-surprise-result")).toContainText(titleOf(demoSurprise.draw.pieceId).en);
+  await expect(view.getByTestId("search-surprise-result")).not.toContainText(SURPRISE_METHOD_NAMES.fair_random.zh);
+  await expect(view.getByTestId("search-surprise-result")).not.toContainText(titleOf(demoSurprise.draw.pieceId).zh);
 });

@@ -1,6 +1,6 @@
 // F-search T6: the search proof panel on Sell › Proof. Acceptance 14 ("Not trained yet" with no
 // score and report null; with a four-system proof.search_scored, each row's recall and MRR, and L28
-// with the payload's query count) and 15 (the panel in Chinese).
+// with the payload's query count) and 15 (English only: the panel in English, no Chinese).
 import { expect, test } from "@playwright/test";
 import { pieces, report } from "../../src/mock/index";
 import { L28, PROOF, SYSTEMS, l28 } from "../../src/features/search/strings";
@@ -56,16 +56,18 @@ test("14: with no score it says Not trained yet; a four-system score shows every
   watch.expectClean();
 });
 
-test("15: in Chinese the proof panel shows its Chinese text and L28 in Chinese", async ({ page }) => {
+// English only (decisions.md, Oct 24 11:35 PM and 11:55 PM): the language toggle is gone, so the
+// panel and L28 are checked in English, with none of their Chinese text on screen.
+test("15: English only: the proof panel shows its English text and L28 in English, none of it in Chinese", async ({ page }) => {
   await openPage(page, "/sell/proof");
-  const toggle = page.getByTestId("demo-lang-toggle");
-  await toggle.click();
-  await toggle.click();
-  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("zh");
+  await expect(page.getByTestId("demo-lang-toggle")).toHaveCount(0);
   const panel = slot(page, "studio.proof.side").getByTestId("search-proof");
-  await expect(panel).toContainText(PROOF.title.zh);
-  if (report === null) await expect(panel.getByTestId("search-proof-empty")).toHaveText(PROOF.empty.zh);
+  await expect(panel).toContainText(PROOF.title.en);
+  await expect(panel).not.toContainText(PROOF.title.zh);
+  if (report === null) await expect(panel.getByTestId("search-proof-empty")).toHaveText(PROOF.empty.en);
   await emitTest(page, "proof.search_scored", { ...SCORED, systems: SCORED.systems.map((s) => ({ ...s })) }, "b11-embed");
-  await expect(panel.getByTestId("search-proof-row-custom")).toContainText(SYSTEMS.custom.zh);
-  await expect(panel.getByTestId("search-proof-note")).toHaveText(L28.zh);
+  await expect(panel.getByTestId("search-proof-row-custom")).toContainText(SYSTEMS.custom.en);
+  await expect(panel.getByTestId("search-proof-row-custom")).not.toContainText(SYSTEMS.custom.zh);
+  await expect(panel.getByTestId("search-proof-note")).toHaveText(l28("en", SCORED.queries, pieces.length));
+  await expect(panel.getByTestId("search-proof-note")).not.toContainText(L28.zh);
 });

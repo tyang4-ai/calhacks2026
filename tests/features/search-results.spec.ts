@@ -1,14 +1,15 @@
 // F-search T2: the results grid. Acceptance 2 (the tour's six results in order, reasons, prices,
 // L3), 4 (a rule-based keyword match, no model line, the Simulated badge), 5 (the model line from a
 // proof.search_scored payload only), 6 (source markers and the provenance note), 10 (the query a URL
-// brings, once under StrictMode), 15 (reasons and markers in Chinese, amounts in dollars) and 16
+// brings, once under StrictMode), 15 (English only: reasons, markers and the engine in English, amounts
+// in dollars) and 16
 // (closeness and "No close matches" only when the payload carries them).
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { communities, demoSearch, pieces, searchIndex } from "../../src/mock/index";
 import { ENGINES, MODEL_LINE, RESULTS, SOURCE_MARKERS } from "../../src/features/search/strings";
 import { L3 } from "../../src/ui/strings";
 import { watchPage } from "../smoke/lib";
-import { emitTest, loggedEvents, openPage, searchState, slot, tourAnswered, userQueries } from "./search-lib";
+import { TOUR_QUERY_ID, emitTest, loggedEvents, openPage, searchState, seekToEvent, slot, tourAnswerSeed, tourAnswered, tourQuerySeed, userQueries } from "./search-lib";
 
 const piece = (id: string) => {
   const p = pieces.find((x) => x.id === id);
@@ -71,11 +72,32 @@ test("2: the tour's answer shows figure 11's six results in order, each with its
   watch.expectClean();
 });
 
+/**
+ * The tour's query and answer in the store with no search score. The 220-second tour plays
+ * model.trained and proof.search_scored at d01-vibe's start, before its search.answered, so when the
+ * timeline holds a proof.search_scored this seeks to just before it and emits the tour's own query and
+ * scripted answer there (and nothing that scores). Otherwise it reaches the tour's answer as usual.
+ */
+async function answeredWithNoScore(page: Page): Promise<void> {
+  const scoredInTour = await page.evaluate(() => (window.__cindia?.player.getTimeline()?.events ?? []).some((e) => e.type === "proof.search_scored"));
+  if (!scoredInTour) {
+    await tourAnswered(page);
+    return;
+  }
+  await seekToEvent(page, "proof.search_scored", {}, -1);
+  await expect.poll(async () => (await searchState(page)).model.scored).toBeNull();
+  const queried = tourQuerySeed();
+  const answered = tourAnswerSeed();
+  await emitTest(page, queried.type, queried.payload, queried.key);
+  await emitTest(page, answered.type, answered.payload, answered.key);
+  await expect.poll(async () => Boolean((await searchState(page)).search.answers[TOUR_QUERY_ID])).toBe(true);
+}
+
 test("4: in scripted mode with no score, the engine is a rule-based keyword match, no model line, and both Shop panels show Simulated", async ({ page }) => {
   await openPage(page, "/shop");
   await expect(slot(page, "shop.home.main").getByTestId("simulated-badge")).toBeVisible();
   await openPage(page, "/shop/search");
-  await tourAnswered(page);
+  await answeredWithNoScore(page);
   const view = slot(page, "shop.search.main");
   await expect(view.getByTestId("simulated-badge")).toBeVisible();
   const engine = view.getByTestId("search-engine");
@@ -141,22 +163,23 @@ test("10: a shared link's query is emitted exactly once on a fresh store, under 
   watch.expectClean();
 });
 
-test("15: in Chinese the reasons and source markers show their Chinese text, and amounts stay in dollars", async ({ page }) => {
+// English only (decisions.md, Oct 24 11:35 PM and 11:55 PM): the language toggle is gone, so the
+// reasons, markers, engine and note are checked in English, with none of their Chinese on screen.
+test("15: English only: the reasons and source markers show their English text, none of their Chinese, and amounts stay in dollars", async ({ page }) => {
   await openPage(page, "/shop/search");
-  const toggle = page.getByTestId("demo-lang-toggle");
-  await toggle.click();
-  await toggle.click();
-  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("zh");
+  await expect(page.getByTestId("demo-lang-toggle")).toHaveCount(0);
   await tourAnswered(page);
   const view = slot(page, "shop.search.main");
   const result = demoSearch.answer.results.find((r) => r.pieceId === "pc_01")!;
-  await expect(view.getByTestId("search-reason-pc_01")).toContainText(result.reason.zh);
-  const label = expectedMarker("pc_01", result.matched[0], "zh");
+  await expect(view.getByTestId("search-reason-pc_01")).toContainText(result.reason.en);
+  await expect(view.getByTestId("search-reason-pc_01")).not.toContainText(result.reason.zh);
+  const label = expectedMarker("pc_01", result.matched[0], "en");
   if (label) await expect(view.getByTestId("search-source-pc_01-1")).toHaveText(label);
   await expect(view.getByTestId("search-result-pc_01")).toContainText(dollars(piece("pc_01").priceCents));
-  await expect(view.getByTestId("search-result-pc_01").locator('[data-role="verification"]')).toHaveText(new RegExp(`^${L3.zh}`));
-  await expect(view.getByTestId("search-engine")).toContainText(ENGINES.keyword_scripted.zh);
-  await expect(view.getByTestId("search-provenance-note")).toHaveText(RESULTS.provenanceNote.zh);
+  await expect(view.getByTestId("search-result-pc_01").locator('[data-role="verification"]')).toHaveText(new RegExp(`^${L3.en}`));
+  await expect(view.getByTestId("search-engine")).toContainText(ENGINES.keyword_scripted.en);
+  await expect(view.getByTestId("search-engine")).not.toContainText(ENGINES.keyword_scripted.zh);
+  await expect(view.getByTestId("search-provenance-note")).toHaveText(RESULTS.provenanceNote.en);
 });
 
 test("16: closeness shows per result and 'No close matches' only when the payload carries them", async ({ page }) => {

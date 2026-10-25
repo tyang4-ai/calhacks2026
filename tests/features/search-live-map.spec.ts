@@ -113,12 +113,25 @@ test("17: a person's own search gets a live search.mapped from the trained model
   const mapped = await page.evaluate((id) => (window.searchLiveLog ?? []).find((e) => e.type === "search.mapped" && e.queryId === id && e.source === "live")!, query.queryId);
   expect(mapped.modelId, "the map names the model that made it").toBeTruthy();
   expect(mapped.method).toBe("pca");
-  expect(mapped.approx, "a live map is the model's, never the scripted approximation").not.toBe(true);
   expect(mapped.points ?? 0).toBeGreaterThan(0);
   const stored = await page.evaluate((id) => {
-    const s = window.__cindia!.store.getState() as unknown as { search: { maps: Record<string, { modelId: string }> } };
+    const s = window.__cindia!.store.getState() as unknown as {
+      search: { maps: Record<string, { modelId: string; query: { x: number; y: number }; points: { x: number; y: number }[] }> };
+    };
     return s.search.maps[id] ?? null;
   }, query.queryId);
   expect(stored?.modelId).toBe(mapped.modelId);
+  // approx: true on a live map means the model estimated the query's point (decisions.md, Oct 25
+  // 00:06 PT): its projection fell outside its top 3's spread, so it sits at the weighted centre of
+  // those three. The map is still the model's (source live, its modelId, pca). That centre always lies
+  // inside the pieces' spread, so an estimated point is checked to sit there.
+  if (mapped.approx === true) {
+    const xs = stored!.points.map((p) => p.x);
+    const ys = stored!.points.map((p) => p.y);
+    expect(stored!.query.x, "an estimated query point sits inside the pieces' spread").toBeGreaterThanOrEqual(Math.min(...xs) - 1e-9);
+    expect(stored!.query.x, "an estimated query point sits inside the pieces' spread").toBeLessThanOrEqual(Math.max(...xs) + 1e-9);
+    expect(stored!.query.y, "an estimated query point sits inside the pieces' spread").toBeGreaterThanOrEqual(Math.min(...ys) - 1e-9);
+    expect(stored!.query.y, "an estimated query point sits inside the pieces' spread").toBeLessThanOrEqual(Math.max(...ys) + 1e-9);
+  }
   expect(invalid, "every event is valid").toEqual([]);
 });

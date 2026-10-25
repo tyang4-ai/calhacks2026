@@ -143,24 +143,24 @@ export const SOURCE_MARKERS: Record<ProvenanceSource, Text> = {
   "agent:describer": { en: "from the picture notes", zh: "来自看图说明" },
 };
 
-/** search-engine: the engine that answered, in plain words. keyword_scripted is never called our model. */
+/** search-engine: the engine that answered, in plain words, as one sentence ending in a period, so a model line after it reads as its own sentence. keyword_scripted is never called our model. */
 export const ENGINES: Record<SearchEngine, Text> = {
   keyword_scripted: {
-    en: "Answered by a rule-based keyword match, in your browser",
-    zh: "由规则程序的关键词匹配在您的浏览器中作答",
+    en: "Answered by a rule-based keyword match, in your browser.",
+    zh: "由规则程序的关键词匹配在您的浏览器中作答。",
   },
   local_hybrid: {
-    en: "Answered by Cindia's search model with keyword search, on our server",
-    zh: "由 Cindia 的搜索模型结合关键词搜索在我们的服务器上作答",
+    en: "Answered by Cindia's search model with keyword search, on our server.",
+    zh: "由 Cindia 的搜索模型结合关键词搜索在我们的服务器上作答。",
   },
   elastic_hybrid: {
-    en: "Answered by Cindia's search model with keyword search, in Elastic",
-    zh: "由 Cindia 的搜索模型结合关键词搜索在 Elastic 中作答",
+    en: "Answered by Cindia's search model with keyword search, in Elastic.",
+    zh: "由 Cindia 的搜索模型结合关键词搜索在 Elastic 中作答。",
   },
 };
 
-/** After the engine's name when the answer carries a modelId. */
-export const ENGINE_MODEL: Text = { en: "model {modelId}", zh: "模型 {modelId}" };
+/** After the engine's sentence when the answer carries a modelId: its own short sentence. */
+export const ENGINE_MODEL: Text = { en: "Model {modelId}.", zh: "模型 {modelId}。" };
 
 /**
  * search-model-line, inside search-engine, from the store's proof.search_scored only (A1-2, A1-4).

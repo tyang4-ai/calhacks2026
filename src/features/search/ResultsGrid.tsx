@@ -121,7 +121,7 @@ export function EngineLine({ lang }: EngineLineProps) {
   return (
     <p data-testid="search-engine" style={{ margin: 0, fontSize: "var(--c-text-14)", color: "var(--c-color-ink-soft)" }} lang={lang}>
       <span>{t(ENGINES[engine], lang)}</span>
-      {modelId && <span> · {tf(ENGINE_MODEL, lang, { modelId })}</span>}
+      {modelId && <span> {tf(ENGINE_MODEL, lang, { modelId })}</span>}
       {modelLine && (
         <>
           {" "}

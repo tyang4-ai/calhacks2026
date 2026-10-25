@@ -1,6 +1,6 @@
 // F-search T1: the home hero. Acceptance 1 (the tour's query fills the box and the chips, with the
 // Rule-based badge), 7 (a person's own search, from typing to the keyword scorer's answer), 13 (the
-// box starts empty) and 15 (the hero in Chinese). Specs reach tour events with tourEvent() from
+// box starts empty) and 15 (English only: the hero in English, no Chinese). Specs reach tour events with tourEvent() from
 // search-lib.ts and check by test ID; expected values come from src/mock/ and the feature's strings.
 import { expect, test } from "@playwright/test";
 import { demoSearch } from "../../src/mock/index";
@@ -77,17 +77,18 @@ test("13: a fresh Shop home has an empty search box and no chips", async ({ page
   await expect(home.getByTestId("search-working")).toHaveCount(0);
 });
 
-test("15: in Chinese the hero shows its Chinese text", async ({ page }) => {
+// English only (decisions.md, Oct 24 11:35 PM and 11:55 PM): the language toggle is gone, so the
+// hero is checked in English, with none of its Chinese text on screen.
+test("15: English only: the hero shows its English text and none of its Chinese", async ({ page }) => {
   await openPage(page, "/shop");
-  const toggle = page.getByTestId("demo-lang-toggle");
-  await toggle.click();
-  await toggle.click();
-  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("zh");
+  await expect(page.getByTestId("demo-lang-toggle")).toHaveCount(0);
   const home = slot(page, "shop.home.main");
-  await expect(home).toContainText(HERO.title.zh);
-  await expect(home).toContainText(HERO.sub.zh);
-  await expect(home.getByTestId("search-example-1")).toHaveText(EXAMPLES[0].label.zh);
-  await expect(home.getByTestId("search-input")).toHaveAttribute("placeholder", HERO.placeholder.zh);
+  await expect(home).toContainText(HERO.title.en);
+  await expect(home).toContainText(HERO.sub.en);
+  await expect(home).not.toContainText(HERO.title.zh);
+  await expect(home).not.toContainText(HERO.sub.zh);
+  await expect(home.getByTestId("search-example-1")).toHaveText(EXAMPLES[0].label.en);
+  await expect(home.getByTestId("search-input")).toHaveAttribute("placeholder", HERO.placeholder.en);
   await tourQueried(page);
-  await expect(home.getByTestId("search-working")).toHaveText(HERO.working.zh);
+  await expect(home.getByTestId("search-working")).toHaveText(HERO.working.en);
 });
