@@ -1,5 +1,5 @@
 STAGE: FREEZE
-NEXT: freeze (B15's G5 finishing, scribe T6, G6, tag final)
+NEXT: G6
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
@@ -87,12 +87,12 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | Plan | State | Live call checked | Last green tag | Notes |
 |---|---|---|---|---|
 | B01-match | green | yes, live at 20.5 s, no fallback | demo-ok-b01 | G5 13/13 (round 1 added the live-source check) |
-| B02-explain | built and committed, awaiting key | | | server 136 passed (18 mocked + 1 live skipped); G5 needs ANTHROPIC_API_KEY |
+| B02-explain | built and committed; live in the cloud (key true); v1 G5 not rerun on the tour | | | server 136 passed (18 mocked + 1 live skipped) |
 | B03-proof | green | live at 59.0 s | demo-ok-b03 | G5 13/13, verifier PASS |
 | B04-bank | G5 12/13, rerun queued | live sale and payouts on Nessie (sandbox) | | v2 cloud G5 Oct 24 6:55 PM: server 232, contract 25, live pre-smoke 2 passed, scripted 3/3 + offline, live runs 2 and 3 and offline pass; live run 1 missed d04's receipt status because Nessie's first sale took 1,755 ms (later ~800 ms). One rerun at the next quiet moment (after the core gate) |
 | B05-scenario | green | TestClient flow tests (no timeline events) | demo-ok-b05 | G5 13/13, verifier PASS |
 | B06-workbook | green | live at 44.6 s | demo-ok-b06 | G5 13/13, verifier PASS |
-| B07-ask | built and committed, awaiting key | | | server 31 mocked passed + 1 live skipped; G5 needs ANTHROPIC_API_KEY plus an ask-cindy-live spec |
+| B07-ask | built and committed; live in the cloud (key true); v1 G5 not rerun on the tour | | | server 31 mocked passed + 1 live skipped |
 | B08-approvals | green | live, scripted grant allowed | demo-ok-b08 | G5 13/13, verifier PASS |
 | B09-concierge | green | live, first live answer at 2.4 s (d01 ends 4.0 s) | demo-ok-b09 | v2 cloud G5 13/13 (worktree at v2-core plus the prefetch), verifier PASS; catalog limited to the co-op's twelve |
 | B10-derived | green | live at 8.3 s | demo-ok-b10 | G5 13/13, verifier PASS |
@@ -108,12 +108,12 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | S3-catalog | V1 | green | data-smith | v2-data | G2b 3/3, verifier PASS; minors M1-M5, M8 for a later data round; T9 after B11's training |
 | I2-art | V1 | green | integrator | v2-art | T0 54 placeholders (54288bd); T1-T3 the 54 drawings, verifier PASS; Gordon's two-minute look before G4v2 |
 | F-search | V2 P0 | green | feature-lead | v2-search | |
-| M-buyer | V2 P0 | green (T0-T6); T7 running (retire the phone flow) | feature-lead | v2-buyer | then the orchestrator drops buyer.main from the shared slot list and the contract, then G3 buyer |
+| M-buyer | V2 P0 | green (T0-T7: the phone flow retired, worktree G3 3/3 after T7) | feature-lead | v2-buyer | the unfilled buyer.main slot ID leaves the shared list after the freeze |
 | F-support | V2 P0 | green | feature-lead | v2-support | |
 | F-process | V2 P0 | green | feature-lead | v2-process | lead wrote T0-T8 itself (no Agent tool); fix round 1 for the screens |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
 | M-approvals | V2 P0 | green | feature-lead | v2-approvals | worktree G3 3/3 PASS; live two-screen spec runs; OwnerInbox deleted |
-| M-desktop | V2 P0 | green (worktree G3 3/3, recheck: every screen fix confirmed) | feature-lead | v2-desktop | 3 live specs B16 broke (scenario-live :99, :161, money-map-live-bank :79): lead fixing before B16's G5 |
+| M-desktop | V2 P0 | green (worktree G3 3/3; the 3 live specs B16 broke fixed, 6/6 with B16 live) | feature-lead | v2-desktop | |
 | F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | green | feature-lead | v2-watch | live spec skips until B15; F2 in the polish queue |
 | F-storefront | V2 P1 | green | feature-lead | v2-storefront | theme field on storefront.published (integrator); N1-N4 in the polish queue |
@@ -458,3 +458,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 04:25 PT · drop 3 review: no confirmed blocker (R1, d13's Model card table overflow, real but not blocking); tag demo-ok-v2-d3 on 988d0c1; polish after the freeze: search result cards cut at the frame bottom with L3 below the edge on d01/d02 (F-search), the process panel's scroll areas (F-process), d09's first card header cut (approvals), d08's flag band (reconcile), the piece page and receipt layout (buyer), the store hero (storefront), the money map lattice, the presenter hint and drawer scrim (shell), pc_38's placeholder on d02 · artifacts/gates/G4v2-d3-review.json
 - 2026-10-25 05:00 PT · STAGE FREEZE. G5 b13 PASS 7/7 (demo-ok-b13); G5 b15 in the worktree failed (no Apify credential there: live pytest skipped, watch-live stayed scripted; a B09 live Claude test timed out once) and reruns in the main tree from 4:57 with PUBLIC_SITE_URL in its environment, per Gordon; B16 and B11 G5s don't fit; Cut and simulated final · status.md
 - 2026-10-25 05:03 PT · G5 b15 FAIL in the main tree too: Apify 403 on the live crawl (run-sync of apify~cheerio-scraper), the same in both trees, so an Apify account or token problem (Needs Gordon); stopped; B16 and B11 G5s not run; G6 next after the scribe's T6 · artifacts/gates/logs/G5-b15-watch-main-0457.log
+- 2026-10-25 05:12 PT · scribe T6 done (README, whats-real, devpost with the project image, every sponsor page with a met-or-not line; every planned line now reads as the B11 to B16 rows); stale rows fixed (B02, B07, M-buyer, M-desktop); G6 next · README.md, docs/devpost/, sponsors/

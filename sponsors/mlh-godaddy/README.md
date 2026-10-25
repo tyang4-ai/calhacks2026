@@ -1,6 +1,8 @@
 # MLH · Best Domain Name from GoDaddy Registry
 
-Written at 8:00 PM PT on Saturday, Oct 24, 2026, and updated on Oct 25 from Gordon's messages. Every maker, community and story named here is fictional. **This track depended on two of Gordon's own steps, and both are done now:** the domain is cindia.design, and the public site is live at https://cindia.design.
+Refreshed at the freeze, 5:00 AM PT on Sunday, Oct 25, 2026, from [`docs/harness/status.md`](../../docs/harness/status.md) and Gordon's Oct 25 messages. Every maker, community and story named here is fictional.
+
+**Met or not:** met. The domain is cindia.design, which Gordon registered (Oct 25), and the public site is live at https://cindia.design.
 
 ## What its judges look for
 
@@ -12,16 +14,16 @@ Cindia is a platform for underrepresented makers, starting with Native American 
 
 - **The domain:** cindia.design, a GoDaddy Registry domain. It points at the public site, live at https://cindia.design. The tour runs at https://cindia.design/demo.
 - **What it points at:** the public site, a scripted build on Cloudflare Pages (project `cindia`, also at https://cindia-cfn.pages.dev) that Gordon uploaded from commit `b01fc1b`. It plays the tour only, with no Pay button and no Live switch, and nothing on it can be bought (where Pay was, the piece page shows "This is the public demo. Nothing here can be bought."). Every page says that the makers, communities and stories are fictional. Search engines are kept out with a `noindex` tag and a `robots.txt` that disallows everything. The build also holds the sandbox market at `/market/`, the fictional listings the copy watch crawls.
-- **A second upload after the freeze:** from the final build, so the site matches the submitted code. The live site is the build from commit `b01fc1b` until then.
+- **A second upload after the freeze:** from the final build, so the site matches the submitted code. The live site is the build from commit `b01fc1b` until then. That upload is Gordon's step.
 
 ## Where to look
 
-- [`docs/plans/D-deploy.md`](../../docs/plans/D-deploy.md): the public build (`npm run build:public`), the `_redirects` file for deep links, the sandbox market, and Gordon's upload steps. Built and green (tag `v2-deploy`).
+- [`docs/plans/D-deploy.md`](../../docs/plans/D-deploy.md): the public build (`npm run build:public`), the `_redirects` file for deep links, the sandbox market, and Gordon's upload steps. Green (tag `v2-deploy`, 4dd9243).
 - [`docs/v2/fix-plan.md`](../../docs/v2/fix-plan.md) section 1.8: why the public site is scripted only.
 
 ## How to run that part
 
-Gordon's steps, from [`docs/plans/D-deploy.md`](../../docs/plans/D-deploy.md). Steps 1, 2, 4 and 5 are done, per his Oct 25 messages. Step 3 is the check to run on the live site, and no result is recorded here. Step 6 happens on Devpost.
+Gordon's steps, from [`docs/plans/D-deploy.md`](../../docs/plans/D-deploy.md). Steps 1, 2, 4 and 5 are done, per his Oct 25 messages. Step 3 is the check to run on the live site, and no result is recorded here. Step 6 happens on Devpost. For the upload after the freeze, repeat steps 1 and 2 from the final build.
 1. On Windows, in the repo: `git pull`, `npm ci`, `npm run build:public`. Check that `dist/public-build.json` says `"publicSite": true`. A plain `npm run build` makes the localhost build with the demo checkout, which must never go online.
 2. In the Cloudflare dashboard, go to Workers & Pages, choose the drag-and-drop upload, and drag the `dist` folder in. The site is at `https://<project name>.pages.dev`.
 3. Check the live site: `/demo` plays, `/shop/piece/pc_01` shows "This is the public demo. Nothing here can be bought." where Pay was, `/market/` lists the sandbox listings, and `/robots.txt` disallows everything.

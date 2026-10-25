@@ -1,6 +1,8 @@
 # Visa · Best use of Reimagining Shopping
 
-Written at 8:00 PM PT on Saturday, Oct 24, 2026. Every maker, community and story named here is fictional. Where something is not built yet, this page says **planned** and links its plan.
+Refreshed at the freeze, 5:00 AM PT on Sunday, Oct 25, 2026, from [`docs/harness/status.md`](../../docs/harness/status.md). Every maker, community and story named here is fictional.
+
+**Met or not:** met. All six questions are answered below, and the features behind them are green: vibe search (B12, G5 7 of 7), the price split, the card token and the receipt (B10, G5 13 of 13), and the help drawer (B14, G5 7 of 7).
 
 ## What its judges look for
 
@@ -31,51 +33,52 @@ Cindia is a platform for underrepresented makers, starting with Native American 
 
 ## How does AI improve the experience?
 
-- **Discovery.** A buyer types "a warm, bold gift for my mom. she loves red wool. under $200". The Finder agent turns it into keywords the buyer can see and edit as chips, and our own embedding model finds pieces that match the feeling and not only the words. Every result says why it matched. Planned ([`B11-embed`](../../docs/plans/B11-embed.md), [`B12-search`](../../docs/plans/B12-search.md), [`F-search`](../../docs/plans/F-search.md)).
-- **Surprise me.** One button, three ways, and the screen says which one it used. Fair random leans toward makers who sold less this month, so discovery doesn't only go to bestsellers. The weights are on the page. Planned.
-- **Post-purchase help.** A drawer answered by a swarm of small Claude agents. It says which agent is answering and which guard checked the answer, and when the records can't answer a question about meaning, it asks the maker and shows her answer in her own words. Planned ([`B14-swarm`](../../docs/plans/B14-swarm.md), [`F-support`](../../docs/plans/F-support.md)).
-- Nothing here is a chatbot on its own. Search will run on a model we trained, and the agents answer from records and quote their sources.
+- **Discovery.** A buyer types "a warm, bold gift for my mom. she loves red wool. under $200". Cindy turns it into keywords the buyer can see and edit as chips, and our own embedding model finds pieces that match the feeling and not only the words. Every result says why it matched. Green ([`B11-embed`](../../docs/plans/B11-embed.md), [`B12-search`](../../docs/plans/B12-search.md), [`F-search`](../../docs/plans/F-search.md)). The chips come from a rule-based extractor. Letting the live Finder write them (B12's T7) wasn't built.
+- **How good the search is.** On 50 held-out test queries, written separately by our data agent, recall at 5 is 0.789 for our model, 0.784 for keyword search, 0.722 for the untuned base model and 0.825 for the hybrid. Our model ties keyword search within noise, and the hybrid scores highest on both measures. A small test, not a benchmark ([`report.json`](../../server/b11_embed/report.json)).
+- **Surprise me.** One button, three ways, and the screen says which one it used. Fair random leans toward makers who sold less this month, so discovery doesn't only go to bestsellers. The weights are on the page. Green.
+- **Post-purchase help.** A drawer answered by a swarm of small Claude agents. It says which agent is answering and which guard checked the answer, and when the records can't answer a question about meaning, it asks the maker and shows her answer in her own words. Green ([`B14-swarm`](../../docs/plans/B14-swarm.md), [`F-support`](../../docs/plans/F-support.md)). The maker's answer is scripted in the tour.
+- Nothing here is a chatbot on its own. Search runs on a model we trained, and the agents answer from records and quote their sources.
 
 ## How does it work?
 
-1. A buyer searches and opens a piece. Planned.
-2. The piece page shows the maker's story, the hours of work and a verification line that says it is demo verification. "Where your money goes" shows the split: the maker's share, materials, the Cindia fee (10%) and the card fee (2.9% plus 30 cents). Built (v1), with the gallery comparison planned.
-3. At checkout the card number becomes a token, so the number itself is never stored. Built (v1). The checkout view in the process bar will list what is stored and what never is (planned, [`F-process`](../../docs/plans/F-process.md)).
-4. The receipt says "Received", then turns to "Paid to the maker" when the maker's payout goes out. Built (v1, live through B10). The promise line and Grace N.'s note are planned.
+1. A buyer searches and opens a piece (`d01-vibe`, `d03-piece`). Green.
+2. The piece page shows the maker's story, the hours of work and a verification line that says it is demo verification. "Where your money goes" shows the split: the maker's share, materials, the Cindia fee (10%) and the card fee (2.9% plus 30 cents), with the gallery comparison next to it. Green ([`M-buyer`](../../docs/plans/M-buyer.md)).
+3. At checkout the card number becomes a token, so the number itself is never stored. Green. The checkout view in the process bar lists what is stored and what never is ([`F-process`](../../docs/plans/F-process.md)).
+4. The receipt says "Received", promises to show when Grace N. is paid, then turns to "Paid to the maker" when the payout goes out, with her note. Green, and live through B10.
 
 ## Why does it matter?
 
 - **Commerce impact.** The split is shown before anyone pays. Fair random gives makers with fewer sales a bigger chance. The receipt closes the loop by showing that the maker was paid.
 - **Trust.**
   - The card becomes a token. The checkout says "Demo checkout, no real charge".
-  - The project contribution at checkout starts off, and the buyer turns it on. It reads "Demo project. No money is collected." Planned.
-  - Each piece shows who made it and under whose authority. In a real launch that is the maker's own nation, under the Indian Arts and Crafts Act, and Cindia would keep only a yes or no. Here it is labeled demo verification, and "No real check was done." Planned.
-  - AI answers say "AI agents answer here, using only Cindia's records. A person approves anything that moves money." Planned.
-  - Every simulated panel carries the Simulated badge. Built in v1. The top bar of every page will also say the makers and stories are fictional and nothing is for sale (planned, [`I2-shell`](../../docs/plans/I2-shell.md)).
+  - The project contribution at checkout starts off, and the buyer turns it on. It reads "Demo project. No money is collected."
+  - Each piece shows who made it and under whose authority. In a real launch that is the maker's own nation, under the Indian Arts and Crafts Act, and Cindia would keep only a yes or no. Here it is labeled demo verification, and "No real check was done."
+  - AI answers say "AI agents answer here, using only Cindia's records. A person approves anything that moves money."
+  - Every simulated panel carries the Simulated badge, and the top bar of every page says the makers and stories are fictional and nothing is for sale ([`I2-shell`](../../docs/plans/I2-shell.md)).
 
 ## Where could it go next?
 
 - Co-design with Native-led arts organizations, using the marks and processes communities already run instead of a mark Cindia issues.
 - A real storefront builder, so each seller builds their own page.
-- A hosted live API so anyone can try the search and the help online.
+- A hosted live API so anyone can try the search and the help online. Not built.
 - Other underrepresented makers, each community only with its own organizations.
 
 ## Where to look
 
-- `src/features/search/` and `server/b12_search/`: vibe search and Surprise me. **Planned**, see [`F-search`](../../docs/plans/F-search.md) and [`B12-search`](../../docs/plans/B12-search.md).
-- [`src/features/buyer/`](../../src/features/buyer/): the price split, the checkout token and the receipt. Built in v1. [`M-buyer`](../../docs/plans/M-buyer.md) moves it onto the Shop pages and adds the gallery comparison (planned).
+- [`src/features/search/`](../../src/features/search/) and [`server/b12_search/`](../../server/b12_search/): vibe search and Surprise me. Green, see [`F-search`](../../docs/plans/F-search.md) and [`B12-search`](../../docs/plans/B12-search.md).
+- [`src/features/buyer/`](../../src/features/buyer/): the price split with the gallery comparison, the checkout token and the receipt. Green ([`M-buyer`](../../docs/plans/M-buyer.md)).
 - [`server/routers/b10_derived.py`](../../server/routers/b10_derived.py): computes the split and the receipt. Live, G5 13 of 13.
-- `src/features/support/`: the help drawer. **Planned**, see [`F-support`](../../docs/plans/F-support.md).
+- [`src/features/support/`](../../src/features/support/): the help drawer. Green, see [`F-support`](../../docs/plans/F-support.md).
 
 ## How to run that part
 
-- Scripted, no key: `npm ci`, `npm run build`, `npm run preview`, then open http://localhost:4173/demo. Today that plays v1's 60-second demo, which includes the split, the token and the receipt. The Shop pages (`/shop`) are planned.
+- Scripted, no key: `npm ci`, `npm run build`, `npm run preview`, then open http://localhost:4173/demo?mode=present or http://localhost:4173/shop. The public site plays the same tour at https://cindia.design/demo.
 - Live splits and receipts, no key: `npm run server`, then switch on Live in the demo controls.
-- Search and help, live: planned. They need the trained model, Elastic and a Claude key (see the [README](../../README.md#run-it)).
+- Search and help, live: they need the trained model (`python server/b11_embed/fetch_model.py`), Elastic and a Claude key (see the [README](../../README.md#run-it)). Switch on Live and type your own search or question after the tour.
 
 ## The moment in the tour
 
-Planned (`I2-tour`). Times are from [`docs/v2/fix-plan.md`](../../docs/v2/fix-plan.md) section 1.2.
+Beat IDs and times are from [`docs/common/demo-script.md`](../../docs/common/demo-script.md). The tour is always scripted.
 - `d01-vibe`, 60 to 74 s: the buyer types the feeling and gets six pieces, each with its reason.
 - `d03-piece`, 74 to 86 s: the piece and where the money goes, with the gallery comparison.
 - `d05-pay`, 104 to 120 s: the card becomes a token, the project add-on is on, and the receipt says "Received".
@@ -84,10 +87,9 @@ Planned (`I2-tour`). Times are from [`docs/v2/fix-plan.md`](../../docs/v2/fix-pl
 
 ## What's live and what's simulated
 
-- **Live, with a passed gate:** B10 (splits and receipts).
-- **Built, live check pending tonight:** B04 (the sale posting to a Nessie account) and B09 (v1's gift finder, which the tour no longer uses).
-- **Planned:** vibe search, Surprise me, the help drawer, the gallery comparison and the project add-on.
-- **Simulated by design:** the checkout. No real card is charged, and no Visa API is used.
+- **Live, gated:** B10 (splits and receipts, G5 13 of 13), B12 (search and Surprise me, G5 7 of 7 on the tour) and B14 (the help drawer, G5 7 of 7 on the tour).
+- **Built and live-tested, no G5 pass:** B04 (the sale posting to a Nessie account) and B11 (our own embedding model).
+- **Simulated by design:** the checkout. No real card is charged, and no Visa API is used. The tour itself, the public site and every maker are scripted or fictional. Seven of the 54 pieces show placeholder drawings, because Gordon's art check sent their drawings back.
 
 The full list is in [`docs/devpost/whats-real.md`](../../docs/devpost/whats-real.md).
 

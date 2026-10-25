@@ -1,6 +1,8 @@
 # Hyphenate · The Hyphenated Enterprise: Autonomous Systems for Finance
 
-Written at 8:00 PM PT on Saturday, Oct 24, 2026. Every maker, community and story named here is fictional. Where something is not built yet, this page says **planned** and links its plan.
+Refreshed at the freeze, 5:00 AM PT on Sunday, Oct 25, 2026, from [`docs/harness/status.md`](../../docs/harness/status.md). Every maker, community and story named here is fictional.
+
+**Met or not:** met on the build. The catch, the approvals, the proof and the seats line are green and play in the tour. The demo video that opens with the catch is Gordon's to record and link.
 
 ## What its judges look for
 
@@ -17,25 +19,25 @@ They also ask teams to bring a demo video that opens with the moment, a live dem
 
 **The company.** A fictional Diné Weaving and Silver Co-op on the Navajo Nation in Arizona, run by its manager Ruth B., with makers Grace N., Lena T. and Mae K. Its sales come through three channels: the Cindia marketplace, its own website and Fogline Gallery in San Francisco, which sells on consignment. Cindia is a platform for underrepresented makers, starting with Native American makers, and it does the selling, the marketing and the books for them.
 
-**The seats.**
+**The seats** (word for word from the tour's end card, `SEATS_LINE` in [`src/app/demo/EndCard.tsx`](../../src/app/demo/EndCard.tsx)).
 
 > Cindy's agents fill three seats: bookkeeper, collections and support. A person approves anything that moves money.
 
 - **Bookkeeper.** Matches every payout to the orders it pays for, derives the books and closes the month into a real Excel file.
 - **Collections.** Flags the short payment, drafts the follow-up to the gallery, and holds part of each maker's pay until the gallery pays what it owes.
-- **Support.** The agent swarm answers buyers and sellers from the records and hands over to a person when it should. Planned ([`B14-swarm`](../../docs/plans/B14-swarm.md)).
+- **Support.** The agent swarm answers buyers and sellers from the records and hands over to a person when it should. Green ([`B14-swarm`](../../docs/plans/B14-swarm.md), G5 7 of 7 on the tour).
 
 **The moment.** The gallery paid $340 less than its consignment contract says. Cindy lays three records side by side: the contract (40% commission, so $2,040.00 is owed), the gallery's statement (it charged 50%) and the bank deposit ($1,700.00 on Sep 30). She says which record to trust and why, and drafts the follow-up. Nothing goes out until the manager approves it with the seal.
 
 **Messy, with sources that disagree.** The month holds 30 orders on three channels, one payout that covers three orders, a refund taken out of a later payout, and a payout that lands after the close and carries into the next month ([`docs/common/data-model.md`](../../docs/common/data-model.md), figures 3 to 7).
 
-**Limited access.** Each agent gets only the tools its one job needs and returns a typed result. Matching, the books and scoring are plain code. The Clerk is read-only. Cindy proposes and never approves her own proposals. A payout over $500 always needs the manager. Planned for the swarm, built for the money team.
+**Limited access.** Each agent gets only the tools its one job needs and returns a typed result. Matching, the books and scoring are plain code. The Clerk is read-only. Cindy proposes and never approves her own proposals. A payout over $500 always needs the manager. For the swarm, `test_a_forbidden_tool_call_raises` and `test_the_safety_sweep_finds_no_forbidden_event_in_any_run` in [`test_b14_swarm.py`](../../tests/server/test_b14_swarm.py) check the limits.
 
-**A clean record of its work.** The audit trail traces each number back to its record, rule or person (built, F-audit). The swarm view will show every step's input, output, tool, model and time (planned).
+**A clean record of its work.** The audit trail traces each number back to its record, rule or person ([`src/features/audit/`](../../src/features/audit/), green). The swarm view in the process bar shows every step's agent, input, output, tool, model and time ([`src/features/process/`](../../src/features/process/), green).
 
 **Knowing when to ask.** Two lines on time and on working with others. They are written as design, and the demo does not show a second month.
 - **Time.** The held amounts carry into the next month. The demo shows the held $95 on Grace N.'s statement, with the reason: the gallery paid short, so part of her pay waits. It does not show a second month.
-- **Working with others.** After a decline, Cindy keeps the money held and asks again with the manager's reason. Declining with a typed reason is built (F-approvals and B08). Asking again is design only, and no scripted re-proposal exists.
+- **Working with others.** After a decline, Cindy keeps the money held and asks again with the manager's reason. Declining with a typed reason is built ([`F-approvals`](../../src/features/approvals/) and B08). Asking again is design only, and no scripted re-proposal exists.
 
 **Proof of what's real.** The proof panel scores the matcher against the answer key. The matcher catches 4 of 4 errors planted in the month's records (`src/mock/answerKey.ts`, `tests/data/answer-key.test.ts`). The list of what is real and what is simulated is in [`docs/devpost/whats-real.md`](../../docs/devpost/whats-real.md).
 
@@ -43,37 +45,35 @@ They also ask teams to bring a demo video that opens with the moment, a live dem
 
 ## Where to look
 
-- [`src/features/reconcile/`](../../src/features/reconcile/): the month, the matches, the catch and its evidence. Built.
+- [`src/features/reconcile/`](../../src/features/reconcile/): the month, the matches, the catch and its evidence. Green.
 - [`server/routers/b01_match.py`](../../server/routers/b01_match.py): the matcher that finds the short payment. Live, G5 13 of 13.
 - [`server/routers/b03_proof.py`](../../server/routers/b03_proof.py): scores the planted errors. Live, G5 13 of 13.
 - [`server/routers/b08_approvals.py`](../../server/routers/b08_approvals.py) and [`src/features/approvals/`](../../src/features/approvals/): Cindy proposes, the manager approves or declines, the seal lands. Live, G5 13 of 13.
-- [`src/features/proof/`](../../src/features/proof/): the planted-error score. Built.
-- `src/features/process/` (the reconcile and approvals views that open during `d07-month` and `d09-approve`): **planned**, see [`docs/plans/F-process.md`](../../docs/plans/F-process.md).
-- The swarm's roster: [`docs/v2/contracts.md`](../../docs/v2/contracts.md) section 6, and the table in the [README](../../README.md#the-backend). The swarm is **planned**, see [`docs/plans/B14-swarm.md`](../../docs/plans/B14-swarm.md).
+- [`src/features/proof/`](../../src/features/proof/): the planted-error score. Green.
+- [`src/features/process/`](../../src/features/process/): the process bar and its views. The reconcile and approvals views open during `d07-month` and `d09-approve`, and the swarm view opens in `d04-support`. Green ([`F-process`](../../docs/plans/F-process.md), `v2-process`).
+- [`server/routers/b16_bank_books.py`](../../server/routers/b16_bank_books.py): re-checks the $340 catch against Nessie's own bank records. Built and live-tested, no G5.
+- The swarm's roster: [`docs/v2/contracts.md`](../../docs/v2/contracts.md) section 6, and the table in the [README](../../README.md#the-backend). The swarm is green, see [`server/b14_swarm/`](../../server/b14_swarm/).
 
 ## How to run that part
 
-- Scripted, no key: `npm ci`, `npm run build`, `npm run preview`, then open http://localhost:4173/demo. Today that plays v1's 60-second demo on the co-op's names. Add `?start=catch` to open on the catch.
+- Scripted, no key: `npm ci`, `npm run build`, `npm run preview`, then open http://localhost:4173/demo?mode=present. Add `?start=catch` to open on the catch. The public site plays the same tour at https://cindia.design/demo.
 - Live money team, no key: `npm run server` starts the API on port 8000, then switch on Live in the demo controls. B01, B03, B05, B06, B08 and B10 need no key.
 - A real owner screen for B08: restart the API (`npm run server`) right before the demo. B08 keeps approvals in memory and decisions are final, so an earlier run's approvals would answer at once ([`docs/harness/status.md`](../../docs/harness/status.md), Demo notes).
-- Checks: `npm run test:server`, and `npm run test:demo` for the 60-second demo.
+- Checks: `npm run test:server`, and `npm run test:demo` for the tour.
 
 ## The moment in the tour
 
-Planned (`I2-tour`). Times are from [`docs/v2/fix-plan.md`](../../docs/v2/fix-plan.md) section 1.2.
-- **`d08-catch`, 146 to 154 s.** The catch. The video opens here: `/demo?video=1` starts with a 5-second cold open on this beat.
+Beat IDs and times are from [`docs/common/demo-script.md`](../../docs/common/demo-script.md). The tour is built (G4v2 passed 5 of 5, tour 220.0 s three times).
+- **`d08-catch`, 146 to 154 s.** The catch. The video opens here: `/demo?video=1` starts with a 5-second cold open on this beat. Gordon's video is not linked yet.
 - **`d07-month`, 136 to 146 s.** The month plays at 0.3 s a day. The reconcile view opens at 142 s and shows the records arriving, the matches and the flag.
 - **`d09-approve`, 154 to 161 s.** The approvals view opens at 155 s and shows what Cindy proposed and what the manager sealed.
 - **`d12-receipt`, 172 to 180 s.** The proof score comes in at 179 s, off camera, and the end card carries the seats line and the list of live sources.
 
-Today the 60-second demo has the same moment (the catch at 30 to 38 s), and `?start=catch` and `?video=1` work on it.
-
 ## What's live and what's simulated
 
-- **Live, with a passed gate:** B01 (matching), B03 (the planted-error proof), B05 (your own statement), B06 (the Excel report), B08 (approvals) and B10 (splits, receipts, statements and impact).
-- **Built, live check pending tonight:** B02 (Claude explains the catch and drafts the follow-up) and B04 (the Nessie account). Until they pass, they play scripted with the Simulated badge.
-- **Simulated by design:** sending the follow-up to the gallery (it never leaves Cindia), the checkout, the bank (Nessie is a sandbox) and the people.
-- **Planned:** the process views, the swarm (support) and the bank-books check against Nessie (B16).
+- **Live, with a passed gate:** B01 (matching), B03 (the planted-error proof), B05 (your own statement), B06 (the Excel report), B08 (approvals) and B10 (splits, receipts, statements and impact), each G5 13 of 13 on v1's timeline. B14 (the support seat) is live with a G5 of 7 of 7 on the tour.
+- **Built, live calls passed, no G5 pass:** B02 (Claude explains the catch and drafts the follow-up), B04 (the Nessie account) and B16 (the catch checked against Nessie). Where a live source didn't play, the panel plays scripted with the Simulated badge.
+- **Simulated by design:** sending the follow-up to the gallery (it never leaves Cindia), the checkout, the bank (Nessie is a sandbox), the tour itself and the people.
 
 The full list is in [`docs/devpost/whats-real.md`](../../docs/devpost/whats-real.md).
 
