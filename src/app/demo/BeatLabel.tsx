@@ -1,25 +1,35 @@
-// demo-beat-label: a quiet caption on the stage with the current beat's short title, at the bottom
-// left, or the top right while sell-catch fills the stage.
+// demo-beat-label: a quiet caption on the stage with the current beat's short title, numbered in
+// tour order, at the bottom left, or the top right while sell-catch fills the stage.
 import styles from "./stage.module.css";
 
-/** Short titles for the beats in demo-script.md. */
-const BEAT_TITLES: Record<string, string> = {
-  "d01-ask": "1 · The gift request",
-  "d02-story": "2 · The maker's story",
-  "d03-split": "3 · Where your money goes",
-  "d04-pay": "4 · Pay with a token",
-  "d05-money": "5 · Follow the money",
-  "d06-month": "6 · The co-op's month",
-  "d07-catch": "7 · The catch",
-  "d08-approve": "8 · Only the manager approves",
-  "d09-close": "9 · Close the month",
-  "d10-statement": "10 · The maker's statement",
-  "d11-receipt": "11 · Paid to the maker",
-};
+/** Short titles for the tour's beats in demo-script.md, in tour order. */
+const BEAT_TITLES: readonly [string, string][] = [
+  ["p01-what", "What Cindia is"],
+  ["p02-why", "Why"],
+  ["p03-how", "How it works"],
+  ["d01-vibe", "Vibe search"],
+  ["d03-piece", "The piece and where the money goes"],
+  ["d04-support", "Ask the agents"],
+  ["d05-pay", "Pay with a token"],
+  ["d15-listing", "A maker's new listing"],
+  ["d06-money", "Follow the money"],
+  ["d07-month", "The co-op's month"],
+  ["d08-catch", "The catch"],
+  ["d09-approve", "Only the manager approves"],
+  ["d10-close", "Close the month"],
+  ["d11-maker", "The maker's statement"],
+  ["d12-receipt", "Paid to the maker"],
+  ["d02-surprise", "Surprise me"],
+  ["d13-proof", "The proofs"],
+  ["d14-watch", "Counterfeit watch"],
+  ["d16-store", "The storefront"],
+  ["d17-ask-maker", "Ask the maker"],
+];
 
-function beatTitle(beatId: string | null): string {
+export function beatTitle(beatId: string | null): string {
   if (!beatId) return "Ready · press play";
-  return BEAT_TITLES[beatId] ?? beatId;
+  const i = BEAT_TITLES.findIndex(([id]) => id === beatId);
+  return i < 0 ? beatId : `${i + 1} · ${BEAT_TITLES[i][1]}`;
 }
 
 /**

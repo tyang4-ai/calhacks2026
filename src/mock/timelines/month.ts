@@ -1,6 +1,7 @@
 // The fast-forward month: September's records in date order, about 0.29 s per day, each followed by
 // its match and its ledger posting, then the gallery's statement and deposit, held back for the
-// catch. Times are ms after month.started. The demo plays this whole timeline shifted by 20200 ms.
+// catch. Times are ms after month.started. The tour plays this whole timeline in d07-month, shifted
+// by MONTH_SHIFT_MS (136200 ms, timelines/demo.ts).
 import type { CindiaEvent } from "../../core/events";
 import type { Timeline } from "../../core/player";
 import type { Text } from "../../core/types";
@@ -24,7 +25,7 @@ const DAY_MS = 290;
 const FIRST_MS = 200;
 const STEP_MS = 40;
 
-/** The catch, held out of date order (demo-script.md d07, less the 20200 shift). */
+/** The catch, held out of date order (demo-script.md d08-catch, less the 136200 shift). */
 export const CATCH_TIMES = { statement: 10100, deposit: 10600, flag: 11300, explained: 12800 } as const;
 
 type Item = Omit<Draft, "at">;

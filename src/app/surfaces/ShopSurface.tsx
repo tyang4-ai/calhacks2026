@@ -1,15 +1,11 @@
-// The Shop site (frame-buyer): every /shop page, and the Phase A legacy page /shop/legacy, which
-// always renders buyer.main in a centered 480 px column at the v1 phone's 844 px height, scaled
-// down to fit, whatever fills shop.home.main or shop.receipt.main. It takes its page and drawer
-// as props, so the stage can set them without a URL. I2-tour deletes the legacy page.
+// The Shop site (frame-buyer): every /shop page. It takes its page and drawer as props, so the
+// stage can set them without a URL. I2-tour removed the Phase A legacy page /shop/legacy (D1-42).
 import type { DrawerKind, ProcessId } from "../../core/events";
 import { AppChrome } from "../chrome/AppChrome";
 import { useSurfaceLang } from "../lang";
 import { PUBLIC_SITE } from "../site";
 import { SlotFor } from "../Slot";
 import type { ShopPage, SlotContext } from "../slotProps";
-import { LegacyBox } from "./LegacyBox";
-import { LEGACY_COLUMN } from "./views";
 import styles from "./surfaces.module.css";
 
 /** What every surface takes from its route or the stage, besides its page. */
@@ -20,6 +16,8 @@ export interface FrameStateProps {
   /** The open process view, or null. */
   processId?: ProcessId | null;
   onCloseDrawer?: () => void;
+  /** False on the /demo stage, which draws the process view in its own panel (AppChrome). */
+  processOverlay?: boolean;
 }
 
 export interface ShopSurfaceProps extends FrameStateProps {
@@ -76,22 +74,16 @@ function ShopPageBody({ ctx }: { ctx: SlotContext }) {
         </div>
       );
     case "receipt":
+    default:
       return (
         <div className={styles.page}>
           <SlotFor slot="shop.receipt.main" ctx={ctx} />
         </div>
       );
-    case "legacy":
-    default:
-      return (
-        <LegacyBox size={LEGACY_COLUMN} kind="column">
-          <SlotFor slot="buyer.main" ctx={ctx} />
-        </LegacyBox>
-      );
   }
 }
 
-export function ShopSurface({ page, pieceId, orderId, communityId, projectId, searchParams, drawer, refId, processId, onCloseDrawer }: ShopSurfaceProps) {
+export function ShopSurface({ page, pieceId, orderId, communityId, projectId, searchParams, drawer, refId, processId, onCloseDrawer, processOverlay }: ShopSurfaceProps) {
   const lang = useSurfaceLang("buyer");
   const ctx: SlotContext = {
     surface: "buyer",
@@ -107,7 +99,7 @@ export function ShopSurface({ page, pieceId, orderId, communityId, projectId, se
     processId: processId ?? null,
   };
   return (
-    <AppChrome frameTestId="frame-buyer" ctx={ctx} drawer={drawer ?? null} onCloseDrawer={onCloseDrawer ?? noop}>
+    <AppChrome frameTestId="frame-buyer" ctx={ctx} drawer={drawer ?? null} onCloseDrawer={onCloseDrawer ?? noop} processOverlay={processOverlay}>
       <ShopPageBody ctx={ctx} />
     </AppChrome>
   );

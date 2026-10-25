@@ -87,7 +87,7 @@ artifacts/demo/d03-split.png → matches beat 3, money-map-flow-line visible
 Each gate runs through the gate skill: `npm run gate -- <gate> [<slug> ...]` when the script has the gate, then a verifier review, then the status update. A gate passes only when every check passed and the verifier says PASS.
 
 - `scripts/gate.mjs` takes G1, G1b, G2, G2b, G3, G4, G4v2, G5 and G6, in any case, and writes `artifacts/gates/<gate>-<HHMM>.md` with the gate's own spelling. R0, core and D-deploy have no entry: the orchestrator runs the commands in their rows itself, as the gate skill says.
-- **The time rule.** Every gate that plays the demo times the tour test alone. After each `npm run test:demo`, the gate reads `artifacts/demo/report.json`. The check passes when the file was written by this run and its `endedAtWallMs` is at most its `durationMs`, the loaded timeline's own, plus 15 seconds: 75 seconds for v1's 60-second demo, 220 seconds for the 205-second tour. Playwright's whole-run time, which also counts `modes.spec.ts` and the browser start, is recorded for information and never judged. R0, core, G1b, G4, G4v2, G5 and G6 all use this one rule.
+- **The time rule.** Every gate that plays the demo times the tour test alone. After each `npm run test:demo`, the gate reads `artifacts/demo/report.json`. The check passes when the file was written by this run and its `endedAtWallMs` is at most its `durationMs`, the loaded timeline's own, plus 15 seconds: 75 seconds for v1's 60-second demo, 235 seconds for the 220-second tour. Playwright's whole-run time, which also counts `modes.spec.ts` and the browser start, is recorded for information and never judged. R0, core, G1b, G4, G4v2, G5 and G6 all use this one rule.
 
 ### G0 Preflight, once at kickoff
 

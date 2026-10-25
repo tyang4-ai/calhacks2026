@@ -4,7 +4,7 @@
 // and the live badge rule through window.__cindia.emit().
 import { expect, test, type Page } from "@playwright/test";
 import { SOURCE_KEYS } from "../../src/core/events";
-import { L1_ZH, PROCESS_IDS, readSlotProps, seekToEvent, shownFrameId, slotTestId, waitForFonts, waitForHooks, waitForSlots, watchPage } from "./lib";
+import { L1_EN, PROCESS_IDS, readSlotProps, seekToEvent, shownFrameId, slotTestId, waitForFonts, waitForHooks, waitForSlots, watchPage } from "./lib";
 
 const now = (page: Page) => page.evaluate(() => window.__cindia!.player.now());
 const playing = (page: Page) => page.evaluate(() => window.__cindia!.player.isPlaying());
@@ -299,43 +299,33 @@ async function expectSlotsFollowFrames(page: Page) {
   }
 }
 
+// The site is English only (Gordon, Oct 24, 11:35 PM and 11:55 PM): the language toggle and its L
+// key are gone, and every frame and slot renders English whatever the store's lang holds.
 test.describe("language", () => {
-  test("auto starts the four frames in English, then the toggle cycles en, zh and back to auto", async ({ page }) => {
+  test("every frame and every slot is English, with no language toggle anywhere", async ({ page }) => {
     const watch = watchPage(page);
     await page.goto("/demo");
     await waitForHooks(page);
-    const setting = () => page.evaluate(() => window.__cindia!.store.getState().lang);
-    expect(await setting()).toBe("auto");
     const en = { buyer: "en", studio: "en", maker: "en", store: "en" };
     expect(await frameLangs(page)).toEqual(en);
     await expectSlotsFollowFrames(page);
-    await page.getByTestId("demo-lang-toggle").click();
-    expect(await setting()).toBe("en");
-    expect(await frameLangs(page)).toEqual(en);
-    await expectSlotsFollowFrames(page);
-    await page.getByTestId("demo-lang-toggle").click();
-    expect(await setting()).toBe("zh");
-    expect(await frameLangs(page)).toEqual({ buyer: "zh", studio: "zh", maker: "zh", store: "zh" });
-    await expectSlotsFollowFrames(page);
-    // L1 in Chinese, word for word.
-    await expect(page.getByTestId("frame-buyer").getByTestId("shell-topnav")).toContainText(L1_ZH);
-    await page.getByTestId("demo-lang-toggle").click();
-    expect(await setting()).toBe("auto");
-    expect(await frameLangs(page)).toEqual(en);
-    await expectSlotsFollowFrames(page);
+    await expect(page.getByTestId("demo-lang-toggle")).toHaveCount(0);
+    await expect(page.locator('[data-testid="demo-stage"] .c-langtoggle')).toHaveCount(0);
+    // The L key changes nothing.
+    const before = await page.evaluate(() => window.__cindia!.store.getState().lang);
+    await page.keyboard.press("l");
+    expect(await page.evaluate(() => window.__cindia!.store.getState().lang)).toBe(before);
+    await expect(page.getByTestId("frame-buyer").getByTestId("shell-topnav")).toContainText(L1_EN);
     watch.expectClean();
   });
 
-  test("the maker page starts in the maker's own language, English after R0, and the toggle switches it to Chinese", async ({ page }) => {
+  test("the maker page is English, and its slots get lang en", async ({ page }) => {
     const watch = watchPage(page);
     await page.goto("/maker/mkr_01");
     await waitForHooks(page);
     await expect(page.getByTestId("frame-maker")).toHaveAttribute("lang", "en");
     expect((await readSlotProps(page, "maker.main")).lang).toBe("en");
-    await page.getByTestId("demo-lang-toggle").click();
-    await page.getByTestId("demo-lang-toggle").click();
-    await expect(page.getByTestId("frame-maker")).toHaveAttribute("lang", "zh");
-    expect((await readSlotProps(page, "maker.main")).lang).toBe("zh");
+    await expect(page.getByTestId("demo-lang-toggle")).toHaveCount(0);
     watch.expectClean();
   });
 });
@@ -345,17 +335,22 @@ test.describe("the stage on /demo", () => {
     const watch = watchPage(page);
     await page.goto("/demo");
     await waitForHooks(page);
-    await seekToEvent(page, "beat.started", { beatId: "d02-story" }, 500);
-    await expect(page.getByTestId("demo-stage")).toHaveAttribute("data-camera", "shop-legacy");
+    // The last second of d12-receipt (shop-receipt), whose next beat, d02-surprise, opens no drawer.
+    const next = await page.evaluate(
+      () => window.__cindia!.player.getTimeline()!.events.find((e) => e.type === "beat.started" && (e.payload as { beatId: string }).beatId === "d02-surprise")!.at,
+    );
+    const receiptAt = await seekToEvent(page, "beat.started", { beatId: "d12-receipt" });
+    await seekToEvent(page, "beat.started", { beatId: "d12-receipt" }, Math.max(0, next - receiptAt - 1000));
+    await expect(page.getByTestId("demo-stage")).toHaveAttribute("data-camera", "shop-receipt");
     expect(await shownFrameId(page)).toBe("frame-buyer");
     const buyer = page.getByTestId("frame-buyer");
     await buyer.getByTestId("shell-help").click();
     await expect(buyer.locator('[data-slot="shop.drawer.support"]')).toBeVisible();
     expect(await readSlotProps(page, "shop.drawer.support", buyer)).toMatchObject({ side: "buyer" });
     expect(pathAndQuery(page)).toBe("/demo");
-    // The next beat.started (d03-split) closes it.
+    // The next beat.started (d02-surprise) closes it.
     await page.evaluate(() => window.__cindia!.player.play());
-    await expect.poll(() => page.evaluate(() => (window.__cindia!.store.getState().demo as { beatId: string }).beatId), { timeout: 10000 }).toBe("d03-split");
+    await expect.poll(() => page.evaluate(() => (window.__cindia!.store.getState().demo as { beatId: string }).beatId), { timeout: 10000 }).toBe("d02-surprise");
     await expect(buyer.locator('[data-slot="shop.drawer.support"]')).toHaveCount(0);
     await page.evaluate(() => window.__cindia!.player.pause());
     watch.expectClean();
@@ -365,7 +360,7 @@ test.describe("the stage on /demo", () => {
     const watch = watchPage(page);
     await page.goto("/demo");
     await waitForHooks(page);
-    await seekToEvent(page, "beat.started", { beatId: "d06-month" }, 500);
+    await seekToEvent(page, "beat.started", { beatId: "d07-month" }, 500);
     await expect(page.getByTestId("demo-stage")).toHaveAttribute("data-camera", "sell-month");
     const studio = page.getByTestId("frame-studio");
     await expect(studio.locator("main[data-view]")).toHaveAttribute("data-view", "month");
@@ -429,13 +424,13 @@ test.describe("seekToEvent", () => {
     await page.goto("/demo");
     await waitForHooks(page);
     const at = await page.evaluate(
-      () => window.__cindia!.player.getTimeline()!.events.find((e) => e.type === "beat.started" && (e.payload as { beatId: string }).beatId === "d07-catch")!.at,
+      () => window.__cindia!.player.getTimeline()!.events.find((e) => e.type === "beat.started" && (e.payload as { beatId: string }).beatId === "d08-catch")!.at,
     );
     await page.evaluate(() => window.__cindia!.player.play());
-    expect(await seekToEvent(page, "beat.started", { beatId: "d07-catch" })).toBe(at);
+    expect(await seekToEvent(page, "beat.started", { beatId: "d08-catch" })).toBe(at);
     expect(await now(page)).toBe(at);
     expect(await playing(page)).toBe(false);
-    expect(await seekToEvent(page, "beat.started", { beatId: "d07-catch" }, 250)).toBe(at + 250);
+    expect(await seekToEvent(page, "beat.started", { beatId: "d08-catch" }, 250)).toBe(at + 250);
     expect(await now(page)).toBe(at + 250);
     await expect(seekToEvent(page, "beat.started", { beatId: "no-such-beat" })).rejects.toThrow(/beat\.started.*no-such-beat/);
     await expect(seekToEvent(page, "no.such_type", {})).rejects.toThrow(/no\.such_type/);
@@ -481,12 +476,12 @@ test.describe("demo controls", () => {
     await page.getByTestId("demo-mode-toggle").click();
     await expect(page.getByTestId("demo-mode-toggle")).toHaveText(/Scripted/);
 
-    // Start at the catch seeks to d07-catch's beat.started and plays. With no catch beat loaded it does nothing.
+    // Start at the catch seeks to d08-catch's beat.started and plays. With no catch beat loaded it does nothing.
     await expect(page.getByTestId("demo-start-at-catch")).toBeVisible();
     const catchAt = await page.evaluate(
       () =>
         window.__cindia!.player.getTimeline()?.events.find(
-          (e) => e.type === "beat.started" && (e.payload as { beatId: string }).beatId === "d07-catch",
+          (e) => e.type === "beat.started" && (e.payload as { beatId: string }).beatId === "d08-catch",
         )?.at ?? null,
     );
     await page.getByTestId("demo-start-at-catch").click();
@@ -531,20 +526,19 @@ test.describe("demo controls", () => {
     await expect(page.getByTestId("demo-mode-toggle")).toHaveText(/Live/);
     await page.keyboard.press("m");
     await expect(page.getByTestId("demo-mode-toggle")).toHaveText(/Scripted/);
+    // English only: the L key does nothing.
+    const lang = await page.evaluate(() => window.__cindia!.store.getState().lang);
     await page.keyboard.press("l");
-    expect(await page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("en");
-    await page.keyboard.press("l");
-    await page.keyboard.press("l");
-    expect(await page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("auto");
+    expect(await page.evaluate(() => window.__cindia!.store.getState().lang)).toBe(lang);
     await page.keyboard.press("Space");
     await expect.poll(() => now(page)).toBeGreaterThan(0);
     await page.keyboard.press("r");
     await expect(page.getByTestId("demo-play")).toBeVisible();
     expect(await now(page)).toBe(0);
-    // c starts at the catch: seek to d07-catch's beat.started and play. With no catch beat loaded it does nothing.
+    // c starts at the catch: seek to d08-catch's beat.started and play. With no catch beat loaded it does nothing.
     const [catchAt, nextBeatAt] = await page.evaluate(() => {
       const beats = (window.__cindia!.player.getTimeline()?.events ?? []).filter((e) => e.type === "beat.started");
-      const i = beats.findIndex((e) => (e.payload as { beatId: string }).beatId === "d07-catch");
+      const i = beats.findIndex((e) => (e.payload as { beatId: string }).beatId === "d08-catch");
       if (i < 0) return [null, null] as const;
       return [beats[i].at, beats[i + 1]?.at ?? Number.POSITIVE_INFINITY] as const;
     });
@@ -562,7 +556,7 @@ test.describe("demo controls", () => {
       expect(await playing(page)).toBe(false);
       const pausedAt = await now(page);
       expect(pausedAt).toBeGreaterThanOrEqual(catchAt);
-      // It landed in d07-catch, not somewhere later in the demo.
+      // It landed in d08-catch, not somewhere later in the tour.
       expect(pausedAt).toBeLessThan(nextBeatAt!);
     }
 
@@ -608,7 +602,7 @@ test.describe("demo controls", () => {
     const catchAt = await page.evaluate(
       () =>
         window.__cindia!.player.getTimeline()?.events.find(
-          (e) => e.type === "beat.started" && (e.payload as { beatId: string }).beatId === "d07-catch",
+          (e) => e.type === "beat.started" && (e.payload as { beatId: string }).beatId === "d08-catch",
         )?.at ?? null,
     );
     if (catchAt === null) {

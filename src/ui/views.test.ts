@@ -300,7 +300,8 @@ describe("process view", () => {
     const live = renderToStaticMarkup(createElement(ProcessView, { ...base, live: true }));
     expect(live).toContain('data-variant="live"');
     expect(live).not.toContain("simulated-badge");
-    expect(textOf(live)).toContain("Live 实时");
+    expect(textOf(live)).toContain("Live");
+    expect(textOf(live)).not.toContain("实时");
   });
 });
 
@@ -357,7 +358,7 @@ describe("chat", () => {
   it("shows the agent's name, and Rule-based beside it for a code agent", () => {
     const code = renderToStaticMarkup(createElement(ChatBubble, { role: "agent", agentName: t("Sample checker", "示例检查"), agentKind: "code", text: t("Checked.", "已检查。"), nameTestId: "kit-agent", lang: "en" }));
     expect(textOf(elementWith(code, 'data-testid="kit-agent"'))).toBe("Sample checker");
-    expect(textOf(code)).toMatch(/^Sample checkerRule-based 规则程序Checked\.$/);
+    expect(textOf(code)).toMatch(/^Sample checkerRule-basedChecked\.$/);
     const model = renderToStaticMarkup(createElement(ChatBubble, { role: "agent", agentName: t("Sample writer", "示例写手"), agentKind: "claude", text: t("Hi.", "你好。"), lang: "en" }));
     expect(textOf(model)).not.toContain("Rule-based");
     const maker = renderToStaticMarkup(createElement(ChatBubble, { role: "agent", agentName: t("Sample Maker", "示例匠人"), text: t("In her words.", "In her words."), lang: "zh" }));

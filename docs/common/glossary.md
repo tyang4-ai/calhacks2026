@@ -27,6 +27,8 @@ Every agent loads this file through CLAUDE.md. It fixes what words mean and what
 
 Filled in during planning, one row per word: the word, its code name, the English label, the Chinese label, and a one-line meaning.
 
+**The site is English only** (Gordon, Oct 24, 11:35 PM and 11:55 PM): every page renders the English label, and the language toggle is gone (`demo-lang-toggle`, the top bar's language control and the L key). The Chinese column stays here until step 2 of the decision, after G4v2, removes it. Nothing renders it.
+
 | Word | Code name | English label | Chinese label | Meaning |
 |---|---|---|---|---|
 | studio | `Studio`, `std_dine` | Co-op | 合作社 | The fictional Diné weaving and silver co-op the demo follows |
@@ -151,7 +153,7 @@ Filled in during planning, one row per word: the word, its code name, the Englis
 
 ## On-screen labels
 
-Short labels in English and Chinese, L1 to L30. Each owner copies both into its feature's `strings.ts` (the kit's into `src/ui/strings.ts`, the shell's into `src/app/strings.ts`) word for word, and Gordon checks the Chinese for L1, L4, L8 and L9 himself. L1 carries the site-wide truth, so the badges can stay small. Add no badges beyond these. A label renders inside the test ID its row names, and tests read it there.
+Short labels, L1 to L30. Each owner copies the English into its feature's `strings.ts` (the kit's into `src/ui/strings.ts`, the shell's into `src/app/strings.ts`) word for word, and pages render only the English, since the site is English only. The Chinese column stays until step 2 of that decision removes it, and a new string is written in English only (where a type needs a zh value, it reuses the English). L1 carries the site-wide truth, so the badges can stay small. Add no badges beyond these. A label renders inside the test ID its row names, and tests read it there.
 
 | ID | English | Chinese | Where (test ID) | Owner |
 |---|---|---|---|---|

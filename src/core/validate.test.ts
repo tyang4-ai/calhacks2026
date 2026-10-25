@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { EVENT_TYPES, type EventType } from "./events";
+import { EVENT_TYPES, PROCESS_IDS, type DataTable, type DrawerKind, type EventType } from "./events";
+import { TOUR_CAMERA_IDS } from "./featureTypes";
 import { SAMPLE_PAYLOADS, sample } from "./testFixtures";
 import { validateEvent } from "./validate";
 
@@ -82,7 +83,8 @@ describe("validateEvent", () => {
     expect(validateEvent(sample("card.tokenized", { pieceId: "pc_01" }))).toEqual([]);
     expect(validateEvent(sample("beat.started", { camera: "shop-piece", process: "swarm", drawer: "support" }))).toEqual([]);
     expect(validateEvent(sample("beat.started", { camera: "pitch" }))).toEqual([]);
-    expect(validateEvent(sample("beat.started", { camera: "shop-legacy" }))).toEqual([]);
+    // The legacy cameras left with I2-tour: v1's eight and shop-legacy are rejected.
+    for (const camera of ["shop-legacy", "buyer", "receipt", "studio-catch"]) expect(validateEvent(sample("beat.started", { camera: camera as never })), camera).not.toEqual([]);
     expect(
       validateEvent(
         sample("approval.requested", {
@@ -104,6 +106,30 @@ describe("validateEvent", () => {
     expect(scanned.results.some((r) => r.similarity === null)).toBe(true);
     expect(validateEvent(sample("watch.scanned"))).toEqual([]);
     expect(validateEvent(sample("listing.drafted", { facets: { ...SAMPLE_PAYLOADS["listing.drafted"].facets, sizeCm: { w: 30, h: 40 }, oneOfAKind: true, leadTimeDays: 0 } }))).toEqual([]);
+  });
+
+  it("accepts beat.started on every tour camera, with every process and every drawer (the tour's beats)", () => {
+    for (const camera of TOUR_CAMERA_IDS) expect(validateEvent(sample("beat.started", { beatId: "d01-vibe", camera })), camera).toEqual([]);
+    for (const process of PROCESS_IDS) {
+      expect(validateEvent(sample("beat.started", { beatId: "d15-listing", camera: "sell-listings", process })), process).toEqual([]);
+    }
+    const drawers: DrawerKind[] = ["support", "ask", "audit"];
+    for (const drawer of drawers) {
+      expect(validateEvent(sample("beat.started", { beatId: "d04-support", camera: "shop-piece", drawer })), drawer).toEqual([]);
+    }
+  });
+
+  it("accepts data.synced with all eight tables, three newest rows each, and a status for every process", () => {
+    const names: DataTable[] = ["catalog", "listings", "orders", "approvals", "runs", "steps", "processes", "screens"];
+    const tables = names.map((table) => ({
+      table,
+      rows: 3,
+      newest: [3, 2, 1].map((i) => ({ id: `${table}_${i}`, label: `${table} ${i}` })),
+    }));
+    const processes = PROCESS_IDS.map((processId) => ({ processId, status: processId === "swarm" || processId === "data" ? ("working" as const) : ("done" as const) }));
+    expect(validateEvent(sample("data.synced", { tables, screens: 1, processes }))).toEqual([]);
+    // d15-listing's data.synced is a scripted event keyed b13-live.
+    expect(sample("data.synced").key).toBe("b13-live");
   });
 
   it("rejects a missing required field of section 3 and 11", () => {

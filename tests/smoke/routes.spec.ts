@@ -27,7 +27,6 @@ const ROUTES: { path: string; frame: string; slots: string[] }[] = [
   { path: "/shop/projects", frame: "frame-buyer", slots: ["shop.projects.main"] },
   { path: "/shop/projects/prj_01", frame: "frame-buyer", slots: ["shop.projects.main"] },
   { path: "/shop/receipt/ord_001", frame: "frame-buyer", slots: ["shop.receipt.main"] },
-  { path: "/shop/legacy", frame: "frame-buyer", slots: ["buyer.main"] },
   { path: "/store/dine-weavers", frame: "frame-store", slots: ["store.main"] },
   { path: "/maker/mkr_01", frame: "frame-maker", slots: ["maker.main", "maker.side"] },
   ...SELL_VIEWS.map((view) => ({ path: `/sell/${view}`, frame: "frame-studio", slots: SELL_SLOTS[view] })),
@@ -64,7 +63,7 @@ for (const route of ROUTES) {
   });
 }
 
-test("/demo renders the stage with the four frames, each with its top bar and L1", async ({ page }) => {
+test("/demo renders the stage with the four frames, each with its top bar and L1, and the first pitch card up", async ({ page }) => {
   const watch = watchPage(page);
   await page.goto("/demo");
   await waitForHooks(page);
@@ -75,14 +74,44 @@ test("/demo renders the stage with the four frames, each with its top bar and L1
     await expect(frame).toBeAttached();
     await expect(frame.getByTestId("shell-topnav")).toContainText(L1_EN);
   }
-  // Before the first beat the camera is buyer, shown as shop-legacy: frame-buyer on the legacy page.
-  await expect(page.getByTestId("demo-stage")).toHaveAttribute("data-camera", "shop-legacy");
-  expect(await shownFrameId(page)).toBe("frame-buyer");
-  const shown = page.getByTestId("frame-buyer");
-  await waitForSlots(page, shown);
-  await expectSlots(page, ["process.bar", "buyer.main"], shown);
+  // Before the first beat the camera is pitch: the first card, with L1 at its foot, and no frame shown.
+  await expect(page.getByTestId("demo-stage")).toHaveAttribute("data-camera", "pitch");
+  expect(await shownFrameId(page)).toBeNull();
+  const card = page.getByTestId("pitch-card-what");
+  await expect(card).toBeVisible();
+  await expect(card).toContainText(L1_EN);
+  await waitForSlots(page);
+  await expectSlots(page, ["process.bar", "shop.home.main", "shop.home.communities"], page.getByTestId("frame-buyer"));
   await expectNoSlotErrors(page);
   await page.evaluate(() => document.fonts.ready.then(() => true));
+  await page.waitForLoadState("networkidle");
+  watch.expectClean();
+});
+
+test("/demo?mode=present renders pitch-card-what with no console errors", async ({ page }) => {
+  const watch = watchPage(page);
+  await page.goto("/demo?mode=present");
+  await waitForHooks(page);
+  await expect(page.getByTestId("demo-stage")).toHaveAttribute("data-camera", "pitch");
+  await expect(page.getByTestId("pitch-card-what")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.__cindia!.player.isPlaying())).toBe(true);
+  await page.evaluate(() => window.__cindia!.player.pause());
+  await page.evaluate(() => document.fonts.ready.then(() => true));
+  watch.expectClean();
+});
+
+test("the legacy page and camera are gone: /shop/legacy redirects to /shop, and no beat uses shop-legacy", async ({ page }) => {
+  const watch = watchPage(page);
+  await page.goto("/shop/legacy");
+  await expect(page).toHaveURL(/\/shop$/);
+  await expect(page.getByTestId("frame-buyer")).toBeVisible();
+  await expect(page.locator('[data-slot="buyer.main"]')).toHaveCount(0);
+  await waitForHooks(page);
+  const cameras = await page.evaluate(() =>
+    (window.__cindia!.player.getTimeline()?.events ?? []).filter((e) => e.type === "beat.started").map((e) => (e.payload as { camera: string }).camera),
+  );
+  expect(cameras.length).toBeGreaterThan(0);
+  expect(cameras).not.toContain("shop-legacy");
   await page.waitForLoadState("networkidle");
   watch.expectClean();
 });

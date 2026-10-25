@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EVENT_TYPES, SOURCE_KEYS, STATUS_EVENT_TYPES, type CindiaEvent, type EventType } from "./events";
+import { EVENT_TYPES, SOURCE_KEYS, STATUS_EVENT_TYPES, type CindiaEvent, type EventType, type Payloads } from "./events";
 import { rootReducer } from "./reducers";
 import { initialState, LOG_LIMIT, type CindiaState } from "./state";
 import { SAMPLE_PAYLOADS, sample } from "./testFixtures";
@@ -126,7 +126,7 @@ const checks: { [T in EventType]: (s: CindiaState) => void } = {
     expect(s.scenario.scenarioIds).toEqual(["scn_01"]);
     expect(s.scenario.loads.scn_01.fileName).toBe("gallery-october.csv");
   },
-  "beat.started": (s) => expect(s.demo).toEqual({ beatId: "d01-ask", camera: "buyer", process: null, drawer: null }),
+  "beat.started": (s) => expect(s.demo).toEqual({ beatId: "p01-what", camera: "pitch", process: null, drawer: null }),
   "search.queried": (s) => {
     expect(s.search.queries.qry_01.keywords).toEqual(P["search.queried"].keywords);
     expect(s.search.queries.qry_01.at).toBe(1000);
@@ -414,6 +414,36 @@ describe("reducers", () => {
     expect(s.demo).toEqual({ beatId: "d04-support", camera: "shop-piece", process: "swarm", drawer: "support" });
     const next = rootReducer(s, sample("beat.started", { beatId: "d05-pay", camera: "shop-piece" }));
     expect(next.demo).toEqual({ beatId: "d05-pay", camera: "shop-piece", process: null, drawer: null });
+  });
+
+  it("follows every beat.started inside a beat: each sets the camera, process and drawer to its own values", () => {
+    // The pitch and the first beats of the tour, several beat.started each (demo-script.md, Beats).
+    const beats: [number, Payloads["beat.started"]][] = [
+      [0, { beatId: "p01-what", camera: "pitch" }],
+      [60000, { beatId: "d01-vibe", camera: "shop-home" }],
+      [63500, { beatId: "d01-vibe", camera: "shop-search" }],
+      [66500, { beatId: "d01-vibe", camera: "shop-search", process: "search" }],
+      [74000, { beatId: "d03-piece", camera: "shop-piece" }],
+      [86000, { beatId: "d04-support", camera: "shop-piece", drawer: "support" }],
+      [90000, { beatId: "d04-support", camera: "shop-piece", drawer: "support", process: "swarm" }],
+      [104000, { beatId: "d05-pay", camera: "shop-piece" }],
+      [107000, { beatId: "d05-pay", camera: "shop-piece", process: "checkout" }],
+      [120000, { beatId: "d15-listing", camera: "sell-listings" }],
+      [122000, { beatId: "d15-listing", camera: "sell-listings", process: "swarm" }],
+      [127000, { beatId: "d15-listing", camera: "sell-listings", process: "data" }],
+    ];
+    const events = beats.map(([at, payload]) => sample("beat.started", payload, { at }));
+    let s = initialState();
+    for (const e of events) {
+      s = rootReducer(s, e);
+      const p = e.payload;
+      // A beat.started without process or drawer closes the view and the drawer.
+      expect(s.demo, `${p.beatId} at ${e.at}`).toEqual({ beatId: p.beatId, camera: p.camera, process: p.process ?? null, drawer: p.drawer ?? null });
+    }
+    // The log keeps every one in order, so the stage finds each beat's first beat.started there.
+    expect(s.log.entries.filter((x) => x.type === "beat.started").map((x) => x.id)).toEqual(events.map((e) => e.id));
+    // A seek replays them all into the same store and ends where it was.
+    expect(apply(events, s)).toEqual(s);
   });
 
   it("keeps a scan's checked results and follows the newest scan", () => {

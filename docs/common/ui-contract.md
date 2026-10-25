@@ -1,6 +1,6 @@
 # UI contract
 
-Read by every feature, the integrator and the verifier. It fixes the routes, the surfaces and their pages, the slots features plug into, the feature module type, navigation, the process bar and views, the demo controls, the camera states and every test ID that something outside one feature relies on. The shell in `src/app/` implements it, and features fill its slots. Desktop only.
+Read by every feature, the integrator and the verifier. It fixes the routes, the surfaces and their pages, the slots features plug into, the feature module type, navigation, the process bar and views, the demo controls, the camera states and every test ID that something outside one feature relies on. The shell in `src/app/` implements it, and features fill its slots. Desktop only, and English only (Gordon, Oct 24, 11:35 PM and 11:55 PM): every page renders English, and there is no language toggle.
 
 ## Routes
 
@@ -13,7 +13,6 @@ Read by every feature, the integrator and the verifier. It fixes the routes, the
 | `/shop/community/:communityId` | `shop.community.main` |
 | `/shop/projects`, `/shop/projects/:id` | `shop.projects.main`. The ID is a `prj_` or a `wip_` |
 | `/shop/receipt/:orderId` | `shop.receipt.main` |
-| `/shop/legacy` | The Phase A legacy page, until I2-tour: `buyer.main` in a centered 480 px column (Camera states) |
 | `/store/:slug` | A storefront: `store.main`, full width |
 | `/sell/:view` | The Sell site's views: `overview`, `listings`, `storefront`, `projects`, `map`, `month`, `close`, `proof`, `dashboard`, `approvals`, `watch`. `?drawer=ask`, `?drawer=audit&ref=<entity id>`, `?drawer=support`. `/sell/approvals?ref=<approvalId>` selects that approval |
 | `/sell/approvals?screen=owner` | The owner's second screen, which B08's adapter polls for |
@@ -24,7 +23,7 @@ Read by every feature, the integrator and the verifier. It fixes the routes, the
 | `/dev/kit` | `KitGallery` from `src/ui/gallery.tsx`, inside test ID `dev-kit-gallery` |
 | `/market/` | The sandbox market: static pages of fictional listings in `public/market/`, outside the shell (D-deploy). The copy watch crawls only these |
 
-- An unknown route or view redirects to `/shop`. The demo controls stay on every route.
+- An unknown route or view redirects to `/shop`, `/shop/legacy` included since I2-tour removed the Phase A legacy page. The demo controls stay on every route.
 - Every page carries L1 in the top bar, except `/dev/kit`, which has no top bar and says its content is sample content. `index.html` has `<meta name="robots" content="noindex">`, and `public/robots.txt` disallows everything.
 - **The public build** (`VITE_PUBLIC_SITE=1`, read only by `src/app/site.ts`): every slot gets `publicSite: true`, Pay shows L6 in its place (`buyer-pay-blocked`), and the Live switch is hidden, so the public site stays scripted. Localhost and every gate keep the demo checkout and the Live switch.
 
@@ -40,11 +39,11 @@ Read by every feature, the integrator and the verifier. It fixes the routes, the
 
 Desktop only. Every surface is a kit `PageFrame`, 1440 by 900, with the top bar (`shell-topnav`, 56 px) and the process bar band (64 px) above the page.
 
-| Surface ID | Frame test ID | Starts in | Pages |
+| Surface ID | Frame test ID | Language | Pages |
 |---|---|---|---|
 | `buyer` (the Shop site) | `frame-buyer` | English | Every `/shop` route |
 | `studio` (the Sell site) | `frame-studio` | English | Every `/sell` view |
-| `maker` | `frame-maker` | The maker's `lang` (English for `mkr_01` to `mkr_03`), with Chinese through the toggle | `/maker/:makerId` |
+| `maker` | `frame-maker` | English | `/maker/:makerId` |
 | `store` | `frame-store` | English | `/store/:slug` |
 
 - `owner` stays a `SurfaceId`, so the approvals feature can tell where it renders, but it has no frame or route of its own: `owner.main` renders as the Sell site's `approvals` view, with `surface: "owner"` and the Sell site's language. `frame-owner` is retired, and `PhoneFrame` leaves the kit's public index.
@@ -52,9 +51,9 @@ Desktop only. Every surface is a kit `PageFrame`, 1440 by 900, with the top bar 
 
 ### The page chrome
 
-- **The top bar (`shell-topnav`, 56 px):** on the left the word Cindia and the Shop and Sell switch (`shell-side-shop` goes to `/shop`, `shell-side-sell` to `/sell/overview`; maker pages count as Sell and store pages as Shop). On the right, L1 in small type, never hidden, then Help (`shell-help`, which calls `openDrawer("support")`), Ask Cindy on Sell pages (`openDrawer("ask")`) and the language toggle. Every frame on the stage has its own top bar, so L1 shows in the tour too.
+- **The top bar (`shell-topnav`, 56 px):** on the left the word Cindia and the Shop and Sell switch (`shell-side-shop` goes to `/shop`, `shell-side-sell` to `/sell/overview`; maker pages count as Sell and store pages as Shop). On the right, L1 in small type, never hidden, then Help (`shell-help`, which calls `openDrawer("support")`) and Ask Cindy on Sell pages (`openDrawer("ask")`). There is no language toggle. Every frame on the stage has its own top bar, so L1 shows in the tour too, and the pitch cards and the end card, which have none, carry L1 at their foot.
 - **The process bar band,** 64 px under the top bar on every page, holds the slot `process.bar`, or its placeholder `slot-process-bar`. The band has no test ID of its own.
-- **The Sell site:** a header under the top bar with the co-op's name in both languages, L2 beside it, and Cindy's latest `agent.acted` line. The left nav (`shell-nav-<view>`, 184 px) lists the views in the order of the Routes table. Then the view area. A view with a side slot gives `main` two thirds of the width and `side` one third.
+- **The Sell site:** a header under the top bar with the co-op's name, L2 beside it, and Cindy's latest `agent.acted` line. The left nav (`shell-nav-<view>`, 184 px) lists the views in the order of the Routes table. Then the view area. A view with a side slot gives `main` two thirds of the width and `side` one third.
 - **Drawers** slide in from the right, 440 px wide (the kit's `Drawer`), over the page. One drawer at a time. Esc or the close button shuts it, and switching pages removes it.
   - Shop routes and store pages: `?drawer=support` opens `shop.drawer.support`. Help opens it.
   - Sell views and maker pages: `?drawer=support` opens `studio.drawer.support`. Help opens it.
@@ -83,7 +82,7 @@ An entry whose slots are all empty still shows, with its placeholder view.
 
 | Slot ID | Page and place | Feature | Wave | Source keys its panels render |
 |---|---|---|---|---|
-| `buyer.main` | The Phase A legacy page `/shop/legacy` | `buyer` | W1 | `b09-concierge`, `b10-derived`, `b04-bank` |
+| `buyer.main` | No page: I2-tour removed `/shop/legacy`. M-buyer's last task deletes the slot | `buyer` | W1 | `b09-concierge`, `b10-derived`, `b04-bank` |
 | `studio.map.main` | Sell view `map` | `money-map` | W1 | `b04-bank` |
 | `studio.month.main` | Sell view `month`, left two thirds | `reconcile` | W1 | `b01-match`, `b02-explain` |
 | `studio.month.side` | Sell view `month`, right third | `scenario` | W2 | `b05-scenario` |
@@ -116,9 +115,9 @@ An entry whose slots are all empty still shows, with its placeholder view.
 | `studio.drawer.support` | The Sell support drawer (Help on Sell views and maker pages) | `support` | V2 | `b14-swarm`, `b13-live` |
 | `maker.side` | Maker page, right third: their listings, works in progress and questions from buyers | `seller-hub` | V2 | `b14-swarm` |
 
-- **An empty slot** renders a quiet placeholder with the test ID `slot-` plus the slot ID with dots turned into dashes, for example `slot-studio-month-side`. It says what will go there, in the surface's language.
+- **An empty slot** renders a quiet placeholder with the test ID `slot-` plus the slot ID with dots turned into dashes, for example `slot-studio-month-side`. It says what will go there, in English.
 - A feature fills only the slots in its rows. Two features never share a slot.
-- v1's slots stay with their features. `buyer.main` is retired when the buyer feature has moved to `shop.piece.main` and `shop.receipt.main`: M-buyer's last task deletes it, the concierge test IDs and the phone-flow specs after G4v2.
+- v1's slots stay with their features. `buyer.main` renders on no page since I2-tour removed `/shop/legacy` (the buyer feature fills `shop.piece.main` and `shop.receipt.main`): M-buyer's last task deletes it, the concierge test IDs and the phone-flow specs after G4v2.
 
 ## Feature modules
 
@@ -141,7 +140,7 @@ type SlotId =
 
 interface SlotProps {
   surface: SurfaceId;
-  lang: "en" | "zh";          // already resolved by the shell, see Language
+  lang: "en" | "zh";          // resolved by the shell: always "en" (Language). "zh" goes in step 2 of English only
   makerId?: string;           // the maker page (from /maker/:makerId, mkr_01 on /demo), and studio.drawer.support on a maker page
   refId?: string;             // the audit drawer (?drawer=audit&ref=), and owner.main from /sell/approvals?ref=<approvalId>
   processId?: ProcessId;      // process.bar (the open process, or undefined) and process.view
@@ -162,7 +161,6 @@ interface FeatureModule {
 
 type SellView = "overview" | "listings" | "storefront" | "projects" | "map" | "month"
   | "close" | "proof" | "dashboard" | "approvals" | "watch";   // SELL_VIEWS, in route order
-type StudioView = "map" | "month" | "close" | "proof" | "dashboard";  // v1's five, until I2-tour
 ```
 
 - Each `src/features/<slug>/index.ts` default-exports one `FeatureModule`. The types come from `src/core/featureTypes.ts`, since features import only from `src/core/`, `src/ui/` and `src/sources/`.
@@ -193,7 +191,7 @@ type StudioView = "map" | "month" | "close" | "proof" | "dashboard";  // v1's fi
 - **Presence.** In live mode, while `b13-live` is live, the bar shows "N screens watching" from the newest `data.synced`. In scripted mode it isn't rendered.
 - Clicking a block sets `?process=<id>`. Esc or `process-view-close` clears it. Every view ends with the raw event log for its event types (`process-log`), newest last: time, type, source, key. The views and block counts read the store's `log`.
 - **The data view** lists the database's tables (the catalog, listings, orders, approvals, swarm runs and steps, process status and screens), each with its row count and newest rows. In live mode they come from `data.synced`, and in scripted mode from the mock data and the store.
-- **Layout:** in the tour, a beat with `process` scales its frame to 0.66 on the left and shows the process view in the right third. That panel holds the `process.view` slot and has no test ID of its own. A person's `?process=` is the centered overlay in "The page chrome".
+- **Layout:** in the tour, a beat with `process` scales its frame to 0.66, centered in the left two thirds, and shows the process view in a panel filling the right third (480 by 900 on the stage). That panel holds the `process.view` slot and has no test ID of its own. The frame keeps the open process for its process bar but draws no overlay. A person's `?process=` on a route is the centered overlay in "The page chrome".
 - The process feature renders every `process-` test ID. The shell renders only the slot containers and their placeholders, `slot-process-bar` and `slot-process-view`.
 
 ## Demo controls (F18, built in S1)
@@ -207,80 +205,61 @@ A small bar fixed to the bottom right of every route, test ID `demo-controls`. I
 | Reset | `demo-reset` | `player.reset()`, then reloads the `demo` timeline | R |
 | Speed | `demo-speed` | Cycles 1x, 2x, 4x, 8x with `player.setSpeed()` | S |
 | Scripted or live | `demo-mode-toggle` | Sets the store's `mode`. Shows "Scripted" or "Live", and in live mode a dot per source key: filled when its adapter is healthy. Hidden on the public build | M |
-| Language | `demo-lang-toggle` | Switches every surface, see Language | L |
-| Start at the catch | `demo-start-at-catch` | Seeks to the start of the catch beat and plays (`d07-catch` in v1's demo, `d08-catch` in the tour), see `demo-script.md` | C |
+| Start at the catch | `demo-start-at-catch` | Seeks to the start of `d08-catch` and plays, as `?start=catch` does (`demo-script.md`, The modes) | C |
 | Offline indicator | `demo-offline` | Shows "Offline" when the browser has no network. Scripted mode keeps working, and live mode falls back to scripted events | none |
 
 - Play and pause are one button that swaps its label and its test ID with the player state, so exactly one of the two test IDs is on screen.
-- The keys work on every route, except while a text input has focus. In presenter mode Space and the right arrow play the next beat instead (Modes and starts).
+- The keys work on every route, except while a text input has focus. In presenter mode Space, the right arrow and the left arrow step through the beats instead (Modes and starts). There is no language control and no L key.
 - On any route other than `/demo`, the controls drive the same player, so a tester can play the demo timeline while looking at one page.
 
 ## Camera states (`/demo`)
 
-The stage, test ID `demo-stage`, is the kit's `PAGE_WIDTH` by `PAGE_HEIGHT` (1440 by 900), scaled to fit the window and letterboxed on the paper ground. Each camera shows one frame at full stage size, and `beat.started.process` may add a process view over it. Moving between cameras takes 600 ms on the player clock (instant under reduced motion). The stage reads the camera from `beat.started`.
+The stage, test ID `demo-stage`, is the kit's `PAGE_WIDTH` by `PAGE_HEIGHT` (1440 by 900), scaled to fit the window and letterboxed on the paper ground. Each camera shows one frame at full stage size, except `pitch`, which shows its pitch card alone, and `beat.started.process` may put a process view beside it. Moving between cameras, and into or out of the process split, takes 600 ms on the player clock (instant after a seek, a reset, while paused and under reduced motion). The stage reads the camera from `beat.started`.
 
 ```ts
 type TourCameraId = "pitch" | "shop-home" | "shop-search" | "shop-piece" | "shop-receipt"
   | "sell-map" | "sell-month" | "sell-catch" | "sell-approvals" | "sell-close" | "sell-proof"
-  | "sell-watch" | "sell-listings" | "sell-storefront" | "maker" | "store"
-  | "shop-legacy";                                     // until I2-tour removes it
-type LegacyCameraId = "buyer" | "buyer-studio" | "studio-month" | "studio-catch"
-  | "studio-owner" | "studio-close" | "maker" | "receipt";   // v1's eight
-type CameraId = TourCameraId | LegacyCameraId;           // until I2-tour drops the legacy ones
-// TOUR_CAMERA_IDS and LEGACY_CAMERA_IDS list each set, and CAMERA_IDS is both, which validate.ts uses for beat.started.camera.
-// LEGACY_CAMERA_TO_TOUR and toTourCamera(id) carry the Phase A mapping below. A tour camera maps to itself.
+  | "sell-watch" | "sell-listings" | "sell-storefront" | "maker" | "store";
+type CameraId = TourCameraId;
+// TOUR_CAMERA_IDS lists them, and CAMERA_IDS is the same list, which validate.ts uses for beat.started.camera.
 ```
 
 | Camera | Frame and page |
 |---|---|
-| `pitch` | The beat's pitch card, full frame, with no Shop or Sell frame, top bar or process bar. The words come from `src/app/demo/pitch.ts`, which Gordon writes. Until he does, each card holds placeholder text marked [GORDON] in `pitch.ts`, with no label on screen, and shows L1 at its foot, since the pitch camera has no top bar |
+| `pitch` | The beat's pitch card (`pitch-card-what`, `pitch-card-why` or `pitch-card-how`), full frame, with no Shop or Sell frame, top bar or process bar. The words come from `src/app/demo/pitch.ts`: Gordon's final text (`demo-script.md`, The pitch cards). Each card shows L1 at its foot, since the pitch camera has no top bar |
 | `shop-home` | `frame-buyer` on `/shop` |
 | `shop-search` | `frame-buyer` on `/shop/search` for the latest query: `shop.search.main` gets no `searchParams.q`, or only the latest query's own text with its keywords |
 | `shop-piece` | `frame-buyer` on `/shop/piece/<the open piece>`, from `store.buyer.openPieceId` |
 | `shop-receipt` | `frame-buyer` on `/shop/receipt/ord_001` |
-| `shop-legacy` | `frame-buyer` on `/shop/legacy`, until I2-tour |
 | `sell-map`, `sell-month`, `sell-approvals`, `sell-close`, `sell-proof`, `sell-watch`, `sell-listings`, `sell-storefront` | `frame-studio` on that view |
-| `sell-catch` | `frame-studio` on `month`, zoomed 1.35 to the flag and its evidence, as v1's `studio-catch` |
-| `maker` | `frame-maker` on `/maker/mkr_01` |
+| `sell-catch` | `frame-studio` on `month`, zoomed 1.35 to the flag and its evidence |
+| `maker` | `frame-maker` on `/maker/mkr_01` (Grace N., in English) |
 | `store` | `frame-store` on `/store/dine-weavers` |
 
-**The Phase A mapping,** so v1's beats keep passing on the desktop shell until I2-tour. The v1 timeline keeps its own camera IDs, and the stage maps each through `toTourCamera()`:
-
-| v1 camera | Shown as |
-|---|---|
-| `buyer`, `receipt` | `shop-legacy` (`frame-buyer` on `/shop/legacy`) |
-| `buyer-studio` | `sell-map` |
-| `studio-month` | `sell-month` |
-| `studio-catch` | `sell-catch` |
-| `studio-owner` | `sell-approvals` |
-| `studio-close` | `sell-close` |
-| `maker` | `maker` |
-
-- **The Phase A legacy page:** the route `/shop/legacy` always renders `buyer.main` in a centered 480 px column inside `frame-buyer`, whatever fills `shop.home.main` or `shop.receipt.main`. The column keeps the 844 px phone height and scales down to fit the page area. Filling `shop.home.main` never changes what the v1 demo sees.
-- **The Phase A legacy boxes** show on the stage only while the camera is a legacy camera: v1's five Sell views in a 1192 by 744 box (v1's console view area), and `owner.main` and `maker.main` in a 390 by 844 column, each centered and scaled down to fit, never up. Routes never use these boxes.
-- I2-tour deletes the legacy route, camera and boxes (`src/app/routes.tsx`, `ShopSurface.tsx`).
-- All frames stay mounted on `/demo` for the whole run. A frame its camera doesn't show sits at opacity 0, `inert`, so features keep their state and tests can still find its test IDs. Tests judge whether a frame shows by its opacity, not by Playwright's `toBeVisible()`.
-- Before the first `beat.started`, and after a reset, the camera is `buyer` (shown as `shop-legacy`). `demo-stage` carries the current tour camera in `data-camera`.
-- `sell-catch` zooms to the box around `reconcile-flag`, its evidence cards and `reconcile-explanation`, measured as it shows on screen (inside the legacy box in Phase A), or to the view's center while the flag isn't there.
+- **The process split.** A beat whose `beat.started` carries `process` scales its frame to 0.66, centered in the left two thirds, and slides a panel into the right third that holds the `process.view` slot with `SlotProps.processId`. The panel has no test ID of its own, and F-process renders `process-view` and `process-pane-<processId>` inside it. The frame and the panel both stay visible. In `d04-support` the drawer stays open inside the scaled frame, at its right edge.
+- All frames stay mounted on `/demo` for the whole run. A frame its camera doesn't show sits at opacity 0, `inert`, so features keep their state and tests can still find its test IDs. Tests judge whether a frame shows by its opacity, not by Playwright's `toBeVisible()`. The pitch cards stay mounted the same way.
+- Before the first `beat.started`, and after a reset, the camera is `pitch` with the first card, `pitch-card-what`. `demo-stage` carries the current camera in `data-camera`.
+- `sell-catch` zooms to the box around `reconcile-flag`, its evidence cards and `reconcile-explanation`, measured as it shows on screen, or to the view's center while the flag isn't there.
 - The shown frame's process view is the stage override, or else `store.demo.process`. Its drawer is the override, or else `store.demo.drawer`. The override clears at the next `beat.started` and on every seek or reset. `/demo` ignores `?drawer=` and `?process=` in its own URL.
-- `demo-beat-label` is a quiet caption on the stage with the current beat's short title, hidden in video mode.
-- On `/demo` the shell's checks look only inside the frame on screen.
+- `demo-beat-label` is a quiet caption on the stage with the current beat's short title, numbered in tour order, hidden in video mode.
+- On `/demo` the shell's checks look only inside the frame on screen, the process panel for the `process-` IDs, and the stage for the pitch cards.
+- I2-tour removed v1's legacy cameras, the Phase A mapping (`LegacyCameraId`, `LEGACY_CAMERA_IDS`, `LEGACY_CAMERA_TO_TOUR`, `toTourCamera()`), the `shop-legacy` camera, the legacy page `/shop/legacy` and the legacy boxes.
 
 ### Modes and starts
 
-Until I2-tour, `/demo` plays v1's 60-second demo, and video mode, start at the catch and the end card keep the behavior and times in `demo-script.md`. The tour's modes:
-- `/demo` auto-plays every beat and ends on the end card. The tests use it.
-- **Video mode** (`?video=1`): a 5-second cold open at 153.999, the last millisecond of `d08-catch`, on `sell-catch` with v1's line. Then the spine with each pitch card held for 10 seconds instead of 20 (the player seeks to the next beat), the buyer and seller minutes at 1x, no controls or beat label, and the end card for 5 seconds. About 2 minutes 40 seconds, under Figma's 3-minute limit. Chapter 2 isn't in the video.
-- **Presenter mode,** `/demo?mode=present`, pauses at the end of every beat. Space or the right arrow plays the next beat, and the left arrow replays the current one. After `d12-receipt` it shows the end card, and the right arrow continues into chapter 2.
-- `?start=<beatId>` seeks to that beat's first event and plays from there, pausing at its end in presenter mode. `?start=catch` and the `demo-start-at-catch` control seek to `d08-catch`.
-- **The end card** (`demo-end-card`) carries the search proof with L28, the planted-error score, the list of live sources with L29, L30, and one seats line: "Cindy's agents fill three seats: bookkeeper, collections and support. A person approves anything that moves money."
+The full rules are `demo-script.md`'s "The modes". In short:
+- `/demo` starts on Play, auto-plays every beat and ends on the end card, which stays. The tests use it.
+- **Video mode** (`?video=1`): a 5-second cold open at 153.999, the last millisecond of `d08-catch`, on `sell-catch` with v1's line. Then the spine with each pitch card held for 10 seconds instead of 20 (the player seeks to the next beat), the buyer and seller minutes at 1x, no controls or beat label, and the end card for 5 seconds. About 2 minutes 40 seconds, under Figma's 3-minute limit. Chapter 2 isn't in the video. `mode=present` and `?start=` are ignored.
+- **Presenter mode,** `/demo?mode=present`, pauses on the last millisecond of every beat. Space or the right arrow plays the next beat, and the left arrow replays the current one. While a beat plays, the right arrow jumps to the next beat and Space pauses. After `d12-receipt` it shows the end card, and the right arrow or Space continues into chapter 2. After the last beat the player stops at the end.
+- `?start=<beatId>` seeks to that beat's first event and plays from there, pausing at its end in presenter mode. An unknown beat ID is ignored. `?start=catch`, the `demo-start-at-catch` control and the `c` key seek to `d08-catch`.
+- **The end card** (`demo-end-card`) carries "Cindia" and the tagline, the seats line ("Cindy's agents fill three seats: bookkeeper, collections and support. A person approves anything that moves money."), the planted-error score, the search proof with L28, the live and simulated sources with L29, L30, the repo URL and L1.
 
 ## Language
 
-- The store's `lang` starts as `auto`. With `auto`, each surface uses its own starting language from the Surfaces table: English for Shop, Sell and store pages, and the maker's own `lang` on a maker page (English when the maker isn't found). `owner.main` uses the Sell site's resolved language.
-- The language toggle cycles `auto`, then `en` (every surface in English), then `zh` (every surface in Chinese), then back to `auto`.
-- The shell resolves this into `SlotProps.lang`. Features never read the store's `lang` themselves.
-- Every label comes from `glossary.md` (its domain words and its on-screen labels L1 to L30) or from the entity's `Text` fields in `data-model.md`. Amounts are dollars in both languages.
+- **English only** (Gordon, Oct 24, 11:35 PM and 11:55 PM). Every surface, the stage and the kit render English. There is no language toggle: `demo-lang-toggle`, the top bar's language control and the L key are gone.
+- The shell resolves `SlotProps.lang` to `"en"` on every surface, whatever the store's `lang` holds. Features never read the store's `lang` themselves.
+- Every label comes from `glossary.md` (its domain words and its on-screen labels L1 to L30) or from the entity's `Text` fields in `data-model.md`, in English. Amounts are dollars.
+- Step 2, after G4v2: the Chinese text itself goes, the shared text type becomes English only, and each owner removes `zh` from its own files. Until then, leftover `zh` in the code is fine as long as nothing renders it.
 
 ## Simulated badge
 
@@ -303,7 +282,6 @@ Until I2-tour, `/demo` plays v1's 60-second demo, and video mode, start at the c
 | `data-camera` | `demo-stage`: the current tour camera | the shell, `src/app/demo/DemoStage.tsx` |
 | `data-mode` | `demo-mode-toggle`: `scripted` or `live` | the shell, `src/app/controls/DemoControls.tsx` |
 | `data-source-key`, `data-healthy` | One dot per source key inside `demo-mode-toggle`, live mode only: its key, and `true` or `false` | the shell, `src/app/controls/DemoControls.tsx` |
-| `data-lang` | `demo-lang-toggle`: the store's `lang` | the shell, `src/app/controls/DemoControls.tsx` |
 | `data-variant` | Every labeled `Badge`: `simulated`, `live`, `demo`, `rule` or `estimate` | the kit, `src/ui/Badge.tsx` |
 | `data-raised`, `data-goal` | A `ProjectCard`'s progress block (`project-progress-<projectId>`): raised and goal, in cents | the kit, `src/ui/ProjectCard.tsx` |
 | `data-piece-id` | Each card's wrapper inside `search-featured`, and each piece's cell inside `communities-pieces` | search (`Featured.tsx`), communities (`CommunityPage.tsx`) |
@@ -328,7 +306,6 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 | `demo-reset` | Reset |
 | `demo-speed` | The speed button, its text is the current speed |
 | `demo-mode-toggle` | Scripted or live switch |
-| `demo-lang-toggle` | Language switch |
 | `demo-offline` | Offline indicator in the demo controls |
 | `demo-end-card` | The end card |
 | `slot-error-<slot>` | The note a slot shows when its feature fails to load, with the slot ID's dots as dashes |
@@ -341,14 +318,14 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 | `shell-help` | Help, which opens the support drawer |
 | `shell-nav-<view>` | One entry in the Sell site's left nav |
 | `dev-kit-gallery` | The kit gallery on `/dev/kit` |
-| `pitch-card-what`, `pitch-card-why`, `pitch-card-how` | The three pitch cards, rendered by the stage (I2-tour) |
+| `pitch-card-what`, `pitch-card-why`, `pitch-card-how` | The three pitch cards, rendered by the stage (I2-tour), each filling the stage on the `pitch` camera |
 
 ### Features
 
 | Test ID | Feature | Element |
 |---|---|---|
-| `buyer-concierge-input` | buyer | The concierge's text box, on the legacy page until M-buyer retires it |
-| `buyer-concierge-results` | buyer | The three curated pieces, on the legacy page until M-buyer retires it |
+| `buyer-concierge-input` | buyer | The concierge's text box, in `buyer.main`, which no page renders since I2-tour. M-buyer's last task deletes it |
+| `buyer-concierge-results` | buyer | The three curated pieces, in `buyer.main`, which no page renders since I2-tour. M-buyer's last task deletes it |
 | `buyer-story-card` | buyer | The open piece's maker story card |
 | `buyer-process-timeline` | buyer | The process steps with their hours, inside the story card |
 | `buyer-split-bar` | buyer | The price split bar (`ShareBar`) |
@@ -481,7 +458,7 @@ Test IDs are `<slug>-<element>` in kebab case. A repeated element adds its entit
 | `seller-overview` | seller-hub | Sell › Overview |
 | `seller-listing-notes` | seller-hub | The maker's notes box |
 | `seller-listing-draft` | seller-hub | The drafted listing |
-| `seller-listing-translated-<lang>` | seller-hub | L27 beside the draft's version in the language the notes weren't written in, `<lang>` that version's language |
+| `seller-listing-translated-<lang>` | seller-hub | L27 beside the draft's version in the language the notes weren't written in, `<lang>` that version's language. Not rendered while the site is English only |
 | `seller-listing-check-<checkId>` | seller-hub | One check on the draft |
 | `seller-listing-indexed` | seller-hub | The indexed line: the model, the index and the new dot |
 | `seller-listing-approve` | seller-hub | Propose publishing (an approval) |

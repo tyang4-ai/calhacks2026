@@ -3,7 +3,7 @@ import { BADGE_TITLES, BADGE_WORDS } from "./strings";
 
 /**
  * neutral, jade, amber and seal take their words as children. simulated, live, demo, rule and
- * estimate always read their glossary labels in both languages, such as "Live 实时".
+ * estimate always read their glossary labels, in English only (the site is English only), such as "Live".
  */
 export type BadgeVariant = "neutral" | "simulated" | "jade" | "amber" | "seal" | "live" | "demo" | "rule" | "estimate";
 
@@ -38,7 +38,7 @@ export function Badge({ testId, variant = "neutral", children, title }: BadgePro
         title={title ?? BADGE_TITLES[variant].en}
       >
         {variant === "live" && <span className="c-badge__dot" aria-hidden="true" />}
-        <span lang="en">{words.en}</span> <span lang="zh">{words.zh}</span>
+        <span lang="en">{words.en}</span>
       </span>
     );
   }

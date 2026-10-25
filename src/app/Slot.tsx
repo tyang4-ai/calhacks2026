@@ -2,9 +2,9 @@
 // placeholder with its slot- test ID. The shell forwards the whole SlotProps object to the
 // feature, never a hand-picked list. The wrapper carries data-slot, data-slot-state and
 // data-slot-props (the JSON of the props it passed), filled or empty, for the smoke tests.
-import { Component, createElement, Suspense, type ComponentType, type ReactNode } from "react";
+import { Component, createElement, Suspense, useState, type ComponentType, type ReactNode } from "react";
 import { SLOT_IDS, slotTestId, type SlotId, type SlotProps } from "../core/featureTypes";
-import { lazySlot, slotHasFeature } from "./featureLoader";
+import { lazySlot, readySlot, slotHasFeature } from "./featureLoader";
 import { slotProps, slotPropsJson, type SlotContext } from "./slotProps";
 import { PLACEHOLDER_NOTE, SLOT_FAILED, SLOT_LABELS } from "./strings";
 
@@ -106,8 +106,20 @@ function renderersFor(slot: SlotId) {
   };
 }
 
+const RENDERERS = new Map(SLOT_IDS.map((s) => [s, renderersFor(s)] as const));
+
 /** One lazy component per slot whose feature exists on disk, made once at module load (never during render). */
-const LAZY_SLOTS = new Map(SLOT_IDS.filter(slotHasFeature).map((s) => [s, lazySlot(s, renderersFor(s))] as const));
+const LAZY_SLOTS = new Map(SLOT_IDS.filter(slotHasFeature).map((s) => [s, lazySlot(s, RENDERERS.get(s)!)] as const));
+
+/**
+ * The slot's content. Its component is picked once, when it mounts: the feature's own component when
+ * the feature has already loaded, so it renders in the same commit, or else the lazy one. Keeping
+ * the pick for the slot's life means a feature never remounts when its load finishes.
+ */
+function SlotBody({ slot, props, Lazy }: { slot: SlotId; props: SlotProps; Lazy: ComponentType<SlotProps> }) {
+  const [Type] = useState<ComponentType<SlotProps>>(() => readySlot(slot, RENDERERS.get(slot)!) ?? Lazy);
+  return <Suspense fallback={<Placeholder slot={slot} props={props} loading />}>{createElement(Type, props)}</Suspense>;
+}
 
 export interface SlotComponentProps extends SlotProps {
   slot: SlotId;
@@ -119,7 +131,7 @@ export function Slot({ slot, ...props }: SlotComponentProps) {
   if (!Lazy) return <Placeholder slot={slot} props={props} />;
   return (
     <SlotBoundary key={slot} slot={slot} props={props}>
-      <Suspense fallback={<Placeholder slot={slot} props={props} loading />}>{createElement(Lazy, props)}</Suspense>
+      <SlotBody slot={slot} props={props} Lazy={Lazy} />
     </SlotBoundary>
   );
 }

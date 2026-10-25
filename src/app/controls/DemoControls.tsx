@@ -1,14 +1,17 @@
 // The demo controls (F18): a small bar fixed to the bottom right of every route. It collapses to
 // one button and expands on hover or focus. Video mode (?video=1) hides it. The keys work on every
 // route except while a text input has focus. The public build (PUBLIC_SITE) hides the Live switch
-// and ignores its key, so the public site stays scripted.
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+// and ignores its key, so the public site stays scripted. The site is English only, so there is no
+// language switch and no L key. In presenter mode (/demo?mode=present) Space and the arrows step
+// through the beats (presenter.ts).
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "react-router";
 import { SOURCE_KEYS } from "../../core/events";
 import { player, type Speed } from "../../core/player";
 import { cycleSpeed, isTextInput, resetDemo, togglePlay } from "./playback";
+import { presenterActive, presenterKey } from "../demo/presenter";
 import { startAtCatch } from "../demo/startAtCatch";
-import { cycleLang, useCindia } from "../../core/store";
+import { useCindia } from "../../core/store";
 import { toggleMode, useSourceHealth } from "../../sources/mode";
 import { PUBLIC_SITE } from "../site";
 import "./controls.css";
@@ -38,39 +41,30 @@ function useOnline(): boolean {
   );
 }
 
-const LANG_LABEL = { auto: "Auto", en: "English", zh: "中文" } as const;
-
 export function DemoControls() {
   const [search] = useSearchParams();
   const video = search.get("video") === "1";
-  const startParam = search.get("start");
   const { playing, speed } = usePlayerStatus();
   const mode = useCindia((s) => s.mode);
-  const lang = useCindia((s) => s.lang);
   const health = useSourceHealth();
   const online = useOnline();
   const [open, setOpen] = useState(false);
-  const startedRef = useRef(false);
-
-  // ?start=catch does the same as the button (seek to 30.0, play to 60.0, rewind, play the buyer
-  // to 20.0 and pause), once, when a timeline with that beat is loaded.
-  useEffect(() => {
-    if (startParam !== "catch" || startedRef.current) return;
-    if (startAtCatch()) startedRef.current = true;
-  }, [startParam]);
 
   const onKey = useCallback((e: KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
     if (isTextInput(document.activeElement)) return;
     const k = e.key.toLowerCase();
-    if (e.key === " " || e.code === "Space") {
+    const space = e.key === " " || e.code === "Space";
+    if (presenterActive() && (space || e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+      e.preventDefault();
+      presenterKey(space ? "space" : e.key === "ArrowRight" ? "right" : "left");
+    } else if (space) {
       // Prevent the focused button's own click and the page scroll.
       e.preventDefault();
       togglePlay();
     } else if (k === "r") resetDemo();
     else if (k === "s") cycleSpeed();
     else if (k === "m" && !PUBLIC_SITE) toggleMode();
-    else if (k === "l") cycleLang();
     else if (k === "c") startAtCatch();
   }, []);
 
@@ -128,9 +122,6 @@ export function DemoControls() {
           )}
         </button>
         )}
-        <button type="button" data-testid="demo-lang-toggle" data-lang={lang} onClick={() => cycleLang()} title="Language (L)">
-          {LANG_LABEL[lang]}
-        </button>
         <button type="button" data-testid="demo-start-at-catch" onClick={() => startAtCatch()} title="Start at the catch (C)">
           Start at the catch
         </button>

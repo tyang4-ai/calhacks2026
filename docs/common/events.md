@@ -135,7 +135,7 @@ Only the owner's screen emits `approval.granted` or `approval.declined` with `so
 
 - `swarm.step` events from B13 carry key `b13-live`, because the B13 adapter delivers them.
 - `support.escalated` has no scripted producer in the tour. Seeded specs cover its paths.
-- **The "ask the maker" loop:** the buyer's meaning question gets the L14 reply and a `question.forwarded` to the piece's maker. Her `question.answered` on the maker page is a request, and its answer is the Writer's `support.answered` on the original thread, quoting her words exactly. If the chapter 2 beat `d17-ask-maker` ships, it carries `drawer: "support"`, and its On screen IDs are `support-forwarded-<questionId>` and `support-maker-answer-<questionId>`.
+- **The "ask the maker" loop:** the buyer's meaning question gets the L14 reply and a `question.forwarded` to the piece's maker. Her `question.answered` on the maker page is a request, and its answer is the Writer's `support.answered` on the original thread, quoting her words exactly. The tour plays the loop in chapter 2's last beat, `d17-ask-maker` (`demo-script.md`), which carries `drawer: "support"`, and its On screen IDs are `support-forwarded-<questionId>` and `support-maker-answer-<questionId>`.
 
 ### Listings and storefronts (F-seller-hub, F-storefront)
 
@@ -195,9 +195,10 @@ Only the owner's screen emits `approval.granted` or `approval.declined` with `so
 
 | Type | Payload | Key |
 |---|---|---|
-| `beat.started` | `beatId` (from `demo-script.md`), `camera: CameraId` (from `ui-contract.md`), `process?: ProcessId` (opens that process view during the beat), `drawer?: "support" \| "ask" \| "audit"` (opens that drawer) | |
+| `beat.started` | `beatId` (from `demo-script.md`), `camera: CameraId` (a tour camera from `ui-contract.md`, `pitch` included; v1's legacy cameras and `shop-legacy` left with I2-tour), `process?: ProcessId` (opens that process view during the beat), `drawer?: "support" \| "ask" \| "audit"` (opens that drawer) | |
 
-- A beat may carry more than one `beat.started` with the same `beatId`, for each camera, process or drawer change inside it.
+- A beat may carry more than one `beat.started` with the same `beatId`: one at its start, and one at each camera, process or drawer change in its row of `demo-script.md`. Beat boundaries are the first `beat.started` of each beat, and the stage, presenter mode, `?start=` and video mode read every beat's start from those, never from a constant.
+- Each `beat.started` sets `demo.camera`, `demo.process` and `demo.drawer` to its own values, so one without `process` or `drawer` closes the view or the drawer. A change inside a beat repeats whatever stays open, as `d04-support`'s second one repeats drawer `support` beside process `swarm`.
 - `ProcessId` is `"search" | "swarm" | "checkout" | "money" | "reconcile" | "approvals" | "close" | "proof" | "watch" | "model" | "data"`, eleven processes in this order, listed as `PROCESS_IDS`. `ui-contract.md` gives each one's label and keys.
 - I2-core owns `process`, `drawer`, their schema and their reducer (`demo.process`, `demo.drawer`). I2-tour only sets them on the tour's beats.
 
@@ -224,7 +225,7 @@ interface Player {
 ```
 
 - The player uses `requestAnimationFrame` and its own clock. Tests can drive it with `seek()`.
-- Timelines live in `src/mock/timelines/`. `demo` is the demo timeline: v1's 60-second run (`durationMs` 60000) until I2-tour, then the 205-second tour (`durationMs` 205000). `month` is the fast-forward month the demo plays inside its beats.
+- Timelines live in `src/mock/timelines/`. `demo` is the demo timeline: v1's 60-second run (`durationMs` 60000) until I2-tour, then the 220-second tour (`durationMs` 220000, chapter 2's `d17-ask-maker` included). `month` is the fast-forward month the demo plays inside its beats.
 
 ## The store (`src/core/store.ts`)
 

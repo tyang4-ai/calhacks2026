@@ -1,10 +1,10 @@
 // The camera states from ui-contract.md as poses on the 1440 by 900 stage, and the page each
 // frame shows. Pure functions, so the stage and the unit test share them. The stage reads the
-// camera from beat.started and maps it through toTourCamera() (the Phase A mapping in
-// src/core/featureTypes.ts); it keeps no mapping of its own. Each tour camera but pitch shows
-// exactly one frame at scale 1, the others at opacity 0. sell-catch zooms frame-studio 1.35 to the
-// flag and its evidence.
-import { LEGACY_CAMERA_IDS, type CameraId, type SellView, type TourCameraId } from "../../core/featureTypes";
+// camera from beat.started. Each tour camera but pitch shows exactly one frame at scale 1, the
+// others at opacity 0; pitch shows the pitch card and no frame. sell-catch zooms frame-studio 1.35
+// to the flag and its evidence. A beat with a process scales its frame to 0.66 in the left two
+// thirds and slides the process panel into the right third.
+import type { SellView, TourCameraId } from "../../core/featureTypes";
 import type { ShopPage } from "../slotProps";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stageScale";
 
@@ -21,7 +21,13 @@ export const FRAME_TEST_IDS: Record<StageFrame, string> = {
   store: "frame-store",
 };
 
-/** One frame's pose: its top left on the stage, its scale (from its top left) and its opacity. */
+/** Besides the frames, the stage places the pitch card and the process panel. */
+export type StageLayer = StageFrame | "pitch" | "panel";
+
+/** Every layer the camera places, frames first. */
+export const STAGE_LAYERS: readonly StageLayer[] = [...STAGE_FRAMES, "pitch", "panel"];
+
+/** One layer's pose: its top left on the stage, its scale (from its top left) and its opacity. */
 export interface Pose {
   x: number;
   y: number;
@@ -29,7 +35,7 @@ export interface Pose {
   opacity: number;
 }
 
-export type CameraPose = Record<StageFrame, Pose>;
+export type CameraPose = Record<StageLayer, Pose>;
 
 /** A box inside the studio frame, in its own unscaled pixels. */
 export interface Box {
@@ -42,7 +48,7 @@ export interface Box {
 /**
  * A point inside the studio frame, in its own unscaled pixels, for sell-catch to zoom to. With
  * `box` (the flag, evidence and explanation) and `corner` (the top left of the view's content: the
- * legacy box in Phase A), the zoom aligns that corner to the stage's corner when the box fits.
+ * view area), the zoom aligns that corner to the stage's corner when the box fits.
  */
 export interface Focus {
   x: number;
@@ -53,10 +59,15 @@ export interface Focus {
 
 export const MOVE_MS = 600;
 export const CATCH_SCALE = 1.35;
+/** A frame under a process view: 0.66, centered in the left two thirds. */
+export const PROCESS_SCALE = 0.66;
+/** The process panel fills the right third of the stage. */
+export const PANEL_WIDTH = STAGE_WIDTH / 3;
+export const PANEL_X = STAGE_WIDTH - PANEL_WIDTH;
 /** Room kept between the focus box and the stage edge when the zoom aligns to the corner. */
 const CATCH_MARGIN = 16;
 
-/** The frame a tour camera shows, or null for pitch (I2-tour's pitch cards). */
+/** The frame a tour camera shows, or null for pitch (the pitch cards). */
 export function cameraFrame(camera: TourCameraId): StageFrame | null {
   switch (camera) {
     case "pitch":
@@ -65,7 +76,6 @@ export function cameraFrame(camera: TourCameraId): StageFrame | null {
     case "shop-search":
     case "shop-piece":
     case "shop-receipt":
-    case "shop-legacy":
       return "buyer";
     case "maker":
       return "maker";
@@ -76,13 +86,18 @@ export function cameraFrame(camera: TourCameraId): StageFrame | null {
   }
 }
 
-/** True while the camera is one of v1's (the v1 timeline), or before the first beat. Then the stage uses the legacy boxes. */
-export function isLegacyCamera(camera: CameraId | null): boolean {
-  return camera === null || (LEGACY_CAMERA_IDS as readonly string[]).includes(camera);
-}
-
 const hidden: Pose = { x: 0, y: 0, scale: 1, opacity: 0 };
 const shown: Pose = { x: 0, y: 0, scale: 1, opacity: 1 };
+/** The frame under a process view: centered in the left two thirds. */
+const split: Pose = {
+  x: (PANEL_X - STAGE_WIDTH * PROCESS_SCALE) / 2,
+  y: (STAGE_HEIGHT - STAGE_HEIGHT * PROCESS_SCALE) / 2,
+  scale: PROCESS_SCALE,
+  opacity: 1,
+};
+const panelShown: Pose = { x: PANEL_X, y: 0, scale: 1, opacity: 1 };
+/** Off the stage's right edge, so the panel slides in. */
+const panelHidden: Pose = { x: STAGE_WIDTH, y: 0, scale: 1, opacity: 0 };
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, v));
@@ -115,11 +130,22 @@ export function catchPose(focus: Focus | null): Pose {
   return { x: left, y: top, scale: CATCH_SCALE, opacity: 1 };
 }
 
-/** Every frame's pose for a tour camera: its one frame shown at scale 1 (sell-catch zoomed), the rest hidden. */
-export function cameraPose(camera: TourCameraId, focus: Focus | null = null): CameraPose {
-  const out: CameraPose = { buyer: hidden, studio: hidden, maker: hidden, store: hidden };
+/**
+ * Every layer's pose for a tour camera: its one frame shown at scale 1 (sell-catch zoomed), the rest
+ * hidden; pitch shows the pitch card alone. With `process`, the frame sits at 0.66 in the left two
+ * thirds and the process panel fills the right third.
+ */
+export function cameraPose(camera: TourCameraId, focus: Focus | null = null, process = false): CameraPose {
+  const out: CameraPose = { buyer: hidden, studio: hidden, maker: hidden, store: hidden, pitch: hidden, panel: panelHidden };
   const frame = cameraFrame(camera);
-  if (frame) out[frame] = camera === "sell-catch" ? catchPose(focus) : shown;
+  if (!frame) {
+    out.pitch = shown;
+    return out;
+  }
+  if (process) {
+    out[frame] = split;
+    out.panel = panelShown;
+  } else out[frame] = camera === "sell-catch" ? catchPose(focus) : shown;
   return out;
 }
 
@@ -140,8 +166,6 @@ export function cameraShopPage(camera: TourCameraId): ShopPage | null {
       return "piece";
     case "shop-receipt":
       return "receipt";
-    case "shop-legacy":
-      return "legacy";
     default:
       return null;
   }
@@ -170,8 +194,8 @@ export interface StagePages {
   sell: SellView;
 }
 
-/** Before the first beat the camera is buyer, shown as shop-legacy, and the Sell frame waits on the map. */
-export const INITIAL_PAGES: StagePages = { shop: "legacy", sell: "map" };
+/** Before the first beat the camera is pitch: the Shop frame waits on its home page and the Sell frame on the map. */
+export const INITIAL_PAGES: StagePages = { shop: "home", sell: "map" };
 
 /** The pages after a camera change. */
 export function nextPages(prev: StagePages, camera: TourCameraId): StagePages {
@@ -207,7 +231,7 @@ function lerp(a: number, b: number, t: number): number {
 /** The pose a fraction t (already eased) of the way from one camera pose to another. */
 export function mixPose(from: CameraPose, to: CameraPose, t: number): CameraPose {
   const out = {} as CameraPose;
-  for (const f of STAGE_FRAMES) {
+  for (const f of STAGE_LAYERS) {
     const a = from[f];
     const b = to[f];
     out[f] = { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), scale: lerp(a.scale, b.scale, t), opacity: lerp(a.opacity, b.opacity, t) };
@@ -216,7 +240,7 @@ export function mixPose(from: CameraPose, to: CameraPose, t: number): CameraPose
 }
 
 export function samePose(a: CameraPose, b: CameraPose): boolean {
-  return STAGE_FRAMES.every(
+  return STAGE_LAYERS.every(
     (f) =>
       Math.abs(a[f].x - b[f].x) < 0.5 &&
       Math.abs(a[f].y - b[f].y) < 0.5 &&
@@ -225,7 +249,7 @@ export function samePose(a: CameraPose, b: CameraPose): boolean {
   );
 }
 
-/** A pose as the CSS transform for a frame placed at the stage's top left with transform-origin 0 0. */
+/** A pose as the CSS transform for a layer placed at the stage's top left with transform-origin 0 0. */
 export function poseTransform(p: Pose): string {
   return `translate(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px) scale(${p.scale.toFixed(4)})`;
 }

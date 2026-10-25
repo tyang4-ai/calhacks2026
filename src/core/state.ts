@@ -90,6 +90,8 @@ export interface FlagState {
   actualCents: number;
   deltaCents: number;
   at: number;
+  /** B16's live twin: the Nessie record behind the flag (flag.raised's nessieId). */
+  nessieId?: string;
   /** Set by flag.explained. */
   trustRecordId?: string;
   explanation?: Text;

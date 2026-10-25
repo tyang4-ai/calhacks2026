@@ -26,7 +26,7 @@ Desktop only. Phone frames are retired.
 | The process overlay | 1200 by 720, centered |
 
 - `PhoneFrame` leaves the kit's public index. `ConsoleFrame` stays exported for now.
-- Until I2-tour, v1's phone views show on the stage in a 390 by 844 column and v1's console views in a 1192 by 744 box, scaled to fit (`ui-contract.md`, Phase A legacy boxes).
+- On the stage, a tour beat with a process scales its frame to 0.66 in the left two thirds and shows the process view in a 480 by 900 panel filling the right third (`ui-contract.md`, Camera states). Text sizes are judged in the frame's own pixels. I2-tour removed the Phase A legacy boxes.
 
 ## Color
 
@@ -128,7 +128,7 @@ Each component takes a `testId` prop. The scaffolder built the first set in S1, 
 | `SideBySide` | Two cards with a similarity bar between them |
 
 - `src/ui/gallery.tsx` exports `KitGallery`: every component in each of its states, with sample props labeled "Sample", shown at `/dev/kit`.
-- The kit's own words live in `src/ui/strings.ts`, in both languages.
+- The kit's own words live in `src/ui/strings.ts`. The site is English only (Gordon, Oct 24): the kit renders the English, so a labeled `Badge` reads "Simulated", "Live", "Demo data", "Rule-based" or "Estimate" with no Chinese beside it. The Chinese stays in the file until step 2 of that decision removes it.
 
 ## Words on screen
 
@@ -136,4 +136,4 @@ Each component takes a `testId` prop. The scaffolder built the first set in S1, 
 - Cindy speaks in first person, short and specific: "The gallery paid $340 less than the contract says. Here are the three records." It never claims certainty it doesn't have.
 - Errors say what happened and what to do next. They don't apologize.
 - Cindia is a platform, never an app. Craft and community words follow the content rules in `data-model.md`.
-- Domain words come from the label table in `glossary.md`, in both languages. The on-screen labels L1 to L30 in `glossary.md` are copied word for word, in both languages, and no badge is added beyond them. Other short UI strings (button text, empty states, notes) live in the feature's own `strings.ts` with English and Chinese side by side. A new domain word goes under `needs:`.
+- Domain words come from the label table in `glossary.md`. The on-screen labels L1 to L30 in `glossary.md` are copied word for word, and no badge is added beyond them. Other short UI strings (button text, empty states, notes) live in the feature's own `strings.ts`. Every page renders English only, there is no language toggle, and new strings are English only (where a type needs a zh value, it reuses the English). A new domain word goes under `needs:`.

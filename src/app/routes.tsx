@@ -126,8 +126,6 @@ export function AppRoutes() {
       <Route path="/shop/projects" element={<ShopRoute page="projects" />} />
       <Route path="/shop/projects/:id" element={<ShopRoute page="projects" />} />
       <Route path="/shop/receipt/:orderId" element={<ShopRoute page="receipt" />} />
-      {/* The Phase A legacy page, until I2-tour. */}
-      <Route path="/shop/legacy" element={<ShopRoute page="legacy" />} />
       <Route path="/store/:slug" element={<StoreRoute />} />
       <Route path="/sell/:view" element={<SellRoute />} />
       <Route path="/maker/:makerId" element={<MakerRoute />} />

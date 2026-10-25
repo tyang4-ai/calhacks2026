@@ -1,14 +1,13 @@
 // The chrome every surface wears inside its PageFrame: the top bar (shell-topnav) with the word
-// Cindia, the Shop and Sell switch, L1, Help, Ask Cindy on Sell views and the language toggle;
+// Cindia, the Shop and Sell switch, L1, Help and Ask Cindy on Sell views (English only, so no
+// language toggle);
 // the 64 px process bar band holding process.bar; then the page body with the page, the process
 // overlay and the one drawer. The buttons call src/core/nav.ts, so they act the same on a route and
 // on /demo, where the stage's navigator takes the calls.
 import type { ReactNode } from "react";
 import type { DrawerKind } from "../../core/events";
 import { navigate, openDrawer, sellRoute, shopRoute } from "../../core/nav";
-import { cycleLang, useCindia } from "../../core/store";
 import { Button } from "../../ui/Button";
-import { LangToggle } from "../../ui/LangToggle";
 import { PageFrame } from "../../ui/PageFrame";
 import { SideSwitch } from "../../ui/SideSwitch";
 import { TopNav } from "../../ui/TopNav";
@@ -21,7 +20,6 @@ import { ProcessOverlay } from "./ProcessOverlay";
 import styles from "./chrome.module.css";
 
 function ShellTopNav({ surface, lang }: { surface: FrameSurface; lang: "en" | "zh" }) {
-  const setting = useCindia((s) => s.lang);
   return (
     <TopNav
       testId="shell-topnav"
@@ -51,7 +49,6 @@ function ShellTopNav({ surface, lang }: { surface: FrameSurface; lang: "en" | "z
               {SHELL.askCindy[lang]}
             </Button>
           )}
-          <LangToggle value={setting} resolved={lang} onToggle={() => cycleLang()} />
         </>
       }
     />
@@ -64,10 +61,15 @@ export interface AppChromeProps {
   ctx: SlotContext;
   drawer: DrawerKind | null;
   onCloseDrawer: () => void;
+  /**
+   * False on the /demo stage, which shows the process view in its own panel beside the frame, so the
+   * frame keeps the open process for its process bar but draws no overlay. True on routes.
+   */
+  processOverlay?: boolean;
   children?: ReactNode;
 }
 
-export function AppChrome({ frameTestId, ctx, drawer, onCloseDrawer, children }: AppChromeProps) {
+export function AppChrome({ frameTestId, ctx, drawer, onCloseDrawer, processOverlay = true, children }: AppChromeProps) {
   return (
     <PageFrame testId={frameTestId} lang={ctx.lang}>
       <ShellTopNav surface={ctx.surface} lang={ctx.lang} />
@@ -76,7 +78,7 @@ export function AppChrome({ frameTestId, ctx, drawer, onCloseDrawer, children }:
       </div>
       <div className={styles.body}>
         {children}
-        {ctx.processId && <ProcessOverlay ctx={ctx} />}
+        {processOverlay && ctx.processId && <ProcessOverlay ctx={ctx} />}
         <Drawers ctx={ctx} drawer={drawer} onClose={onCloseDrawer} />
       </div>
     </PageFrame>

@@ -1,5 +1,9 @@
-// The ten demo-critical figures in data-model.md, one test each, with the exact cents.
+// The ten demo-critical figures in data-model.md, one test each, with the exact cents. Figures 8 to
+// 10 read the tour's events (I2-tour T1). Figures 11 to 16 are in v2-figures.test.ts and
+// demo-timeline.test.ts.
 import { describe, expect, it } from "vitest";
+import { mockAnswers } from "../../src/sources/mockAnswers";
+import { scriptedAnswer } from "../../src/sources/requests";
 import {
   answerKey,
   approvals,
@@ -45,13 +49,20 @@ describe("demo-critical figures (data-model.md)", () => {
     expect(getById<ChannelPayout>("pay_001")).toMatchObject({ channelId: "ch_cindia", date: "2026-09-01", orderIds: ["ord_001"], netCents: 15648 });
   });
 
-  it("2. the concierge answer is pc_01, pc_07, pc_11 in that order", () => {
+  // The tour has no concierge beat (data-model.md, figure 2), so figure 2 is checked on curatedSet
+  // and on the scripted concierge answer, which reads it.
+  it("2. the concierge answer is pc_01, pc_07, pc_11 in that order, each with its reason", () => {
     expect(curatedSet.pieceIds).toEqual(["pc_01", "pc_07", "pc_11"]);
-    const ans = ofType("concierge.answered");
-    expect(ans).toHaveLength(1);
-    expect(ans[0].payload.query).toBe("a gift under $200 for my mom, she loves red wool");
-    expect(ans[0].payload.pieceIds).toEqual(["pc_01", "pc_07", "pc_11"]);
-    expect(Object.keys(ans[0].payload.reasons).toSorted()).toEqual(["pc_01", "pc_07", "pc_11"]);
+    expect(Object.keys(curatedSet.reasons)).toEqual(["pc_01", "pc_07", "pc_11"]);
+    for (const id of curatedSet.pieceIds) {
+      expect(curatedSet.reasons[id]?.en, id).toBeTruthy();
+      expect(curatedSet.reasons[id]?.zh, id).toBeTruthy();
+    }
+    const query = "a gift under $200 for my mom, she loves red wool";
+    const req = { id: "evt_user_0001", type: "concierge.asked", at: 0, source: "user", payload: { query, lang: "en" } } as CindiaEvent<"concierge.asked">;
+    const ans = scriptedAnswer(req, mockAnswers(), "b09-concierge").map((p) => p.event);
+    expect(ans.map((e) => [e.type, e.payload])).toEqual([["concierge.answered", { query, pieceIds: ["pc_01", "pc_07", "pc_11"], reasons: curatedSet.reasons }]]);
+    expect(ofType("concierge.answered")).toEqual([]);
   });
 
   it("3. thirty orders on the right channels", () => {

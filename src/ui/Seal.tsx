@@ -41,7 +41,7 @@ function sealDateFits(label: string, size: number): boolean {
 }
 
 /** The owner's square cinnabar stamp. Cindy never stamps anything. */
-export function Seal({ testId, char, date, lang = "zh", size = 64, startAt, now }: SealProps) {
+export function Seal({ testId, char, date, lang = "en", size = 64, startAt, now }: SealProps) {
   const playerNow = usePlayerTime();
   const reduced = useReducedMotion();
   const pose = startAt === undefined ? { scale: 1, opacity: 1, rotate: -4 } : sealPose(now ?? playerNow, startAt, reduced);

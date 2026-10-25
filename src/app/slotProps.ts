@@ -4,8 +4,8 @@
 import type { ProcessId } from "../core/events";
 import type { SellView, SlotId, SlotProps, SurfaceId } from "../core/featureTypes";
 
-/** The Shop site's pages, legacy being the Phase A page /shop/legacy. */
-export type ShopPage = "home" | "search" | "piece" | "community" | "projects" | "receipt" | "legacy";
+/** The Shop site's pages. */
+export type ShopPage = "home" | "search" | "piece" | "community" | "projects" | "receipt";
 
 /** The four surfaces with a frame. owner renders inside the Sell frame. */
 export type FrameSurface = Exclude<SurfaceId, "owner">;

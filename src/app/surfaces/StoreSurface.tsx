@@ -14,11 +14,11 @@ export interface StoreSurfaceProps extends FrameStateProps {
 
 const noop = () => {};
 
-export function StoreSurface({ slug, drawer, refId, processId, onCloseDrawer }: StoreSurfaceProps) {
+export function StoreSurface({ slug, drawer, refId, processId, onCloseDrawer, processOverlay }: StoreSurfaceProps) {
   const lang = useSurfaceLang("store");
   const ctx: SlotContext = { surface: "store", lang, publicSite: PUBLIC_SITE, slug, refId, processId: processId ?? null };
   return (
-    <AppChrome frameTestId="frame-store" ctx={ctx} drawer={drawer ?? null} onCloseDrawer={onCloseDrawer ?? noop}>
+    <AppChrome frameTestId="frame-store" ctx={ctx} drawer={drawer ?? null} onCloseDrawer={onCloseDrawer ?? noop} processOverlay={processOverlay}>
       <div className={styles.page}>
         <SlotFor slot="store.main" ctx={ctx} />
       </div>

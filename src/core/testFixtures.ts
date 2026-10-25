@@ -119,7 +119,7 @@ export const SAMPLE_PAYLOADS: { [T in EventType]: Payloads[T] } = {
     refIds: ["ord_027"],
   },
   "scenario.loaded": { scenarioId: "scn_01", fileName: "gallery-october.csv", recordIds: ["scn_001"] },
-  "beat.started": { beatId: "d01-ask", camera: "buyer" },
+  "beat.started": { beatId: "p01-what", camera: "pitch" },
   "search.queried": {
     queryId: "qry_01",
     text: "a warm, bold gift for my mom. she loves red wool. under $200",

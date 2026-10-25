@@ -52,6 +52,8 @@ export function featureSlugs(): string[] {
 }
 
 const loaded = new Map<string, Promise<FeatureModule | null>>();
+/** Features whose load has finished, so a slot that mounts later can render at once. */
+const settled = new Map<string, FeatureModule | null>();
 
 /** Loads one feature module once. A module whose id doesn't match its folder is skipped with a warning. */
 export function loadFeature(slug: string): Promise<FeatureModule | null> {
@@ -76,6 +78,10 @@ export function loadFeature(slug: string): Promise<FeatureModule | null> {
       })
     : Promise.resolve(null);
   loaded.set(slug, p);
+  void p.then(
+    (fm) => settled.set(slug, fm),
+    () => undefined,
+  );
   return p;
 }
 
@@ -98,14 +104,31 @@ const lazyCache = new Map<SlotId, LazyExoticComponent<ComponentType<SlotProps>>>
 export function lazySlot(slot: SlotId, renderers: SlotRenderers): LazyExoticComponent<ComponentType<SlotProps>> {
   const hit = lazyCache.get(slot);
   if (hit) return hit;
-  const L = lazy(async () => {
-    const fm = await loadFeature(SLOT_FEATURE[slot]);
-    const C = fm?.slots[slot];
-    const Resolved: ComponentType<SlotProps> = C
-      ? (props) => renderers.filled(C, props)
-      : (props) => renderers.empty(props);
-    return { default: Resolved };
-  });
+  const L = lazy(async () => resolvedSlot(slot, await loadFeature(SLOT_FEATURE[slot]), renderers));
   lazyCache.set(slot, L);
   return L;
+}
+
+const readyCache = new Map<SlotId, ComponentType<SlotProps>>();
+
+/** The slot's component once its feature loaded: the feature's slot component wrapped by `renderers.filled`, or `renderers.empty`. One per slot. */
+function resolvedSlot(slot: SlotId, fm: FeatureModule | null, renderers: SlotRenderers): { default: ComponentType<SlotProps> } {
+  const hit = readyCache.get(slot);
+  if (hit) return { default: hit };
+  const C = fm?.slots[slot];
+  const Resolved: ComponentType<SlotProps> = C ? (props) => renderers.filled(C, props) : (props) => renderers.empty(props);
+  readyCache.set(slot, Resolved);
+  return { default: Resolved };
+}
+
+/**
+ * The slot's component when its feature has already loaded (the stage preloads every feature), or
+ * null. A slot that mounts after that renders it at once, in the same commit, instead of going
+ * through the lazy component's Suspense round, which shows its placeholder and which React holds
+ * for up to 300 ms: a flash of "Coming soon" each time a page first mounts mid-tour.
+ */
+export function readySlot(slot: SlotId, renderers: SlotRenderers): ComponentType<SlotProps> | null {
+  const slug = SLOT_FEATURE[slot];
+  if (!settled.has(slug)) return null;
+  return resolvedSlot(slot, settled.get(slug) ?? null, renderers).default;
 }

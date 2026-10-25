@@ -11,13 +11,14 @@ function textOf(html: string): string {
 }
 
 describe("badge variants", () => {
-  it("reads each labeled variant's glossary words in both languages", () => {
+  // English only (Gordon, Oct 24, 11:35 PM): the labeled variants read their glossary words in English.
+  it("reads each labeled variant's glossary words, in English only", () => {
     const words: Record<string, string> = {
-      simulated: "Simulated 模拟",
-      live: "Live 实时",
-      demo: "Demo data 演示数据",
-      rule: "Rule-based 规则程序",
-      estimate: "Estimate 估算",
+      simulated: "Simulated",
+      live: "Live",
+      demo: "Demo data",
+      rule: "Rule-based",
+      estimate: "Estimate",
     };
     for (const [variant, label] of Object.entries(words)) {
       const html = renderToStaticMarkup(createElement(Badge, { variant: variant as kit.BadgeVariant, testId: `kit-badge-${variant}` }, "ignored"));
