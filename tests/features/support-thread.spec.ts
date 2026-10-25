@@ -1,7 +1,8 @@
 // F-support T1: the thread (support-thread) in the drawer.
 // Acceptance 2 (the tour's question as support-msg-1 under L11), 4 second half (the tour's reply,
 // its agent and its records), 9 ("ask the maker": the forward, her own words, then the Writer's
-// relay), 10 (an escalation's handoff) and 13 (Chinese, with the maker's words left as written).
+// relay), 10 (an escalation's handoff) and 13 (English only, with the maker's words left as written:
+// the site has no language toggle since Gordon's English-only decision, Oct 24, 11:35 PM).
 // Selects by test ID only. Reaches the tour's run with tourEvent(), and asks only after it.
 import { expect, test, type Page } from "@playwright/test";
 import { getAgent, getById, makerQuestions } from "../../src/mock/index";
@@ -26,6 +27,9 @@ import {
 } from "./support-lib";
 
 const PIECE_DRAWER = "/shop/piece/pc_01?drawer=support";
+
+/** Any Chinese character: Han ideographs, CJK punctuation and full-width forms. */
+const CHINESE = /[\p{Script=Han}　-〿＀-￯]/u;
 
 /** The 1-based place of the support-msg-<n> holding a test ID. */
 async function msgIndexOf(page: Page, testId: string): Promise<number> {
@@ -137,16 +141,18 @@ test("10: an escalation with a pending approval shows support-handoff with its r
   watch.expectClean();
 });
 
-test("13: in Chinese, L11, the suggestions, the steps and the reply switch, and the maker's words stay as written", async ({ page }) => {
+test("13: English only, L11, the suggestions, the steps and the reply render English with no Chinese, and the maker's words stay as written", async ({ page }) => {
   const watch = watchPage(page);
   await openPage(page, PIECE_DRAWER);
-  // The suggestions on a fresh drawer, in Chinese.
-  for (let i = 0; i < 3 && (await page.evaluate(() => window.__cindia!.store.getState().lang)) !== "zh"; i += 1) {
-    await page.getByTestId("demo-lang-toggle").click();
+  // The suggestions on a fresh drawer, in English (the site is English only, with no language toggle).
+  const note = drawer(page).getByTestId("support-records-note");
+  await expect(note).toHaveText(L11.en);
+  await expect(note).not.toContainText(CHINESE);
+  for (const [i, q] of BUYER_QUESTIONS.entries()) {
+    const suggestion = drawer(page).getByTestId(`support-suggest-${i + 1}`);
+    await expect(suggestion).toHaveText(q.en);
+    await expect(suggestion).not.toContainText(CHINESE);
   }
-  expect(await page.evaluate(() => window.__cindia!.store.getState().lang)).toBe("zh");
-  await expect(drawer(page).getByTestId("support-records-note")).toHaveText(L11.zh);
-  for (const [i, q] of BUYER_QUESTIONS.entries()) await expect(drawer(page).getByTestId(`support-suggest-${i + 1}`)).toHaveText(q.zh);
 
   // The tour's run, answered, and an "ask the maker" loop with her English words.
   await tourEvent(page, "support.answered", { threadId: TOUR_THREAD });
@@ -155,12 +161,19 @@ test("13: in Chinese, L11, the suggestions, the steps and the reply switch, and 
   await emitScripted(page, "question.answered", answer, 2, "b14-swarm");
 
   for (const s of TOUR_RUN.steps) {
-    await expect(drawer(page).getByTestId(`support-step-${s.stepId}`)).toContainText(s.summary.zh);
+    const step = drawer(page).getByTestId(`support-step-${s.stepId}`);
+    await expect(step).toContainText(s.summary.en);
+    await expect(step).not.toContainText(CHINESE);
   }
-  await expect(drawer(page).getByTestId("support-reply")).toContainText(replyOf(TOUR_RUN).reply.zh);
-  await expect(drawer(page).getByTestId("support-agent")).toHaveText(getAgent("writer")!.name.zh);
+  const reply = drawer(page).getByTestId("support-reply");
+  await expect(reply).toContainText(replyOf(TOUR_RUN).reply.en);
+  await expect(reply).not.toContainText(CHINESE);
+  const agent = drawer(page).getByTestId("support-agent");
+  await expect(agent).toHaveText(getAgent("writer")!.name.en);
+  await expect(agent).not.toContainText(CHINESE);
   const mine = drawer(page).getByTestId(`support-maker-answer-${question.id}`);
   await expect(mine).toContainText(answer.text);
-  await expect(mine).toContainText(GLOSSARY.inHerOwnWords.zh);
+  await expect(mine).toContainText(GLOSSARY.inHerOwnWords.en);
+  await expect(mine).not.toContainText(CHINESE);
   watch.expectClean();
 });

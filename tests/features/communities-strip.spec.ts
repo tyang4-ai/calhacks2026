@@ -1,9 +1,10 @@
 // F-communities T1: the communities strip on Shop home. Acceptance 1, plus the strip's parts of
-// 10 (no Simulated badge) and 11 (the kind label in Chinese). Expected values come from src/mock/.
+// 10 (no Simulated badge) and 11 (the kind label in English, the site being English only). Expected
+// values come from src/mock/.
 import { expect, test } from "@playwright/test";
 import { communities } from "../../src/mock/index";
 import { watchPage } from "../smoke/lib";
-import { openPage, setLang, slot, WORDS } from "./communities-lib";
+import { expectNoChinese, openPage, slot, WORDS } from "./communities-lib";
 
 const ORDER = communities.map((c) => c.id);
 
@@ -53,15 +54,15 @@ test("10: the strip declares no source keys, so it shows no Simulated badge", as
   await expect(strip.getByTestId("simulated-badge")).toHaveCount(0);
 });
 
-test("11: in Chinese the cards show their Chinese text and the kind label reads 美洲原住民", async ({ page }) => {
+test("11: the cards render in English with no Chinese character, and the kind label reads Native American", async ({ page }) => {
   await openPage(page, "/shop");
-  await setLang(page, "zh");
   const strip = slot(page, "shop.home.communities").getByTestId("communities-strip");
   for (const c of communities) {
     const card = strip.getByTestId(`community-card-${c.id}`);
-    await expect(card).toContainText(c.name.zh);
-    await expect(card).toContainText(c.craft.zh);
-    await expect(card.locator('[data-role="kind"]')).toHaveText(WORDS.nativeAmerican.zh);
+    await expect(card).toContainText(c.name.en);
+    await expect(card).toContainText(c.craft.en);
+    await expect(card.locator('[data-role="kind"]')).toHaveText(WORDS.nativeAmerican.en);
+    await expectNoChinese(card);
   }
 });
 

@@ -1,10 +1,11 @@
 // F-communities T6: the projects route and the whole walk. Acceptance 4 (the list), the projects
-// pages' part of 10 (the Simulated badge) and 11 (the project text and L7 in Chinese), and the flow:
-// home, to a community, to its project, funded. Expected values come from src/mock/.
+// pages' part of 10 (the Simulated badge) and 11 (the project text and L7 in English, the site being
+// English only), and the flow: home, to a community, to its project, funded. Expected values come
+// from src/mock/.
 import { expect, test } from "@playwright/test";
 import { communities, projects, usd, worksInProgress } from "../../src/mock/index";
 import { watchPage } from "../smoke/lib";
-import { communitiesState, L7, openPage, raisedOn, setLang, slot } from "./communities-lib";
+import { communitiesState, expectNoChinese, L7, openPage, raisedOn, slot } from "./communities-lib";
 
 test("the walk: home, to the co-op's page, to its project, funded with the add-on amount", async ({ page }) => {
   const watch = watchPage(page);
@@ -62,15 +63,16 @@ test("10: the projects pages show the Simulated badge in scripted mode", async (
   }
 });
 
-test("11: in Chinese the project text, its updates and L7 show their Chinese text, and amounts stay dollars", async ({ page }) => {
+test("11: the project text, its updates and L7 render in English with no Chinese character, and amounts are dollars", async ({ page }) => {
   const prj = projects[0];
   await openPage(page, `/shop/projects/${prj.id}`);
-  await setLang(page, "zh");
+  const main = slot(page, "shop.projects.main");
   const card = page.getByTestId(`project-card-${prj.id}`);
-  await expect(card).toContainText(prj.title.zh);
-  await expect(card).toContainText(prj.summary.zh);
-  await expect(page.getByTestId(`communities-fund-note-${prj.id}`)).toHaveText(L7.zh);
-  for (const u of prj.updates) await expect(slot(page, "shop.projects.main")).toContainText(u.text.zh);
+  await expect(card).toContainText(prj.title.en);
+  await expect(card).toContainText(prj.summary.en);
+  await expect(page.getByTestId(`communities-fund-note-${prj.id}`)).toHaveText(L7.en);
+  for (const u of prj.updates) await expect(main).toContainText(u.text.en);
+  await expectNoChinese(main);
   await expect(page.getByTestId(`project-progress-${prj.id}`)).toContainText(usd(prj.raisedCents));
   await expect(page.getByTestId("communities-amount-1000")).toContainText(usd(1000));
 });

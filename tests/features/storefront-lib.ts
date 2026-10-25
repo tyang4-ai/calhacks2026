@@ -4,8 +4,10 @@
 //   900, wait for the hooks and every slot, and pause the player,
 // - seed(page, events): emits events through window.__cindia.emit, as scripted events stamped with
 //   the player's own clock, for events the tour timeline doesn't carry yet (I2-tour adds them),
-// - readers for the store areas the feature uses, the language toggle, and a check that no text in a
-//   view is clipped, truncated or cut at an edge.
+// - readers for the store areas the feature uses, and a check that no text in a view is clipped,
+//   truncated or cut at an edge.
+// The site is English only (decisions.md, Oct 24 11:35 PM and 11:55 PM): there's no language toggle,
+// so the helper that clicked it is gone.
 // Expected values come from src/mock/, never typed in.
 import { expect, type Locator, type Page } from "@playwright/test";
 import type { Storefront, StorefrontBlock } from "../../src/core/types";
@@ -33,6 +35,9 @@ export const PREVIEW_NOTE_EN = "Preview: a simple block editor for this demo. Ed
 export const FOOTER_LINE_EN = "Made with Cindia's storefront builder (preview)";
 export const DRAFT_NOTE_EN = "Draft. Not published yet.";
 export const PUBLISH_EN = "Publish";
+export const DESIGNER_EN = "Draft with Designer";
+/** Any Chinese (Han) character, for the English-only checks. */
+export const HAN = /[一-鿿]/;
 
 /** One event to emit: its type, payload and key. */
 export interface SeedEvent {
@@ -152,17 +157,6 @@ export async function editorBlockIds(page: Page): Promise<string[]> {
     .evaluateAll((els) =>
       els.map((e) => e.getAttribute("data-testid") ?? "").filter((id) => !/-(up|down|edit)$/.test(id)).map((id) => id.replace(/^storefront-block-/, "")),
     );
-}
-
-/** Cycles the language toggle until the store's lang is `want` ("auto", "en" or "zh"). */
-export async function setLang(page: Page, want: "auto" | "en" | "zh"): Promise<void> {
-  const toggle = page.getByTestId("demo-lang-toggle");
-  for (let i = 0; i < 3; i += 1) {
-    const now = await page.evaluate(() => window.__cindia!.store.getState().lang);
-    if (now === want) return;
-    await toggle.click();
-  }
-  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe(want);
 }
 
 /** The computed color a kit token resolves to, such as the jade of --c-color-jade. */

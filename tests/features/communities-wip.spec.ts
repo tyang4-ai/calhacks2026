@@ -6,7 +6,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { apr_05, usd, worksInProgress } from "../../src/mock/index";
 import { formatDate } from "../../src/ui/formatDate";
 import { watchPage } from "../smoke/lib";
-import { communitiesState, emitUser, grantApr05, openPage, setLang, WORDS } from "./communities-lib";
+import { communitiesState, emitUser, expectNoChinese, grantApr05, openPage, WORDS } from "./communities-lib";
 
 const wip = worksInProgress.find((w) => w.id === apr_05.subjectIds[0])!;
 const released = wip.milestones.find((m) => m.milestoneId === apr_05.subjectIds[1])!;
@@ -63,11 +63,11 @@ test("9 (Shop): once apr_05 is granted and its payment arrives, mls_02 shows pai
   watch.expectClean();
 });
 
-test("11: in Chinese the commission and its milestone labels show their Chinese text, and amounts stay dollars", async ({ page }) => {
+test("11: the commission and its milestone labels render in English with no Chinese character, and amounts are dollars", async ({ page }) => {
   await openPage(page, `/shop/projects/${wip.id}`);
-  await setLang(page, "zh");
   const view = page.getByTestId("communities-wip-page");
-  await expect(view).toContainText(wip.title.zh);
-  for (const m of wip.milestones) await expect(page.getByTestId(`wip-milestone-${m.milestoneId}`)).toContainText(m.label.zh);
+  await expect(view).toContainText(wip.title.en);
+  for (const m of wip.milestones) await expect(page.getByTestId(`wip-milestone-${m.milestoneId}`)).toContainText(m.label.en);
   await expect(page.getByTestId(`wip-milestone-${released.milestoneId}`)).toContainText("$");
+  await expectNoChinese(view);
 });

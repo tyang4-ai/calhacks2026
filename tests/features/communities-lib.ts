@@ -130,15 +130,15 @@ export function slot(page: Page, slotId: string): Locator {
   return page.locator(`[data-slot="${slotId}"]`);
 }
 
-/** Cycles the language toggle until the store's lang is `want` ("auto", "en" or "zh"). */
-export async function setLang(page: Page, want: "auto" | "en" | "zh"): Promise<void> {
-  const toggle = page.getByTestId("demo-lang-toggle");
-  for (let i = 0; i < 3; i += 1) {
-    const now = await page.evaluate(() => window.__cindia!.store.getState().lang);
-    if (now === want) return;
-    await toggle.click();
-  }
-  await expect.poll(() => page.evaluate(() => window.__cindia!.store.getState().lang)).toBe(want);
+/**
+ * Any Chinese character: CJK punctuation, kana and ideographs (U+2E80 to U+9FFF), compatibility
+ * ideographs and full-width forms. The site is English only (decisions.md, Oct 24 11:35 and 11:55 PM).
+ */
+export const CHINESE = /[⺀-鿿豈-﫿＀-￯]/;
+
+/** Checks that an element's text holds no Chinese character, retrying like any expect. */
+export async function expectNoChinese(locator: Locator): Promise<void> {
+  await expect(locator).not.toContainText(CHINESE);
 }
 
 /** The store areas this feature reads, for checks on what was emitted and what arrived. */

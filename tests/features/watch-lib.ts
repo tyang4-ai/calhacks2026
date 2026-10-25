@@ -149,15 +149,11 @@ export async function logLength(page: Page): Promise<number> {
   return page.evaluate(() => (window.__cindia!.store.getState() as unknown as CindiaState).log.entries.length);
 }
 
-/** Switches the language toggle until the store's lang is `lang`. */
-export async function setLang(page: Page, lang: "auto" | "en" | "zh"): Promise<void> {
-  const toggle = page.getByTestId("demo-lang-toggle");
-  for (let i = 0; i < 3; i++) {
-    if ((await toggle.getAttribute("data-lang")) === lang) return;
-    await toggle.click();
-  }
-  await expect(toggle).toHaveAttribute("data-lang", lang);
-}
+/**
+ * Any Chinese character: Han ideographs, CJK symbols and punctuation, and full-width forms. The site
+ * is English only (Gordon, Oct 24, 11:35 PM and 11:55 PM), so none may show in the watch's text.
+ */
+export const CHINESE = /[\p{Script=Han}　-〿＀-￯]/u;
 
 /**
  * Each test ID sits inside frame-studio and every clipping ancestor (within 1 px), retried with the

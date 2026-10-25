@@ -1,11 +1,12 @@
 // F-communities T2: the community page. Acceptance 2 and 3, plus the page's parts of 10 (no
-// Simulated badge) and 11 (the community text, L4, L8, L9 and the protocols in Chinese). Expected
-// values come from src/mock/; the labels are the glossary's, copied in communities-lib.ts.
+// Simulated badge) and 11 (the community text, L4, L8, L9 and the protocols in English, the site
+// being English only). Expected values come from src/mock/; the labels are the glossary's, copied in
+// communities-lib.ts.
 import { expect, test } from "@playwright/test";
 import type { Community, Person } from "../../src/core/types";
 import { communities, getById, pieces, storefronts } from "../../src/mock/index";
 import { watchPage } from "../smoke/lib";
-import { L4, L8, L9_NOTE, L9_TITLE, openPage, setLang, slot, WORDS } from "./communities-lib";
+import { expectNoChinese, L4, L8, L9_NOTE, L9_TITLE, openPage, slot, WORDS } from "./communities-lib";
 
 function community(id: string): Community {
   const c = communities.find((x) => x.id === id);
@@ -110,21 +111,21 @@ test("10: the community page declares no source keys, so it shows no Simulated b
   await expect(s.getByTestId("simulated-badge")).toHaveCount(0);
 });
 
-test("11: in Chinese the community text, L4, L8, L9 and the protocols show their Chinese text, with the kind label 美洲原住民", async ({ page }) => {
+test("11: the community text, L4, L8, L9 and the protocols render in English with no Chinese character, with the kind label Native American", async ({ page }) => {
   await openPage(page, `/shop/community/${dine.id}`);
-  await setLang(page, "zh");
   const view = page.getByTestId("community-page");
-  await expect(view).toContainText(dine.name.zh);
-  await expect(view).toContainText(dine.about.zh);
-  await expect(view.locator('[data-role="kind"]').first()).toHaveText(WORDS.nativeAmerican.zh);
-  await expect(page.getByTestId("communities-about-note")).toHaveText(L8.zh);
-  await expect(page.getByTestId("community-protocols").getByRole("heading")).toHaveText(L9_TITLE.zh);
-  await expect(page.getByTestId("communities-protocols-note")).toHaveText(L9_NOTE.zh);
-  for (const p of dine.protocols) await expect(page.getByTestId("community-protocols")).toContainText(p.zh);
+  await expect(view).toContainText(dine.name.en);
+  await expect(view).toContainText(dine.about.en);
+  await expect(view.locator('[data-role="kind"]').first()).toHaveText(WORDS.nativeAmerican.en);
+  await expect(page.getByTestId("communities-about-note")).toHaveText(L8.en);
+  await expect(page.getByTestId("community-protocols").getByRole("heading")).toHaveText(L9_TITLE.en);
+  await expect(page.getByTestId("communities-protocols-note")).toHaveText(L9_NOTE.en);
+  for (const p of dine.protocols) await expect(page.getByTestId("community-protocols")).toContainText(p.en);
   const verification = page.getByTestId("community-verification");
-  await expect(verification).toContainText(dine.verification.note.zh);
-  await expect(verification.locator('[data-role="demo-note"]')).toHaveText(L4.zh);
-  // Amounts stay dollars in Chinese.
+  await expect(verification).toContainText(dine.verification.note.en);
+  await expect(verification.locator('[data-role="demo-note"]')).toHaveText(L4.en);
+  await expectNoChinese(view);
+  // Amounts are dollars.
   await expect(page.getByTestId(`project-progress-${dine.projectIds[0]}`)).toContainText("$");
 });
 

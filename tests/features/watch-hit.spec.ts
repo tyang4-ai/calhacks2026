@@ -7,6 +7,7 @@ import { getById } from "../../src/mock";
 import { ACTIONS, CHECKED, ENGINE, HIT, L19_HINT, L19_LABEL, L20, L21, L22, L23, SCAN, fill } from "../../src/features/watch/strings";
 import { watchPage } from "../smoke/lib";
 import {
+  CHINESE,
   CLAIM_ONLY,
   TOUR_HIT,
   TOUR_SCAN,
@@ -17,7 +18,6 @@ import {
   openWatch,
   scriptedResults,
   seed,
-  setLang,
   tourScan,
 } from "./watch-lib";
 
@@ -126,30 +126,44 @@ test("9: a live counterfeit.flagged shows L21 on its card", async ({ page }) => 
   watch.expectClean();
 });
 
-test("12: in Chinese every label and the claim are Chinese, and the found title and snippet stay as found", async ({ page }) => {
+// English only (Gordon, Oct 24, 11:35 PM and 11:55 PM): the language toggle is gone, so 12 checks
+// that every label and the claim render in English, with no Chinese character anywhere in them.
+test("12: every label and the claim are English with no Chinese character, and the found title and snippet stay as found", async ({ page }) => {
   const watch = watchPage(page);
   await openWatch(page);
   await tourScan(page, "counterfeit.flagged", { cftId: CFT }, 300);
-  await setLang(page, "zh");
   const item = inFrame(page, `watch-item-${CFT}`);
-  await expect(item.getByTestId(`watch-claim-${CFT}`)).toContainText(TOUR_HIT.claim.zh);
-  await expect(item.getByTestId(`watch-claim-${CFT}`)).toContainText(HIT.claimLabel.zh);
+  const claim = item.getByTestId(`watch-claim-${CFT}`);
+  await expect(claim).toContainText(TOUR_HIT.claim.en);
+  await expect(claim).toContainText(HIT.claimLabel.en);
+  await expect(claim).not.toContainText(CHINESE);
   await expect(item.locator('[data-role="found-title"]')).toHaveText(TOUR_HIT.title);
   await expect(item.locator('[data-role="found-snippet"]')).toHaveText(TOUR_HIT.snippet);
-  await expect(item.locator('[data-role="found"]')).toContainText(HIT.foundLabel.zh);
-  await expect(item.locator('[data-role="piece"]')).toContainText(HIT.pieceLabel.zh);
-  await expect(item.locator('[data-role="piece"]')).toContainText(piece.title.zh);
-  await expect(item.getByTestId(`watch-similarity-${CFT}`)).toContainText(fill(L19_LABEL, { score }).zh);
-  await expect(item.getByTestId(`watch-similarity-${CFT}`)).toContainText(L19_HINT.zh);
-  await expect(item.getByTestId("watch-fairness")).toContainText(HIT.fairness.zh);
-  await expect(item.getByTestId("watch-fairness")).toContainText(L20.zh);
-  await expect(item.getByTestId(`watch-report-${CFT}`)).toHaveText(ACTIONS.waiting.zh);
-  await expect(item.getByTestId(`watch-dismiss-${CFT}`)).toHaveText(L23.zh);
-  await expect(inFrame(page, "watch-scan")).toHaveText(SCAN.scanNow.zh);
-  await expect(inFrame(page, "watch-engine")).toHaveText(ENGINE.scripted.zh);
+  const found = item.locator('[data-role="found"]');
+  await expect(found).toContainText(HIT.foundLabel.en);
+  await expect(found).not.toContainText(CHINESE);
+  const mine = item.locator('[data-role="piece"]');
+  await expect(mine).toContainText(HIT.pieceLabel.en);
+  await expect(mine).toContainText(piece.title.en);
+  await expect(mine).not.toContainText(CHINESE);
+  const sim = item.getByTestId(`watch-similarity-${CFT}`);
+  await expect(sim).toContainText(fill(L19_LABEL, { score }).en);
+  await expect(sim).toContainText(L19_HINT.en);
+  await expect(sim).not.toContainText(CHINESE);
+  const fairness = item.getByTestId("watch-fairness");
+  await expect(fairness).toContainText(HIT.fairness.en);
+  await expect(fairness).toContainText(L20.en);
+  await expect(fairness).not.toContainText(CHINESE);
+  await expect(item.getByTestId(`watch-report-${CFT}`)).toHaveText(ACTIONS.waiting.en);
+  await expect(item.getByTestId(`watch-dismiss-${CFT}`)).toHaveText(L23.en);
+  await expect(item).not.toContainText(CHINESE);
+  await expect(inFrame(page, "watch-scan")).toHaveText(SCAN.scanNow.en);
+  await expect(inFrame(page, "watch-engine")).toHaveText(ENGINE.scripted.en);
   const claimOnly = scriptedResults().findIndex((r) => r.url === CLAIM_ONLY.url) + 1;
-  await expect(inFrame(page, `watch-claim-only-${claimOnly}`)).toHaveText(L22.zh);
+  await expect(inFrame(page, `watch-claim-only-${claimOnly}`)).toHaveText(L22.en);
   const neither = scriptedResults().findIndex((r) => r.verdict === "neither") + 1;
-  await expect(inFrame(page, `watch-checked-${neither}`)).toContainText(CHECKED.neither.zh);
+  const checked = inFrame(page, `watch-checked-${neither}`);
+  await expect(checked).toContainText(CHECKED.neither.en);
+  await expect(checked).not.toContainText(CHINESE);
   watch.expectClean();
 });
