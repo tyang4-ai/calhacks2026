@@ -1,9 +1,9 @@
 STAGE: V2
-NEXT: V2 (features, upgrades, D-deploy)
+NEXT: V4 (I3-redesign drop 3), then the G4v2 rerun; G5s in the worktree meanwhile
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 02:26 PT
+UPDATED: 2026-10-25 02:58 PT
 
 # Status board
 
@@ -55,6 +55,7 @@ v1 (desktop session, history):
 | G3 process | PASS (after fix round 1) | Oct 25 12:25 AM | worktree rerun `artifacts/gates/G3-process2-wt-2343.md` 3/3 (check:scope 71 unit, feature 38 with the new layout spec, smoke 123), `artifacts/gates/G3-process-verifier-recheck.md` PASS | v2-process |
 | G3 approvals | PASS (after fix round 1) | Oct 25 1:00 AM | worktree rerun `artifacts/gates/G3-approvals2-wt-0005.md` 3/3 (check:scope, feature 41, smoke 123), `artifacts/gates/G3-approvals-verifier-recheck.md` PASS; the adversarial lens (`G3-approvals-verifier-adversarial.md`) confirmed the toast fix over 94 states and failed only on the tour (three specs assume apr_01 comes first; apr_02's buttons below the fold with the tour's apr_04 pending): T8 items | v2-approvals |
 | G3 process | FAIL, fix round 1 | Oct 24 11:05 PM | `artifacts/gates/G3-process-verifier.md` FAIL on screens only: F1 swarm tool node over the Finder's name, F2 data chips cut, F3 reconcile labels truncated, F4 model name truncated; contracts, labels and 20 Acceptance lines pass | |
+| G4v2 | PASS | Oct 25 2:52 AM | `artifacts/gates/G4v2-0233.md` 5/5 (build, tour 220.0 s within 235 s x3, offline); first run `G4v2-0150.md` 5/5 with review FAILs (English: d15's translated step, stale v1 shots; words: d11's "Pieces for sale"), fixed; recheck `artifacts/gates/G4v2-verifier-recheck.md` | demo-ok-v2 |
 | G6 | | | | |
 
 ## Features
@@ -102,19 +103,19 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | S3-catalog | V1 | green | data-smith | v2-data | G2b 3/3, verifier PASS; minors M1-M5, M8 for a later data round; T9 after B11's training |
 | I2-art | V1 | green | integrator | v2-art | T0 54 placeholders (54288bd); T1-T3 the 54 drawings, verifier PASS; Gordon's two-minute look before G4v2 |
 | F-search | V2 P0 | green | feature-lead | v2-search | |
-| M-buyer | V2 P0 | green (T0-T6) | feature-lead | v2-buyer | T7 after G4v2; F1, F2 in the polish queue |
+| M-buyer | V2 P0 | green (T0-T6); T7 running (retire the phone flow) | feature-lead | v2-buyer | then the orchestrator drops buyer.main from the shared slot list and the contract, then G3 buyer |
 | F-support | V2 P0 | green | feature-lead | v2-support | |
 | F-process | V2 P0 | green | feature-lead | v2-process | lead wrote T0-T8 itself (no Agent tool); fix round 1 for the screens |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
 | M-approvals | V2 P0 | green | feature-lead | v2-approvals | worktree G3 3/3 PASS; live two-screen spec runs; OwnerInbox deleted |
-| M-desktop | V2 P0 | fix round 1 done (99 + 1 reload rerun), worktree G3 and two-lens recheck running | feature-lead | | needs FlagState.nessieId in src/core/state.ts (integrator) |
+| M-desktop | V2 P0 | green (worktree G3 3/3, recheck: every screen fix confirmed) | feature-lead | v2-desktop | 3 live specs B16 broke (scenario-live :99, :161, money-map-live-bank :79): lead fixing before B16's G5 |
 | F-seller-hub | V2 P0 | green | feature-lead | v2-seller-hub | lead wrote T0-T7 itself; specs mock the HMR socket (verifier: within the rules); findings in the polish queue |
 | F-watch | V2 P1 | green | feature-lead | v2-watch | live spec skips until B15; F2 in the polish queue |
 | F-storefront | V2 P1 | green | feature-lead | v2-storefront | theme field on storefront.published (integrator); N1-N4 in the polish queue |
 | M-maker-statement | V2 P1 | green | feature-lead | v2-maker-statement | compact layout under 600 px for Phase A's box; minors in the verifier report |
 | D-deploy | V2 | green | integrator | v2-deploy | then Gordon uploads (Needs Gordon) |
-| I2-tour | V3 | T1-T7 built (uncommitted); test:demo 6/7 and offline red on one item (F-process's swarm steps); fixes running; G4v2 next | integrator, data-smith | | 20 beats, 220 s; English only step 1 done in the shell; pitch text final |
-| I3-redesign | V4 | todo | integrator | | per design drop |
+| I2-tour | V3 | green: G4v2 5/5 (tour 220.0 s x3, offline), review fixes rechecked | integrator, data-smith | demo-ok-v2 | 20 beats, 220 s; English only step 1 done; committed with T9 data and the feature fix rounds |
+| I3-redesign | V4 | drop 3 running: two integrators side by side (shell half, kit half), decisions.md 2:55 AM; T5 skipped (I2-art's drawings stay) | integrator | | G4v2 rerun alone after both, tag demo-ok-v2-d3 |
 
 ## v2 Upgrades
 
@@ -423,3 +424,5 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 02:09 PT · SpacetimeDB stopped at its 2-hour limit, restarted on 127.0.0.1:3000 · status.md
 - 2026-10-25 02:24 PT · G4v2 checks PASS 5/5 (tour 220.0 s x3, offline); review: beats lens PASS (F1 pc_38 placeholder on the surprise beat, F2-F7 small), English lens FAIL on d15's "translated them into Chinese" step (fixed in src/mock/swarm.ts by a data-smith, check:data 300) and stale v1 screenshots in artifacts/demo/ (deleted); words lens running; G4v2 reruns after it · artifacts/gates/G4v2-0150.md
 - 2026-10-25 02:26 PT · G4v2 review done: beats PASS, English FAIL (d15 sentence, fixed; stale shots, deleted), words FAIL on B1 (d11's "Pieces for sale" under L1's "Nothing is for sale."); fix round: seller-hub heading to "Pieces", F-search's engine line punctuation; then the G4v2 rerun and a recheck of d11 and d15 · artifacts/gates/G4v2-verifier-words.md
+- 2026-10-25 02:58 PT · G4v2 PASS 5/5 on the fixed tour (220.0 s x3, offline); committed in seven groups (I2-tour, S3 T9, F-process, F-seller-hub, M-buyer, F-search, M-desktop); recheck verifier running, then push and tag demo-ok-v2; V4 started: I3 drop 3 as two integrators (shell, kit), M-buyer T7, M-desktop's live spec fixes; G5 b12, b14, b11 in the worktree · artifacts/gates/G4v2-0233.md
+- 2026-10-25 02:55 PT · dev server and API restarted ahead of their 2-hour limits (5173, 8000; all 16 routers) · status.md
