@@ -164,18 +164,18 @@ Every time in these modes comes from the timeline's `beat.started` events, never
 
 ## The pitch cards
 
-**Final** (Gordon, through `docs/v2/video-brief.md` section 7, "approved by Gordon"). `src/app/demo/pitch.ts` holds the same text, and if the two ever differ, the file wins. `PitchCard.tsx` draws one card: a title and at most four short lines in large type, with L1 in small type at its foot ("Demo. Every maker, community and story here is fictional. Nothing is for sale."), because the `pitch` camera has no top bar. The tagline **"Made by hand. Paid in full."** opens the Cindia card in the strongest type on the card, and the end card repeats it. In `pitch.ts` each card sits under a `[GORDON]` comment, and a comment beside the "Fakes" line names its source, the U.S. Attorney's case of Aug 5, 2026 in fix-plan 1.3.
+**Final** (Gordon, through `docs/v2/video-brief.md` section 7, "approved by Gordon"; his Oct 25 3:25 AM message replaced the Cindia card's tagline and last line). `src/app/demo/pitch.ts` holds the same text, and if the two ever differ, the file wins. `PitchCard.tsx` draws one card: a title and at most four short lines in large type, with L1 in small type at its foot ("Demo. Every maker, community and story here is fictional. Nothing is for sale."), because the `pitch` camera has no top bar. The tagline **"Describe the vibe. Gift the piece. Pay the person."** opens the Cindia card in the strongest type on the card, and the end card repeats it. In `pitch.ts` each card sits under a `[GORDON]` comment, and a comment beside the "Fakes" line names its source, the U.S. Attorney's case of Aug 5, 2026 in fix-plan 1.3.
 
 | Card | Title | Lines |
 |---|---|---|
-| `what` (`p01-what`, `pitch-card-what`) | Cindia | Made by hand. Paid in full. / A platform for underrepresented makers, starting with Native American makers. / Yes, it's like Etsy. But we do the selling, the marketing and the books for them. / Buyers find a piece by describing a feeling, and watch the maker get paid. |
+| `what` (`p01-what`, `pitch-card-what`) | Cindia | Describe the vibe. Gift the piece. Pay the person. / A platform for underrepresented makers, starting with Native American makers. / Yes, it's like Etsy. But we do the selling, the marketing and the books for them. / Tell us who the gift is for, and we find handmade pieces that fit them. |
 | `why` (`p02-why`, `pitch-card-why`) | Why | Selling online takes time, broadband and marketing reach that many makers on tribal lands don't have. / On a marketplace, a co-op gets one payout and splits it by hand. / Fakes sell as Native-made. In August, one eBay seller admitted to selling more than $92,000 of them. / If we don't help them, who will? |
 | `how` (`p03-how`, `pitch-card-how`) | How it works | A swarm of small Claude agents, each with one job, on Haiku and Sonnet. / Our own embedding model, fine-tuned on queries Claude wrote, embeds every listing. / SpacetimeDB holds every record, and Elastic searches them. / A person approves anything that moves money. |
 
 ## The end card (`demo-end-card`)
 
 It shows after `d12-receipt` in presenter mode and in video mode, and at the end of plain `/demo`, where it stays. It covers the stage, so no top bar shows, and it carries, in English:
-- "Cindia" and the tagline, "Made by hand. Paid in full.",
+- "Cindia" and the tagline, "Describe the vibe. Gift the piece. Pay the person.",
 - the seats line, one constant (`SEATS_LINE` in `EndCard.tsx`) that D-sponsors copies into the README, the Devpost and `sponsors/hyphenate/`: "Cindy's agents fill three seats: bookkeeper, collections and support. A person approves anything that moves money.",
 - the planted-error proof, "Caught 4 of 4 planted errors", from `proof.scored`,
 - the search model's recall at 5 for each system from `proof.search_scored` when `store.model.scored` is set, with L28 under it, or else "Search model: not trained yet",

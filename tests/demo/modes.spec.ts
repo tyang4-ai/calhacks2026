@@ -203,7 +203,7 @@ test("plain /demo ends on the end card, which stays", async ({ page }) => {
   const card = page.getByTestId("demo-end-card");
   await expect(card).toBeVisible({ timeout: 20000 });
   await expect(card).toContainText("Cindy's agents fill three seats: bookkeeper, collections and support. A person approves anything that moves money.");
-  await expect(card).toContainText("Made by hand. Paid in full.");
+  await expect(card).toContainText("Describe the vibe. Gift the piece. Pay the person.");
   await expect(card).toContainText("Caught 4 of 4 planted errors");
   await expect(card).toContainText("Live means a real service answered in this run. Nessie is a sandbox bank, so no real money moved.");
   await expect(card).toContainText("Every community, maker and story here is fictional. The crafts are real traditions.");

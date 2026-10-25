@@ -1,6 +1,7 @@
 // The three pitch cards that open the tour (p01-what, p02-why, p03-how), and the tagline the end
 // card repeats. The text is final: Gordon approved it in docs/v2/video-brief.md section 7 (decisions.md,
-// Oct 25 00:22 PT). If the two ever differ, this file wins. English only, like the whole site.
+// Oct 25 00:22 PT), and his 3:25 AM message gave the Cindia card its new tagline and last line
+// (decisions.md, Oct 25 03:30 PT). If the two ever differ, this file wins. English only, like the whole site.
 
 export type PitchCardId = "what" | "why" | "how";
 
@@ -14,10 +15,10 @@ export interface PitchCardText {
 }
 
 /** The tagline: the first line of the Cindia card, repeated on the end card. */
-export const TAGLINE = "Made by hand. Paid in full.";
+export const TAGLINE = "Describe the vibe. Gift the piece. Pay the person.";
 
 export const PITCH_CARDS: readonly PitchCardText[] = [
-  // [GORDON] The Cindia card, approved by Gordon (video-brief.md section 7).
+  // [GORDON] The Cindia card, approved by Gordon (video-brief.md section 7; new tagline and last line, Oct 25 3:25 AM).
   {
     id: "what",
     beatId: "p01-what",
@@ -26,7 +27,7 @@ export const PITCH_CARDS: readonly PitchCardText[] = [
       TAGLINE,
       "A platform for underrepresented makers, starting with Native American makers.",
       "Yes, it's like Etsy. But we do the selling, the marketing and the books for them.",
-      "Buyers find a piece by describing a feeling, and watch the maker get paid.",
+      "Tell us who the gift is for, and we find handmade pieces that fit them.",
     ],
   },
   // [GORDON] The Why card, approved by Gordon (video-brief.md section 7).
