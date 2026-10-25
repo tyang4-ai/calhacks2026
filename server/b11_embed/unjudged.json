@@ -1,0 +1,620 @@
+{
+  "_about": "For each held-out query, the pieces any system put in its top 5 that the query doesn't grade, for one pooled grading pass (S3-catalog T9). Fictional demo data.",
+  "modelId": "cindia-embed-v1",
+  "fingerprint": "f7181c7ddb90af25",
+  "k": 5,
+  "systems": [
+    "keyword",
+    "base",
+    "custom",
+    "hybrid"
+  ],
+  "queries": [
+    {
+      "queryId": "sq_001",
+      "text": "something calm for a reading corner",
+      "lang": "en",
+      "pieceIds": [
+        "pc_47",
+        "pc_42",
+        "pc_25",
+        "pc_24",
+        "pc_19",
+        "pc_16",
+        "pc_08",
+        "pc_07",
+        "pc_04"
+      ]
+    },
+    {
+      "queryId": "sq_002",
+      "text": "earthy and warm, for a kitchen shelf",
+      "lang": "en",
+      "pieceIds": [
+        "pc_07",
+        "pc_03",
+        "pc_51",
+        "pc_27",
+        "pc_33"
+      ]
+    },
+    {
+      "queryId": "sq_003",
+      "text": "quiet and simple",
+      "lang": "en",
+      "pieceIds": [
+        "pc_51",
+        "pc_45",
+        "pc_54",
+        "pc_42",
+        "pc_44",
+        "pc_10",
+        "pc_12"
+      ]
+    },
+    {
+      "queryId": "sq_004",
+      "text": "housewarming present, something to hang on the wall",
+      "lang": "en",
+      "pieceIds": [
+        "pc_39",
+        "pc_07",
+        "pc_27",
+        "pc_01"
+      ]
+    },
+    {
+      "queryId": "sq_005",
+      "text": "a thank you gift under $50",
+      "lang": "en",
+      "pieceIds": [
+        "pc_36",
+        "pc_15",
+        "pc_19",
+        "pc_29",
+        "pc_24",
+        "pc_25",
+        "pc_34",
+        "pc_35",
+        "pc_28"
+      ]
+    },
+    {
+      "queryId": "sq_006",
+      "text": "holiday gift for my sister",
+      "lang": "en",
+      "pieceIds": [
+        "pc_20",
+        "pc_26",
+        "pc_15"
+      ]
+    },
+    {
+      "queryId": "sq_007",
+      "text": "birthday present for a ten year old",
+      "lang": "en",
+      "pieceIds": [
+        "pc_43",
+        "pc_48",
+        "pc_53",
+        "pc_07",
+        "pc_23",
+        "pc_36",
+        "pc_20",
+        "pc_09",
+        "pc_30",
+        "pc_01"
+      ]
+    },
+    {
+      "queryId": "sq_008",
+      "text": "for my dad, he likes bold things",
+      "lang": "en",
+      "pieceIds": [
+        "pc_25",
+        "pc_21",
+        "pc_36",
+        "pc_19"
+      ]
+    },
+    {
+      "queryId": "sq_009",
+      "text": "treat myself to an elegant black and white pot",
+      "lang": "en",
+      "pieceIds": [
+        "pc_40",
+        "pc_30",
+        "pc_34"
+      ]
+    },
+    {
+      "queryId": "sq_010",
+      "text": "gift for a friend who loves flowers",
+      "lang": "en",
+      "pieceIds": [
+        "pc_24"
+      ]
+    },
+    {
+      "queryId": "sq_011",
+      "text": "my mother's birthday, she wears necklaces",
+      "lang": "en",
+      "pieceIds": [
+        "pc_12",
+        "pc_53"
+      ]
+    },
+    {
+      "queryId": "sq_012",
+      "text": "red and black patchwork",
+      "lang": "en",
+      "pieceIds": [
+        "pc_17",
+        "pc_04"
+      ]
+    },
+    {
+      "queryId": "sq_013",
+      "text": "orange and white dots",
+      "lang": "en",
+      "pieceIds": [
+        "pc_02",
+        "pc_12",
+        "pc_32",
+        "pc_46",
+        "pc_34",
+        "pc_35"
+      ]
+    },
+    {
+      "queryId": "sq_014",
+      "text": "grey zigzags",
+      "lang": "en",
+      "pieceIds": [
+        "pc_03",
+        "pc_43",
+        "pc_52",
+        "pc_53",
+        "pc_46"
+      ]
+    },
+    {
+      "queryId": "sq_015",
+      "text": "big striking rug with stepped diamonds",
+      "lang": "en",
+      "pieceIds": [
+        "pc_11",
+        "pc_44",
+        "pc_07",
+        "pc_05",
+        "pc_52"
+      ]
+    },
+    {
+      "queryId": "sq_016",
+      "text": "a tiny pot with dots",
+      "lang": "en",
+      "pieceIds": [
+        "pc_02",
+        "pc_12",
+        "pc_37",
+        "pc_30",
+        "pc_31"
+      ]
+    },
+    {
+      "queryId": "sq_017",
+      "text": "purple beadwork",
+      "lang": "en",
+      "pieceIds": [
+        "pc_14",
+        "pc_22",
+        "pc_15",
+        "pc_17",
+        "pc_26",
+        "pc_25"
+      ]
+    },
+    {
+      "queryId": "sq_018",
+      "text": "green leaves on a necklace",
+      "lang": "en",
+      "pieceIds": [
+        "pc_14",
+        "pc_25",
+        "pc_17",
+        "pc_16"
+      ]
+    },
+    {
+      "queryId": "sq_019",
+      "text": "navy jacket with orange bands",
+      "lang": "en",
+      "pieceIds": [
+        "pc_51",
+        "pc_34",
+        "pc_32",
+        "pc_44",
+        "pc_50"
+      ]
+    },
+    {
+      "queryId": "sq_020",
+      "text": "turquoise",
+      "lang": "en",
+      "pieceIds": [
+        "pc_02",
+        "pc_08",
+        "pc_06",
+        "pc_05",
+        "pc_07",
+        "pc_11",
+        "pc_46",
+        "pc_45"
+      ]
+    },
+    {
+      "queryId": "sq_021",
+      "text": "a slim silver band for my finger",
+      "lang": "en",
+      "pieceIds": [
+        "pc_06",
+        "pc_03",
+        "pc_02",
+        "pc_09",
+        "pc_07",
+        "pc_10"
+      ]
+    },
+    {
+      "queryId": "sq_022",
+      "text": "leather pouch covered in beads",
+      "lang": "en",
+      "pieceIds": [
+        "pc_16"
+      ]
+    },
+    {
+      "queryId": "sq_023",
+      "text": "cotton skirt trimmed with rickrack",
+      "lang": "en",
+      "pieceIds": [
+        "pc_52",
+        "pc_42",
+        "pc_53",
+        "pc_51",
+        "pc_45"
+      ]
+    },
+    {
+      "queryId": "sq_024",
+      "text": "hand-spun wool",
+      "lang": "en",
+      "pieceIds": [
+        "pc_11",
+        "pc_01",
+        "pc_06",
+        "pc_07"
+      ]
+    },
+    {
+      "queryId": "sq_025",
+      "text": "a hand-painted clay bowl to set on a shelf",
+      "lang": "en",
+      "pieceIds": [
+        "pc_35",
+        "pc_39",
+        "pc_27",
+        "pc_38"
+      ]
+    },
+    {
+      "queryId": "sq_026",
+      "text": "beads woven on a loom, red and black",
+      "lang": "en",
+      "pieceIds": [
+        "pc_14",
+        "pc_43",
+        "pc_15",
+        "pc_24",
+        "pc_04",
+        "pc_52",
+        "pc_01"
+      ]
+    },
+    {
+      "queryId": "sq_027",
+      "text": "machine-sewn jacket in red",
+      "lang": "en",
+      "pieceIds": [
+        "pc_43",
+        "pc_49",
+        "pc_50",
+        "pc_46",
+        "pc_44"
+      ]
+    },
+    {
+      "queryId": "sq_028",
+      "text": "seed pot",
+      "lang": "en",
+      "pieceIds": []
+    },
+    {
+      "queryId": "sq_029",
+      "text": "beadwork necklace",
+      "lang": "en",
+      "pieceIds": [
+        "pc_16",
+        "pc_14",
+        "pc_26",
+        "pc_09",
+        "pc_18"
+      ]
+    },
+    {
+      "queryId": "sq_030",
+      "text": "patchwork that isn't too busy, calm colors",
+      "lang": "en",
+      "pieceIds": [
+        "pc_51",
+        "pc_45",
+        "pc_54",
+        "pc_44",
+        "pc_50",
+        "pc_46",
+        "pc_48",
+        "pc_41"
+      ]
+    },
+    {
+      "queryId": "sq_031",
+      "text": "pink beadwork earrings",
+      "lang": "en",
+      "pieceIds": [
+        "pc_53",
+        "pc_16",
+        "pc_22",
+        "pc_18",
+        "pc_14"
+      ]
+    },
+    {
+      "queryId": "sq_032",
+      "text": "a weaving with stripes to hang up",
+      "lang": "en",
+      "pieceIds": [
+        "pc_47",
+        "pc_43",
+        "pc_01"
+      ]
+    },
+    {
+      "queryId": "sq_033",
+      "text": "turqoise earings",
+      "lang": "en",
+      "pieceIds": [
+        "pc_22",
+        "pc_18",
+        "pc_14",
+        "pc_16"
+      ]
+    },
+    {
+      "queryId": "sq_034",
+      "text": "geometic jar",
+      "lang": "en",
+      "pieceIds": []
+    },
+    {
+      "queryId": "sq_035",
+      "text": "beeded earings with berrys",
+      "lang": "en",
+      "pieceIds": [
+        "pc_13",
+        "pc_16",
+        "pc_14",
+        "pc_22"
+      ]
+    },
+    {
+      "queryId": "sq_036",
+      "text": "My sister just moved into her first apartment and I want to get her something for the wall that feels calm, maybe blue or white, nothing too loud",
+      "lang": "en",
+      "pieceIds": [
+        "pc_42",
+        "pc_24",
+        "pc_50",
+        "pc_07",
+        "pc_11"
+      ]
+    },
+    {
+      "queryId": "sq_037",
+      "text": "I'm looking for a present for my dad who keeps everything in his truck, maybe a sturdy leather pouch in earthy colors",
+      "lang": "en",
+      "pieceIds": [
+        "pc_24",
+        "pc_32",
+        "pc_15",
+        "pc_52",
+        "pc_04"
+      ]
+    },
+    {
+      "queryId": "sq_038",
+      "text": "Need a bright, happy piece to wear to a holiday party, a skirt with lots of color, yellow if possible",
+      "lang": "en",
+      "pieceIds": [
+        "pc_44",
+        "pc_41",
+        "pc_54"
+      ]
+    },
+    {
+      "queryId": "sq_039",
+      "text": "rug",
+      "lang": "en",
+      "pieceIds": [
+        "pc_43",
+        "pc_39",
+        "pc_32",
+        "pc_52",
+        "pc_07",
+        "pc_41"
+      ]
+    },
+    {
+      "queryId": "sq_040",
+      "text": "jackets",
+      "lang": "en",
+      "pieceIds": []
+    },
+    {
+      "queryId": "sq_041",
+      "text": "安静一点的陶罐，黑白两色",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_40",
+        "pc_29",
+        "pc_35",
+        "pc_32",
+        "pc_38"
+      ]
+    },
+    {
+      "queryId": "sq_042",
+      "text": "绿松石吊坠",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_02",
+        "pc_51",
+        "pc_25",
+        "pc_35",
+        "pc_44",
+        "pc_07",
+        "pc_06"
+      ]
+    },
+    {
+      "queryId": "sq_043",
+      "text": "送给朋友的小耳环，颜色要亮",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_24",
+        "pc_25",
+        "pc_17",
+        "pc_16",
+        "pc_19",
+        "pc_15",
+        "pc_26",
+        "pc_36"
+      ]
+    },
+    {
+      "queryId": "sq_044",
+      "text": "蓝白拼布裙",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_50",
+        "pc_53",
+        "pc_15",
+        "pc_24",
+        "pc_26",
+        "pc_45"
+      ]
+    },
+    {
+      "queryId": "sq_045",
+      "text": "乔迁新居，送一只大陶碗",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_39",
+        "pc_17",
+        "pc_32",
+        "pc_27",
+        "pc_04",
+        "pc_35",
+        "pc_38"
+      ]
+    },
+    {
+      "queryId": "sq_046",
+      "text": "给爸爸的礼物，要稳重一点",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_36",
+        "pc_40",
+        "pc_29",
+        "pc_33",
+        "pc_32",
+        "pc_23",
+        "pc_24",
+        "pc_12",
+        "pc_52"
+      ]
+    },
+    {
+      "queryId": "sq_047",
+      "text": "带花的串珠小包",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_24",
+        "pc_23"
+      ]
+    },
+    {
+      "queryId": "sq_048",
+      "text": "适合小孩子穿的衣服",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_31",
+        "pc_29",
+        "pc_30",
+        "pc_37",
+        "pc_34",
+        "pc_53",
+        "pc_45",
+        "pc_07",
+        "pc_52",
+        "pc_44",
+        "pc_46",
+        "pc_51",
+        "pc_43"
+      ]
+    },
+    {
+      "queryId": "sq_049",
+      "text": "紫色和黄色",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_44",
+        "pc_52",
+        "pc_25",
+        "pc_28",
+        "pc_23",
+        "pc_15",
+        "pc_17",
+        "pc_33",
+        "pc_41",
+        "pc_51",
+        "pc_47",
+        "pc_49"
+      ]
+    },
+    {
+      "queryId": "sq_050",
+      "text": "手工盘筑的种子罐，橙色的",
+      "lang": "zh",
+      "pieceIds": [
+        "pc_40",
+        "pc_31",
+        "pc_15",
+        "pc_24",
+        "pc_19",
+        "pc_32",
+        "pc_38"
+      ]
+    }
+  ]
+}

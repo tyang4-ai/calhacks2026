@@ -1,6 +1,6 @@
 {
  "_about": "The keys B11 uses from artifacts/mock/mock.json, written by python server/b11_embed/data.py --snapshot. Every line is fictional demo data from src/mock/.",
- "_generatedAt": "2026-10-25T06:10:34.926Z",
+ "_generatedAt": "2026-10-25T06:52:05.125Z",
  "pieces": [
   {
    "id": "pc_01",
@@ -6710,7 +6710,8 @@
     "pc_28": 2,
     "pc_34": 2,
     "pc_32": 1,
-    "pc_29": 1
+    "pc_29": 1,
+    "pc_07": 1
    },
    "author": "data_agent"
   },
@@ -6737,7 +6738,8 @@
     "pc_06": 2,
     "pc_11": 2,
     "pc_03": 1,
-    "pc_04": 1
+    "pc_04": 1,
+    "pc_01": 1
    },
    "author": "data_agent"
   },
@@ -6861,7 +6863,8 @@
    "grades": {
     "pc_06": 2,
     "pc_07": 1,
-    "pc_01": 1
+    "pc_01": 1,
+    "pc_03": 1
    },
    "author": "data_agent"
   },
@@ -6872,7 +6875,8 @@
    "grades": {
     "pc_04": 2,
     "pc_03": 1,
-    "pc_01": 1
+    "pc_01": 1,
+    "pc_11": 1
    },
    "author": "data_agent"
   },
@@ -6883,7 +6887,10 @@
    "grades": {
     "pc_40": 2,
     "pc_29": 2,
-    "pc_36": 1
+    "pc_36": 1,
+    "pc_30": 1,
+    "pc_31": 1,
+    "pc_37": 1
    },
    "author": "data_agent"
   },
@@ -6905,7 +6912,9 @@
    "grades": {
     "pc_20": 2,
     "pc_23": 2,
-    "pc_21": 1
+    "pc_21": 1,
+    "pc_14": 1,
+    "pc_16": 1
    },
    "author": "data_agent"
   },
@@ -6916,7 +6925,9 @@
    "grades": {
     "pc_46": 2,
     "pc_41": 1,
-    "pc_52": 1
+    "pc_52": 1,
+    "pc_44": 1,
+    "pc_50": 1
    },
    "author": "data_agent"
   },
@@ -6962,7 +6973,8 @@
     "pc_43": 2,
     "pc_49": 2,
     "pc_41": 1,
-    "pc_46": 1
+    "pc_46": 1,
+    "pc_52": 1
    },
    "author": "data_agent"
   },
@@ -6973,7 +6985,8 @@
    "grades": {
     "pc_03": 2,
     "pc_05": 2,
-    "pc_04": 1
+    "pc_04": 1,
+    "pc_11": 1
    },
    "author": "data_agent"
   },
@@ -6984,7 +6997,10 @@
    "grades": {
     "pc_28": 2,
     "pc_33": 2,
-    "pc_36": 2
+    "pc_36": 2,
+    "pc_27": 1,
+    "pc_35": 1,
+    "pc_38": 1
    },
    "author": "data_agent"
   },
@@ -7006,7 +7022,10 @@
    "grades": {
     "pc_48": 2,
     "pc_52": 2,
-    "pc_41": 1
+    "pc_41": 1,
+    "pc_44": 1,
+    "pc_46": 1,
+    "pc_50": 1
    },
    "author": "data_agent"
   },
@@ -7052,7 +7071,10 @@
    "grades": {
     "pc_13": 2,
     "pc_23": 1,
-    "pc_17": 1
+    "pc_17": 1,
+    "pc_14": 1,
+    "pc_16": 1,
+    "pc_18": 1
    },
    "author": "data_agent"
   },
@@ -7064,7 +7086,8 @@
     "pc_05": 2,
     "pc_07": 2,
     "pc_11": 2,
-    "pc_06": 1
+    "pc_06": 1,
+    "pc_01": 1
    },
    "author": "data_agent"
   },
@@ -7099,7 +7122,10 @@
    "grades": {
     "pc_18": 2,
     "pc_24": 1,
-    "pc_26": 1
+    "pc_26": 1,
+    "pc_13": 1,
+    "pc_14": 1,
+    "pc_16": 1
    },
    "author": "data_agent"
   },
@@ -7121,7 +7147,8 @@
    "grades": {
     "pc_25": 2,
     "pc_19": 1,
-    "pc_17": 1
+    "pc_17": 1,
+    "pc_24": 1
    },
    "author": "data_agent"
   },
@@ -7133,7 +7160,9 @@
     "pc_43": 2,
     "pc_45": 2,
     "pc_49": 1,
-    "pc_42": 1
+    "pc_42": 1,
+    "pc_41": 1,
+    "pc_44": 1
    },
    "author": "data_agent"
   },
@@ -7169,7 +7198,8 @@
     "pc_27": 2,
     "pc_39": 2,
     "pc_33": 1,
-    "pc_37": 1
+    "pc_37": 1,
+    "pc_40": 1
    },
    "author": "data_agent"
   },
@@ -7206,7 +7236,9 @@
    "grades": {
     "pc_42": 2,
     "pc_54": 1,
-    "pc_49": 1
+    "pc_49": 1,
+    "pc_50": 1,
+    "pc_53": 1
    },
    "author": "data_agent"
   },
@@ -7217,7 +7249,8 @@
    "grades": {
     "pc_28": 2,
     "pc_33": 2,
-    "pc_36": 1
+    "pc_36": 1,
+    "pc_39": 1
    },
    "author": "data_agent"
   },
@@ -7227,7 +7260,9 @@
    "lang": "zh",
    "grades": {
     "pc_25": 2,
-    "pc_34": 1
+    "pc_34": 1,
+    "pc_12": 1,
+    "pc_32": 1
    },
    "author": "data_agent"
   },
@@ -7239,7 +7274,8 @@
     "pc_15": 2,
     "pc_19": 2,
     "pc_26": 2,
-    "pc_17": 1
+    "pc_17": 1,
+    "pc_24": 1
    },
    "author": "data_agent"
   },
@@ -7272,7 +7308,9 @@
     "pc_29": 2,
     "pc_30": 2,
     "pc_34": 2,
-    "pc_36": 1
+    "pc_36": 1,
+    "pc_31": 1,
+    "pc_40": 1
    },
    "author": "data_agent"
   }

@@ -1,0 +1,242 @@
+{
+  "modelId": "cindia-embed-v1",
+  "baseModel": "intfloat/multilingual-e5-small",
+  "dims": 384,
+  "pairs": 1045,
+  "epochs": 3,
+  "batch": 16,
+  "seed": 13,
+  "device": "cpu",
+  "pairSource": "claude",
+  "modelSha256": "dee481377b68f61c744b45c126e7cf13f6acbda1d0ad6d8cb047f1e01425ad4f",
+  "passagesHash": "3ef4ee3c798fdca8b468041ea15436853f7799622c16bc993ec892e94e8a8c82",
+  "fingerprint": "f7181c7ddb90af25",
+  "hubRepo": "Fireclaw2396/cindia-embed",
+  "hubRevision": "5ad571384f2fbf37b82ee955ccbe418b7e480557",
+  "hubUrl": "https://huggingface.co/Fireclaw2396/cindia-embed",
+  "pca": {
+    "explainedVariance": [
+      0.161711,
+      0.136561
+    ],
+    "tourQuery": "projected",
+    "queryShift": false
+  },
+  "eval": {
+    "k": 5,
+    "queries": 50,
+    "querySet": "agent-written, held out",
+    "systems": [
+      {
+        "system": "keyword",
+        "recallAtK": 0.784333,
+        "mrr": 0.874524
+      },
+      {
+        "system": "base",
+        "recallAtK": 0.722,
+        "mrr": 0.780889
+      },
+      {
+        "system": "custom",
+        "recallAtK": 0.789333,
+        "mrr": 0.892222
+      },
+      {
+        "system": "hybrid",
+        "recallAtK": 0.824667,
+        "mrr": 0.94
+      }
+    ],
+    "byLang": {
+      "en": {
+        "queries": 40,
+        "systems": [
+          {
+            "system": "keyword",
+            "recallAtK": 0.8125,
+            "mrr": 0.924405
+          },
+          {
+            "system": "base",
+            "recallAtK": 0.79625,
+            "mrr": 0.885833
+          },
+          {
+            "system": "custom",
+            "recallAtK": 0.797083,
+            "mrr": 0.902778
+          },
+          {
+            "system": "hybrid",
+            "recallAtK": 0.84875,
+            "mrr": 0.95
+          }
+        ]
+      },
+      "zh": {
+        "queries": 10,
+        "systems": [
+          {
+            "system": "keyword",
+            "recallAtK": 0.671667,
+            "mrr": 0.675
+          },
+          {
+            "system": "base",
+            "recallAtK": 0.425,
+            "mrr": 0.361111
+          },
+          {
+            "system": "custom",
+            "recallAtK": 0.758333,
+            "mrr": 0.85
+          },
+          {
+            "system": "hybrid",
+            "recallAtK": 0.728333,
+            "mrr": 0.9
+          }
+        ]
+      }
+    },
+    "comparisons": [
+      {
+        "a": "custom",
+        "b": "keyword",
+        "metric": "recallAtK",
+        "delta": 0.005,
+        "ci95": [
+          -0.087667,
+          0.101
+        ],
+        "beats": false
+      },
+      {
+        "a": "custom",
+        "b": "keyword",
+        "metric": "mrr",
+        "delta": 0.017698,
+        "ci95": [
+          -0.087224,
+          0.122698
+        ],
+        "beats": false
+      },
+      {
+        "a": "custom",
+        "b": "base",
+        "metric": "recallAtK",
+        "delta": 0.067333,
+        "ci95": [
+          -0.018008,
+          0.156008
+        ],
+        "beats": false
+      },
+      {
+        "a": "custom",
+        "b": "base",
+        "metric": "mrr",
+        "delta": 0.111333,
+        "ci95": [
+          0.022222,
+          0.205556
+        ],
+        "beats": true
+      },
+      {
+        "a": "hybrid",
+        "b": "custom",
+        "metric": "recallAtK",
+        "delta": 0.035333,
+        "ci95": [
+          -0.021333,
+          0.094333
+        ],
+        "beats": false
+      },
+      {
+        "a": "hybrid",
+        "b": "custom",
+        "metric": "mrr",
+        "delta": 0.047778,
+        "ci95": [
+          0.001667,
+          0.105
+        ],
+        "beats": true
+      }
+    ]
+  },
+  "training": {
+    "pairs": 1045,
+    "trainQueries": 926,
+    "devQueries": 108,
+    "pairRows": 650,
+    "tripletRows": 276,
+    "voices": {
+      "craft_term": 138,
+      "long": 62,
+      "looks": 140,
+      "material": 100,
+      "misspelled": 82,
+      "mood": 124,
+      "occasion": 143,
+      "recipient": 149,
+      "short": 107
+    },
+    "langs": {
+      "en": 831,
+      "zh": 214
+    },
+    "epochs": 3,
+    "batch": 16,
+    "batchNote": "Batch 16, not 32: the memory probe measured a peak of 5.18 GB and 14.7 s a step at batch 32 (limits 4 GB and 30 s).",
+    "seed": 13,
+    "device": "cpu",
+    "learningRate": 2e-05,
+    "warmup": 0.1,
+    "maxSeqLength": 128,
+    "trainableWeights": 21639552,
+    "totalWeights": 117653760,
+    "steps": 177,
+    "resumedFrom": null,
+    "minutes": 45.8,
+    "pairSource": "claude",
+    "pairsNotes": [
+      "Training pairs: 1045 query-piece lines for 54 fictional pieces. Claude (claude-haiku-5-5, claude-sonnet-5-5) wrote the queries for 54 pieces from their records alone.",
+      "The content filter dropped 0 queries holding a contentRules banned, stereotype or meaning word, a People's name used as a product word, or a URL.",
+      "The eval-leak guard dropped 40 queries that equaled or nearly matched one of the 50 held-out eval queries or the tour query; no eval query was used for training.",
+      "Hard negatives: 316 looks, material and craft_term lines carry one. The filter dropped 397 candidates that shared a motif, mood or recipient word with the query, or matched every facet it names; every other line relies on in-batch negatives."
+    ],
+    "trainedAt": "2026-10-25T05:55:09Z",
+    "devRecallAtK": {
+      "base": 0.916667,
+      "custom": 0.962963
+    },
+    "scoredAt": "2026-10-25T06:46:04Z"
+  },
+  "notes": [
+    "Every number here comes from this run, scored 2026-10-25T06:46:04Z on cpu, rerun with --eval-only on the saved model.",
+    "The 50 test queries were written by our data agent, not a person, and held out: none is used for training. The 54 pieces they grade are in training, and only the queries are held out. One small catalog and one model family: a small test, not a benchmark.",
+    "The gap between Cindia's model and keyword (BM25) on recall@5 is within noise (+0.005, 95% interval -0.088 to +0.101).",
+    "The gap between Cindia's model and keyword (BM25) on MRR@10 is within noise (+0.018, 95% interval -0.087 to +0.123).",
+    "The gap between Cindia's model and base model on recall@5 is within noise (+0.067, 95% interval -0.018 to +0.156).",
+    "Cindia's model beats base model on MRR@10 (+0.111, 95% interval +0.022 to +0.206).",
+    "The gap between local hybrid and Cindia's model on recall@5 is within noise (+0.035, 95% interval -0.021 to +0.094).",
+    "local hybrid beats Cindia's model on MRR@10 (+0.048, 95% interval +0.002 to +0.105).",
+    "hybrid is a local hybrid: reciprocal rank fusion (constant 60) of Cindia's model and BM25, skipping keyword hits that scored 0. The live Elastic hybrid is a different system, and B12 records its own numbers.",
+    "recallAtK is recall@5 (grades 1 and 2 both count); mrr is MRR@10 (the first grade-2 piece within the top 10).",
+    "219 pieces in some system's top 5 aren't graded for their query, and count as misses until the pooled grading pass (unjudged.json).",
+    "Dev split: 108 training queries held out (10% of each piece's). Recall@5 on them: base 0.917, Cindia's model 0.963. They come from the same authoring pipeline as the training queries, so they say less than the test set.",
+    "The tour query on the map: its projected point lands within the spread of its top 3, so the map stores no queryShift.",
+    "On the map, 23 of the 50 test queries land by projection and 27 at the weighted center of their top 3, marked approximate. The two components explain 16.2% and 13.7% of the passages' variance.",
+    "Fine-tuned from intfloat/multilingual-e5-small (MIT) for 3 epochs at batch 16 (177 steps) with MultipleNegativesRankingLoss on 650 query-passage pairs and 276 triplets with a hard negative, NO_DUPLICATES batches, learning rate 2e-05 with 10% warmup, seed 13, max_seq_length 128, word embeddings frozen (21.6M of 117.7M weights trained).",
+    "Batch 16, not 32: the memory probe measured a peak of 5.18 GB and 14.7 s a step at batch 32 (limits 4 GB and 30 s).",
+    "Training pairs: 1045 query-piece lines for 54 fictional pieces. Claude (claude-haiku-5-5, claude-sonnet-5-5) wrote the queries for 54 pieces from their records alone.",
+    "The content filter dropped 0 queries holding a contentRules banned, stereotype or meaning word, a People's name used as a product word, or a URL.",
+    "The eval-leak guard dropped 40 queries that equaled or nearly matched one of the 50 held-out eval queries or the tour query; no eval query was used for training.",
+    "Hard negatives: 316 looks, material and craft_term lines carry one. The filter dropped 397 candidates that shared a motif, mood or recipient word with the query, or matched every facet it names; every other line relies on in-batch negatives."
+  ]
+}

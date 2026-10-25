@@ -39,7 +39,10 @@ The training data is synthetic queries that Claude wrote about 54 fictional list
 Before training, every query was checked against Cindia's content rules (no stereotype or meaning words, no nation's name used as a product word, no links) and against the held-out test queries, so no test query or near copy of one was trained on. Every training pair is kept in `pairs.jsonl` in Cindia's code repository for audit. The pairs file is not uploaded here.
 
 <!-- cindia:pairs:start -->
-_Filled in from pairs_meta.json by publish.py when the model is published._
+- `pairs.jsonl` holds 1045 query-piece lines for 54 fictional pieces: 831 in English and 214 in Chinese.
+- Claude wrote the queries for 54 pieces: claude-haiku-5-5 for 53 pieces, claude-sonnet-5-5 for 1 piece on a retry after a failed check. 0 pieces fell back to fixed templates.
+- The content filter dropped 0 queries and the eval-leak guard dropped 40. 316 lines carry a filtered hard negative, and the rest rely on in-batch negatives.
+- Written 2026-10-25T05:04:05Z, from the catalog exported at 2026-10-25T04:38:11.213Z.
 <!-- cindia:pairs:end -->
 
 ## Evaluation
@@ -47,7 +50,40 @@ _Filled in from pairs_meta.json by publish.py when the model is published._
 The evaluation uses 50 agent-written, held-out queries over the same 54 pieces that are in training: our data agent wrote the queries separately, and none was used for training. Only the queries are held out, because the 54 documents themselves are in training. It covers one model family, scored against keyword search (BM25), the untuned base model and a local hybrid of the two. Every number below comes from `report.json`, with paired bootstrap 95% intervals. This is a small test, not a benchmark.
 
 <!-- cindia:results:start -->
-_Filled in from report.json by publish.py when the model is published._
+Scored 2026-10-25T06:46:04Z on cpu: 50 queries (40 English, 10 Chinese), the top 5 of 54 pieces. Fingerprint `f7181c7ddb90af25`.
+
+| System | recall@5 | MRR@10 | recall@5, English | recall@5, Chinese | MRR@10, English | MRR@10, Chinese |
+|---|---:|---:|---:|---:|---:|---:|
+| keyword (BM25) | 0.784 | 0.875 | 0.812 | 0.672 | 0.924 | 0.675 |
+| base model | 0.722 | 0.781 | 0.796 | 0.425 | 0.886 | 0.361 |
+| Cindia's model | 0.789 | 0.892 | 0.797 | 0.758 | 0.903 | 0.850 |
+| local hybrid | 0.825 | 0.940 | 0.849 | 0.728 | 0.950 | 0.900 |
+
+Paired bootstrap over the queries (10,000 resamples, seeded), 95% intervals:
+
+- The gap between Cindia's model and keyword (BM25) on recall@5 is within noise (+0.005, 95% interval -0.088 to +0.101).
+- The gap between Cindia's model and keyword (BM25) on MRR@10 is within noise (+0.018, 95% interval -0.087 to +0.123).
+- The gap between Cindia's model and base model on recall@5 is within noise (+0.067, 95% interval -0.018 to +0.156).
+- Cindia's model beats base model on MRR@10 (+0.111, 95% interval +0.022 to +0.206).
+- The gap between local hybrid and Cindia's model on recall@5 is within noise (+0.035, 95% interval -0.021 to +0.094).
+- local hybrid beats Cindia's model on MRR@10 (+0.048, 95% interval +0.002 to +0.105).
+
+Notes from the run:
+
+- Every number here comes from this run, scored 2026-10-25T06:46:04Z on cpu, rerun with --eval-only on the saved model.
+- The 50 test queries were written by our data agent, not a person, and held out: none is used for training. The 54 pieces they grade are in training, and only the queries are held out. One small catalog and one model family: a small test, not a benchmark.
+- hybrid is a local hybrid: reciprocal rank fusion (constant 60) of Cindia's model and BM25, skipping keyword hits that scored 0. The live Elastic hybrid is a different system, and B12 records its own numbers.
+- recallAtK is recall@5 (grades 1 and 2 both count); mrr is MRR@10 (the first grade-2 piece within the top 10).
+- 219 pieces in some system's top 5 aren't graded for their query, and count as misses until the pooled grading pass (unjudged.json).
+- Dev split: 108 training queries held out (10% of each piece's). Recall@5 on them: base 0.917, Cindia's model 0.963. They come from the same authoring pipeline as the training queries, so they say less than the test set.
+- The tour query on the map: its projected point lands within the spread of its top 3, so the map stores no queryShift.
+- On the map, 23 of the 50 test queries land by projection and 27 at the weighted center of their top 3, marked approximate. The two components explain 16.2% and 13.7% of the passages' variance.
+- Fine-tuned from intfloat/multilingual-e5-small (MIT) for 3 epochs at batch 16 (177 steps) with MultipleNegativesRankingLoss on 650 query-passage pairs and 276 triplets with a hard negative, NO_DUPLICATES batches, learning rate 2e-05 with 10% warmup, seed 13, max_seq_length 128, word embeddings frozen (21.6M of 117.7M weights trained).
+- Batch 16, not 32: the memory probe measured a peak of 5.18 GB and 14.7 s a step at batch 32 (limits 4 GB and 30 s).
+- Training pairs: 1045 query-piece lines for 54 fictional pieces. Claude (claude-haiku-5-5, claude-sonnet-5-5) wrote the queries for 54 pieces from their records alone.
+- The content filter dropped 0 queries holding a contentRules banned, stereotype or meaning word, a People's name used as a product word, or a URL.
+- The eval-leak guard dropped 40 queries that equaled or nearly matched one of the 50 held-out eval queries or the tour query; no eval query was used for training.
+- Hard negatives: 316 looks, material and craft_term lines carry one. The filter dropped 397 candidates that shared a motif, mood or recipient word with the query, or matched every facet it names; every other line relies on in-batch negatives.
 <!-- cindia:results:end -->
 
 ## Limits

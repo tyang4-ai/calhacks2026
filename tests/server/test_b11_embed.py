@@ -2537,16 +2537,27 @@ def fixture_rules() -> dict:
     return fixture_data().content_rules
 
 
+def card_template(text: str) -> str:
+    """The card with both blocks back to their placeholders, as it is before a publish."""
+    text = card.fill(text, card.PAIRS, f"{card.PLACEHOLDER} pairs_meta.json by publish.py when the model is published._")
+    return card.fill(text, card.RESULTS, f"{card.PLACEHOLDER} report.json by publish.py when the model is published._")
+
+
 def test_the_committed_card_passes_its_content_test():
     text = CARD_FILE.read_text(encoding="utf-8")
-    assert card.check(text, fixture_rules()) == []
     real = b11data.load().content_rules if b11data.SNAPSHOT.is_file() else fixture_rules()
-    assert card.check(text, real) == []
+    for rules in (fixture_rules(), real):
+        assert card.check(text, rules) == []
+        # As committed after a publish: both blocks filled in from pairs_meta.json and report.json.
+        assert card.check(text, rules, filled=True) == []
     # Every host it links is allowed, and the base model is credited with its link and licence.
     assert set(card.url_hosts(text)) == {"huggingface.co"}
     assert "https://huggingface.co/intfloat/multilingual-e5-small" in text and "MIT" in text
-    # Until publish fills them in, the blocks hold their placeholders.
-    assert card.check(text, fixture_rules(), filled=True) == [
+    # Before a publish the blocks hold placeholders: the template passes, and only filled=True refuses it.
+    template = card_template(text)
+    assert card.PLACEHOLDER in template and template != text
+    assert card.check(template, fixture_rules()) == []
+    assert card.check(template, fixture_rules(), filled=True) == [
         "the card's pairs block isn't filled in",
         "the card's results block isn't filled in",
     ]

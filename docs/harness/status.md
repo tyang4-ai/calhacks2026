@@ -3,7 +3,7 @@ NEXT: V2 (features, upgrades, D-deploy)
 SHARED_LOCK: on
 STOP_CHECK: on
 GUARDS: on
-UPDATED: 2026-10-25 00:07 PT
+UPDATED: 2026-10-25 00:10 PT
 
 # Status board
 
@@ -386,3 +386,5 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-25 00:03 PT · G3 storefront PASS in the worktree (feature 27, smoke 123) plus verifier PASS; committed, tag v2-storefront · artifacts/gates/G3-storefront-verifier.md
 - 2026-10-25 00:06 PT · B12 built (T1-T6): live test passed twice against Elastic (seed about 30 s, tour query 0.61 s, 50 eval queries in one _msearch 1.43 s, agentBuilder true), Elastic eval recall@5 0.819 / MRR@10 0.887; test_b12_search 52, check PASS, smoke 123; committed; G5 b11 and b12 after G4v2 (their demo runs need I2-tour's fallback list); B11's card test asked to accept the filled card · status.md
 - 2026-10-25 00:07 PT · B14 second spawn (T4 Finder and Curator on B12, T7 listing run, T8 storefront run, T9 endpoints, T10 adapter) and B15 (T1-T6, fixture until the public site is up) spawned · status.md
+- 2026-10-25 00:09 PT · SpacetimeDB stopped at its 2-hour limit, restarted on 127.0.0.1:3000 · status.md
+- 2026-10-25 00:10 PT · B11's trained outputs committed (report.json with hubRepo and hubRevision, vectors.json, unjudged.json, the filled model card, the snapshot) and the card test now holds for the filled card (test:server 671); SpacetimeDB restarted after its 2-hour limit (B13 reseeded: catalog 54, orders 42, approvals 5) · status.md
