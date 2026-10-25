@@ -1,9 +1,10 @@
-// F-buyer T1: the concierge input and the curated grid. Acceptance 1, 7, 8 (ask step) and 9.
-// Expected values come from the demo timeline and the store, not typed in here.
+// F-buyer T1, moved by M-buyer T1 onto event-anchored seeks on the Phase A legacy page
+// /shop/legacy: the concierge input and the curated grid. Acceptance 1, 7, 8 (ask step) and 9.
+// Expected values come from the demo timeline and the store, not typed in here. T7 deletes this
+// spec after G4v2.
 import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
-
-const D01_ASK_END = 4000;
+import { watchPage } from "../smoke/lib";
+import { expectInsideFrame, openPage, seekToEvent } from "./buyer-lib";
 
 interface SeenEvent {
   type: string;
@@ -17,15 +18,16 @@ declare global {
   }
 }
 
-async function openAt(page: Page, ms: number) {
-  await page.goto("/buyer");
-  await waitForSlots(page);
-  await waitForHooks(page);
-  await page.evaluate((t) => {
-    const p = window.__cindia!.player;
-    p.pause();
-    p.seek(t);
-  }, ms);
+/** 300 ms before d01-ask ends: before the next beat's beat.started. */
+async function openAtAskEnd(page: Page) {
+  await openPage(page, "/shop/legacy");
+  await seekToEvent(page, "beat.started", { beatId: "d02-story" }, -300);
+}
+
+/** After the timeline's request and before its answer, with the player paused so it never arrives. */
+async function openBeforeAnswer(page: Page) {
+  await openPage(page, "/shop/legacy");
+  await seekToEvent(page, "concierge.answered", {}, -800);
 }
 
 /**
@@ -74,7 +76,7 @@ const resultIds = (page: Page) =>
 test.describe("buyer concierge @T1", () => {
   test("end of d01-ask shows the request and three curated pieces with reasons @T1", async ({ page }) => {
     const watch = watchPage(page);
-    await openAt(page, D01_ASK_END - 300);
+    await openAtAskEnd(page);
     const tl = await timelineConcierge(page);
     expect(tl.query).toBe("a gift under $200 for my mom, she loves red wool");
     expect(tl.pieceIds).toEqual(["pc_01", "pc_07", "pc_11"]);
@@ -93,12 +95,15 @@ test.describe("buyer concierge @T1", () => {
   });
 
   test("the ask step fits the phone with nothing scrolled out of view @T1", async ({ page }) => {
-    await openAt(page, D01_ASK_END - 300);
+    await openAtAskEnd(page);
     const phone = await page.getByTestId("frame-buyer").boundingBox();
     expect(phone).toBeTruthy();
     for (const id of ["buyer-concierge-input", "buyer-result-pc_01", "buyer-result-pc_07", "buyer-result-pc_11"]) {
       const el = page.getByTestId(id);
-      await expect(el, `${id} in view`).toBeInViewport({ ratio: 1 });
+      // The legacy page scales the phone column, so the viewport ratio lands a hair under 1; the box
+      // inside the frame and every clipping ancestor is the same check, and stricter.
+      await expect(el, `${id} in view`).toBeInViewport();
+      await expectInsideFrame(page, id);
       const box = await el.boundingBox();
       expect(box!.y, `${id} top inside the phone`).toBeGreaterThanOrEqual(phone!.y - 1);
       expect(box!.y + box!.height, `${id} bottom inside the phone`).toBeLessThanOrEqual(phone!.y + phone!.height + 1);
@@ -108,7 +113,7 @@ test.describe("buyer concierge @T1", () => {
 
   test("tapping a curated piece emits a user piece.opened @T1", async ({ page }) => {
     const watch = watchPage(page);
-    await openAt(page, D01_ASK_END - 300);
+    await openAtAskEnd(page);
     const recording = await recordEvents(page);
     // The dev server always serves the store module, so there the source check must run.
     if (new URL(page.url()).port === "5173") expect(recording, "event recorder attached").toBe(true);
@@ -129,8 +134,8 @@ test.describe("buyer concierge @T1", () => {
 
   test("a typed request is asked by the user and answered with the curated set @T1", async ({ page }) => {
     const watch = watchPage(page);
-    // Before the timeline's answer (1800 ms), with the player paused so it never arrives.
-    await openAt(page, 1000);
+    // Before the timeline's answer, with the player paused so it never arrives.
+    await openBeforeAnswer(page);
     const tl = await timelineConcierge(page);
     await expect(page.getByTestId("buyer-concierge-results")).toHaveCount(0);
     const recording = await recordEvents(page);

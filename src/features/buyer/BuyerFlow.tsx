@@ -1,6 +1,7 @@
 // The buyer phone: one step at a time, chosen from the store. Concierge and grid, then the maker's
 // story, then the split and checkout, then the receipt. Once an order exists the receipt step stays,
 // so d11-receipt finds it. The step comes only from events, so seek() lands on the same screen.
+// On the public build the checkout shows L6 in pay's place here too (M-buyer T4).
 import type { SourceKey } from "../../core/events";
 import type { SlotProps } from "../../core/featureTypes";
 import type { BuyerState } from "../../core/state";
@@ -36,7 +37,7 @@ const TITLES = {
 const selectStep = (s: { buyer: BuyerState }) => buyerStep(s.buyer);
 const selectOpenPiece = (s: { buyer: BuyerState }) => s.buyer.openPieceId;
 
-export function BuyerFlow({ lang }: SlotProps) {
+export function BuyerFlow({ lang, publicSite = false }: SlotProps) {
   const step = useCindia(selectStep);
   const openPieceId = useCindia(selectOpenPiece);
 
@@ -62,13 +63,13 @@ export function BuyerFlow({ lang }: SlotProps) {
         {step === "pay" && (
           <>
             <PriceSplit lang={lang} />
-            <Checkout lang={lang} />
+            <Checkout lang={lang} publicSite={publicSite} />
           </>
         )}
         {step === "receipt" && (
           <>
             <Receipt lang={lang} />
-            <Checkout lang={lang} />
+            <Checkout lang={lang} publicSite={publicSite} />
           </>
         )}
       </div>

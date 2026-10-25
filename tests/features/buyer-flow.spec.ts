@@ -1,27 +1,30 @@
-// F-buyer T5: the buyer phone walks the five buyer beats in order, one step at a time, with the
-// Simulated badge on every beat. Each test seeks the demo timeline to just before a beat ends.
+// F-buyer T5, moved by M-buyer T1 onto event-anchored seeks: the buyer phone on the Phase A legacy
+// page /shop/legacy (the one place buyer.main renders until I2-tour) walks the five buyer beats in
+// order, one step at a time, with the Simulated badge on every beat. Each test seeks 300 ms before
+// the beat ends: before the next beat's beat.started, or after the paid receipt for the last one.
+// T7 deletes this spec after G4v2.
 import { expect, test, type Page } from "@playwright/test";
-import { waitForHooks, waitForSlots, watchPage } from "../smoke/lib";
+import { makers } from "../../src/mock/people";
+import { watchPage } from "../smoke/lib";
+import { expectInsideFrame, openPage, seekToEvent } from "./buyer-lib";
 
-const BEAT_END = {
-  "d01-ask": 4000,
-  "d02-story": 8000,
-  "d03-split": 11000,
-  "d04-pay": 15000,
-  "d11-receipt": 60000,
-} as const;
+type Beat = "d01-ask" | "d02-story" | "d03-split" | "d04-pay" | "d11-receipt";
 
-type Beat = keyof typeof BEAT_END;
+const BEATS: Beat[] = ["d01-ask", "d02-story", "d03-split", "d04-pay", "d11-receipt"];
+
+/** Where each beat's end is: the event that follows it, and the offset from it. */
+const BEAT_END: Record<Beat, { type: string; match: Record<string, unknown>; offsetMs: number }> = {
+  "d01-ask": { type: "beat.started", match: { beatId: "d02-story" }, offsetMs: -300 },
+  "d02-story": { type: "beat.started", match: { beatId: "d03-split" }, offsetMs: -300 },
+  "d03-split": { type: "beat.started", match: { beatId: "d04-pay" }, offsetMs: -300 },
+  "d04-pay": { type: "beat.started", match: { beatId: "d05-money" }, offsetMs: -300 },
+  "d11-receipt": { type: "receipt.updated", match: { status: "paid_to_maker" }, offsetMs: 300 },
+};
 
 async function openAt(page: Page, beat: Beat) {
-  await page.goto("/buyer");
-  await waitForSlots(page);
-  await waitForHooks(page);
-  await page.evaluate((ms) => {
-    const p = window.__cindia!.player;
-    p.pause();
-    p.seek(ms);
-  }, BEAT_END[beat] - 300);
+  await openPage(page, "/shop/legacy");
+  const end = BEAT_END[beat];
+  await seekToEvent(page, end.type, end.match, end.offsetMs);
 }
 
 /** The test IDs that make each step, all of which must sit inside the phone with nothing scrolled away. */
@@ -43,7 +46,11 @@ const ALL_STEP_IDS = [
 async function expectInsidePhone(page: Page, testId: string) {
   const el = page.getByTestId(testId);
   await expect(el, `${testId} visible`).toBeVisible();
-  await expect(el, `${testId} in view`).toBeInViewport({ ratio: 1 });
+  // The legacy page scales the phone column to fit, so Playwright's viewport ratio lands a hair
+  // under 1 (0.9999998). Fully in view is checked as the box inside the frame and every clipping
+  // ancestor, which the frame being inside the viewport makes the same as ratio 1, and stricter.
+  await expect(el, `${testId} in view`).toBeInViewport();
+  await expectInsideFrame(page, testId);
   const phone = await page.getByTestId("frame-buyer").boundingBox();
   const box = await el.boundingBox();
   expect(phone && box, `${testId} has a box`).toBeTruthy();
@@ -68,10 +75,15 @@ test.describe("buyer flow @T5", () => {
 
   test("d02-story shows the grey, red and black weaving's maker story and process @T5", async ({ page }) => {
     await openAt(page, "d02-story");
+    const maker = makers.find((m) => m.id === "mkr_01")!;
     const card = page.getByTestId("buyer-story-card");
     await expect(card).toContainText("Small grey, red and black wool weaving");
     await expect(card).toContainText("Grace N.");
-    await expect(card).toContainText("N");
+    // The maker's mark, checked on the mark itself: "Grace N." alone would satisfy a text check for "N".
+    await expect(card.getByRole("img", { name: maker.surnameChar, exact: true })).toHaveText(maker.surnameChar);
+    // Her en and zh names are the same string, so it shows once, not "Grace N. Grace N.".
+    const text = (await card.textContent()) ?? "";
+    expect(text.split(maker.name.en).length - 1, "the maker's name shows once").toBe(1);
     await expect(card).toContainText("26");
     await expect(page.getByTestId("buyer-process-timeline")).toBeVisible();
     await expect(page.getByTestId("buyer-concierge-results")).toHaveCount(0);
@@ -106,10 +118,11 @@ test.describe("buyer flow @T5", () => {
     await expect(receipt).toContainText("Oct 2, 2026");
   });
 
-  for (const beat of Object.keys(BEAT_END) as Beat[]) {
+  for (const beat of BEATS) {
     test(`${beat} shows the Simulated badge in scripted mode @T5`, async ({ page }) => {
       await openAt(page, beat);
-      await expect(page.getByTestId("frame-buyer").getByTestId("simulated-badge")).toBeVisible();
+      // Scoped to the buyer.main slot: the frame also holds the process bar's own summary badge.
+      await expect(page.getByTestId("frame-buyer").locator('[data-slot="buyer.main"]').getByTestId("simulated-badge")).toBeVisible();
     });
   }
 

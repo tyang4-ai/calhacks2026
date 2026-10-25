@@ -44,6 +44,8 @@ v1 (desktop session, history):
 | G3 support | PASS | Oct 24 10:05 PM | `artifacts/gates/G3-2145.md` (check:scope, feature 19 + 1 skipped; smoke 122/123: the shell's seekToEvent test hit a Vite full reload from another lead's edit, passed twice alone), `artifacts/gates/G3-support-verifier.md` PASS | v2-support |
 | G3 search | PASS | Oct 24 10:10 PM | `artifacts/gates/G3-2200.md` 3/3 (feature 30 + 2 live skipped, smoke 123), `artifacts/gates/G3-search-verifier.md` PASS (F1: only the first row of six tour results above the fold, polish before G4v2) | v2-search |
 | G3 communities | PASS | Oct 24 10:22 PM | `artifacts/gates/G3-2210.md` 3/3 (feature 29, smoke 123), `artifacts/gates/G3-communities-verifier.md` PASS (F1 Shop home strip clipped at 1440x900, polish before G4v2; F2 /shop/projects inner scroll; F3 data-attribute selectors) | v2-communities |
+| I2-art | PASS | Oct 24 10:58 PM | `artifacts/gates/I2-art-verifier.md` PASS (six bullets; art --check 54 valid; images.spec 54), smoke 123 in the buyer worktree run `artifacts/gates/G3-buyer-wt-2243.md` | v2-art |
+| G3 buyer | PASS | Oct 24 10:58 PM | shared tree `artifacts/gates/G3-2218.md` 2/3 (smoke failed on F-seller-hub's unfinished file), worktree `artifacts/gates/G3-buyer-wt-2243.md` 3/3 (check:scope, feature 62, smoke 123), `artifacts/gates/G3-buyer-verifier.md` PASS (F1 non-piece ID crash, F2 verification below the fold on 20 pieces: polish queue) | v2-buyer |
 | G6 | | | | |
 
 ## Features
@@ -89,9 +91,9 @@ States: `todo`, `running`, `green`, `failed`, `CUT`.
 | I2-kit | V1 | green | integrator | v2-shell | T1-T4, the 14 px floor fix; /dev/kit gallery |
 | I2-shell | V1 | green | integrator | v2-shell | desktop shell, Phase A stage, public-build flags; T7's v1 spec moves routed to M-buyer and M-approvals |
 | S3-catalog | V1 | green | data-smith | v2-data | G2b 3/3, verifier PASS; minors M1-M5, M8 for a later data round; T9 after B11's training |
-| I2-art | V1 | running | integrator | | T0 54 placeholders (54288bd); T1-T3 drawings running |
+| I2-art | V1 | green | integrator | v2-art | T0 54 placeholders (54288bd); T1-T3 the 54 drawings, verifier PASS; Gordon's two-minute look before G4v2 |
 | F-search | V2 P0 | green | feature-lead | v2-search | |
-| M-buyer | V2 P0 | T0-T6 built, G3 queued | feature-lead | | T7 after G4v2 | |
+| M-buyer | V2 P0 | green (T0-T6) | feature-lead | v2-buyer | T7 after G4v2; F1, F2 in the polish queue |
 | F-support | V2 P0 | green | feature-lead | v2-support | |
 | F-process | V2 P0 | built, G3 running (worktree) and verifier | feature-lead | | lead wrote T0-T8 itself (no Agent tool) |
 | F-communities | V2 P0 | green | feature-lead | v2-communities | F1 Shop home strip clipped at 1440x900, polish before G4v2 |
@@ -338,3 +340,4 @@ Newest last. One line per event: time, what happened, evidence path.
 - 2026-10-24 22:43 PT · G3 buyer verifier PASS (F1, F2 to the polish queue); worktree dev server got fs.allow for the symlinked node_modules (fonts were refused); buyer, process and D-deploy gates running in the worktree, in that order; D-deploy built (17 public checks, laptop dry-run), its two-lens verifier running · status.md
 - 2026-10-24 22:52 PT · D-deploy verifiers PASS (public-safety, laptop-preflight; minors only); fix round 1 sent to its integrator (SKIP banner, unknown flags rejected, step 8 restart text, SpacetimeDB install page, preflight v1 rows); S3 data round 1 spawned (G2b M1-M5, M8: cft_01's seller Red Mesa Home Goods → Lantern Lane Home Goods, no business found by that name) · artifacts/gates/D-deploy-verifier-public.md
 - 2026-10-24 22:55 PT · smoke fix: shell.spec.ts:447's offline check pauses, waits for slots and fonts, and cuts the network through watch.setOffline(), which lets through only the ERR_INTERNET_DISCONNECTED failures the test causes (3 runs 5/5 at load 18-19, check:scope PASS); the other failure was a Vite full reload from another agent's edit · tests/smoke/lib.ts
+- 2026-10-24 22:55 PT · I2-art green (verifier PASS, smoke 123 in the buyer worktree run), tag v2-art; G3 buyer PASS in the worktree (feature 62, smoke 123) plus verifier PASS, tag v2-buyer; M-buyer T7 after G4v2 · artifacts/gates/G3-buyer-wt-2243.md

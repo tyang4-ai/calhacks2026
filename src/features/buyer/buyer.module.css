@@ -1,0 +1,14 @@
+/* The buyer pages' layout rules that Tailwind classes can't reach. Every value comes from the kit's
+   tokens. */
+
+/* The piece page's split: the kit ShareBar's legend in two columns of one line each, the maker's
+   share first, so the price column fits 1440 by 900 with the checkout under it in both languages. */
+.pageShareBar :global(.c-sharebar__legend) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--c-space-16);
+}
+
+.pageShareBar :global(.c-sharebar__item) {
+  font-size: var(--c-text-14);
+  white-space: nowrap;
+}

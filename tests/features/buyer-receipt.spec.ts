@@ -1,52 +1,26 @@
-// F-buyer T4: the receipt reads "Received" for ord_001 at the end of d04-pay (acceptance 4), flips to
-// "Paid to the maker" with the maker's name, share and paid date at the end of d11-receipt
-// (acceptance 5), and fits the phone at both beats (acceptance 8).
+// F-buyer T4, moved by M-buyer T1 to the desktop receipt page /shop/receipt/ord_001 with
+// event-anchored seeks: the receipt reads "Received" for ord_001 after the timeline's received
+// receipt (acceptance 4), flips to "Paid to the maker" with the maker's name, share and paid date
+// after the paid one (acceptance 5), and fits the frame at both (acceptance 8, now 1440 by 900).
+// T7 deletes this spec after G4v2; buyer-receipt-page.spec.ts repeats what it checks.
 import { expect, test, type Page } from "@playwright/test";
 import type { Order, Person, Piece } from "../../src/core/types";
 import { getById } from "../../src/mock/index";
 import { formatCents } from "../../src/ui/formatCents";
 import { formatDate } from "../../src/ui/formatDate";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { watchPage } from "../smoke/lib";
+import { expectInsideFrame, openPage, seekToEvent, storeSlice } from "./buyer-lib";
 
-const PAY_END = 14700; // just before d04-pay ends at 15000
-const RECEIPT_END = 59700; // just before d11-receipt ends at 60000
 const ORDER_ID = "ord_001";
 
-interface BuyerSlice {
-  buyer: {
-    orderIds: string[];
-    orders: Record<string, { orderId: string; pieceId: string; grossCents: number; date: string }>;
-    receipts: Record<string, { orderId: string; status: string; makerId: string; makerShareCents: number; paidDate?: string }>;
-  };
+async function openReceiptAt(page: Page, status: "received" | "paid_to_maker") {
+  await openPage(page, `/shop/receipt/${ORDER_ID}`);
+  await seekToEvent(page, "receipt.updated", { orderId: ORDER_ID, status }, 300);
 }
 
-async function openBuyerAt(page: Page, ms: number) {
-  await page.goto("/buyer");
-  await waitForHooks(page);
-  await page.evaluate((t) => {
-    window.__cindia!.player.pause();
-    window.__cindia!.player.seek(t);
-  }, ms);
-}
-
-function buyerState(page: Page): Promise<BuyerSlice["buyer"]> {
-  return page.evaluate(() => (window.__cindia!.store.getState() as unknown as BuyerSlice).buyer);
-}
-
-async function expectInViewport(page: Page, testId: string) {
-  const box = await page.getByTestId(testId).boundingBox();
-  const vp = page.viewportSize();
-  expect(box, `${testId} has a box`).not.toBeNull();
-  expect(vp).not.toBeNull();
-  expect(box!.y).toBeGreaterThanOrEqual(0);
-  expect(box!.x).toBeGreaterThanOrEqual(0);
-  expect(box!.y + box!.height).toBeLessThanOrEqual(vp!.height);
-  expect(box!.x + box!.width).toBeLessThanOrEqual(vp!.width);
-}
-
-test("@T4 at the end of d04-pay the receipt reads Received for ord_001", async ({ page }) => {
+test("@T4 after the received receipt, the receipt reads Received for ord_001", async ({ page }) => {
   const watch = watchPage(page);
-  await openBuyerAt(page, PAY_END);
+  await openReceiptAt(page, "received");
 
   const receipt = page.getByTestId("buyer-receipt");
   await expect(receipt).toBeVisible();
@@ -54,7 +28,7 @@ test("@T4 at the end of d04-pay the receipt reads Received for ord_001", async (
   await expect(status).toHaveText(/^Received/);
   await expect(status).not.toContainText("Paid to the maker");
 
-  const buyer = await buyerState(page);
+  const { buyer } = await storeSlice(page);
   expect(buyer.orderIds.at(-1)).toBe(ORDER_ID);
   expect(buyer.receipts[ORDER_ID]?.status).toBe("received");
 
@@ -69,9 +43,9 @@ test("@T4 at the end of d04-pay the receipt reads Received for ord_001", async (
   watch.expectClean();
 });
 
-test("@T4 at the end of d11-receipt the receipt reads Paid to the maker with name, share and date", async ({ page }) => {
+test("@T4 after the paid receipt, the receipt reads Paid to the maker with name, share and date", async ({ page }) => {
   const watch = watchPage(page);
-  await openBuyerAt(page, RECEIPT_END);
+  await openReceiptAt(page, "paid_to_maker");
 
   const receipt = page.getByTestId("buyer-receipt");
   await expect(receipt).toBeVisible();
@@ -79,7 +53,7 @@ test("@T4 at the end of d11-receipt the receipt reads Paid to the maker with nam
   const status = receipt.getByTestId("buyer-receipt-status");
   await expect(status).toHaveText(/^Paid to the maker/);
 
-  const buyer = await buyerState(page);
+  const { buyer } = await storeSlice(page);
   const r = buyer.receipts[ORDER_ID];
   expect(r?.status).toBe("paid_to_maker");
   const maker = getById<Person>(r!.makerId);
@@ -94,12 +68,12 @@ test("@T4 at the end of d11-receipt the receipt reads Paid to the maker with nam
   watch.expectClean();
 });
 
-test("@T4 the receipt fits the phone at the end of d04-pay and d11-receipt", async ({ page }) => {
+test("@T4 the receipt fits the frame after the received and the paid receipt", async ({ page }) => {
   const watch = watchPage(page);
-  for (const ms of [PAY_END, RECEIPT_END]) {
-    await openBuyerAt(page, ms);
+  for (const status of ["received", "paid_to_maker"] as const) {
+    await openReceiptAt(page, status);
     await expect(page.getByTestId("buyer-receipt-status")).toBeVisible();
-    await expectInViewport(page, "buyer-receipt");
+    await expectInsideFrame(page, "buyer-receipt");
   }
   watch.expectClean();
 });

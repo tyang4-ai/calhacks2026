@@ -1,11 +1,13 @@
-// F-buyer T3: the price split (acceptance 3), the simulated checkout and its token (acceptance 4),
-// the pay step fitting the phone (acceptance 8), and the pay button emitting checkout.started.
+// F-buyer T3, moved by M-buyer T1 to the desktop piece page /shop/piece/pc_01 with event-anchored
+// seeks: the price split (acceptance 3), the simulated checkout and its token (acceptance 4), the
+// price column fitting the frame (acceptance 8, now 1440 by 900), and the pay button emitting
+// checkout.started. T7 deletes this spec after G4v2; the desktop specs repeat what it checks.
 import { expect, test, type Page } from "@playwright/test";
 import { formatCents } from "../../src/ui/formatCents";
-import { waitForHooks, watchPage } from "../smoke/lib";
+import { watchPage } from "../smoke/lib";
+import { expectInsideFrame, openPage, seekToEvent, toCents } from "./buyer-lib";
 
-const SPLIT_END = 10700; // just before d03-split ends at 11000
-const PAY_END = 14700; // just before d04-pay ends at 15000
+const PIECE = "pc_01";
 
 interface Split {
   pieceId: string;
@@ -16,13 +18,16 @@ interface Split {
   makerShareCents: number;
 }
 
-async function openBuyerAt(page: Page, ms: number) {
-  await page.goto("/buyer");
-  await waitForHooks(page);
-  await page.evaluate((t) => {
-    window.__cindia!.player.pause();
-    window.__cindia!.player.seek(t);
-  }, ms);
+/** The piece page, 300 ms after the timeline's split.shown for the piece (inside v1's d03-split). */
+async function openAtSplit(page: Page) {
+  await openPage(page, `/shop/piece/${PIECE}`);
+  await seekToEvent(page, "split.shown", { pieceId: PIECE }, 300);
+}
+
+/** The piece page, 300 ms after the timeline's received receipt (the end of v1's d04-pay). */
+async function openAtPaid(page: Page) {
+  await openPage(page, `/shop/piece/${PIECE}`);
+  await seekToEvent(page, "receipt.updated", { status: "received" }, 300);
 }
 
 function scripted<T>(page: Page, type: string): Promise<T | null> {
@@ -32,16 +37,9 @@ function scripted<T>(page: Page, type: string): Promise<T | null> {
   }, type) as Promise<T | null>;
 }
 
-/** Parses "$1,234.56" or "-$3.00" into cents. */
-function toCents(text: string): number {
-  const neg = text.includes("-");
-  const n = Math.round(Number(text.replace(/[^0-9.]/g, "")) * 100);
-  return neg ? -n : n;
-}
-
 test("@T3 buyer-split-bar shows four parts adding to $180.00 with the maker share $134.48", async ({ page }) => {
   const watch = watchPage(page);
-  await openBuyerAt(page, SPLIT_END);
+  await openAtSplit(page);
   const split = await scripted<Split>(page, "split.shown");
   expect(split).not.toBeNull();
 
@@ -59,19 +57,20 @@ test("@T3 buyer-split-bar shows four parts adding to $180.00 with the maker shar
   watch.expectClean();
 });
 
-test("@T3 the pay step fits the phone: split bar, maker share and pay button in view", async ({ page }) => {
+test("@T3 the price column fits the frame: split bar, maker share and pay button in view", async ({ page }) => {
   const watch = watchPage(page);
-  await openBuyerAt(page, SPLIT_END);
+  await openAtSplit(page);
   await expect(page.getByTestId("buyer-split-bar")).toBeInViewport();
   await expect(page.getByTestId("buyer-split-maker-share")).toBeInViewport();
   await expect(page.getByTestId("buyer-pay-button")).toBeInViewport();
   await expect(page.getByTestId("buyer-simulated-note")).toBeInViewport();
+  for (const id of ["buyer-split-bar", "buyer-split-maker-share", "buyer-pay-button", "buyer-simulated-note"]) await expectInsideFrame(page, id);
   watch.expectClean();
 });
 
 test("@T3 tapping buyer-pay-button puts a checkout.started in the store", async ({ page }) => {
   const watch = watchPage(page);
-  await openBuyerAt(page, SPLIT_END);
+  await openAtSplit(page);
   const split = await scripted<Split>(page, "split.shown");
   const before = await page.evaluate(() => (window.__cindia!.store.getState() as unknown as { buyer: { checkout: unknown } }).buyer.checkout);
   expect(before).toBeNull();
@@ -89,7 +88,7 @@ test("@T3 tapping buyer-pay-button puts a checkout.started in the store", async 
 
 test("@T3 buyer-token shows the tok_ token and last four digits, and the checkout says it is simulated", async ({ page }) => {
   const watch = watchPage(page);
-  await openBuyerAt(page, PAY_END);
+  await openAtPaid(page);
   const card = await scripted<{ token: string; last4: string }>(page, "card.tokenized");
   expect(card).not.toBeNull();
   expect(card!.token.startsWith("tok_")).toBe(true);
@@ -101,6 +100,7 @@ test("@T3 buyer-token shows the tok_ token and last four digits, and the checkou
   await expect(token).toContainText("4242");
   await expect(token).toContainText(card!.last4);
   await expect(token).toBeInViewport();
+  await expectInsideFrame(page, "buyer-token");
 
   const note = page.getByTestId("buyer-simulated-note");
   await expect(note).toBeVisible();
