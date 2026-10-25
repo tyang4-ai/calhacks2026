@@ -24,6 +24,7 @@ A maker opens her page on a desktop and reads her month in plain English: this m
 - **Reads events** through `useCindia()`: `statement.issued` for this maker, `payout.sent` for this maker's payout, and `sources`. Lines, total, held amount and payout date render from the `statement.issued` payload, as v1.
 - **Reads data** with `getById()`: the maker (name, `surnameChar`, `nativeName`, `communityId`, `lang`), the pieces in the payload's lines (title in both languages), and the maker's community (its `name`, for the header).
 - **The maker** comes from `SlotProps.makerId` (the route, and `mkr_01` on `/demo`). The language comes from `SlotProps.lang`, which the shell starts at the maker's `lang`. After R0, `mkr_01` to `mkr_03` have `lang: "en"`, so Grace N.'s page opens in English. The demo's language toggle switches it to Chinese.
+- **The Phase A stage:** until I2-tour removes the legacy boxes, I2-shell shows `maker.main` in a 390 by 844 box, v1's phone size, on the `/demo` stage only, so the v1 demo keeps playing. Routes never use that box, so this plan builds and tests at the full maker page, 1440 by 900.
 - **Emits:** nothing.
 - **Exports:** `src/features/maker-statement/index.ts` default-exports `{ id: "maker-statement", slots: { "maker.main": MakerStatementView } }`, unchanged.
 - **Source key on the badge:** `b10-derived`.

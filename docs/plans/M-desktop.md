@@ -24,6 +24,7 @@ Every v1 Sell view (money map, the month, the judge's scenario, the close, impac
 ## Interfaces
 - **Reads and emits** exactly what each feature does in v1. Two additions, both in money-map: it reads the new `money.moved` kinds, and it reads the project from `getById()` (title) for a `community_fund` party.
 - **Exports:** all nine `index.ts` files stay as they are. The slots don't change.
+- **The Phase A stage:** until I2-tour removes the legacy boxes, I2-shell shows the five v1 Sell views (`map`, `month`, `close`, `proof`, `dashboard`) in a 1192 by 744 box, v1's console view area, on the `/demo` stage only, so the v1 demo keeps playing. Routes never use that box, so this plan builds and tests at the full Sell frame, 1440 by 900.
 - **Source keys on the badges:** unchanged. If contracts section 3 gives B16 its own `SourceKey`, the reconcile and money-map panels add it.
 - **Test IDs:** every v1 one is kept. New internal ones in money-map: `money-map-node-community_fund-<projectId>` (a fund's node, from the existing `money-map-node-<key>` pattern) and the existing `money-map-thread-<moveId>` for `mv_0101` onward and for the milestone move.
 - **Labels:** v1's, plus "Community fund" for the new party (contracts section 11's glossary row).

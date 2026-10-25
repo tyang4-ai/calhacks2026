@@ -30,7 +30,7 @@ Across the top of every page, eleven small blocks show what the Cindia platform 
   - `clock` for the "working" window, and `player.isPlaying()` from `src/core/` (with `player.subscribe()`), because "working" counts only while the player plays (B1-37),
   - `sources` for the Live marks and the summary,
   - the domain keys each view draws from: `search`, `surprise`, `swarm`, `support`, `buyer`, `money`, `month`, `approvals`, `close`, `proof`, `model`, `watch`, `projects`, `wip`, `listings`,
-  - in live mode, the database status that the B13 and B12 adapters put in the store (contract addition 1): each SpacetimeDB table's row count and newest rows, the process status rows, the number of screens watching, and the index counts.
+  - in live mode, the database status that the B13 and B12 adapters put in the store (contract addition 1): `sync.data`, the newest `data.synced` (each SpacetimeDB table's row count and newest rows, the process status rows, the number of screens watching), and `sync.index`, the newest `index.synced` (the index counts).
   
   The language comes from `SlotProps.lang`. Every figure a view draws comes from an event payload in the store or from `src/mock/`, never typed in.
 - **Reads data:** the agent roster through `agents` and `getAgent()` from `src/mock/agents.ts` (names, kind, model, tools, job), `getById()` for the pieces, parties, records and approvals the events name, and for the data view in scripted mode `pieces`, `orders`, `approvals`, `listings`, `searchIndex`, `swarmRuns`, `modelId` and `report` from `src/mock/`.
@@ -38,12 +38,13 @@ Across the top of every page, eleven small blocks show what the Cindia platform 
 - **Emits:** nothing. Opening and closing a view goes through `setProcess(id)` and `setProcess(null)` from `src/core/nav.ts`, which set or clear `?process=`, and on `/demo` the shell decides what they do.
 - **Exports:** `src/features/process/index.ts` default-exports `{ id: "process", slots: { "process.bar": ProcessBar, "process.view": ProcessViewHost } }`.
 - **Source keys:** each block and each view declares the keys of its process from the contract's table. The bar as a whole renders all keys. `checkout` has no keys and is never live, because the card is always simulated. `data` declares `b13-live`, `b12-search` and `b11-embed` (contract addition 2).
-- **Test IDs from the contract:** `process-bar`, `process-block-<processId>`, `process-view`, `process-view-close`, `process-log`, `process-search-map`, `process-swarm-graph`, `process-swarm-step-<stepId>`, `process-money-diagram`, `process-model-card`, `process-data-tables`. The process feature renders all of them inside the shell's two slot containers. The shell renders only `slot-process-bar` and `slot-process-view`.
+- **Test IDs from the contract:** `process-bar`, `process-block-<processId>`, `process-view`, `process-view-close`, `process-log`, `process-search-map`, `process-swarm-graph`, `process-swarm-step-<stepId>`, `process-money-diagram`, `process-model-card`, `process-data-tables`. The process feature renders all of them inside the shell's two slots: `process-bar` and its blocks inside the `process.bar` slot, and `process-view`, `process-view-close`, `process-log` and the view roots `process-pane-<processId>` inside the `process.view` slot.
+- **Depends on I2-shell for the containers.** The shell renders only `slot-process-bar` and `slot-process-view`. Its 64 px band, its overlay panel and its scrim carry no `process-` test ID, and the shell closes the overlay on Esc or a click on the scrim, so a view closes even while this feature is cut.
 - **Internal test IDs:**
   - `process-block-status-<processId>` (its text is the status), `process-block-count-<processId>`, and `process-block-live-<processId>`, the Live mark, shown only when all of that process's keys are live,
   - `process-live-summary`, the one summary line, and `process-presence`, the screens line in live mode,
   - `process-pane-<processId>`, the root of each view (B1-5, D1-18). Never `process-view-<processId>`, because `process-view-close` is the close button,
-  - `process-search-scores`,
+  - `process-search-scores`, `process-search-surprise`,
   - `process-swarm-run-picker`, `process-swarm-shared` (L18),
   - `process-checkout-flow`, `process-checkout-stored`, `process-checkout-never`,
   - `process-money-balance`, `process-money-sandbox` (L29),
@@ -111,7 +112,7 @@ The data view shows the platform's one database (fix-plan 1.4, pillar 3). `proce
 | T5 | The reconcile, approvals and close views | src/features/process/ReconcileProcess.tsx, src/features/process/ApprovalsProcess.tsx, src/features/process/CloseProcess.tsx, tests/features/process-books.spec.ts | T1 | sonnet |
 | T6 | The proof, watch and model views | src/features/process/ProofProcess.tsx, src/features/process/WatchProcess.tsx, src/features/process/ModelProcess.tsx, tests/features/process-proof.spec.ts | T1 | sonnet |
 | T7 | The data view: tables, index and model | src/features/process/DataProcess.tsx, src/features/process/dataRows.ts, src/features/process/dataRows.test.ts, tests/features/process-data.spec.ts | T1 | opus |
-| T8 | Assemble the view host and fill the slots (lead) | src/features/process/ProcessViewHost.tsx, src/features/process/index.ts, tests/features/process-flow.spec.ts | T1 to T7 | lead |
+| T8 | Assemble the view host and fill the slots (lead), then B13's live feature spec | src/features/process/ProcessViewHost.tsx, src/features/process/index.ts, tests/features/process-flow.spec.ts, tests/features/process-live-data.spec.ts | T1 to T7 | lead |
 
 **How the tasks fit:** the lead writes T0 before spawning any builder. T1 lands before T2 to T7 start, because every view imports the process map from `processes.ts`. T2 to T7 each export view components that take `lang` and read the store, two builders at a time. Each view's root carries `process-pane-<processId>`. They don't draw their own frame or log, because T8's host wraps every view in the kit's `ProcessView` with its badge, its log and its close button. Builders run `npm run check:scope` on their files and write their spec. The specs run for the first time once T8 fills the slots, and the lead sends any failure back to the builder who owns the file.
 
@@ -129,6 +130,7 @@ Clicking a block calls `setProcess(id)`. The open process (`SlotProps.processId`
 **T2.** `SearchProcess` (`process-pane-search`):
 - The kit `EmbeddingMap` (`process-search-map`) draws the newest `search.mapped`: every piece as a dot colored by community, the query as a star, and lines from the star to the newest `search.answered`'s top six. Hovering a dot names the piece.
 - `process-search-scores` lists those six with their `score` as a `ScoreBar`, the `matched` keywords, the engine and the `modelId`.
+- `process-search-surprise` lists the newest `surprise.drawn`'s candidates in the payload's order, each with its weight as a `ScoreBar` and its number, with the drawn piece marked by a word ("Drawn") as well as its bar, so color never carries it alone (A2-17, A1-16). This view is the only place the weights show. The Shop page shows only the rule line (F-search T4). Before any `surprise.drawn` it shows nothing.
 - Before any `search.mapped`, the map area keeps its test ID and shows `process-empty`: the map appears after the first search, or "Not trained yet" when `src/mock/model.ts` has no report and no `model.trained` has arrived.
 
 **T3.** `SwarmProcess` (`process-pane-swarm`):
@@ -162,10 +164,10 @@ Clicking a block calls `setProcess(id)`. The open process (`SlotProps.processId`
 
 **T8.** `ProcessViewHost` reads `SlotProps.processId` and renders nothing without one. With one, it wraps the matching view in the kit's `ProcessView` (`process-view`):
 - the block's label as the title, and the Live or Simulated badge for that process's keys,
-- the close button `process-view-close`, which calls `setProcess(null)` (Esc does the same while the view is open),
+- the close button `process-view-close`, which calls `setProcess(null)`. Esc and a click on the scrim close the view through the shell's overlay (I2-shell), so the host adds no key handler of its own,
 - at the bottom, the kit `EventLog` (`process-log`) with the store's `log` filtered to that process's event types, newest last: time on the player clock, type, source and key.
 
-`index.ts` exports the module. `process-flow.spec.ts` opens every view in turn from the bar.
+`index.ts` exports the module. `process-flow.spec.ts` opens every view in turn from the bar. `process-live-data.spec.ts` is B13's live feature spec (acceptance 20), which the orchestrator runs as `npm run gate -- G5 b13-live process-live-data`.
 
 ## Acceptance
 Specs open the route named and check by test ID only.
@@ -179,7 +181,7 @@ Specs open the route named and check by test ID only.
 3. **Given** the timeline sought to 300 ms after v1's `flag.raised` and before `followup.sent`, **then** `process-block-status-reconcile` reads attention. **Given** the timeline sought past `followup.sent`, **then** it reads done.
 4. **Given** the timeline sought to 300 ms after v1's `approval.requested` for `apr_02`, **then** `process-block-status-approvals` reads attention and `process-block-count-approvals` shows the number of pending approvals in the store.
 5. **When** a person clicks `process-block-swarm`, **then** the URL has `?process=swarm` and `process-pane-swarm` shows inside `process-view`. **When** they press `process-view-close` or Esc, **then** `?process=` is gone and `process-view` is not on screen. Exactly one element carries each of `process-bar`, `process-view` and `process-view-close`.
-6. **Given** the tour's `search.answered` and `search.mapped`, **then** `process-search-map` draws one point per piece in the payload and the query star, and `process-search-scores` lists six results with their scores and the engine.
+6. **Given** the tour's `search.answered` and `search.mapped`, **then** `process-search-map` draws one point per piece in the payload and the query star, and `process-search-scores` lists six results with their scores and the engine. **Given** the tour's `surprise.drawn` (figure 12, or the same payload emitted), **then** `process-search-surprise` lists every candidate in the payload with its weight, the weights sum to 1, and the drawn piece reads "Drawn".
 7. **Given** the tour's `d04-support` run (`run_01`), **then** `process-swarm-graph` shows Intake, Cindy, Steward, Clerk and Writer, there is one `process-swarm-step-<stepId>` per step in order, each with its agent, kind, tool, model and ms, and the run's `check` step reads kind check.
 8. **Given** the tour's `d15-listing` run (`run_02`) through its `listing.indexed`, **then** the Indexer's row carries the Rule-based badge, and `process-log` in the swarm view lists the `listing.indexed`.
 9. **Given** a `run_user_` run emitted after `run_01` while the store's `demo.process` is `swarm`, **then** the swarm view still shows `run_01` by default. **Given** the same run on `/shop?process=swarm` with no tour beat, **then** the newest run shows.
@@ -192,6 +194,8 @@ Specs open the route named and check by test ID only.
 16. **Given** any open view, **then** `process-log` lists only that process's event types, newest last, each with its time, type, source and key.
 17. **Given** a `seek()` to any moment in scripted mode, **then** every block's status and count and every open view render the same each time.
 18. **Given** live mode with `b13-live` live (spec skips with a named reason when `/api/health` doesn't list `b13`), **then** `process-presence` reads the number of screens B13 reports, and a second page opened in the same context raises it by one.
+19. **Given** the shell's overlay on any route, **then** no element outside the two slots carries a `process-` test ID, and Esc or a click on the scrim closes the view (I2-shell).
+20. **Given** live mode with `b13-live` live and two pages open, **when** a person's own request runs on one (a support question, or a checkout when B14 is blocked), **then** it reaches the other through `/api/b13/changes` as `swarm.step` or `data.synced` events, every event valid, and `process-presence` reads two screens. This is `process-live-data.spec.ts`, B13's live feature spec, run as `npm run gate -- G5 b13-live process-live-data`. It skips with a named reason when `/api/health` doesn't list `b13` or `services.spacetime` is false, so G3 passes before B13 lands.
 
 ## Out of scope
 - Any business logic. Views only draw what the store holds.
@@ -200,7 +204,7 @@ Specs open the route named and check by test ID only.
 - Editing or replaying events from the log, and writing to SpacetimeDB from the browser.
 
 ## Contract additions needed
-1. **The database status in the store.** The data view, presence and the live process status need B13's and B12's status as events. Proposed: an event keyed `b13-live`, emitted by the B13 adapter when its poll of `GET /api/b13/changes` sees a change, with `{ tables: { table; rows; newest: { id; label }[] }[]; screens: number; processes: { processId; status }[] }`, and one keyed `b12-search` from the B12 adapter with `{ indexed; drafts; elastic; agentBuilder }`. The store keeps the newest of each under one key. FX1 names the events and the key, I2-core writes the reducer, B13-live and B12-search emit them.
+1. **The database status in the store.** Settled: `data.synced` keyed `b13-live`, `{ tables: { table; rows; newest: { id; label }[] }[]; screens; processes: { processId; status }[] }`, emitted by the B13 adapter when its poll of `GET /api/b13/changes` sees a change, and `index.synced` keyed `b12-search`, `{ indexed; drafts; elastic; agentBuilder }`, from the B12 adapter (contracts section 3). The store keeps the newest of each as `sync.data` and `sync.index` (I2-core T3).
 2. **The `data` row in the process table** (contracts section 4): label "Data, 数据", keys `b13-live`, `b12-search`, `b11-embed`.
 3. **Every checked result on `watch.scanned`:** a `results` list (title, URL text, snippet, normalized similarity, verdict) beside the `candidates` count, so the watch view lists every result (C-6). F-watch needs the same field.
 4. **The bar's badge rule** (contracts section 4, The process bar and views): a block shows a count and a Live mark when all its keys are live. The bar shows one summary, "Live: N of 11", and one `simulated-badge` while any key is scripted (A1-15).

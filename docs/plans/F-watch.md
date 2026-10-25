@@ -22,11 +22,11 @@ The owner presses Scan now, and Cindy's watch team checks the listings on a sand
 - `docs/common/glossary.md`: counterfeit watch, similarity, approval, proposed by Cindy, demo data
 
 ## Interfaces
-- **Reads events** through `useCindia()`: `watch.started`, `watch.scanned`, `counterfeit.flagged` (the `watch` key), `approval.requested`, `approval.granted` and `approval.declined` (the `approvals` key), `sources`, and each event's `source` in the store's `log`, to tell a live hit from a scripted one. The similarity, title, URL, snippet and claim render from the `counterfeit.flagged` payload, and the checked results from `watch.scanned`.
-- **Reads data** with `getById()`: `std_dine` (`makerIds`), the maker, the maker's pieces (catalog entries with that `makerId`, with `title`, `story`, `facets`, `image`, `priceCents`), the maker's community (`name`, `craft`), the piece each hit resembles (`pieceId`), and each Approval (`kind`, `subjectIds`). When `getById()` finds no Approval (a live `apr_user_<n>`), the inline `approval` object the store kept from its `approval.requested` (D1-16).
+- **Reads events** through `useCindia()`: `watch.started`, `watch.scanned`, `counterfeit.flagged` (the `watch` key), `approval.requested`, `approval.granted` and `approval.declined` (the `approvals` key), `sources`, and each event's `source` in the store's `log`, to tell a live hit from a scripted one. The similarity, title, URL, snippet and claim render from the `counterfeit.flagged` payload, and the checked results from `watch.scans[scanId].results`, which the store keeps as `watch.scanned` carries them (I2-core T3).
+- **Reads data** with `getById()`: `std_dine` (`makerIds`), the maker, the maker's pieces (catalog entries with that `makerId`, with `title`, `story`, `facets`, `image`, `priceCents`), the maker's community (`name`, `craft`), the piece each hit resembles (`pieceId`), and each Approval (`kind`, `subjectIds`). When `getById()` finds no Approval (a live `apr_user_<n>`), `approvals.items[approvalId].approval`, the inline object the store kept from its `approval.requested` (D1-16).
 - **Emits,** with `source: "user"` through `userEvent()`: `watch.started` (`scanId: "wsc_user_<n>"`, `makerId`, `queries`) from Scan now. The timeline's own `watch.started` plays the tour.
 - **The queries** are built with no randomness, for copies of this co-op's own work: the community's English name, the maker's name with the community's craft, and the first eight words of the English story of the maker's first piece in catalog order. At most three.
-- **Which scan the screen follows:** the newest `watch.started` in the store. Its hits are the `counterfeit.flagged` events with that `scanId`, highest similarity first, and its checked results are its `watch.scanned`'s list.
+- **Which scan the screen follows:** the newest `watch.started` in the store. Its hits are the `counterfeit.flagged` events with that `scanId`, highest similarity first, and its checked results are `watch.scans[scanId].results`.
 - **Never shows the found page:** no iframe, no image loaded from a found URL, and the URL is shown as text, never as a link. Only the title, the URL text and the snippet appear. Every scripted URL is on the sandbox market, `example.com` or `example.org` (fix-plan 1.6).
 - **Navigation:** the report button moves to `/sell/approvals?ref=<approvalId>` through `navigate()` from `src/core/nav.ts`.
 - **Exports:** `src/features/watch/index.ts` default-exports `{ id: "watch", slots: { "studio.watch.main": WatchView } }`.
@@ -44,7 +44,7 @@ The owner presses Scan now, and Cindy's watch team checks the listings on a sand
 | T2 | The scan bar: maker picker, the queries, Scan now, status and engine | src/features/watch/scanQueries.ts, src/features/watch/scanQueries.test.ts, src/features/watch/ScanBar.tsx, tests/features/watch-scan.spec.ts | T0, T1 | sonnet |
 | T3 | The hit card: the claim first, the found listing beside the maker's piece, the text match, the fairness line, the live label | src/features/watch/HitCard.tsx, tests/features/watch-hit.spec.ts | T0, T1 | opus |
 | T4 | The results: hits with the report and dismiss buttons, then every checked result | src/features/watch/WatchResults.tsx, src/features/watch/CheckedList.tsx, src/features/watch/reportLink.ts, tests/features/watch-results.spec.ts | T0, T1 | sonnet |
-| T5 | Assemble the view and fill the slot (lead) | src/features/watch/WatchView.tsx, src/features/watch/index.ts, tests/features/watch-flow.spec.ts | T2 to T4 | lead |
+| T5 | Assemble the view and fill the slot (lead), then B15's live feature spec | src/features/watch/WatchView.tsx, src/features/watch/index.ts, tests/features/watch-flow.spec.ts, tests/features/watch-live.spec.ts | T2 to T4 | lead |
 
 **How the tasks fit:**
 - The lead writes T0 first.
@@ -80,19 +80,19 @@ No color carries meaning alone: the score has its number, and the claim has its 
 
 `watch-empty` reads "No possible copies found in this scan" when the scan finished with none.
 
-`reportLink.ts` finds, for a hit, a requested Approval of kind `report_listing` whose `subjectIds` include the hit's `cftId`, from `getById()` or the inline object. `watch-report-<cftId>` then:
+`reportLink.ts` finds, for a hit, a requested Approval of kind `report_listing` whose `subjectIds` include the hit's `cftId`, from `getById()`, or from `approvals.items[approvalId].approval` when that misses. `watch-report-<cftId>` then:
 - moves to `/sell/approvals?ref=<approvalId>` when that approval exists (`apr_03` for `cft_01`, an `apr_user_<n>` for a live `cft_user_<n>`),
 - is disabled with "Waiting for Cindy's draft" before that,
 - reads approved or declined after the owner's decision.
 
-`CheckedList` (`watch-checked`) sits under the hits and lists every result the newest scan checked (C-6), from its `watch.scanned`, as `watch-checked-<n>`: the title, the URL as text, the text match, and the verdict in plain words:
+`CheckedList` (`watch-checked`) sits under the hits and lists every result the newest scan checked (C-6), from `watch.scans[scanId].results`, as `watch-checked-<n>`: the title, the URL as text, the text match, and the verdict in plain words:
 - a possible copy: "Possible look-alike, see above",
 - a claim-only result (it claims to be Native-made and names no maker or co-op): `watch-claim-only-<n>` with L22, "Claims to be Native-made. We can't check that." It never gets a report button (fix-plan 1.6, A2-1),
 - anything else: "No sign it copies the co-op's work".
 
 Before the scan's `watch.scanned`, the list shows nothing. A `watch.scanned` with no results list shows only the count.
 
-**T5.** `WatchView` lays out the scan bar on top and the results below in one kit `Panel` declaring `b15-watch`, sized for the Sell frame at 1440 by 900. `watch-flow.spec.ts` plays the tour's scan from `watch.started` to `approval.requested` for `apr_03`, with event-anchored seeks (or the same events seeded before the tour carries them), and checks `d14-watch`'s IDs inside `frame-studio`.
+**T5.** `WatchView` lays out the scan bar on top and the results below in one kit `Panel` declaring `b15-watch`, sized for the Sell frame at 1440 by 900. `watch-flow.spec.ts` plays the tour's scan from `watch.started` to `approval.requested` for `apr_03`, with event-anchored seeks (or the same events seeded before the tour carries them), and checks `d14-watch`'s IDs inside `frame-studio`. `watch-live.spec.ts` is B15's live feature spec (acceptance 13), which the orchestrator runs as `npm run gate -- G5 b15-watch watch-live`.
 
 ## Acceptance
 Every spec opens `/sell/watch`, moves the timeline with `seekToEvent(page, type, match, offsetMs)` from `tests/smoke/lib.ts` or seeds events with `seed`, never a fixed time, and checks by test ID only, at 1440 by 900. Arrival is asserted with Playwright's default expect timeout, never a wall-clock window (B1-27).
@@ -116,6 +116,7 @@ Every spec opens `/sell/watch`, moves the timeline with `seekToEvent(page, type,
 10. **Given** a finished scan with no hits, **then** `watch-empty` shows.
 11. **Given** scripted mode, **then** the panel shows `simulated-badge`.
 12. **Given** `demo-lang-toggle` switched to Chinese, **then** every label and the claim are Chinese, and the found listing's title and snippet stay as found.
+13. **Given** live mode with `b15-watch` live, **when** the owner presses `watch-scan`, **then** the scan crawls the sandbox market, `watch-engine` reads "Apify crawl of the sandbox market", `watch-checked` lists every checked result with its verdict, and every event is valid. This is `watch-live.spec.ts`, B15's live feature spec, run as `npm run gate -- G5 b15-watch watch-live`. It skips with a named reason when `/api/health` doesn't list `b15` or `keys.apify` is false, so G3 passes before B15 lands.
 
 ## Out of scope
 - Running the crawl, scoring similarity or reading claims in the browser. That's B15 on the server, or the scripted sample.

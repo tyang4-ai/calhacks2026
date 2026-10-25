@@ -34,9 +34,10 @@ Everything Cindy proposed sits in one inbox on the Sell site of the Diné Weavin
   - for v1: `mpo_01` to `mpo_03`, the makers, `flg_01`, `own_01` (the seal's character), `std_dine` (`payoutLimitCents`),
   - for v2: the CounterfeitCandidate, the ListingDraft, the Storefront, the WorkInProgress and its milestone, and the Community, as each kind's `subjectIds` name them.
   
-  **When `getById()` finds no Approval** (a live `apr_user_<n>` from B14 or B15), the feature uses the inline `approval` object the approvals store key kept from that `approval.requested`: `kind`, `subjectIds`, `amountCents`, `overLimit`, `summary` and its `decisionDate` (B1-15, D1-16). An approval with neither shows its ID and "Details not available" and can still be declined.
+  **When `getById()` finds no Approval** (a live `apr_user_<n>` from B14 or B15), the feature uses `approvals.items[approvalId].approval`, the inline object the store kept from that `approval.requested`: `kind`, `subjectIds`, `amountCents`, `overLimit`, `summary` and its `decisionDate` (B1-15, D1-16). An approval with neither shows its ID and "Details not available" and can still be declined.
   
   Figures that live events recompute (the follow-up text, the drafted listing, the hit's similarity) render from the event payloads.
+- **The Phase A stage:** until I2-tour removes the legacy boxes, I2-shell shows `owner.main` in a 390 by 844 box, v1's phone size, on the `/demo` stage only, so the v1 demo keeps playing. Routes never use that box, so this plan builds and tests at the full Sell frame, 1440 by 900.
 - **Which approval is selected:** `SlotProps.refId` when `/sell/approvals?ref=<approvalId>` sets it. Otherwise the first one still pending, otherwise the newest decided one, as v1's focus rule. Clicking a list card selects it, as UI state only.
 - **Emits,** with `source: "user"`, `by: "own_01"`, through `userEvent()`:
   - `approval.granted` dated with the approval's `decisionDate`,

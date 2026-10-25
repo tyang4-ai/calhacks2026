@@ -25,12 +25,12 @@ The co-op's owner opens Sell and sees the month at a glance: sales so far, money
 - **Reads events** through `useCindia()`:
   - for the overview: `record.arrived` and `flag.raised` (the `month` key), `approval.requested`, `approval.granted` and `approval.declined` (the `approvals` key), `counterfeit.flagged` (the `watch` key),
   - for listings: `listing.requested`, `listing.drafted` and `listing.indexed` (the `listings` key), `swarm.step` (the `swarm` key), `approval.requested` for `listing_publish` approvals,
-  - for the side panel: `wip.milestone_reached` and `wip.milestone_paid` (the `wip` key), and `question.forwarded` and `question.answered` for this maker (the `support` key, or the key contracts section 3 gives them),
+  - for the side panel: `wip.milestone_reached` and `wip.milestone_paid` (the `wip` key), and `question.forwarded` and `question.answered` for this maker, from `support.questions` (each `{ forwarded, answered }` by `questionId`, I2-core T3),
   - `sources`.
 - **Reads data** with `getById()`:
   - the orders and refunds that arrived (their `grossCents`, `amountCents`), the flags,
   - `std_dine` (`makerIds`), `lst_01` (`makerId`, `notes`, `lang`),
-  - the Approval (`kind`, `subjectIds`). When `getById()` finds none (a live or re-keyed `apr_user_<n>`), the inline `approval` object the store kept from its `approval.requested` (D1-16),
+  - the Approval (`kind`, `subjectIds`). When `getById()` finds none (a live or re-keyed `apr_user_<n>`), `approvals.items[approvalId].approval`, the inline object the store kept from its `approval.requested` (D1-16),
   - the maker's pieces (catalog entries with that `makerId`) and works in progress (WorkInProgress with that `makerId`).
   
   Agent names and kinds come from `getAgent(agentId)` in `src/mock/agents.ts`, because agent IDs have no prefix for `getById()`.
@@ -80,7 +80,7 @@ Which listing the screen follows: the newest `listing.requested` in the store. T
 - **Open flags** (`flags`): the flags raised.
 - **Possible copies found** (`hits`): the `counterfeit.flagged` events.
 
-`OverviewTiles` (`seller-overview`) lays the five out as the kit's `StatTile`s (I2-kit), with amounts through `Money`. Each tile is a kit `Link`:
+`OverviewTiles` (`seller-overview`) lays the five out as the kit's `StatTile`s (I2-kit), with amounts through `Money`. Each `StatTile` sits inside a kit `Link`, which opens its view:
 - sales and flags to `/sell/month`,
 - waiting to `/sell/month`, where the catch is,
 - approvals to `/sell/approvals`,
@@ -105,7 +105,7 @@ New steps slide in with the kit's UI motion on the player clock. Before any step
 
 `seller-listing-indexed` shows once a `listing.indexed` for the listing is in the store, in scripted mode too, since `run_02` ends with one (D1-31). It reads that the platform's own model indexed it for search as a draft (`cindia-drafts`), with the payload's `modelId` and the passage it embedded (`embedText`), and that it moves into the live index when the owner approves.
 
-`seller-listing-approve` ("Review Cindy's proposal") is enabled once an `approval.requested` has arrived whose Approval (from `getById()`, or the inline object) has kind `listing_publish` and names the listing in `subjectIds`. That's `apr_04` for `lst_01`, and an `apr_user_<n>` for a person's listing. It moves to `/sell/approvals?ref=<approvalId>`. Before that it's disabled with "Waiting for Cindy's proposal". After a grant it reads approved, and after a decline it reads declined. The card always says only the owner can approve publishing.
+`seller-listing-approve` ("Review Cindy's proposal") is enabled once an `approval.requested` has arrived whose Approval (from `getById()`, or `approvals.items[approvalId].approval` when that misses) has kind `listing_publish` and names the listing in `subjectIds`. That's `apr_04` for `lst_01`, and an `apr_user_<n>` for a person's listing. It moves to `/sell/approvals?ref=<approvalId>`. Before that it's disabled with "Waiting for Cindy's proposal". After a grant it reads approved, and after a decline it reads declined. The card always says only the owner can approve publishing.
 
 **T6.** `MakerSide` (`seller-maker-side`) fills the right third of `/maker/<makerId>`:
 - the maker's pieces (`seller-maker-pieces`), read-only with a `Demo data` badge: illustration, title in the slot's language, price, one of a kind or not,

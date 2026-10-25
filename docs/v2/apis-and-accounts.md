@@ -178,7 +178,7 @@ From the Claude Code docs on cloud sessions and cloud environments (https://code
 
 - **For:** the public site: the scripted build only, with the fictional notice on every page, nothing for sale, `noindex` and a `robots.txt` that disallows everything, plus the sandbox market at `/market/`. B15 crawls that market, and the MLH domain points at the site.
 - **Account:** Gordon's own Cloudflare account, free. The cloud session never deploys and never signs in.
-- **How:** `npm run build:public` (D-deploy) builds `dist/` with `VITE_PUBLIC_SITE=1`, then Gordon uploads `dist/` with Direct Upload (drag and drop in the dashboard, about 5 minutes) tonight and again from the final build after the freeze. `public/_redirects` serves the app's deep links. Once the site is up, `PUBLIC_SITE_URL` goes into the cloud environment and the laptop's `.env`.
+- **How:** `npm run build:public` (D-deploy) builds `dist/` with `VITE_PUBLIC_SITE=1`, then Gordon uploads `dist/` with Direct Upload (drag and drop in the dashboard, about 5 minutes) tonight and again from the final build after the freeze. `public/_redirects` serves the site's deep links. Once the site is up, `PUBLIC_SITE_URL` goes into the cloud environment and the laptop's `.env`.
 - **Hosts:** the project's `*.pages.dev` address, and the MLH domain once it points there.
 - **Docs:** `docs/tech/cloudflare-pages/` (`direct-upload.mdx`, `redirects.mdx`), and `docs/plans/D-deploy.md` for the steps.
 - **Gotchas:** a Direct Upload project can't switch to Git integration later. Cloudflare applies `_redirects` rules before it looks for a file, so the rules never match `/assets/`, `/images/`, `/market/` or `/robots.txt`.
