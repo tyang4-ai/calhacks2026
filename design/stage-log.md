@@ -16,23 +16,23 @@ Figma track, Cal Hacks 13.0. Four stages, 200 words at most per stage. Times are
 
 ## 2 · Prototyping
 
-14:59 to 16:17, 78 minutes so far · rating 4 of 5 · the ten kept screens done, prototype links not wired yet
+14:59 to 16:17, then 16:19 to 18:02 after the scope change, about 3 hours in all · rating 4 of 5 · 24 screens done, prototype links not wired yet
 
-**Tools.** Figma Design through `use_figma`, one script per screen or component batch, with every color bound to a variable and every text to a style. Grayscale wireframes of the ten screens came first. Then 23 components and sets, 16 icons and 8 illustrations were built as each screen needed them. The illustrations are thread SVGs drawn in Python and imported behind a hash check, so each component matches its file byte for byte. Every screen was screenshotted, fixed and exported: 17 PNGs.
+**Tools.** Figma Design through `use_figma`, one script per screen or component batch, every color bound to a variable and every text to a style. 25 components and sets, 16 icons and 15 illustrations were built as screens needed them. The illustrations are Python-drawn SVGs, imported behind a hash check. At 16:19 the scope moved to Native American makers. The core screens took the Diné co-op's content, and seven new screens followed. A pass against the plans that landed meanwhile fixed five gaps: the piece page fold, one Simulated badge on the process bar, pitch cards that read `pitch.ts`, verification as the data model has it, and verification on result cards.
 
-**Friction.** Six scripts failed. Three hit Plugin API rules: hidden layers in instances are skipped unless `skipInvisibleInstanceChildren` is off, `combineAsVariants` wants its nodes on the target page, and a layer inside an instance can't be moved. Three were my own slips. Each was fixed in the next call. Review screenshots caught chips without a remove mark, labels colliding on the map and the graph, a seal covering a figure, names set in mono, and attention blocks without a mark.
+**Friction.** Twelve scripts failed, six per round, each fixed in the next call. The Plugin API skipped hidden layers in instance searches, kept a stale text render until a clone replaced it, and reset layer names with overrides. Name lookups twice caught the wrong layer.
 
-**Into the build.** `components.md`, `changes.md` and `flows.md`, with the screens, for I3-redesign.
+**Into the build.** The 24 screens with `components.md`, `changes.md` and `flows.md`, for I3-redesign.
 
 ## 3 · Handoff
 
-14:28 to 14:52 and 16:12 to 16:17, 29 minutes so far · rating 4 of 5 · drop 1 done, drop 2 partial
+14:28 to 14:52, 16:12 to 16:17 and 18:02 to 18:14, about 41 minutes · rating 4 of 5 · drops 1 and 3 done
 
-**Tools.** Files came first, so the build never waits on Figma. A Python generator writes tokens.json and tokens.md from one list of 113 tokens, and fails the run if any of 80 contrast pairs drops below 4.5:1 for text or 3:1 for marks. It caught two chart colors at 2.7:1 and 2.9:1 before they shipped. The chart palette came from the dataviz skill's validator. Then Figma Design through `use_figma`: 79 variables with `var(--c-…)` code syntax and scopes, text styles, an overlay shadow and style tiles bound to them. Drop 2's docs were written from the Figma nodes and the mock data.
+**Tools.** Files came first, so the build never waits on Figma. A Python generator writes tokens.json and tokens.md from one list of 113 tokens, and fails the run if any of 80 contrast pairs drops below 4.5:1 for text or 3:1 for marks. It caught two chart colors at 2.7:1 and 2.9:1 before they shipped. The chart palette came from the dataviz skill's validator. Then Figma Design through `use_figma`: 79 variables with `var(--c-…)` code syntax and scopes, text styles, an overlay shadow and style tiles bound to them. Drop 3's docs map every screen to its beat and node.
 
-**Friction.** Edu verification lifted the 20-call cap for the new file. Three tiles came out clipped, because `resize()` fixes an auto-layout frame's height, and the icons lost their strokes, because Figma's SVG import ignores attributes on the root element. Two fix calls.
+**Friction.** Edu verification lifted the 20-call cap for the new file. Three tiles came out clipped, because `resize()` fixes an auto-layout frame's height, and the icons lost their strokes, because Figma's SVG import ignores attributes on the root element. The plans changed during the build, so the drop was checked against them again.
 
-**Into the build.** I3-redesign pastes the `css` block into `src/ui/tokens.css`, makes the eleven kit changes in tokens.md, then restyles the kit from components.md.
+**Into the build.** I3-redesign pastes the `css` block into `src/ui/tokens.css`, makes the kit changes in tokens.md, then restyles the kit and the pitch cards.
 
 ## 4 · Code generation
 
@@ -48,9 +48,9 @@ This section backs up the entries above and is not part of their word count.
 
 | File | Link | What's in it |
 |---|---|---|
-| Cindia · 01 Research (FigJam) | https://www.figma.com/board/T3lxV76Wc6petCKoRE0TNu | What Cindia is, why it matters (World Bank, FDIC, ICT News), the buyer, the maker (陆芸 Lu Yun), the studio owner (沈若兰 Shen Ruolan), the judge at a table, the community as a stakeholder, the Visa, Hyphenate and Figma criteria, the judge's one-minute story, 15 references (described and linked, never copied), 8 principles, the screen rules, 4 open questions with defaults |
+| Cindia · 01 Research (FigJam) | https://www.figma.com/board/T3lxV76Wc6petCKoRE0TNu | Written before the scope change. What Cindia is, why it matters (World Bank, FDIC, ICT News), the buyer, the earlier studio's maker and owner, the judge at a table, the community as a stakeholder, the Visa, Hyphenate and Figma criteria, the judge's one-minute story, 15 references (described and linked, never copied), 8 principles, the screen rules, 4 open questions with defaults |
 | Cindia · 02 Moodboards (FigJam) | https://www.figma.com/board/KAOXGbhwnS0A0tJ8j5ABj7 | How the directions were checked, A · Museum label, B · Warp and weft, C · Daylight market (idea, palette, type, texture and imagery, the product vignette), a side-by-side table and the recommendation, with a sticky for Gordon's pick |
-| Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 18 text styles, the overlay shadow, and four pages: Style tiles (`design/style-tiles.png`), Wireframes, Components and Screens (`design/screens/`) |
+| Cindia · Design (Figma Design) | https://www.figma.com/design/v4nmWkfTRKvWgwf8QiDjCb | Created at 14:45 for stage 3. The Color and Size variable collections, 18 text styles, the overlay shadow, and four pages: Style tiles (`design/style-tiles.png`), Wireframes, Components and Screens (the 24 frames in `design/screens/`) |
 
 All three files sit in Gordon's drafts on his Figma team, which moved from the Starter tier to the student tier after his Edu verification. None is shared yet: "Anyone with the link" has to be set in Figma by Gordon, because the MCP server has no sharing tool.
 
@@ -58,7 +58,7 @@ All three files sit in Gordon's drafts on his Figma team, which moved from the S
 
 | Time | What happened | Tools |
 |---|---|---|
-| 13:45 | Read the v2 brief, contracts sections 4, 7 and 9, the glossary, the design system and the nine app screenshots | Read |
+| 13:45 | Read the v2 brief, contracts sections 4, 7 and 9, the glossary, the design system and the nine v1 screenshots | Read |
 | 13:48 | Track rules: WebFetch got only the Google Docs page shell, so the doc was read through the Google Drive connector | WebFetch, Google Drive |
 | about 13:52 | Font coverage (12 files from the google/fonts repo), WCAG contrast, color-blindness simulation | Python, fontTools |
 | about 13:56 | Checked the 15 reference links | WebSearch |
@@ -96,43 +96,73 @@ All three files sit in Gordon's drafts on his Figma team, which moved from the S
 | 15:51 | EvidenceCard, RecordRow and the catch. Review moved names and dates out of mono | use_figma, get_screenshot |
 | 15:54 | Approvals, waiting and sealed. Review gave each card a seal slot, so the seal never covers a figure | use_figma, get_screenshot |
 | 15:57 | Close with the impact panel. Review pulled a badge back inside its panel | use_figma, get_screenshot |
-| 16:00 | The maker page in Chinese | use_figma, get_screenshot |
+| 16:00 | The maker page, then in Chinese | use_figma, get_screenshot |
 | 16:02 | ScoreBar and the process bar states sheet. Review added the missing "!" to attention blocks | use_figma, get_screenshot |
 | 16:04 | The swarm view. Review moved the graph to the diagonals so the labels clear the edges | use_figma, get_screenshot |
 | 16:07 | The search view. Review re-placed the labels and fixed score bars that ignored their values | use_figma, get_screenshot |
 | 16:08 | Block statuses set to the F-process count rules on every screen, then all 14 earlier screens re-exported | use_figma, get_screenshot |
-| 16:12 | Node IDs collected. `components.md`, `changes.md`, `flows.md` and `HANDOFF.md` written | use_figma, Write |
+| 16:12 | Node IDs collected. Drop 2's docs written | use_figma, Write |
+| 16:19 | Scope change from Gordon, through the coordinator: Native American makers, the Diné Weaving and Silver Co-op, four communities, the cultural rules, seven new screens | |
+| about 16:25 | Read the fix plan, the cultural review's labels and rules, and the contracts for the new scope | Read |
+| 16:35 | First drawings for the four communities generated in Python and imported behind a hash check | Python, use_figma |
+| about 16:40 | Core screens re-skinned: names, `pc_01`, the gallery comparison, the receipt's promise and note, and Grace N.'s statement in English | use_figma, get_screenshot |
+| 16:56 | R0's and S3's plans landed. Their titles, figure 11 and the scripted runs became the source for the screens | Read |
+| 17:01 | The final 15 drawings, named by piece ID, imported and copied to `design/assets/illustrations/` | Python, use_figma |
+| 17:05 to 17:25 | New screens: three pitch cards, the presenter hint, the listing beat, the data view, the community page and the store page | use_figma, get_screenshot |
+| 17:30 | Ten plans read against the screens: buyer, process, tour, search, support, seller hub, communities, storefront, approvals and the maker statement | Read |
+| 17:40 | Process bar on every screen: Counterfeit watch, the status words, one Simulated badge and the Live mark. The first pass found no nested blocks, and a second pass that walked each beam worked | use_figma, get_screenshot |
+| 17:44 | Pitch cards rebuilt as `pitch.ts`'s title and four lines | use_figma, get_screenshot |
+| 17:47 | VerificationLine set to nation attestation, with L4 in the full variant | use_figma |
+| 17:49 | Piece page rebuilt to fit the fold, in all four states | use_figma, get_screenshot |
+| 17:52 | The support drawer's steps list | use_figma, get_screenshot |
+| 17:54 | The receipt note, the maker's four pieces and held line, the store blocks, the community verification and its storefront link | use_figma, get_screenshot |
+| 17:55 | Compact cards got their verification line, and a 142 px picture to keep six above the fold | use_figma, get_screenshot |
+| 17:56 to 18:01 | Every screen re-exported. Leftover verification overrides cleared, and the swarm view's background replaced with the new piece page | use_figma, get_screenshot |
+| 18:02 | HANDOFF, components, changes, flows, layout and tokens updated for drop 3 | Write |
+| 18:09 | Style tiles: the earlier studio's type samples, seal, chip and drawing replaced with the co-op's, and the live beam component placed in the kit tile. Re-exported as `design/style-tiles.png` | use_figma, get_screenshot |
 
 ### Figma MCP calls
 
-| Tool | Stage 1 calls | Stage 3 calls | Stage 2 calls, to 16:17 | Counts toward the limit |
-|---|---|---|---|---|
-| use_figma | 12 | 7 | 41, six of them failed and were redone | yes |
-| get_screenshot | 8 | 3 | 45 | yes |
-| create_new_file | 2 | 1 | 0 | no, exempt |
-| create_session | 1 | 0 | 0 | no |
-| whoami | 2 | 1 | 0 | no, exempt |
-| upload_assets | 1 | 0 | 0 | its upload URL was unreachable from the sandbox |
-| get_figma_skill | 13 | 2 | 0 | no, skill docs |
+Counted from the agent's transcript. The last minutes of the scope change round are estimated.
 
-The limit for a View or Collab seat is up to 20 calls a month. An Education plan (Edu verified) gets the Professional limits for Full and Dev seats: up to 200 calls a day and 10 a minute. Source: https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/. After Gordon's verification the team shows the student tier and the calls went through again, though whoami still lists his seat as View.
+| Tool | Stage 1 | Stage 3 | Stage 2, to 16:17 | Scope change, 16:19 to 18:12 | Counts toward the limit |
+|---|---|---|---|---|---|
+| use_figma | 12 | 7 | 41, six failed and were redone | about 83, six failed and were redone | yes |
+| get_screenshot | 8 | 3 | 45 | about 97 | yes |
+| create_new_file | 2 | 1 | 0 | 0 | no, exempt |
+| create_session | 1 | 0 | 0 | 0 | no |
+| whoami | 2 | 1 | 0 | 0 | no, exempt |
+| upload_assets | 1 | 0 | 0 | 0 | its upload URL was unreachable from the sandbox |
+| get_figma_skill | 13 | 2 | 0 | 0 | no, skill docs |
+
+The limit for a View or Collab seat is up to 20 calls a month. An Education plan (Edu verified) gets the Professional limits for Full and Dev seats: up to 200 calls a day and 10 a minute. Source: https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/. After Gordon's verification the team shows the student tier and the calls went through again, though whoami still lists his seat as View. The Pacific day's total passed 200 during the scope change round and calls still went through. A daily count that resets at midnight UTC, 17:00 Pacific, would explain it. That isn't confirmed.
 
 ### Rework and dead ends
 
 - The sandbox can't reach www.figma.com or mcp.figma.com. Screenshot URLs and upload POSTs fail. Screenshots were taken with `enableBase64Response` (copies in `design/ideation/`), SVG art went in through `createNodeFromSvg`, and the PNG texture tiles through `figma.base64Decode` and `figma.createImage`, all inside `use_figma` scripts.
 - The texture tiles were first 25 to 33 KB as base64, too big to embed cheaply. They were cut to 7 to 9 KB seamless tiles. The thread-drawn fan went from 30 KB of line elements to 5 KB by drawing each color as one path.
-- After the screenshots, three small layout fixes: A's language toggle was clipped at the right edge (moved in), B's process-block status lines overflowed in mono (set in Source Sans 3), C's last process pill was clipped (label shortened to "Proof · idle"). The vignette PNGs in `design/ideation/` show the state before these fixes.
+- After the moodboard screenshots, three small layout fixes: A's language toggle was clipped at the right edge (moved in), B's process-block status lines overflowed in mono (set in Source Sans 3), C's last process pill was clipped (label shortened to "Proof · idle"). The vignette PNGs in `design/ideation/` show the state before these fixes.
 - The comparison section was built by call 20 and never screenshotted, so it is the one part of the boards not checked by eye.
+- The first scope change drawings were replaced at 17:01 by a set named by piece ID, so every piece on the screens has its own file.
+- A shell command that deleted files through a variable was blocked by the session's safety check, and was redone with literal paths.
+- `resetOverrides()` cleared old verification text on the screens, and also reset the layer names, which were set back by hand.
+- The first piece page that fit the fold still left the verification at 904 px. Moving the hours into the header and setting the craft line at 14 px brought everything up to 860 px.
 
 ### Checks behind the moodboards
 
 - **Contrast:** 72 pairs across the three palettes plus 6 tints on B's dark beam, all passing. Text 4.5:1 or better, control borders 3:1 or better, hairlines carry no text. Data: `design/ideation/checks.json`.
 - **Color blindness:** each palette's flag and money-in colors stay apart under deuteranopia (ΔE 25 to 31) but get close under protanopia (ΔE 10 to 13), so every state carries an icon and a word as well as a color.
-- **Fonts:** every candidate covers the catalog's names (Diné, Māori, Sámi, Sápmi, pōtae, whāriki). Only Inter and Source Sans 3 also cover the wider set for names makers may write later (Sámi ŧ đ ŋ, Diné ą ǫ ł, Maa ɔ ɛ ɨ ʉ, pinyin tones). No Latin font covers Inuktitut syllabics, so every stack ends with Noto Sans Canadian Aboriginal. All fonts are under the SIL Open Font License.
-- **Images:** only our own swatches, type samples and textures generated from code. No photos, no artworks, no screenshots of other products.
+- **Fonts:** every candidate covers the catalog's names, including Diné. Only Inter and Source Sans 3 also cover the wider set for names makers may write later (Diné ą ǫ ł, pinyin tones and others). No Latin font covers Inuktitut syllabics, so every stack ends with Noto Sans Canadian Aboriginal. All fonts are under the SIL Open Font License.
+- **Images:** only our own swatches, type samples, textures and drawings generated from code. No photos, no artworks, no screenshots of other products.
+
+### Checks behind drop 3
+
+- **Drawings:** 15 SVGs, each under 6 KB, with no `text`, `image`, `href`, `script` or `foreignObject`. Patterns are stripes, steps, diamonds, zigzags and bands. Flowers appear only on `pc_14`, the Ojibwe beadwork. No Yei figures, katsina, feathers, sandpainting designs or whirling-log shapes.
+- **Labels:** L1 on every Shop and Sell screen and on each pitch card, L2 in every Sell header, L3 and L4 on every verification line, L5 under the story, L7 beside the add-on and the project, L8 on the about box and the story block, L9 under the protocols title, L11 at the top of the drawer, L13 in the store footer, L27 beside the translated title, L28 on the model card.
+- **Words:** no nation's name as a product word, Cindia called a platform, and every maker a given name with a family initial.
 
 ### What's next
 
 - Gordon picked B at 14:28, and drop 1 is done.
-- Drop 2's ten kept screens are done at 16:17: 17 PNGs, with `components.md`, `changes.md`, `flows.md` and the assets.
-- Still to do in Figma: the held screens when the coordinator says, the prototype links, the FigJam flows board and the Slides deck. With 86 stage 2 calls so far, that fits in the Education plan's 200 a day and 10 a minute.
+- Drop 3 is done at about 18:14: 24 PNGs, 15 drawings, the style tiles, and the updated `components.md`, `changes.md`, `flows.md`, `layout.md` and `tokens.md`.
+- Still to do in Figma: the prototype links, the Slides deck that mirrors the pitch cards, and the screens `HANDOFF.md` lists as not drawn.

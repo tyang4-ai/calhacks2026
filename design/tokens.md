@@ -55,10 +55,11 @@ Line icons on a 20 px grid with a 1.5 px stroke, square caps and joins and no fi
 
 Pieces are drawn in thread, the same line language as the diagrams:
 - an 800 by 800 `viewBox` on a paper ground, with warp lines every 80 px (2 px, `--c-color-line`),
-- shapes filled with parallel stitch lines in the piece's own facet colors (5 to 7 px wide, 8 to 14 px apart), petals and leaves in satin stitch across their axis,
-- one 5 px outline in the piece's darkest facet color,
+- weavings as weft rows in the piece's own colors (8 px rows, 10 px apart), jewelry and pottery as plain shapes, beadwork as rows of round beads, patchwork as bands of small blocks,
+- patterns in plain geometry only: stripes, steps, diamonds, zigzags and bands, with flowers only on Ojibwe beadwork,
+- one 5 px outline in the piece's darkest color,
 - no text, no embedded images, no outside references, under 30 KB, and the same file every time for the same piece (I2-art's rules).
-The `PieceCard` draws the Illustration tag on top. Nothing is copied from a real piece or a community's protected designs, and nothing sacred, ceremonial or clichéd is drawn.
+The `PieceCard` draws the Illustration tag on top. Nothing is copied from a real piece or a community's protected designs. Nothing sacred, ceremonial or clichéd is drawn: no Yei figures, katsina, feathers, sandpainting designs or whirling-log shapes.
 
 ## Elevation
 

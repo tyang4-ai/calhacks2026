@@ -97,13 +97,13 @@ Spacing: panels pad 24 px. Panels sit 24 px apart on Shop and 16 px apart on Sel
     - `search-surprise`,
     - the mode picker `search-surprise-mode`, a three-part switch: Keyword, Pure random, Fair random,
     - the drawn piece (`search-surprise-result`) as a one-row card that names the method it used.
-  - **Featured pieces:** four `PieceCard`s, three columns each (318 px). Each has:
+  - **Featured pieces:** eight `PieceCard`s, four across at three columns each (318 px), two from each community in community order. The first row sits above the fold. Each has:
     - a square 318 px picture with the Illustration tag,
     - the title (18 px, 600),
-    - the maker row (`MakerMark` and "name · community", 14 px),
+    - the maker row (`MakerMark` and "name · community", 14 px, one line),
     - the price (18 px, 600),
-    - the verification line (14 px, jade, with a check).
-- **Below:** the communities strip (`shop.home.communities`), four `CommunityCard`s with the kind written as a word, then three `ProjectCard`s (four columns each) with their progress.
+    - the verification line (14 px, jade, with the dot), starting with L3.
+- **Below:** the communities strip (`shop.home.communities`), four `CommunityCard`s with the kind written as a word, then the community projects as `ProjectCard`s (four columns each) with their progress.
 
 ### Results, `/shop/search`
 
@@ -113,38 +113,31 @@ Spacing: panels pad 24 px. Panels sit 24 px apart on Shop and 16 px apart on Sel
   - filters (price, community, with each community's kind as a word),
   - the engine line (`search-engine`), for example "Answered by keyword search · Simulated".
 - **Columns 4 to 12, the results (`search-results`):** six results above the fold, three across in two rows.
-  - Each `search-result-<pieceId>` is a compact card, 318 by 340, with a 200 px picture box (the square illustration centered on paper).
-  - Its footer is the reason line (`search-reason-<pieceId>`): the shared facets as small chips and one sentence.
+  - Each `search-result-<pieceId>` is a compact card, 318 by 314, with a 142 px picture box (the square illustration centered on paper).
+  - Its footer is the reason line (`search-reason-<pieceId>`): the shared facets as small chips and one sentence, then the verification line starting with L3.
 - The embedding map opens in the search process view, not on the page.
 
 ### Piece page, `/shop/piece/:pieceId`
 
-- **`shop.piece.main`, columns 1 to 8:** two inner columns of 432 px.
-  - Left: the illustration, 432 px square. The story card (`buyer-story-card`), hours of work and the process steps follow under it, below the fold.
-  - Right, top to bottom, all above the fold:
-    - the title (36 px, 700),
-    - the maker row,
+- **`shop.piece.main`, columns 1 to 8:** two inner columns of 432 px, everything above the fold.
+  - Left: the story card (`buyer-story-card`) with the picture, the title in both languages, the maker with her mark and the Demo data badge, the community link, the hours, the story, L5, the steps (`buyer-process-timeline`) and the craft line. Under it, the verification (`buyer-verification`) with L3 and L4.
+  - Right, top to bottom:
     - the price (36 px, 700),
-    - the verification line (`buyer-verification`), saying how and by whom,
-    - "Where your money goes" (`buyer-split-bar`, with the maker's share first and in jade),
-    - the checkout panel: `buyer-project-addon`, "Add $5.00 to the Gu apprentice stipend", then `buyer-pay-button` and the token line (`buyer-token`), labeled Demo checkout, no real charge.
+    - "Where your money goes" (`buyer-split-bar`, with the maker's share first and in jade) and the gallery comparison (`buyer-split-compare`),
+    - the checkout panel: `buyer-project-addon`, "Add $5.00 to Looms for two new weavers" with L7, then `buyer-pay-button` and the token line (`buyer-token`), labeled Demo checkout, no real charge, and after paying the status with `buyer-receipt-promise`.
 - **`shop.piece.side`, columns 9 to 12 (432 px):** "Ask about this piece", the support conversation inline, with each reply's agent named.
 
 ### Community, `/shop/community/:communityId`
 
-- **Header across 12 columns:**
-  - the name (36 px, 700),
-  - the kind as a word (Indigenous or Heritage, never a color),
-  - people and place,
-  - the Demo data badge.
+- **Header across columns 1 to 8:**
+  - the name (36 px, 700) with the Demo data badge,
+  - the people, the place and the craft, in words.
 - **Columns 1 to 8:**
-  - "In its own words" (`about`), set as the community's text, not Cindia's,
-  - the craft,
-  - "How makers are verified" (`community-verification`): method, who, note,
-  - "What we don't sell" (`community-protocols`) as a plain list,
+  - the `about` text in a dashed placeholder box with L8, never set as the community's own words,
+  - "Kept out of this demo." (`community-protocols`) with the rest of L9 under it and the protocols as tags,
   - the makers,
-  - the pieces, three across.
-- **Columns 9 to 12:** its projects with progress, and the link to its storefront.
+  - the pieces, three across, with the link to its storefront at the right of their heading.
+- **Columns 9 to 12:** "How makers would be verified" (`community-verification`) with L3 and L4, its project with progress, and the other communities.
 
 ### Projects, `/shop/projects` and `/shop/projects/:id`
 
@@ -164,15 +157,16 @@ Spacing: panels pad 24 px. Panels sit 24 px apart on Shop and 16 px apart on Sel
   - the price split,
   - the token line ("The card number is never stored"),
   - the project contribution,
-  - the status (`buyer-receipt-status`): Received, then Paid to the maker with the amount and the payout date.
+  - the status (`buyer-receipt-status`): Received with the promise (`buyer-receipt-promise`), then Paid to the maker with the amount and the payout date.
 - A single thread runs from the buyer to the maker along the left edge of the receipt and draws itself when the status changes.
+- Once paid, the maker's note (`buyer-receipt-maker-note`) sits in columns 10 to 12, level with the status.
 
 ## Sell (`frame-studio`)
 
 - **The Sell header**, 48 px, under the beam, `--c-color-mat`:
-  - the studio's name in both languages (顾绣工作室 Gu Embroidery Studio, 18 px, 700) at 24 px,
+  - the co-op's name (Diné Weaving and Silver Co-op, 18 px, 700) at 24 px,
   - then "Cindy ·" and her latest line (16 px, `--c-color-ink-soft`),
-  - the Demo data badge at the right.
+  - L2 at the right, on two lines in 14 px `--c-color-ink-soft`.
 - **The nav (`shell-nav-<view>`)**, 184 px, on paper with a hairline on its right:
   - the eleven views in the Routes order, 44 px rows, 16 px labels,
   - a count in mono at the right where there is one (approvals waiting, open flags, hits),
@@ -185,7 +179,7 @@ Spacing: panels pad 24 px. Panels sit 24 px apart on Shop and 16 px apart on Sel
 | `listings` | Columns 1 to 5: the maker's notes in their own language (`seller-listing-notes`) and "Draft with the agents". Columns 6 to 12: the draft in both languages (`seller-listing-draft`), its checks as rows with a check or "!" and a note (`seller-listing-check-<checkId>`), and `seller-listing-approve` |
 | `storefront` | Columns 1 to 4: the block list (`storefront-block-<blockId>`), the accent picker (the eight accents as labeled swatches) and the layout picker. Columns 5 to 12: the live preview (`storefront-preview`) at 60% inside a frame labeled Preview, and `storefront-publish` |
 | `projects` | Project cards with progress, and each work in progress's milestones with `wip-release-<milestoneId>` on the one waiting |
-| `map` | The money lattice across all 12 columns: each party a vertical warp thread (buyer, Cindia, studio, the three makers, gallery, card network, supplier, community fund), each movement a row in time order, the thread crossing from payer to payee with its amount at the crossing. The balance (`money-map-balance`) at the top right |
+| `map` | The money lattice across all 12 columns: each party a vertical warp thread (buyer, Cindia, the co-op, the three makers, gallery, card network, supplier, community fund), each movement a row in time order, the thread crossing from payer to payee with its amount at the crossing. The balance (`money-map-balance`) at the top right |
 | `month` | Main, columns 1 to 8: the records table with its kind chips. Side, columns 9 to 12: "Try a statement". When the catch opens, the flag and its three `EvidenceCard`s (contract, statement, bank record, each with its key figure marked) span all 12 columns, under the line "The gallery paid $340 less than the contract says" at 48 px |
 | `close` | Main: the month's totals, the Excel report and profit and loss. Side: Impact, each estimate labeled |
 | `proof` | Main: "Caught 4 of 4" as the big figure and the planted errors. Side: the search model's scores (`search-proof`), or "Not trained yet" |
@@ -197,22 +191,23 @@ The money lattice is B's way of drawing the money map. The node-and-thread map t
 
 ## Maker page (`frame-maker`)
 
-- The page opens in the maker's language (Chinese for the Gu makers), on the Shop grid.
+- The page opens in English, the maker's own language after R0, on the Shop grid. The toggle switches it to Chinese.
 - **`maker.main`, columns 1 to 8:**
-  - the `MakerMark` and name (陆芸, 36 px, 700) and the month,
-  - "本月收入" (This month's income) over the hero figure (64 px, 700),
-  - the payout date and its status as a word,
-  - the statement lines (piece and share, figures in mono),
-  - anything held, on one line with "!" and the words 暂缓发放 and 待画廊补齐欠款后发放.
-- **`maker.side`, columns 9 to 12:** their listings and works in progress (`seller-maker-side`).
+  - the `MakerMark` and name (Grace N., 36 px, 700) and the month,
+  - "This month's income" over the hero figure (64 px, 700),
+  - the amount paid out, the payout date and its status as a word,
+  - anything held, on one line with "!" and the held note, then the line that names the gallery's short payment,
+  - the statement lines (piece and share, figures in mono).
+- **`maker.side`, columns 9 to 12:** their pieces for sale with prices (`seller-maker-pieces`) and works in progress (`seller-maker-side`).
 
 ## Storefront (`frame-store`)
 
-- The beam stays on top, because every surface is a `PageFrame`. Under it, a 32 px band in `--c-color-mat` says "Storefront preview. The builder is a working mock" with the Demo data badge.
-- The blocks run full width in the storefront's order: hero, story, pieces, process, projects, visit us. `story_first` puts the story above the pieces, and `grid_first` puts the pieces first.
+- The beam stays on top, because every surface is a `PageFrame`. Under it, the store bar: the community's name, its section links, "A storefront on Cindia", and a 4 px rule in the community's accent.
+- The blocks run in the storefront's order: hero (name and place, tagline, craft line, a picture), pieces, story (with the Demo data badge and L8), process steps, projects, visit (the region and "Visits by arrangement"). `story_first` puts the story above the pieces, and `grid_first` puts the pieces first.
+- The footer (`store-footer`) holds the preview line and then L13.
 - **The community's accent** colors links, buttons and section rules (`var(--c-color-<accent>)`). Its wash fills the hero band and section bands (`var(--c-color-<accent>-wash)`). Text on a wash is always ink.
 - The pieces grid is four across (three columns each), and each piece links back to its Shop page.
 
 ## The tour (`/demo`)
 
-The stage shows one frame at a time at 1440 by 900, and a process view may open over it. The title and end cards are full frames on `--c-color-beam` with beam-text type. They are designed in drop 2 with the other screens.
+The stage shows one frame at a time at 1440 by 900, and a process view may open beside it. The three pitch cards and the end card are full frames on `--c-color-beam` with beam-text type: a title and up to four lines from `pitch.ts`, with L1 at the foot. In presenter mode the presenter hint sits at the bottom right of every frame.

@@ -1,147 +1,121 @@
 # Cindia · changes
 
-Handoff drop 2 · direction B · Warp and weft · Oct 24, 2026
+Handoff drop 3 · direction B · Warp and weft · Oct 24, 2026
 
-What the screens change beyond the kit restyle. I3-redesign doesn't edit `src/features/`, so it lists each feature's items under needs, one line per feature, for that feature's polish round. Nothing here renames a route, slot, event, field or test ID. Each item names the screen in `design/screens/` that shows it.
-
-## Settled from drop 1's proposals
-
-- **Compact PieceCard:** 318 by 338, with a 190 px picture box. Drop 1 proposed 340 and 200. Taking 10 px off the picture keeps two rows of results and their header above the fold (`shop-search--results.png`).
-- **The money lattice** replaces the node-and-thread money map (`sell-map--default.png`).
-- **Seal initials for leads outside the Gu studio** stay a proposal. Every approval on these screens is the Gu studio's, so the seal shows 准.
+What the screens change beyond the kit restyle. I3-redesign doesn't edit `src/features/`, so it lists each feature's items under needs, one line per feature, for that feature's polish round. Nothing here renames a route, slot, event, field or test ID. Each item names the screen in `design/screens/` that shows it. Where a plan sets a different arrangement, the item says so, and the lead picks in the polish round.
 
 ## By feature
 
-### buyer, the piece page (`shop-piece-pc_01--checkout.png`, `--token.png`)
+### shell (every screen)
 
-- **Title row:** the title (Title/36), the Chinese title in `ink-soft` on the same baseline, and the price (Title/36) at the right.
-- **Under the title:** the maker row, then the full VerificationLine (`buyer-verification`).
-- **"Where your money goes":** a panel holding the Panel-width ShareBar (`buyer-split-bar`).
-- **Checkout panel before paying:**
-  - its title with the tag "Demo checkout, no real charge",
-  - the project add-on as a checked Checkbox (`buyer-project-addon`),
-  - the masked card line, "Total $185.00", and Pay (`buyer-pay-button`, Primary, full width),
-  - the line "This checkout is simulated. No card is charged."
-- **After the token:**
-  - the add-on becomes "Paid $185.00, with $5.00 to the Gu apprentice stipend",
-  - the token box (`buyer-token`) shows Card token, Visa ending in 4242, the token in mono, and the never-stored note,
-  - the status (`buyer-receipt-status`) reads Received, with the clock in `amber` and a "View receipt" link,
-  - the simulated line stays.
-- **Story card:** `buyer-story-card` sits under the illustration, with hours of work and the process steps (`buyer-process-timeline`). It runs below the fold.
-- **Fit:** both states fit above the fold. The right column ends at 831 px before paying and 897 px after.
+- **Top bar:** L1 sits at the right on two lines in Caption/14, before Ask Cindy, Help and the language toggle.
+- **Sell header:** the co-op's name, Cindy's latest line, and L2 at the right on two lines. The Demo data badge isn't drawn there, because L2 says it in words.
+- **Maker page beam:** Sell selected, and "Grace N. · Maker" in the center.
 
-### buyer, the receipt (`shop-receipt-ord_001--received.png`, `--paid-to-maker.png`)
+### process (every screen, `process-bar--states.png`, `process-swarm--view.png`, `process-search--view.png`, `process-data--view.png`)
 
-- **One 660 px column** (Shop columns 4 to 9):
-  - "Receipt" with the badge, and the total paid at the top right,
-  - the order line with `ord_001` in mono and the buyer's name,
-  - the piece row with a 96 px illustration,
-  - the Receipt-width ShareBar, the card token, and the project contribution,
-  - the status under a hairline.
-- **The receipt thread** runs down the left edge (`components.md`, Money pictures). Paid to the maker reads "The maker got their share: $134.48 to Lu Yun on Oct 2, 2026."
+- **The bar:** eleven blocks from x 48 with 6 px gaps, 104 px wide except Counterfeit watch at 124. Line 2 is the count and the status word (Idle, Working, Done, Attention). Blocks never say Simulated.
+- **The summary:** "Live: N of 11" over one Simulated badge, from x 1276. "N screens watching" replaces the badge line in live mode only.
+- **The Live mark:** a 6 px `beam-live` dot at a block's top right, when all its keys are live.
+- **The swarm view:** the graph with Cindy at the center and the specialists on the diagonals, the rule-based quote check named under the Steward's tool, and ten step rows with the latest in `indigo-wash`.
+- **The search view:** every piece colored by its community, with the four communities named, the six results ringed and numbered, and the scores with each result's community and matched keywords.
+- **The data view:** the eight tables with counts and newest rows, the two Elastic indexes with `cindia-drafts` marked new, a small map with the draft, and the model card with L28.
 
 ### search (`shop-home--hero.png`, `shop-search--results.png`)
 
-- **Results page:**
-  - Columns 1 to 3 hold "Your request" (the words, the Removable keyword chips, the filters and the engine line with a dot). Surprise me sits under it, because `d02-surprise` runs on the results page. `layout.md` had Surprise me on the home page only.
-  - The results header reads "6 pieces for your words · sorted by how well they match".
-  - Two rows of Compact cards sit under the header.
-- **Home:**
-  - "Describe a feeling", a lead line, the SearchBar and the chips across columns 1 to 8,
-  - Surprise me in columns 9 to 12,
-  - four featured Tiles under them.
-- **Surprise me's result row:** a 64 px thumbnail, the piece, and the method in words ("Fair random: leans toward makers with fewer sales this month.").
+- **Result cards:** the compact card is 318 by 314, with a 142 px picture, the reason, and the verification line starting with L3. Six fit above the fold.
+- **Results page:** the request column on the left (the words, the chips, the filters, the engine line) with Surprise me under it, and the six results on the right. F-search T7 puts the refine bar above the grid and Surprise me on the right. This arrangement keeps all six results and their verification lines above the fold.
+- **Home:** "Describe a feeling", the SearchBar and its chips across eight columns, Surprise me in the last four, then the featured cards in community order. The grid holds eight cards, two from each community, and the screen shows the first row.
+
+### buyer (`shop-piece-pc_01--checkout.png`, `--token.png`, `shop-receipt-ord_001--received.png`, `--paid-to-maker.png`)
+
+- **The story card** (`buyer-story-card`), left column: a 140 by 166 picture cropped to the piece, the title in both languages, Grace N. with her MakerMark and the Demo data badge, the co-op's name as a link to its community page, "26 hours of work", the story, L5, the four steps with their hours (`buyer-process-timeline`), and "About the craft." with the craft line.
+- **The verification** (`buyer-verification`) under the card: L3 with the method, who would attest, the note, and L4.
+- **The price column:** the price (`buyer-split-price`, Title/36), then "Where your money goes" with the split and the comparison (`buyer-split-compare`), then checkout.
+- **Fit:** in both states the page ends by 860 px, so all six of acceptance 1's IDs sit inside the frame.
+- **Before paying:** the add-on unchecked with "All of it goes to the community fund." and L7, the masked card, "Total $180.00", Pay, and the simulated note.
+- **After paying:** "Paid $185.00, with $5.00 to Looms for two new weavers", the token box, Received with "View receipt", "The co-op has your payment.", `buyer-receipt-promise`, and the simulated note.
+- **The receipt:** Received shows the promise. Paid to the maker shows "The maker got their share: $134.48 to Grace N. on Oct 2, 2026." and `buyer-receipt-maker-note` at the right, with her MakerMark, her name and the Demo data badge over her note.
 
 ### support (`shop-piece-pc_01--support-drawer.png`, `--support-answered.png`)
 
-- **Step strip:** the drawer gets the AgentStep strip and the Now line above the conversation, a new kit component (`components.md`, Needs).
-- **Answered:** the answered state adds "How it works", which opens `?process=swarm`.
-- **Ask about this piece:** `shop.piece.side` shows the same thread, then a line naming where Writer's facts came from, then the input row.
+- **The drawer:** L11 at the top, then the step strip (Cindy, Intake, Steward, Check, Clerk, Writer) with its Now line, then the conversation.
+- **While working:** `support-working` under the question lists the steps so far (`support-steps`), the latest in `indigo-wash`.
+- **Answered:** the Writer's reply in place of the list, "Answered by Writer after 10 steps." and "How it works", which opens `?process=swarm`.
+- **Ask about this piece** (`shop.piece.side`): after the answer, the same thread, a line naming where the Writer's facts came from, and the input row. Before the question, the side shows the suggestions (`support-piece-suggest-<n>`), which aren't drawn.
+
+### seller-hub (`sell-listings--d15.png`, `maker-mkr_01--en.png`)
+
+- **Listings:** three columns. The maker (`seller-listing-maker`, Lena T.), her notes (`seller-listing-notes`) and "Draft with Cindy". The steps (`seller-listing-steps`, `run_02`'s seven rows, the Indexer marked rule-based). The draft (`seller-listing-draft`): the title, the Chinese title with L27, the summary with the planted sentence underlined in `amber`, the facets as Neutral tags and the vibe words as Match tags, the three checks with an icon and a word, the indexed line naming the model and `cindia-drafts`, then "Review Cindy's proposal" with "Cindy proposed this. Only you can approve it."
+- **The maker side** (`seller-maker-side`): "Pieces for sale" with all four of Grace N.'s pieces and their prices (`seller-maker-pieces`), then the commission in progress, tagged Sample.
 
 ### money-map (`sell-map--default.png`)
 
-- **The lattice** (`components.md`, Money pictures):
-  - ten parties, with the ones that have no moves yet drawn lighter,
-  - one row per move in time order, with the kind and the amount on every thread,
-  - the balance at the top right.
+- **The lattice:** ten parties, the co-op's account balance at the top right, and the first five moves of the month: the sale, the card fee, the settlement to the co-op, the project contribution and its pass-through to the fund.
 
 ### reconcile (`sell-month--catch.png`)
 
-- **At the catch, across all 12 columns:**
-  - the flag (`reconcile-flag`): "Short payment · Fogline Gallery, September", then "The gallery paid $340.00 less than the contract says." with the amount in Figure/48 `seal`,
-  - the three EvidenceCards,
-  - Cindy's explanation (`reconcile-explanation`) with "Follow-up drafted. It needs your approval." and an "Open Approvals" link,
-  - the records table under them, below the fold.
+- **At the catch:** the flag line, "The gallery paid $340.00 less than the contract says." with the amount in Figure/48 `seal`, the three EvidenceCards, and Cindy's explanation with "Open Approvals".
 
 ### approvals (`sell-approvals--waiting.png`, `--sealed.png`)
 
-- **Cards:** each card has the seal slot, Approve as the Seal button, and the maker rows with each held amount.
-- **Side panel, "Why part is held":**
-  - the held note,
-  - the $340.00 split by maker,
-  - "See the flag in Month",
-  - "Your limit".
-- **After sealing:** the seal sits in each card's slot, the actions become "Approved" with the date and what followed, and the side panel says who sealed and when.
+- **The cards:** the follow-up and the maker payouts, each with its seal slot. Sealing puts "RB" and "Oct 1" in the slot.
+- **The side panel:** "Why part is held" with the held note and the split by maker, "See the flag in Month", and "Your limit". After sealing, who sealed and when.
+- **Not drawn:** `apr_04` (the listing) and `apr_05` (the commission milestone) also wait in the queue at `d09-approve`, and `approvals-listing` isn't drawn.
 
 ### close and impact (`sell-close--impact.png`)
 
-- **Totals:** four tiles (Sales, Fees, Maker pay, Held), each with one line of what it counts.
-- **The Excel report card** (`close-workbook`):
-  - the file name in mono,
-  - the four sheets as Tags,
-  - Download .xlsx (`close-download`, Primary) at the right.
-- **"Paid to the makers":** three rows, each with the held amount, the payout and "Paid Oct 2".
-- **Impact panel:**
-  - the maker share as a 36 px `jade` figure,
-  - days from close to payout as two threads, Before dotted and Now solid `jade`, with the Estimate badge on Before only,
-  - hours saved with the Estimate badge,
-  - the estimate note.
-- **Needs a data change:** `Impact.estimate` is one flag for all four numbers, but `impact.ts` says only `daysCloseToPayoutBefore` and `bookkeepingHoursSaved` are estimates. Proposal: an `estimateFields` list on `Impact`, or the feature labels those two by name. Until then the feature can keep labeling all four.
+- **Totals, the Excel report card, the payouts and Impact** as before, with the co-op's names.
+- **Needs a data change:** `Impact.estimate` is one flag for all four numbers, but only `daysCloseToPayoutBefore` and `bookkeepingHoursSaved` are estimates. Proposal: an `estimateFields` list on `Impact`, or the feature labels those two by name.
 
-### maker-statement and seller-hub (`maker-mkr_01--zh.png`)
+### maker-statement (`maker-mkr_01--en.png`)
 
-- **The page is in Chinese for `mkr_01`.**
-- **Header:** the 48 px MakerMark, 陆芸 with "Lu Yun" beside it, the month, and the Simulated and Demo data badges.
-- **The money:**
-  - 本月收入 over the 64 px figure (`maker-statement-total`),
-  - 实发金额 and 发放日期 with 已发放,
-  - the held line on an `amber-wash` band with "!" (`maker-statement-held`).
-- **The lines:** 已售作品 (`maker-statement-lines`), each piece's Chinese title with its English name after it and the maker's share in mono.
-- **`seller-maker-side`:**
-  - 在售作品 with two thumbnails and the count,
-  - 定制进行中 with three milestones, tagged 示例 (Sample).
+- **In English:** the 48 px MakerMark, "Grace N." and the month, with the Simulated and Demo data badges.
+- **The money:** "This month's income" over $1,244.18, the amount paid out, the payout date and Paid.
+- **The held note** (`maker-statement-held`): Held $95.00 on an `amber-wash` band with the glossary's held note, then "The gallery paid less than its contract says, so part of your share waits until it pays." in Caption/14 `seal`. It sits under the total, above the lines, so the whole statement fits inside the frame. M-maker-statement T3 puts it under the table.
+- **The lines:** the piece's title and the maker's share. T3's order date column isn't drawn.
 
-### process (`process-bar--states.png`, `process-swarm--view.png`, `process-search--view.png`)
+### communities (`shop-community-com_dine--page.png`)
 
-- **Block counts** follow the F-process table, with a zero count left out.
-- **Attention** shows "!" at the top right of the block. This is a ProcessBlock change, already in the Figma component.
-- **The swarm view:**
-  - the AgentGraph on the diagonals with labels on the outer side,
-  - step rows with the summary on its own line,
-  - the run picker in the header.
-- **The search view:**
-  - The points are not colored by community. Eight communities would need eight colors, and the chart palette stops at five. The clusters carry the community names instead.
-  - The six results are filled, and the star stays hollow while the positions are approximate.
-  - The scores are ScoreBars.
+- **The header:** the co-op's name, the Demo data badge, and the people, place and craft line.
+- **The about box** (`community-page`): the `about` text in a dashed placeholder box with L8 (`communities-about-note`).
+- **Kept out of this demo.** (`community-protocols`): the rest of L9 under the title, and the protocols as Neutral tags.
+- **Makers and pieces:** the three makers with their counts, then the pieces three across, with `communities-storefront-link` ("See the co-op's storefront") at the right of the pieces heading.
+- **The right column:** `community-verification` with L3 and L4, the project card with its progress, "Add $5.00" and L7, and the three other communities.
+- **Length:** the page runs to 1185 px, so the screen shows all of it.
 
-### shell
+### storefront (`store-dine-weavers--page.png`)
 
-- **Maker page beam:** Sell selected, and the maker's name and role in the center.
-- **Missing strings:** the Chinese labels for the switch and for "Not trained yet" (`components.md`, Needs).
+- **The store bar:** the co-op's name, Pieces, About and Visit, "A storefront on Cindia", and the accent rule under it.
+- **The blocks in order:** the hero (the name and place, the tagline, the craft line and the picture), the pieces (four tiles), the story ("About the co-op" with the Demo data badge and L8), the process steps (`pc_01`'s four steps with their hours), the project with its progress and raised line, and the visit block (the region and "Visits by arrangement").
+- **The footer** (`store-footer`): the preview line, then L13.
+- **Length:** the page runs to 1685 px.
+
+### tour (`pitch-card--what.png`, `--why.png`, `--how.png`)
+
+- **The pitch cards:** the title and the four lines from `pitch.ts`, each line beside a colored knot, L1 at the foot, and the presenter hint at the bottom right. The words on the screens are I2-tour's placeholders.
+- **The presenter hint:** shown in presenter mode only, at the bottom right of every frame.
 
 ## Sample content on the screens
 
-These stand in for text that S3's catalog and the swarm runs will write. On the screens each carries a Sample tag (示例 in Chinese):
-- Writer's reply to the d04 question, and run_01's step summaries and timings.
-- The three Indigenous results in figure 11 and their reasons: a flower-stripe scarf, a woven band and a beaded bracelet, from "Sample maker" at $120.00, $85.00 and $60.00, under the communities' descriptions in contracts section 2.
-- The search scores (0.91 to 0.70) and the map positions.
+These stand in for text that S3's catalog and the swarm runs will write. On the screens each carries a Sample tag:
+- Writer's reply after its first two sentences, which follow S3's `run_01` reply, and `run_01`'s step summaries and timings.
+- The three pieces from the other communities: `pc_14` (Sarah P., $58.00), `pc_30` (Nora G., $150.00) and `pc_43` (Brenda C., $140.00), with their titles and art.
+- The matched keywords for `pc_07` and `pc_11`, the search scores (0.91 to 0.70) and the map positions.
 - The Surprise me result.
-- The verification text. The Heritage listing lines follow S3's plan wording for `com_gu` until `communities.ts` exists, and the Community attestation and Registry check variants are written for the Figma gallery.
-- The one-sentence reasons for `pc_01`, `pc_07` and `pc_11`.
-- The maker page's work in progress.
+- The community's `about` text, its protocols, the storefront tagline, and the project's $1,240 raised.
+- Grace N.'s receipt note.
+- The maker page's commission in progress.
+- The data view's step count of 52 and its newest rows, which follow S3's `demoDataSync` rules.
 
-Everything else comes from `src/mock/` as of 16:00 PT: prices, the split, the token, dates, the gallery's figures, the approvals, the payouts, the close totals and impact.
+Everything else comes from R0's and S3's plans: the co-op, its people and pieces, the prices, the split, the gallery comparison, the token, the dates, the gallery's figures, the approvals, the payouts, the close totals and Impact.
 
-## Held
+## Not drawn
 
-The storefront builder, the store page, listings, the counterfeit watch, the projects pages and the community pages are held until the coordinator says, so they're not in this drop.
+- The month's records table during `d07-month`.
+- The proof page (`d13-proof`), the counterfeit watch (`d14-watch`) and the Surprise me result after a draw (`d02-surprise`).
+- The projects pages, the storefront builder and the Sell overview.
+- The end card.
+- The checkout, money, reconcile, approvals, close, proof, watch and model process views.
+- The tour's split layout, with the frame at 0.66 and the process panel in the right third. The process views here show the centered overlay a person opens with `?process=`.
+- The search source markers (`search-source-<pieceId>-<n>`) and `search-provenance-note`.
